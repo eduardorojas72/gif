@@ -1,0 +1,15 @@
+{
+  "name": "Cumbre 90 — Los 8 Pasos al Éxito",
+  "short_name": "Cumbre 90",
+  "description": "Recorrido guiado por los 8 Pasos al Éxito, el Plan de Arranque de 6 Días y el Plan de 90 Días hacia Sales Master.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B2A4A",
+  "theme_color": "#0B2A4A",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
