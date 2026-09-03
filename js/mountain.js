@@ -18,6 +18,43 @@ function medallionHTML(iconName, size, iconColor) {
   );
 }
 
+/* Medallón "Los 8 Pasos": círculo azul oscuro con la silueta de un pie
+   en contorno dorado, y dentro el icono propio de ese paso. */
+function pasoMedallionHTML(themeIconName, size) {
+  size = size || 68;
+  const footSize = Math.round(size * 0.72);
+  const themeSize = Math.round(size * 0.3);
+  const diamonds =
+    '<span class="diamond d-top"></span><span class="diamond d-bottom"></span>' +
+    '<span class="diamond d-left"></span><span class="diamond d-right"></span>';
+  return (
+    '<div class="medallion blue" style="width:' + size + 'px;height:' + size + 'px">' +
+    '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">' +
+    Icon("footprint-outline", { size: footSize, color: "var(--gold)", stroke: 1.4 }) +
+    "</span>" +
+    '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:' + Math.round(size * 0.08) + 'px">' +
+    Icon(themeIconName, { size: themeSize, color: "#fff", stroke: 1.9 }) +
+    "</span>" +
+    diamonds +
+    "</div>"
+  );
+}
+
+/* Medallón de cabecera "Los 8 Pasos al Éxito": dos pies en contorno dorado. */
+function pasosHeaderMedallionHTML(size) {
+  size = size || 64;
+  const iconSize = Math.round(size * 0.48);
+  const diamonds =
+    '<span class="diamond d-top"></span><span class="diamond d-bottom"></span>' +
+    '<span class="diamond d-left"></span><span class="diamond d-right"></span>';
+  return (
+    '<div class="medallion blue" style="width:' + size + 'px;height:' + size + 'px">' +
+    Icon("footprints-outline", { size: iconSize, color: "var(--gold)", stroke: 1.4 }) +
+    diamonds +
+    "</div>"
+  );
+}
+
 function gemCornersHTML() {
   return '<div class="gem-corners"><span class="g-tl"></span><span class="g-tr"></span><span class="g-bl"></span><span class="g-br"></span></div>';
 }

@@ -266,6 +266,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   color: #fff;
   box-shadow: 0 0 0 4px rgba(232,185,78,0.08);
 }
+.medallion.blue {
+  background: radial-gradient(circle at 32% 28%, #234B7A, #0A1B33 78%);
+  box-shadow: 0 0 0 4px rgba(232,185,78,0.08), inset 0 0 0 1px rgba(120,170,230,0.18);
+}
 .medallion .diamond {
   position: absolute; width: 8px; height: 8px; background: var(--gold);
   transform: rotate(45deg); border-radius: 2px; box-shadow: 0 0 6px rgba(232,185,78,0.7);
