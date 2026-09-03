@@ -235,7 +235,7 @@ function renderHome(state) {
 
     mountainSceneHTML(state.quincenas, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
 
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + medallionHTML("footprints", 44) + '<div class="nc-body"><div class="nc-title">Los 8 Pasos al Éxito</div><div class="nc-desc">Tu referencia permanente</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + medallionHTML("footprints", 44, "var(--gold)") + '<div class="nc-body"><div class="nc-title">Los 8 Pasos al Éxito</div><div class="nc-desc">Tu referencia permanente</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Arranque — 6 Días</div><div class="nc-desc">Recorre tu mapa día a día</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premios de tu patrocinador</div><div class="nc-desc">Consulta lo que puedes ganar</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
 
@@ -251,14 +251,14 @@ function renderPasos() {
   const cards = OCHO_PASOS.map(function (p) {
     return (
       '<div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px">' +
-      medallionHTML(p.icon, 68) +
+      medallionHTML(p.icon, 68, "var(--gold)") +
       '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:4px">Paso ' + p.n + "</div>" +
       '<div style="font-size:13.5px;font-weight:700;line-height:1.3">' + escapeHtml(p.t) + "</div>" +
       '<div class="muted small" style="line-height:1.45">' + escapeHtml(p.d) + "</div>" +
       "</div>"
     );
   }).join("");
-  return sectionHeaderHTML("Los 8 Pasos al Éxito", "Tu guía de referencia, siempre disponible.", "footprints") +
+  return sectionHeaderHTML("Los 8 Pasos al Éxito", "Tu guía de referencia, siempre disponible.", "footprints", "var(--gold)") +
     '<div class="grid-2">' + cards + "</div>";
 }
 
@@ -292,12 +292,13 @@ function renderPathMap(state) {
     );
   }).join("");
 
-  return sectionHeaderHTML("Plan de Arranque — 6 Días", "Asciende el mapa y conquista cada etapa.", "trail-map") +
-    '<div class="trail-wrap">' +
+  const overlay =
     '<svg class="trail-svg" viewBox="0 0 100 100" preserveAspectRatio="none">' +
-    '<path d="' + pathD + '" fill="none" stroke="var(--border)" stroke-width="1.6" stroke-dasharray="0.5 3" stroke-linecap="round"/></svg>' +
-    nodes +
-    "</div>";
+    '<path d="' + pathD + '" fill="none" stroke="#F0C468" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="0.5 3" stroke-linecap="round"/></svg>' +
+    nodes;
+
+  return sectionHeaderHTML("Plan de Arranque — 6 Días", "Asciende el mapa y conquista cada etapa.", "trail-map") +
+    heroMountainHTML(overlay);
 }
 
 function renderDiaDetalle(state, diaId) {
@@ -384,6 +385,7 @@ function renderPlan90(state) {
       : "";
     return (
       '<button class="tile card-hover' + (done ? " unlocked" : "") + '" data-action="toggle-quincena" data-arg="' + q.n + '">' +
+      gemCornersHTML() +
       '<div style="position:relative">' + campMedallionHTML(q.n, done) +
       '<div class="badge ' + (done ? "gold" : "dark") + '" style="position:absolute;top:8px;right:8px">' + (done ? "Completado" : "Sem. " + q.semanas) + "</div>" +
       "</div>" +
@@ -422,6 +424,7 @@ function renderPremios(state) {
       : '<div class="muted small">' + escapeHtml(p.hito) + '</div><div style="font-size:14px;font-weight:700;margin-top:2px">' + escapeHtml(p.premio) + "</div>";
     return (
       '<div class="tile' + (desbloqueado ? " unlocked" : "") + '">' +
+      gemCornersHTML() +
       '<div class="tile-media" style="background:' + (p.imagen ? "transparent" : "radial-gradient(circle at 30% 20%, var(--accent-soft), var(--accent))") + '">' +
       media +
       '<div class="badge ' + (desbloqueado ? "gold" : "dark") + '" style="position:absolute;top:8px;right:8px">' + (desbloqueado ? "Completado" : "Por conseguir") + "</div>" +

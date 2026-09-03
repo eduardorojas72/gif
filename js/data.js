@@ -3,14 +3,14 @@
 --------------------------------------------------------------- */
 
 const OCHO_PASOS = [
-  { n: 1, t: "Establecer metas u objetivos (MBO)", d: "Diseña tu “vida balanceada”: vivir bien, amar, aprender y contribuir.", icon: "target" },
-  { n: 2, t: "Tener determinación inquebrantable", d: "Autonomía frente a terceros, pensamiento positivo y disposición a pagar el precio del esfuerzo.", icon: "flame" },
-  { n: 3, t: "Hacer una lista de contactos", d: "Construye una lista activa de mínimo 250 personas, sin juzgar su potencial inicial.", icon: "clipboard-list" },
-  { n: 4, t: "Hacer llamadas e invitaciones", d: "Enfocadas en agendar citas y generar curiosidad sincera, no en presentar por teléfono.", icon: "phone-call" },
-  { n: 5, t: "Explicar el negocio (Show the Business)", d: "Compañía, Productos, Plan de Compensación y Visión Global.", icon: "presentation" },
-  { n: 6, t: "Seguimiento (Regla de las 48 Horas)", d: "Contacta al prospecto dentro de las primeras 48 horas tras la presentación.", icon: "clock" },
-  { n: 7, t: "Consultoría y asesoramiento", d: "Reúnete con tu línea ascendente y descendente para analizar bloqueos y reajustar.", icon: "users" },
-  { n: 8, t: "Duplicación", d: "Sé un modelo íntegro: consumidor fiel, conectado al sistema de eventos, sirviendo con humildad.", icon: "repeat" },
+  { n: 1, t: "Establecer metas u objetivos (MBO)", d: "Diseña tu “vida balanceada”: vivir bien, amar, aprender y contribuir.", icon: "footprint" },
+  { n: 2, t: "Tener determinación inquebrantable", d: "Autonomía frente a terceros, pensamiento positivo y disposición a pagar el precio del esfuerzo.", icon: "footprint" },
+  { n: 3, t: "Hacer una lista de contactos", d: "Construye una lista activa de mínimo 250 personas, sin juzgar su potencial inicial.", icon: "footprint" },
+  { n: 4, t: "Hacer llamadas e invitaciones", d: "Enfocadas en agendar citas y generar curiosidad sincera, no en presentar por teléfono.", icon: "footprint" },
+  { n: 5, t: "Explicar el negocio (Show the Business)", d: "Compañía, Productos, Plan de Compensación y Visión Global.", icon: "footprint" },
+  { n: 6, t: "Seguimiento (Regla de las 48 Horas)", d: "Contacta al prospecto dentro de las primeras 48 horas tras la presentación.", icon: "footprint" },
+  { n: 7, t: "Consultoría y asesoramiento", d: "Reúnete con tu línea ascendente y descendente para analizar bloqueos y reajustar.", icon: "footprint" },
+  { n: 8, t: "Duplicación", d: "Sé un modelo íntegro: consumidor fiel, conectado al sistema de eventos, sirviendo con humildad.", icon: "footprint" },
 ];
 
 const DIAS = [

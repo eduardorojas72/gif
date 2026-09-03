@@ -55,7 +55,7 @@ function safeXml(str) {
 }
 
 function downloadRecogCard(state) {
-  const gold = "#E3B341";
+  const gold = "#E8B94E";
   const rangoObj = RANGOS[state.rangoIndex];
   const tier = rangoObj.tier;
   const bgs = TIER_BG;
@@ -93,9 +93,9 @@ function downloadRecogCard(state) {
     '<text x="400" y="160" text-anchor="middle" font-family="Arial" font-size="16" letter-spacing="4" font-weight="bold" fill="' + gold + '">CUMBRE 90</text>' +
     '<circle cx="400" cy="400" r="152" fill="rgba(255,255,255,0.06)" stroke="' + gold + '" stroke-width="6"/>' +
     fotoTag +
-    '<rect x="230" y="600" width="340" height="70" fill="#123B60" stroke="' + gold + '" stroke-width="2"/>' +
-    '<path d="M230 600 L192 635 L230 670 Z" fill="#123B60" stroke="' + gold + '" stroke-width="2"/>' +
-    '<path d="M570 600 L608 635 L570 670 Z" fill="#123B60" stroke="' + gold + '" stroke-width="2"/>' +
+    '<rect x="230" y="600" width="340" height="70" fill="#241947" stroke="' + gold + '" stroke-width="2"/>' +
+    '<path d="M230 600 L192 635 L230 670 Z" fill="#241947" stroke="' + gold + '" stroke-width="2"/>' +
+    '<path d="M570 600 L608 635 L570 670 Z" fill="#241947" stroke="' + gold + '" stroke-width="2"/>' +
     '<text x="400" y="645" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="' + gold + '">' + nombre + "</text>" +
     '<text x="400" y="712" text-anchor="middle" font-family="Arial" font-size="20" letter-spacing="2" font-weight="bold" fill="#ffffff">' + safeXml(rango.toUpperCase()) + "</text>" +
     '<text x="400" y="745" text-anchor="middle" font-family="Arial" font-size="16" fill="rgba(255,255,255,0.6)">' + rangoObj.pv + "</text>" +

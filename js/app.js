@@ -160,6 +160,25 @@ const App = {
       }
     });
 
+    // montaña hero (Plan de 6 días): revelado tipo "linterna" que sigue al cursor
+    root.addEventListener("pointermove", (e) => {
+      const hero = e.target.closest && e.target.closest(".hero-mountain");
+      if (!hero) return;
+      const rect = hero.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      hero.style.setProperty("--mx", (x - 170) + "px");
+      hero.style.setProperty("--my", (y - 170) + "px");
+      hero.classList.add("hm-active");
+    });
+    root.addEventListener("pointerout", (e) => {
+      const hero = e.target.closest && e.target.closest(".hero-mountain");
+      if (!hero || hero.contains(e.relatedTarget)) return;
+      hero.style.removeProperty("--mx");
+      hero.style.removeProperty("--my");
+      hero.classList.remove("hm-active");
+    });
+
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
