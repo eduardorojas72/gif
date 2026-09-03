@@ -236,49 +236,211 @@ function campMedallionHTML(n, desbloqueado) {
   );
 }
 
-const TIER_BG = {
-  1: ["#1E1640", "#2B1E52"],
-  2: ["#170F32", "#3A2564"],
-  3: ["#0F0A24", "#4A2A6E"],
-};
+/* ---------------------------------------------------------------
+   TARJETA DE RECONOCIMIENTO — un solo generador SVG (800x1000) que
+   sirve tanto para la vista en pantalla como para la exportación a
+   PNG (share.js), así ambas quedan siempre idénticas. Cinco diseños,
+   uno por rango:
+     0 Consumidor Consciente → fondo azul "brumoso" + título apilado
+     1 Representante de Ventas → tarjeta con lazo azul
+     2 Agente → misma tarjeta con variación (lazo con filo dorado)
+     3 Agente Especial → lazo oscuro con texto e hilo dorados
+     4 Sales Master → medallón alado dorado bajo el nombre
+   El nombre siempre se escribe con la tipografía script incrustada
+   (evita depender de Google Fonts al exportar la imagen).
+--------------------------------------------------------------- */
 
-function recogCardHTML(nombre, foto, rango, pv, tier) {
-  tier = tier || 1;
-  const gold = "#E8B94E";
-  const bg = TIER_BG[tier];
-  const bokehCount = tier === 3 ? 10 : tier === 2 ? 6 : 3;
-  let bokeh = "";
-  for (let i = 0; i < bokehCount; i++) {
-    const left = 8 + ((i * 41) % 84);
-    const top = 6 + ((i * 29) % 26);
-    const size = 4 + (i % 3) * 3;
-    bokeh += '<div style="position:absolute;left:' + left + '%;top:' + top + '%;width:' + size + 'px;height:' + size + 'px;background:' + gold + ';border-radius:999px;filter:blur(2px);opacity:.4"></div>';
+const CARD_GOLD = "#E8B94E";
+const CARD_GOLD_LIGHT = "#F6D98A";
+const CARD_CREAM = "#F5EFE1";
+
+function fontFaceDefsSVG() {
+  return "<style>@font-face{font-family:'Cumbre Script';src:url(data:font/ttf;base64," + ALEX_BRUSH_TTF_B64 + ") format('truetype');}</style>";
+}
+
+function nameFontSize(nombre) {
+  const len = (nombre || "Tu nombre").length;
+  if (len <= 13) return 78;
+  if (len <= 18) return 64;
+  if (len <= 24) return 52;
+  return 42;
+}
+
+function titleLinesSVG(text) {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= 1) return [text.toUpperCase()];
+  const mid = Math.ceil(words.length / 2);
+  return [words.slice(0, mid).join(" ").toUpperCase(), words.slice(mid).join(" ").toUpperCase()];
+}
+
+function starPathSVG(cx, cy, r, color) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const ang = (Math.PI / 5) * i - Math.PI / 2;
+    const rad = i % 2 === 0 ? r : r * 0.42;
+    pts.push((cx + Math.cos(ang) * rad).toFixed(1) + "," + (cy + Math.sin(ang) * rad).toFixed(1));
   }
-  const lines = tier >= 2
-    ? '<div style="position:absolute;top:0;bottom:0;left:14%;width:2px;background:' + gold + ';opacity:.45;transform:skewX(-9deg)"></div>' +
-      '<div style="position:absolute;top:0;bottom:0;right:14%;width:2px;background:' + gold + ';opacity:.45;transform:skewX(-9deg)"></div>'
-    : "";
-  const corners = ['top:12px;left:12px', 'top:12px;right:12px', 'bottom:12px;left:12px', 'bottom:12px;right:12px']
-    .map(function (pos) { return '<div style="position:absolute;' + pos + ';width:8px;height:8px;background:' + gold + ';transform:rotate(45deg);border-radius:2px"></div>'; })
-    .join("");
-  const topIcon = tier === 3
-    ? Icon("crown", { size: 24, color: gold, stroke: 1.8 })
-    : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M2 19L9 7L13 14L16 9L22 19H2Z" fill="' + gold + '"/></svg>';
-  const avatarInner = foto
-    ? '<img src="' + foto + '" alt="' + escapeHtml(nombre) + '"/>'
-    : Icon("user-badge", { size: 44, color: "#F5DFA0", stroke: 1.8 });
+  return '<polygon points="' + pts.join(" ") + '" fill="' + color + '"/>';
+}
 
+function bokehSVG(cx, cy, rx, ry, count, seed, colors) {
+  let out = "";
+  for (let i = 0; i < count; i++) {
+    const ang = ((seed + i * 53) % 360) * (Math.PI / 180);
+    const dist = 0.35 + ((seed + i * 17) % 65) / 100;
+    const x = cx + Math.cos(ang) * rx * dist;
+    const y = cy + Math.sin(ang) * ry * dist;
+    const rad = 5 + (i % 4) * 5;
+    const color = colors[i % colors.length];
+    const op = (0.15 + (i % 3) * 0.12).toFixed(2);
+    out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + rad + '" fill="' + color + '" opacity="' + op + '" filter="url(#cardBlur)"/>';
+  }
+  return out;
+}
+
+function personGlyphSVG(cx, cy, s, color) {
   return (
-    '<div class="recog-card" style="background:linear-gradient(160deg, ' + bg[0] + ' 0%, ' + bg[1] + ' 100%);border-color:' + gold + '">' +
-    lines + bokeh + corners +
-    topIcon +
-    '<span class="kicker">Cumbre 90</span>' +
-    '<div class="avatar" style="border-color:' + gold + '">' + avatarInner + "</div>" +
-    '<div class="name-banner" style="border-color:' + gold + '"><span>' + escapeHtml(nombre || "Tu nombre") + "</span></div>" +
-    '<div class="rank">' + escapeHtml(rango) + "</div>" +
-    (pv ? '<div class="pv">' + escapeHtml(pv) + "</div>" : "") +
-    "<hr/>" +
-    '<div class="foot">Recorrido hacia el éxito con Atomy</div>' +
-    "</div>"
+    '<circle cx="' + cx + '" cy="' + (cy - s * 0.18) + '" r="' + (s * 0.34) + '" fill="none" stroke="' + color + '" stroke-width="' + (s * 0.1) + '"/>' +
+    '<path d="M' + (cx - s * 0.48) + ' ' + (cy + s * 0.55) + ' Q ' + cx + ' ' + (cy - s * 0.02) + ' ' + (cx + s * 0.48) + ' ' + (cy + s * 0.55) + '" fill="none" stroke="' + color + '" stroke-width="' + (s * 0.1) + '" stroke-linecap="round"/>'
   );
+}
+
+function photoCircleSVG(foto, nombre, cx, cy, r, ringColor, ringWidth, glow) {
+  const clipId = "clipPhoto" + Math.random().toString(36).slice(2, 9);
+  const inner = foto
+    ? '<clipPath id="' + clipId + '"><circle cx="' + cx + '" cy="' + cy + '" r="' + (r - ringWidth) + '"/></clipPath>' +
+      '<image href="' + foto + '" x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + (r * 2) + '" height="' + (r * 2) + '" preserveAspectRatio="xMidYMid slice" clip-path="url(#' + clipId + ')"/>'
+    : '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r - ringWidth) + '" fill="rgba(255,255,255,0.07)"/>' + personGlyphSVG(cx, cy, r * 0.62, "rgba(255,255,255,.55)");
+  const glowRing = glow ? '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 11) + '" fill="none" stroke="' + ringColor + '" stroke-width="2" opacity="0.4"/>' : "";
+  return (
+    glowRing +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="rgba(255,255,255,0.04)" stroke="' + ringColor + '" stroke-width="' + ringWidth + '"/>' +
+    inner
+  );
+}
+
+function ribbonSVG(cx, cy, w, h, fillColor, strokeColor, strokeW, text, textColor, fontSize) {
+  const x1 = cx - w / 2, x2 = cx + w / 2, flag = h * 0.5;
+  return (
+    '<path d="M' + (x1 - flag) + ' ' + (cy - h / 2) + ' L' + x1 + ' ' + cy + ' L' + (x1 - flag) + ' ' + (cy + h / 2) + ' Z" fill="' + fillColor + '" stroke="' + strokeColor + '" stroke-width="' + strokeW + '"/>' +
+    '<path d="M' + (x2 + flag) + ' ' + (cy - h / 2) + ' L' + x2 + ' ' + cy + ' L' + (x2 + flag) + ' ' + (cy + h / 2) + ' Z" fill="' + fillColor + '" stroke="' + strokeColor + '" stroke-width="' + strokeW + '"/>' +
+    '<rect x="' + x1 + '" y="' + (cy - h / 2) + '" width="' + w + '" height="' + h + '" fill="' + fillColor + '" stroke="' + strokeColor + '" stroke-width="' + strokeW + '"/>' +
+    '<text x="' + cx + '" y="' + (cy + fontSize * 0.32) + '" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="' + fontSize + '" font-weight="700" letter-spacing="1.5" fill="' + textColor + '">' + escapeHtml(text.toUpperCase()) + "</text>"
+  );
+}
+
+function wingedMedallionSVG(cx, cy, scale) {
+  let out = "";
+  const featherColor = CARD_GOLD;
+  for (let side = -1; side <= 1; side += 2) {
+    for (let i = 0; i < 5; i++) {
+      const len = (66 + i * 15) * scale;
+      const y0 = cy - (i - 2) * 6 * scale;
+      const x0 = cx + side * 34 * scale;
+      const x1 = cx + side * (34 * scale + len * 0.55);
+      const y1 = y0 - 20 * scale - i * 3 * scale;
+      const x2 = cx + side * (34 * scale + len);
+      const y2 = y0 - 2 * scale;
+      out += '<path d="M' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' Q' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + '" fill="none" stroke="' + featherColor + '" stroke-width="' + (3 * scale).toFixed(1) + '" stroke-linecap="round" opacity="' + (0.5 + i * 0.1).toFixed(2) + '"/>';
+    }
+  }
+  out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (46 * scale) + '" fill="url(#medallionGrad)" stroke="' + CARD_GOLD + '" stroke-width="' + (3 * scale) + '"/>';
+  out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (35 * scale) + '" fill="none" stroke="#8A6420" stroke-width="' + (1.4 * scale) + '"/>';
+  out += starPathSVG(cx, cy, 19 * scale, "#8A6420");
+  return out;
+}
+
+function cardFooterSVG(cx, y) {
+  return (
+    '<line x1="' + (cx - 60) + '" y1="' + (y - 26) + '" x2="' + (cx + 60) + '" y2="' + (y - 26) + '" stroke="' + CARD_GOLD + '" stroke-width="1" opacity="0.45"/>' +
+    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Recorrido hacia el éxito con Atomy</text>'
+  );
+}
+
+function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
+  const W = 800, H = 1000, cx = 400;
+  const name = nombre || "Tu nombre";
+  const nameSize = nameFontSize(name);
+  const defs =
+    "<defs>" +
+    fontFaceDefsSVG() +
+    '<filter id="cardBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>' +
+    '<radialGradient id="medallionGrad" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="' + CARD_GOLD_LIGHT + '"/><stop offset="100%" stop-color="#B8862E"/></radialGradient>' +
+    '<linearGradient id="bgMisty" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0A1B33"/><stop offset="55%" stop-color="#153A6B"/><stop offset="100%" stop-color="#1E4E8F"/></linearGradient>' +
+    '<linearGradient id="bgRibbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0A0E18"/><stop offset="45%" stop-color="#122040"/><stop offset="75%" stop-color="#1B3B6B"/><stop offset="100%" stop-color="#0D1526"/></linearGradient>' +
+    '<linearGradient id="bgEspecial" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08060F"/><stop offset="50%" stop-color="#1C1430"/><stop offset="100%" stop-color="#0A0712"/></linearGradient>' +
+    '<linearGradient id="bgWinged" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#07050F"/><stop offset="45%" stop-color="#171025"/><stop offset="100%" stop-color="#05040A"/></linearGradient>' +
+    '<radialGradient id="glowSoft" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="' + CARD_GOLD_LIGHT + '" stop-opacity="0.35"/><stop offset="100%" stop-color="' + CARD_GOLD_LIGHT + '" stop-opacity="0"/></radialGradient>' +
+    "</defs>";
+
+  let body = "";
+
+  if (rangoIndex === 0) {
+    /* ---- Consumidor Consciente: azul brumoso + título apilado + script ---- */
+    const lines = titleLinesSVG(rango);
+    body =
+      '<rect width="' + W + '" height="' + H + '" fill="url(#bgMisty)" rx="30"/>' +
+      bokehSVG(cx, 300, 380, 260, 8, 11, ["#BFDCFF", "#8FC6F0"]) +
+      '<circle cx="620" cy="150" r="220" fill="url(#glowSoft)"/>' +
+      '<circle cx="150" cy="700" r="260" fill="url(#glowSoft)"/>' +
+      '<rect x="18" y="18" width="' + (W - 36) + '" height="' + (H - 36) + '" rx="22" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>' +
+      '<text x="' + cx + '" y="95" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="15" letter-spacing="5" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE 90</text>' +
+      lines.map(function (l, i) { return '<text x="' + cx + '" y="' + (168 + i * 52) + '" text-anchor="middle" font-family="Georgia, \'Times New Roman\', serif" font-size="42" letter-spacing="4" fill="' + CARD_CREAM + '">' + escapeHtml(l) + "</text>"; }).join("") +
+      photoCircleSVG(foto, name, cx, 470, 148, "#FFFFFF", 4, false) +
+      '<text x="' + cx + '" y="' + (680) + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + nameSize + '" fill="' + CARD_CREAM + '">' + escapeHtml(name) + "</text>" +
+      (pv ? '<text x="' + cx + '" y="722" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="1" fill="rgba(255,255,255,0.6)">' + escapeHtml(pv) + "</text>" : "") +
+      cardFooterSVG(cx, 940);
+  } else if (rangoIndex === 4) {
+    /* ---- Sales Master: medallón alado bajo el nombre ---- */
+    body =
+      '<rect width="' + W + '" height="' + H + '" fill="url(#bgWinged)" rx="30"/>' +
+      '<circle cx="' + cx + '" cy="330" r="260" fill="url(#glowSoft)"/>' +
+      bokehSVG(cx, 320, 320, 260, 10, 33, [CARD_GOLD, "#FFF3D6"]) +
+      '<rect x="16" y="16" width="' + (W - 32) + '" height="' + (H - 32) + '" rx="24" fill="none" stroke="' + CARD_GOLD + '" stroke-width="2.5"/>' +
+      '<text x="' + cx + '" y="90" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="15" letter-spacing="5" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE 90</text>' +
+      photoCircleSVG(foto, name, cx, 330, 150, CARD_GOLD, 5, true) +
+      '<text x="' + cx + '" y="565" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 6) + '" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(name) + "</text>" +
+      wingedMedallionSVG(cx, 700, 1) +
+      ribbonSVG(cx, 800, 260, 46, "#0A0712", CARD_GOLD, 2, "Sales Master", CARD_GOLD, 20) +
+      (pv ? '<text x="' + cx + '" y="875" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" letter-spacing="1" fill="rgba(255,255,255,0.65)">' + escapeHtml(pv) + "</text>" : "") +
+      cardFooterSVG(cx, 955);
+  } else {
+    /* ---- Representante (1) / Agente (2) / Agente Especial (3): lazo ---- */
+    const especial = rangoIndex === 3;
+    const agente = rangoIndex === 2;
+    const bgFill = especial ? "url(#bgEspecial)" : "url(#bgRibbon)";
+    const ringColor = especial ? CARD_GOLD : (agente ? "#BFE0FF" : "#8FC6F0");
+    const sideLineColor = especial ? CARD_GOLD : (agente ? CARD_GOLD : "rgba(232,185,78,0.55)");
+    const sideLineOpacity = especial ? 0.8 : (agente ? 0.6 : 0.4);
+    const ribbonFill = especial ? "#12101F" : (agente ? "#1F4E85" : "#2E6FB8");
+    const ribbonStroke = especial ? CARD_GOLD : (agente ? CARD_GOLD : "#BFE0FF");
+    const ribbonStrokeW = especial ? 2.5 : (agente ? 2 : 1.5);
+    const ribbonText = especial ? CARD_GOLD : "#0B1B33";
+    const bokehColors = especial ? [CARD_GOLD, "#FFF3D6"] : (agente ? [CARD_GOLD, "#BFE0FF"] : ["#BFE0FF", "#8FC6F0"]);
+    const rankFontSize = rango.length > 20 ? 21 : rango.length > 15 ? 24 : 27;
+
+    body =
+      '<rect width="' + W + '" height="' + H + '" fill="' + bgFill + '" rx="30"/>' +
+      '<circle cx="' + cx + '" cy="290" r="240" fill="url(#glowSoft)" opacity="' + (especial ? 0.55 : 0.4) + '"/>' +
+      bokehSVG(cx, 300, 280, 240, especial ? 12 : (agente ? 9 : 6), especial ? 71 : (agente ? 41 : 19), bokehColors) +
+      '<path d="M120 0 L60 ' + H + '" stroke="' + sideLineColor + '" stroke-width="2" opacity="' + sideLineOpacity + '"/>' +
+      '<path d="M150 0 L96 ' + H + '" stroke="' + sideLineColor + '" stroke-width="1.4" opacity="' + (sideLineOpacity * 0.75) + '"/>' +
+      '<path d="M680 0 L740 ' + H + '" stroke="' + sideLineColor + '" stroke-width="2" opacity="' + sideLineOpacity + '"/>' +
+      '<path d="M650 0 L704 ' + H + '" stroke="' + sideLineColor + '" stroke-width="1.4" opacity="' + (sideLineOpacity * 0.75) + '"/>' +
+      '<rect x="20" y="20" width="' + (W - 40) + '" height="' + (H - 40) + '" rx="20" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>' +
+      '<text x="700" y="68" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="14" letter-spacing="2" font-weight="700" fill="' + CARD_CREAM + '" opacity="0.85">ATOMY</text>' +
+      '<text x="' + cx + '" y="95" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="15" letter-spacing="5" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE 90</text>' +
+      photoCircleSVG(foto, name, cx, 340, 150, ringColor, especial ? 5 : 4, especial) +
+      (especial ? starPathSVG(cx, 522, 14, CARD_GOLD) : (agente ? starPathSVG(cx - 118, 610, 11, CARD_GOLD) : "")) +
+      ribbonSVG(cx, 610, 420, 92, ribbonFill, ribbonStroke, ribbonStrokeW, rango, ribbonText, rankFontSize) +
+      '<text x="' + cx + '" y="730" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + nameSize + '" fill="' + (especial ? CARD_GOLD_LIGHT : CARD_CREAM) + '">' + escapeHtml(name) + "</text>" +
+      (pv ? '<text x="' + cx + '" y="772" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="1" fill="rgba(255,255,255,0.6)">' + escapeHtml(pv) + "</text>" : "") +
+      cardFooterSVG(cx, 940);
+  }
+
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' + defs + body + "</svg>";
+}
+
+function recogCardHTML(nombre, foto, rango, pv, rangoIndex) {
+  return '<div class="recog-card">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
 }

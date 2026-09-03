@@ -162,11 +162,11 @@ const PREMIOS_DEFECTO = [
 ];
 
 const RANGOS = [
-  { nombre: "Consumidor Consciente", meta: "Tu punto de partida", pv: "0 PV", tier: 1 },
-  { nombre: "Representante de Ventas", meta: "10.000 PV personales", pv: "10.000 PV", tier: 1 },
-  { nombre: "Agente", meta: "300.000 PV personales", pv: "300.000 PV", tier: 2 },
-  { nombre: "Agente Especial", meta: "700.000 PV personales", pv: "700.000 PV", tier: 2 },
-  { nombre: "Sales Master", meta: "2.500.000 PV grupales por línea", pv: "2.500.000 PV", tier: 3 },
+  { nombre: "Consumidor Consciente", meta: "Tu punto de partida", pv: "0 PVP", tier: 1 },
+  { nombre: "Representante de Ventas", meta: "10.000 PV personales", pv: "10.000 PVP", tier: 1 },
+  { nombre: "Agente", meta: "300.000 PV personales", pv: "300.000 PVP", tier: 2 },
+  { nombre: "Agente Especial", meta: "700.000 PV personales", pv: "700.000 PVP", tier: 2 },
+  { nombre: "Sales Master", meta: "2.500.000 PV grupales por línea", pv: "2.500.000 PVG", tier: 3 },
 ];
 
 const MENSAJE_BIENVENIDA =

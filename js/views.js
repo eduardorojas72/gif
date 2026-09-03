@@ -473,7 +473,7 @@ function renderPerfil(state) {
     : "";
 
   return (
-    recogCardHTML(state.nombre, state.foto, rango.nombre, rango.pv, rango.tier) +
+    recogCardHTML(state.nombre, state.foto, rango.nombre, rango.pv, state.rangoIndex) +
     '<div class="row gap-2">' +
     '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="perfil-file">' + Icon("camera", { size: 15 }) + " " + (state.foto ? "Cambiar foto" : "Añadir foto") + "</button>" +
     '<button class="btn-primary" style="flex:1;color:#fff" data-action="download-recog-card">' + Icon("download", { size: 15, color: "#fff" }) + " Compartir</button>" +

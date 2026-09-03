@@ -55,55 +55,9 @@ function safeXml(str) {
 }
 
 function downloadRecogCard(state) {
-  const gold = "#E8B94E";
   const rangoObj = RANGOS[state.rangoIndex];
-  const tier = rangoObj.tier;
-  const bgs = TIER_BG;
-  const c1 = bgs[tier][0], c2 = bgs[tier][1];
-  const nombre = safeXml(state.nombre || "Tu nombre");
-  const rango = rangoObj.nombre;
-
-  const fotoTag = state.foto
-    ? '<clipPath id="clip"><circle cx="400" cy="400" r="150"/></clipPath><image href="' + state.foto + '" x="250" y="250" width="300" height="300" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip)"/>'
-    : "";
-  const lineasDoradas = tier >= 2
-    ? '<line x1="150" y1="0" x2="90" y2="1000" stroke="' + gold + '" stroke-opacity="0.35" stroke-width="2"/><line x1="650" y1="0" x2="710" y2="1000" stroke="' + gold + '" stroke-opacity="0.35" stroke-width="2"/>'
-    : "";
-  const bokehCount = tier === 3 ? 10 : tier === 2 ? 6 : 3;
-  let bokeh = "";
-  for (let i = 0; i < bokehCount; i++) {
-    const cx = 70 + ((i * 97) % 660), cy = 60 + ((i * 53) % 200), r = 6 + (i % 3) * 5;
-    bokeh += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + gold + '" opacity="0.4"/>';
-  }
-  const coronaTag = tier === 3
-    ? '<path d="M365 124 L370 102 L386 116 L400 90 L414 116 L430 102 L435 124 Z" fill="' + gold + '"/><circle cx="370" cy="100" r="3.5" fill="' + gold + '"/><circle cx="400" cy="88" r="4" fill="' + gold + '"/><circle cx="430" cy="100" r="3.5" fill="' + gold + '"/>'
-    : '<path d="M368 118L400 90L432 118Z" fill="' + gold + '"/>';
-
-  const svg =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000">' +
-    "<defs>" +
-    '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + c1 + '"/><stop offset="55%" stop-color="' + c2 + '"/><stop offset="100%" stop-color="' + c1 + '"/></linearGradient>' +
-    '<filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>' +
-    "</defs>" +
-    '<rect width="800" height="1000" fill="url(#bg)" rx="32"/>' +
-    lineasDoradas +
-    '<g filter="url(#soft)">' + bokeh + "</g>" +
-    '<rect x="18" y="18" width="764" height="964" rx="24" fill="none" stroke="' + gold + '" stroke-width="3"/>' +
-    coronaTag +
-    '<text x="400" y="160" text-anchor="middle" font-family="Arial" font-size="16" letter-spacing="4" font-weight="bold" fill="' + gold + '">CUMBRE 90</text>' +
-    '<circle cx="400" cy="400" r="152" fill="rgba(255,255,255,0.06)" stroke="' + gold + '" stroke-width="6"/>' +
-    fotoTag +
-    '<rect x="230" y="600" width="340" height="70" fill="#241947" stroke="' + gold + '" stroke-width="2"/>' +
-    '<path d="M230 600 L192 635 L230 670 Z" fill="#241947" stroke="' + gold + '" stroke-width="2"/>' +
-    '<path d="M570 600 L608 635 L570 670 Z" fill="#241947" stroke="' + gold + '" stroke-width="2"/>' +
-    '<text x="400" y="645" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-weight="bold" fill="' + gold + '">' + nombre + "</text>" +
-    '<text x="400" y="712" text-anchor="middle" font-family="Arial" font-size="20" letter-spacing="2" font-weight="bold" fill="#ffffff">' + safeXml(rango.toUpperCase()) + "</text>" +
-    '<text x="400" y="745" text-anchor="middle" font-family="Arial" font-size="16" fill="rgba(255,255,255,0.6)">' + rangoObj.pv + "</text>" +
-    '<line x1="336" y1="775" x2="464" y2="775" stroke="' + gold + '" stroke-width="1.5" opacity="0.5"/>' +
-    '<text x="400" y="810" text-anchor="middle" font-family="Arial" font-size="15" fill="rgba(255,255,255,0.55)">Recorrido hacia el éxito con Atomy</text>' +
-    "</svg>";
-
-  svgToPngDownload(svg, 800, 1000, "Cumbre90-" + slugFile(rango) + "-" + slugFile(state.nombre || "socio") + ".png");
+  const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
+  svgToPngDownload(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png");
 }
 
 function downloadCertificado(state) {
