@@ -213,8 +213,9 @@ function mountainHeroSVGMarkup(idSuffix) {
 function heroMountainHTML(overlayHtml) {
   return (
     '<div class="hero-mountain" id="hero-mountain">' +
-    '<div class="hm-layer hm-sharp">' + mountainHeroSVGMarkup("a") + "</div>" +
     '<div class="hm-layer hm-blur">' + mountainHeroSVGMarkup("b") + "</div>" +
+    '<div class="hm-layer hm-sharp">' + mountainHeroSVGMarkup("a") + "</div>" +
+    '<div class="hm-glow"></div>' +
     '<div class="hm-vignette"></div>' +
     '<div class="hm-hint">' + Icon("sparkles", { size: 11, color: "rgba(255,255,255,.85)" }) + " Mueve el cursor para revelar la cima</div>" +
     (overlayHtml || "") +
@@ -368,8 +369,8 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
     '<radialGradient id="medallionGrad" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="' + CARD_GOLD_LIGHT + '"/><stop offset="100%" stop-color="#B8862E"/></radialGradient>' +
     '<linearGradient id="bgMisty" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0A1B33"/><stop offset="55%" stop-color="#153A6B"/><stop offset="100%" stop-color="#1E4E8F"/></linearGradient>' +
     '<linearGradient id="bgRibbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0A0E18"/><stop offset="45%" stop-color="#122040"/><stop offset="75%" stop-color="#1B3B6B"/><stop offset="100%" stop-color="#0D1526"/></linearGradient>' +
-    '<linearGradient id="bgEspecial" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08060F"/><stop offset="50%" stop-color="#1C1430"/><stop offset="100%" stop-color="#0A0712"/></linearGradient>' +
-    '<linearGradient id="bgWinged" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#07050F"/><stop offset="45%" stop-color="#171025"/><stop offset="100%" stop-color="#05040A"/></linearGradient>' +
+    '<linearGradient id="bgEspecial" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#050810"/><stop offset="45%" stop-color="#0E2C52"/><stop offset="75%" stop-color="#164A85"/><stop offset="100%" stop-color="#060E1B"/></linearGradient>' +
+    '<linearGradient id="bgWinged" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#04060D"/><stop offset="45%" stop-color="#0C2440"/><stop offset="75%" stop-color="#123760"/><stop offset="100%" stop-color="#050A14"/></linearGradient>' +
     '<radialGradient id="glowSoft" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="' + CARD_GOLD_LIGHT + '" stop-opacity="0.35"/><stop offset="100%" stop-color="' + CARD_GOLD_LIGHT + '" stop-opacity="0"/></radialGradient>' +
     "</defs>";
 
@@ -399,9 +400,9 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
       '<rect x="16" y="16" width="' + (W - 32) + '" height="' + (H - 32) + '" rx="24" fill="none" stroke="' + CARD_GOLD + '" stroke-width="2.5"/>' +
       '<text x="' + cx + '" y="90" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="15" letter-spacing="5" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE 90</text>' +
       photoCircleSVG(foto, name, cx, 330, 150, CARD_GOLD, 5, true) +
-      '<text x="' + cx + '" y="565" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 6) + '" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(name) + "</text>" +
+      '<text x="' + cx + '" y="565" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 12) + '" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(name) + "</text>" +
       wingedMedallionSVG(cx, 700, 1) +
-      ribbonSVG(cx, 800, 260, 46, "#0A0712", CARD_GOLD, 2, "Sales Master", CARD_GOLD, 20) +
+      ribbonSVG(cx, 805, 320, 56, "#0A0712", CARD_GOLD_LIGHT, 2.5, "Sales Master", CARD_GOLD, 27) +
       (pv ? '<text x="' + cx + '" y="875" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" letter-spacing="1" fill="rgba(255,255,255,0.65)">' + escapeHtml(pv) + "</text>" : "") +
       cardFooterSVG(cx, 955);
   } else {
@@ -413,11 +414,14 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
     const sideLineColor = especial ? CARD_GOLD : (agente ? CARD_GOLD : "rgba(232,185,78,0.55)");
     const sideLineOpacity = especial ? 0.8 : (agente ? 0.6 : 0.4);
     const ribbonFill = especial ? "#12101F" : (agente ? "#1F4E85" : "#2E6FB8");
-    const ribbonStroke = especial ? CARD_GOLD : (agente ? CARD_GOLD : "#BFE0FF");
-    const ribbonStrokeW = especial ? 2.5 : (agente ? 2 : 1.5);
-    const ribbonText = especial ? CARD_GOLD : "#0B1B33";
+    const ribbonStroke = especial ? CARD_GOLD_LIGHT : (agente ? CARD_GOLD_LIGHT : "#BFE0FF");
+    const ribbonStrokeW = especial ? 3 : (agente ? 3 : 1.5);
+    const ribbonText = especial ? CARD_GOLD : (agente ? CARD_GOLD : "#0B1B33");
     const bokehColors = especial ? [CARD_GOLD, "#FFF3D6"] : (agente ? [CARD_GOLD, "#BFE0FF"] : ["#BFE0FF", "#8FC6F0"]);
-    const rankFontSize = rango.length > 20 ? 21 : rango.length > 15 ? 24 : 27;
+    const rankFontSize = especial ? 32 : (agente ? 36 : (rango.length > 20 ? 21 : 27));
+    const ribbonGlow = (agente || especial)
+      ? '<g filter="url(#cardBlur)" opacity="0.6">' + ribbonSVG(cx, 610, 420, 92, "none", CARD_GOLD_LIGHT, 5, "", "transparent", rankFontSize) + "</g>"
+      : "";
 
     body =
       '<rect width="' + W + '" height="' + H + '" fill="' + bgFill + '" rx="30"/>' +
@@ -431,7 +435,8 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
       '<text x="700" y="68" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="14" letter-spacing="2" font-weight="700" fill="' + CARD_CREAM + '" opacity="0.85">ATOMY</text>' +
       '<text x="' + cx + '" y="95" text-anchor="middle" font-family="\'Space Grotesk\', Arial, sans-serif" font-size="15" letter-spacing="5" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE 90</text>' +
       photoCircleSVG(foto, name, cx, 340, 150, ringColor, especial ? 5 : 4, especial) +
-      (especial ? starPathSVG(cx, 522, 14, CARD_GOLD) : (agente ? starPathSVG(cx - 118, 610, 11, CARD_GOLD) : "")) +
+      (especial ? starPathSVG(cx, 522, 14, CARD_GOLD) : (agente ? starPathSVG(cx - 130, 610, 12, CARD_GOLD) : "")) +
+      ribbonGlow +
       ribbonSVG(cx, 610, 420, 92, ribbonFill, ribbonStroke, ribbonStrokeW, rango, ribbonText, rankFontSize) +
       '<text x="' + cx + '" y="730" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + nameSize + '" fill="' + (especial ? CARD_GOLD_LIGHT : CARD_CREAM) + '">' + escapeHtml(name) + "</text>" +
       (pv ? '<text x="' + cx + '" y="772" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="1" fill="rgba(255,255,255,0.6)">' + escapeHtml(pv) + "</text>" : "") +

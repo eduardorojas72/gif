@@ -152,7 +152,7 @@ const QUINCENAS = [
   { n: 3, nombre: "Paso Firme", semanas: "5-6", foco: "Consolidación y seguimiento 48h", detalle: "300.000 PV · seguimiento riguroso a presentados" },
   { n: 4, nombre: "Consejo de Guías", semanas: "7-8", foco: "Consultoría de red", detalle: "Reunión con patrocinador · identificar 2+2 líderes" },
   { n: 5, nombre: "La Gran Duplicación", semanas: "9-10", foco: "Duplicación y ajuste", detalle: "Evaluar organización · intensificar RRSS" },
-  { n: 6, nombre: "Última Ascensión", semanas: "11-12", foco: "Calificación a Sales Master", detalle: "2.500.000 PV Grupales por línea" },
+  { n: 6, nombre: "Última Ascensión", semanas: "11-12", foco: "Calificación a Sales Master", detalle: "5.000.000 PV Grupales por línea" },
 ];
 
 const PREMIOS_DEFECTO = [
@@ -166,7 +166,7 @@ const RANGOS = [
   { nombre: "Representante de Ventas", meta: "10.000 PV personales", pv: "10.000 PVP", tier: 1 },
   { nombre: "Agente", meta: "300.000 PV personales", pv: "300.000 PVP", tier: 2 },
   { nombre: "Agente Especial", meta: "700.000 PV personales", pv: "700.000 PVP", tier: 2 },
-  { nombre: "Sales Master", meta: "2.500.000 PV grupales por línea", pv: "2.500.000 PVG", tier: 3 },
+  { nombre: "Sales Master", meta: "5.000.000 PV grupales por línea", pv: "5.000.000 PVG", tier: 3 },
 ];
 
 const MENSAJE_BIENVENIDA =

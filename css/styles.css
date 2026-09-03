@@ -407,9 +407,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   aspect-ratio: 3 / 4; max-height: 640px;
 }
 .hero-mountain .hm-layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.hero-mountain .hm-sharp { z-index: 1; filter: saturate(1.05); }
-.hero-mountain .hm-blur {
-  z-index: 2; filter: blur(9px) brightness(.62) saturate(.85);
+.hero-mountain .hm-blur { z-index: 1; filter: blur(10px) brightness(.55) saturate(.82); }
+.hero-mountain .hm-sharp {
+  z-index: 2; filter: saturate(1.1) brightness(1.08);
   -webkit-mask-image: radial-gradient(circle 150px, black 62%, transparent 100%);
   mask-image: radial-gradient(circle 150px, black 62%, transparent 100%);
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
@@ -418,20 +418,32 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   mask-position: var(--mx, 50%) var(--my, 38%);
   transition: mask-position .12s linear, -webkit-mask-position .12s linear;
 }
-.hero-mountain .hm-vignette {
+.hero-mountain .hm-glow {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,224,130,0.65) 0%, rgba(255,224,130,0.28) 42%, rgba(255,224,130,0) 72%);
+  background-repeat: no-repeat;
+  background-size: 340px 340px;
+  background-position: var(--mx, 50%) var(--my, 38%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity .35s ease, background-position .12s linear;
+}
+.hero-mountain.hm-active .hm-glow { opacity: 1; }
+.hero-mountain .hm-vignette {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
   background: linear-gradient(180deg, rgba(10,7,22,0) 45%, rgba(10,7,22,0.75) 100%);
 }
 .hero-mountain .hm-hint {
-  position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 4;
+  position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 5;
   font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   color: rgba(255,255,255,0.8); background: rgba(0,0,0,0.4); padding: 5px 11px; border-radius: 999px;
   pointer-events: none; opacity: 1; transition: opacity .4s ease; white-space: nowrap;
 }
 .hero-mountain.hm-active .hm-hint { opacity: 0; }
 @media (hover: none), (pointer: coarse) {
-  .hero-mountain .hm-blur { -webkit-mask-image: none; mask-image: none; opacity: 0; }
-  .hero-mountain .hm-hint { display: none; }
+  .hero-mountain .hm-sharp { -webkit-mask-image: none; mask-image: none; }
+  .hero-mountain .hm-blur { opacity: 0; }
+  .hero-mountain .hm-glow, .hero-mountain .hm-hint { display: none; }
 }
 
 /* premios / campamentos — tarjetas "de mundo" */
