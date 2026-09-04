@@ -7,6 +7,7 @@ const MENU_ITEMS = [
   { id: "home", label: "Inicio", icon: "home" },
   { id: "perfil", label: "Mi Perfil", icon: "user-badge" },
   { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
+  { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
   { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
   { id: "premios", label: "Premios", icon: "gift" },
@@ -125,19 +126,44 @@ function getReminders(state) {
   const out = [];
   const inact = diasInactivo(state.ultimaFecha);
   if (inact >= 2) {
-    out.push("Llevas " + inact + " días sin avanzar. Retoma tu recorrido cuando puedas — cada paso cuenta.");
+    out.push({ text: "Llevas " + inact + " días sin avanzar. Retoma tu recorrido cuando puedas — cada paso cuenta." });
   }
   const llamada = state.dias[5] && state.dias[5].fields && state.dias[5].fields.llamada;
   if (llamada && llamada.trim()) {
-    out.push("Recuerda tu llamada semanal con tu mentor: " + llamada.trim() + ".");
+    out.push({ text: "Recuerda tu llamada semanal con tu mentor: " + llamada.trim() + "." });
   }
+  const hoy = hoyISO();
+  (state.contactos || []).forEach(function (c) {
+    if (c.proximoSeguimiento && c.proximoSeguimiento <= hoy && c.estado !== "Descartado") {
+      const vencido = c.proximoSeguimiento < hoy;
+      out.push({
+        text: (vencido ? "Seguimiento vencido: " : "Seguimiento hoy: ") + c.nombre + (c.notaSeguimiento ? " — " + c.notaSeguimiento : ""),
+        telefono: c.telefono,
+        contactoId: c.id,
+      });
+    }
+  });
   return out;
 }
 
 function renderBellPanel(state) {
   const reminders = getReminders(state);
   const body = reminders.length
-    ? reminders.map(function (r) { return '<div class="row gap-2" style="align-items:flex-start;text-align:left;padding:10px 0;border-top:1px solid var(--border)">' + Icon("bell", { size: 15, color: "var(--accent)" }) + '<span class="small" style="color:var(--text)">' + escapeHtml(r) + "</span></div>"; }).join("")
+    ? reminders.map(function (r) {
+        const waBtn = r.telefono
+          ? '<a class="icon-btn" style="flex-shrink:0" href="' + waHrefPersonal(r.telefono) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+          : "";
+        return (
+          '<div class="row gap-2" style="align-items:flex-start;text-align:left;padding:10px 0;border-top:1px solid var(--border)">' +
+          Icon("bell", { size: 15, color: "var(--accent)" }) +
+          '<span class="small" style="color:var(--text);flex:1">' + escapeHtml(r.text) + "</span>" +
+          waBtn +
+          "</div>"
+        );
+      }).join("") +
+      (reminders.some(function (r) { return r.contactoId; })
+        ? '<button class="link-btn small" style="margin-top:8px" data-action="goto" data-arg="contactos">Ver Lista de 250 →</button>'
+        : "")
     : '<p class="muted small" style="margin-top:8px">Todo al día — no tienes recordatorios pendientes.</p>';
   return (
     '<div class="modal-overlay">' +
@@ -168,15 +194,16 @@ function renderCelebracionModal(rangoIndex, state) {
 /* ---------------- Home ---------------- */
 
 function renderHome(state) {
+  const quincenasMap = derivarQuincenas(state);
   const etapasHechas = DIAS.filter(function (d) { return state.dias[d.id].done; }).length;
-  const campamentosHechos = Object.values(state.quincenas).filter(Boolean).length;
+  const campamentosHechos = Object.values(quincenasMap).filter(Boolean).length;
   const totalPasos = DIAS.length + QUINCENAS.length;
   const pctGeneral = Math.round(((etapasHechas + campamentosHechos) / totalPasos) * 100);
   const cumbreLograda = campamentosHechos === QUINCENAS.length;
 
   const nextEtapa = DIAS.find(function (d) { return !state.dias[d.id].done; });
-  const nextCampamento = QUINCENAS.find(function (q) { return !state.quincenas[q.n]; });
-  const nextPremioIdx = state.premios.findIndex(function (_, i) { return !state.quincenas[i + 1]; });
+  const nextCampamento = QUINCENAS.find(function (q) { return !quincenasMap[q.n]; });
+  const nextPremioIdx = state.premios.findIndex(function (_, i) { return !quincenasMap[i + 1]; });
 
   const proximos = [];
   if (nextEtapa) {
@@ -233,9 +260,10 @@ function renderHome(state) {
 
     proximosHtml +
 
-    mountainSceneHTML(state.quincenas, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
+    mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
 
     '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Los 8 Pasos al Éxito</div><div class="nc-desc">Tu referencia permanente</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 Contactos</div><div class="nc-desc">' + (state.contactos || []).length + ' registrados · agenda seguimientos</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Arranque — 6 Días</div><div class="nc-desc">Recorre tu mapa día a día</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premios de tu patrocinador</div><div class="nc-desc">Consulta lo que puedes ganar</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
 
@@ -311,6 +339,19 @@ function renderDiaDetalle(state, diaId) {
 
   const nota = dia.nota ? '<div class="card" style="background:var(--accent-soft);border:none;font-size:14px;line-height:1.55">' + escapeHtml(dia.nota) + "</div>" : "";
 
+  const contenido = (dia.contenido || []).length
+    ? '<div class="view-stack gap-sm">' +
+      (dia.contenido || []).map(function (sec) {
+        return (
+          '<div class="card">' +
+          '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>" +
+          sec.body.map(function (p) { return '<p class="muted small" style="line-height:1.55;margin-top:6px">' + escapeHtml(p) + "</p>"; }).join("") +
+          "</div>"
+        );
+      }).join("") +
+      "</div>"
+    : "";
+
   const campos = dia.campos.length
     ? '<div class="view-stack gap-sm">' +
       dia.campos.map(function (c) {
@@ -363,7 +404,7 @@ function renderDiaDetalle(state, diaId) {
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(dia.titulo) + "</p>" +
     '<p class="muted" style="font-size:13.5px;margin-top:6px;font-style:italic">' + escapeHtml(dia.objetivo) + "</p>" +
     "</div>" +
-    nota + campos +
+    nota + contenido + campos +
     '<div class="card">' +
     '<div class="row gap-2" style="font-weight:600;font-size:14px;margin-bottom:12px">' + Icon("sparkles", { size: 15, color: "var(--gold)" }) + " Pregunta rápida de repaso</div>" +
     '<div style="font-size:14px;margin-bottom:12px">' + escapeHtml(dia.quiz.pregunta) + "</div>" +
@@ -378,16 +419,17 @@ function renderDiaDetalle(state, diaId) {
 /* ---------------- Plan 90 días ---------------- */
 
 function renderPlan90(state) {
-  const campamentosHechos = Object.values(state.quincenas).filter(Boolean).length;
+  const quincenasMap = derivarQuincenas(state);
+  const campamentosHechos = Object.values(quincenasMap).filter(Boolean).length;
   const cumbreLograda = campamentosHechos === QUINCENAS.length;
   const tiles = QUINCENAS.map(function (q, idx) {
-    const done = state.quincenas[q.n];
+    const done = quincenasMap[q.n];
     const premio = state.premios[idx];
     const premioHtml = premio
       ? '<div class="badge soft" style="margin-top:8px">' + Icon("gift", { size: 11 }) + " " + escapeHtml(premio.premio) + "</div>"
       : "";
     return (
-      '<button class="tile card-hover' + (done ? " unlocked" : "") + '" data-action="toggle-quincena" data-arg="' + q.n + '">' +
+      '<button class="tile card-hover' + (done ? " unlocked" : "") + '" data-action="open-quincena" data-arg="' + q.n + '">' +
       gemCornersHTML() +
       '<div style="position:relative">' + campMedallionHTML(q.n, done) +
       '<div class="badge ' + (done ? "gold" : "dark") + '" style="position:absolute;top:8px;right:8px">' + (done ? "Completado" : "Sem. " + q.semanas) + "</div>" +
@@ -402,17 +444,62 @@ function renderPlan90(state) {
     : "";
 
   return sectionHeaderHTML("Plan de 90 Días", "Tu ruta hacia el rango Sales Master, quincena a quincena.", "mountain-flag") +
-    mountainSceneHTML(state.quincenas, cumbreLograda, 170) +
+    mountainSceneHTML(quincenasMap, cumbreLograda, 170) +
     '<div class="grid-2">' + tiles + "</div>" +
     banner;
+}
+
+function renderQuincenaDetalle(state, qn) {
+  const q = QUINCENAS.find(function (x) { return x.n === qn; });
+  const semanas = SEMANAS.filter(function (s) { return s.q === qn; });
+  const qDone = semanas.every(function (s) { return state.semanas[s.n] && state.semanas[s.n].done; });
+
+  const semanasHtml = semanas.map(function (s) {
+    const est = state.semanas[s.n];
+    const allChecked = est.checks.every(Boolean);
+    const checklist = s.acciones.map(function (a, i) {
+      const on = est.checks[i];
+      return (
+        '<div class="check-row" style="padding-bottom:2px">' +
+        (i < s.acciones.length - 1 ? '<div class="line' + (on ? " on" : "") + '"></div>' : "") +
+        '<button class="check-dot' + (on ? " on" : "") + '" data-action="toggle-semana-check" data-week="' + s.n + '" data-arg="' + i + '">' + (on ? Icon("check", { size: 15, color: "#fff" }) : (i + 1)) + "</button>" +
+        '<button class="check-label' + (on ? " on" : "") + '" data-action="toggle-semana-check" data-week="' + s.n + '" data-arg="' + i + '">' + escapeHtml(a) + "</button>" +
+        "</div>"
+      );
+    }).join("");
+    const finishLabel = est.done ? "Semana completada " + Icon("check", { size: 16, color: "#fff" }) : "Marcar semana completada";
+    const finishStyle = est.done ? "background:var(--success)" : (allChecked ? "" : "background:var(--border);opacity:.55");
+    return (
+      '<div class="card">' +
+      '<div class="row between"><span style="font-weight:700;font-size:14px">Semana ' + s.n + "</span>" + (est.done ? '<span class="badge success">Completada</span>' : "") + "</div>" +
+      '<div class="muted small" style="margin-top:6px">Meta de PV: <b style="color:var(--text)">' + escapeHtml(s.metaPV) + "</b></div>" +
+      '<div class="muted small">Meta de contactos: <b style="color:var(--text)">' + escapeHtml(s.metaContactos) + "</b></div>" +
+      '<div class="muted small" style="margin-top:2px;font-style:italic">' + escapeHtml(s.paso) + "</div>" +
+      '<div style="margin-top:12px">' + checklist + "</div>" +
+      '<button class="btn-primary" style="margin-top:14px;' + finishStyle + '" ' + (!allChecked || est.done ? "disabled" : "") + ' data-action="finish-semana" data-arg="' + s.n + '">' + finishLabel + "</button>" +
+      "</div>"
+    );
+  }).join("");
+
+  return (
+    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-quincenas">' + Icon("chevron-left", { size: 16 }) + " Plan de 90 días</button>" +
+    "<div>" +
+    '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Quincena ' + q.n + " · Semanas " + q.semanas + "</div>" +
+    '<h2 style="font-size:18px;font-weight:700;margin-top:2px">' + escapeHtml(q.nombre) + "</h2>" +
+    '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(q.foco) + "</p>" +
+    "</div>" +
+    semanasHtml +
+    (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "")
+  );
 }
 
 /* ---------------- Premios del patrocinador ---------------- */
 
 function renderPremios(state) {
+  const quincenasMap = derivarQuincenas(state);
   const desc = state.mentorMode ? "Modo patrocinador: edita los premios de tu equipo." : "Esto es lo que puedes ganar por tus logros.";
   const tiles = state.premios.map(function (p, i) {
-    const desbloqueado = !!state.quincenas[i + 1];
+    const desbloqueado = !!quincenasMap[i + 1];
     const media = p.imagen ? '<img src="' + p.imagen + '" alt="' + escapeHtml(p.premio) + '"/>' : Icon("gift", { size: 30, color: "#fff" });
     const uploadBtn = state.mentorMode
       ? '<label class="icon-btn" style="position:absolute;bottom:8px;right:8px;width:28px;height:28px;border-radius:999px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer">' +
@@ -503,16 +590,17 @@ function logroChipHTML(titulo, hecho, iconName, imagen) {
 }
 
 function renderLogros(state) {
+  const quincenasMap = derivarQuincenas(state);
   const etapasHechas = DIAS.filter(function (d) { return state.dias[d.id].done; }).length;
-  const campamentosHechos = Object.values(state.quincenas).filter(Boolean).length;
-  const premiosDesbloqueados = state.premios.filter(function (_, i) { return state.quincenas[i + 1]; }).length;
+  const campamentosHechos = Object.values(quincenasMap).filter(Boolean).length;
+  const premiosDesbloqueados = state.premios.filter(function (_, i) { return quincenasMap[i + 1]; }).length;
   const cumbreLograda = campamentosHechos === QUINCENAS.length;
   const totalLogros = DIAS.length + QUINCENAS.length + state.premios.length + 1;
   const logrosHechos = etapasHechas + campamentosHechos + premiosDesbloqueados + (cumbreLograda ? 1 : 0);
 
   const etapas = DIAS.map(function (d) { return logroChipHTML(d.etapa, state.dias[d.id].done, d.icono); }).join("");
-  const camps = QUINCENAS.map(function (q) { return logroChipHTML(q.nombre, !!state.quincenas[q.n], "tent"); }).join("");
-  const premios = state.premios.map(function (p, i) { return logroChipHTML(p.premio, !!state.quincenas[i + 1], "gift", p.imagen); }).join("");
+  const camps = QUINCENAS.map(function (q) { return campLogroChipHTML(q.nombre, !!quincenasMap[q.n]); }).join("");
+  const premios = state.premios.map(function (p, i) { return logroChipHTML(p.premio, !!quincenasMap[i + 1], "gift", p.imagen); }).join("");
 
   return sectionHeaderHTML("Panel de Logros", logrosHechos + " de " + totalLogros + " hitos conquistados", "award") +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapas del Plan de 6 Días</div><div class="grid-3">' + etapas + "</div></div>" +
@@ -565,5 +653,119 @@ function renderAjustes(state, ui) {
     whatsappField +
     notifRow +
     '<button class="btn-secondary" style="border-color:var(--warn);color:var(--warn)" data-action="reset-progress">' + Icon("rotate-ccw", { size: 16 }) + " " + resetLabel + "</button>"
+  );
+}
+
+/* ---------------- Lista de 250 Contactos (CRM) ---------------- */
+
+function contactoNivelBadge(nivel) {
+  const cls = nivel === "Caliente" ? "warn" : nivel === "Tibio" ? "gold" : "soft";
+  return '<span class="badge ' + cls + '">' + escapeHtml(nivel) + "</span>";
+}
+
+function renderContactos(state, ui) {
+  const contactos = state.contactos || [];
+  const filtro = ui.contactoFiltro || "todos";
+  const hoy = hoyISO();
+
+  const counts = { Caliente: 0, Tibio: 0, "Frío": 0 };
+  contactos.forEach(function (c) { if (counts[c.nivel] != null) counts[c.nivel]++; });
+
+  const filterBtns = ["todos"].concat(CONTACTO_NIVELES).map(function (f) {
+    const active = filtro === f;
+    const label = f === "todos" ? "Todos · " + contactos.length : f + " · " + counts[f];
+    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="filter-contactos" data-arg="' + f + '">' + label + "</button>";
+  }).join(" ");
+
+  const filtered = filtro === "todos" ? contactos : contactos.filter(function (c) { return c.nivel === filtro; });
+  const sorted = filtered.slice().sort(function (a, b) {
+    const av = a.proximoSeguimiento || "9999-99-99";
+    const bv = b.proximoSeguimiento || "9999-99-99";
+    if (av !== bv) return av < bv ? -1 : 1;
+    return (a.nombre || "").localeCompare(b.nombre || "");
+  });
+
+  const rows = sorted.length
+    ? sorted.map(function (c) {
+        const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
+        const esHoy = c.proximoSeguimiento === hoy;
+        const fechaTxt = c.proximoSeguimiento ? (vencido ? "Vencido · " : esHoy ? "Hoy · " : "") + c.proximoSeguimiento : "Sin seguimiento";
+        const fechaColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
+        const waLink = c.telefono
+          ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
+          : "";
+        return (
+          '<div class="card contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
+          '<div class="row between" style="align-items:flex-start">' +
+          '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre) + "</div>" +
+          '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono || "Sin teléfono") + (c.pais ? " · " + escapeHtml(c.pais) : "") + "</div></div>" +
+          contactoNivelBadge(c.nivel) +
+          "</div>" +
+          '<div class="row between" style="margin-top:10px;align-items:center">' +
+          '<span class="small" style="font-weight:600">' + escapeHtml(c.estado) + "</span>" +
+          '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
+          "</div>" +
+          (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(c.notaSeguimiento) + '”</div>' : "") +
+          '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="7">+1 sem</button>' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="30">+1 mes</button>' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="60">+2 meses</button>' +
+          waLink +
+          '<button class="icon-btn" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
+          "</div>" +
+          "</div>"
+        );
+      }).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos registrados. Toca “+ Nuevo contacto” para empezar tu Lista de 250.</p>';
+
+  return (
+    sectionHeaderHTML("Lista de 250 Contactos", contactos.length + " de 250 registrados", "users") +
+    '<input id="contacto-search" type="text" placeholder="Buscar por nombre o teléfono..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
+    '<button class="btn-primary" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Nuevo contacto</button>" +
+    '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function renderContactoModal(ui) {
+  const d = ui.contactoDraft;
+  if (!d) return "";
+  const editing = !!ui.contactoEditId;
+  const nivelOpts = CONTACTO_NIVELES.map(function (n) { return '<option value="' + n + '"' + (d.nivel === n ? " selected" : "") + ">" + n + "</option>"; }).join("");
+  const estadoOpts = CONTACTO_ESTADOS.map(function (s) { return '<option value="' + s + '"' + (d.estado === s ? " selected" : "") + ">" + s + "</option>"; }).join("");
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-contacto" data-arg="' + ui.contactoEditId + '">' +
+      (ui.confirmDeleteContacto === ui.contactoEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar contacto") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-contacto"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar contacto" : "Nuevo contacto") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-contacto">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+34 600 000 000"></div>' +
+    '<div class="field" style="flex:1"><label>País</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="País"></div>' +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Nivel</label><select data-draft-field="nivel" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + nivelOpts + "</select></div>" +
+    '<div class="field" style="flex:1"><label>Estado</label><select data-draft-field="estado" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + estadoOpts + "</select></div>" +
+    "</div>" +
+    '<div class="field"><label>Notas</label><textarea rows="2" data-draft-field="notas" placeholder="Cómo lo conociste, intereses...">' + escapeHtml(d.notas) + "</textarea></div>" +
+    '<div class="field"><label>Próximo seguimiento</label><input type="date" data-draft-field="proximoSeguimiento" value="' + (d.proximoSeguimiento || "") + '"></div>' +
+    '<div class="row gap-2">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="7">+1 semana</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="30">+1 mes</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="60">+2 meses</button>' +
+    "</div>" +
+    '<div class="field"><label>Nota de seguimiento</label><input type="text" data-draft-field="notaSeguimiento" value="' + escapeHtml(d.notaSeguimiento || "") + '" placeholder="Ej. Llamar para preguntar por su decisión"></div>' +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto">Guardar contacto</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto">Cancelar</button>' +
+    "</div></div>"
   );
 }

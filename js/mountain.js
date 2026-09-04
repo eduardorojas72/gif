@@ -18,11 +18,12 @@ function medallionHTML(iconName, size, iconColor) {
   );
 }
 
-/* Medallón "Los 8 Pasos": círculo azul oscuro con la silueta de un pie
-   en contorno dorado, y dentro el icono propio de ese paso. */
+/* Medallón "Los 8 Pasos": círculo azul oscuro con la silueta sólida de dos
+   pies dorados (icono plano, bien perfilado), y encima el icono propio de
+   ese paso en blanco. */
 function pasoMedallionHTML(themeIconName, size) {
   size = size || 68;
-  const footSize = Math.round(size * 0.72);
+  const footSize = Math.round(size * 0.62);
   const themeSize = Math.round(size * 0.3);
   const diamonds =
     '<span class="diamond d-top"></span><span class="diamond d-bottom"></span>' +
@@ -30,9 +31,9 @@ function pasoMedallionHTML(themeIconName, size) {
   return (
     '<div class="medallion blue" style="width:' + size + 'px;height:' + size + 'px">' +
     '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">' +
-    Icon("footprint-outline", { size: footSize, color: "var(--gold)", stroke: 1.4 }) +
+    Icon("footprints", { size: footSize, color: "var(--gold)" }) +
     "</span>" +
-    '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:' + Math.round(size * 0.08) + 'px">' +
+    '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:' + Math.round(size * 0.05) + 'px">' +
     Icon(themeIconName, { size: themeSize, color: "#fff", stroke: 1.9 }) +
     "</span>" +
     diamonds +
@@ -40,16 +41,16 @@ function pasoMedallionHTML(themeIconName, size) {
   );
 }
 
-/* Medallón de cabecera "Los 8 Pasos al Éxito": dos pies en contorno dorado. */
+/* Medallón de cabecera "Los 8 Pasos al Éxito": dos pies dorados sólidos, más grandes. */
 function pasosHeaderMedallionHTML(size) {
   size = size || 64;
-  const iconSize = Math.round(size * 0.48);
+  const iconSize = Math.round(size * 0.58);
   const diamonds =
     '<span class="diamond d-top"></span><span class="diamond d-bottom"></span>' +
     '<span class="diamond d-left"></span><span class="diamond d-right"></span>';
   return (
     '<div class="medallion blue" style="width:' + size + 'px;height:' + size + 'px">' +
-    Icon("footprints-outline", { size: iconSize, color: "var(--gold)", stroke: 1.4 }) +
+    Icon("footprints", { size: iconSize, color: "var(--gold)" }) +
     diamonds +
     "</div>"
   );
@@ -222,6 +223,11 @@ function mountainHeroSVGMarkup(idSuffix) {
     '<rect x="0" y="668" width="600" height="2" fill="#EAF4FF" opacity="0.16"/>' +
     '<rect x="0" y="712" width="600" height="2" fill="#EAF4FF" opacity="0.12"/>' +
     '<rect x="0" y="758" width="600" height="2" fill="#EAF4FF" opacity="0.1"/>' +
+    /* cabaña con ventanas encendidas junto a la orilla */
+    '<circle cx="205" cy="592" r="34" fill="#F0C468" opacity="0.16"/>' +
+    '<path d="M182 606 L182 578 L205 560 L228 578 L228 606 Z" fill="#040A16"/>' +
+    '<rect x="192" y="586" width="10" height="10" fill="#F6D98A" opacity="0.92"/>' +
+    '<rect x="210" y="586" width="10" height="10" fill="#F6D98A" opacity="0.92"/>' +
     /* orilla + senderistas */
     '<path d="M-20 800 L-20 730 Q160 690 300 715 Q440 738 640 700 L640 800 Z" fill="#040A16"/>' +
     '<g fill="#03050A">' +
@@ -245,17 +251,52 @@ function heroMountainHTML(overlayHtml) {
   );
 }
 
-function campMedallionHTML(n, desbloqueado) {
-  const bg = desbloqueado
-    ? "radial-gradient(circle at 30% 25%, var(--gold), var(--accent) 55%, var(--text) 100%)"
-    : "radial-gradient(circle at 30% 25%, var(--accent-soft), var(--accent) 70%)";
+/* Mini escena de montaña nocturna (cielo azul + luna + estrellas + silueta
+   de picos) — usada como fondo compartido en las tarjetas de las 6
+   quincenas del Plan 90 y en las insignias de "6 conquistas" de Logros. */
+function campMountainBadgeSVG(dim) {
+  const gid = "cb" + Math.random().toString(36).slice(2, 8);
+  const stars = [];
+  for (let i = 0; i < 12; i++) {
+    stars.push([(i * 23.7) % 100, (i * 17.3) % 42, 0.5 + (i % 3) * 0.3]);
+  }
   return (
-    '<div class="tile-media" style="background:' + bg + ';opacity:' + (desbloqueado ? 1 : 0.85) + '">' +
-    '<svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;opacity:.35">' +
-    '<path d="M0 100 L25 55 L45 78 L65 40 L85 70 L100 55 L100 100 Z" fill="#fff"/></svg>' +
-    Icon("tent", { size: 32, color: "#fff", stroke: 1.7 }) +
+    '<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;' + (dim ? "filter:grayscale(.35);opacity:.7" : "") + '">' +
+    '<defs><linearGradient id="sky' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#04070F"/><stop offset="55%" stop-color="#0E3358"/><stop offset="100%" stop-color="#1F5E90"/>' +
+    "</linearGradient></defs>" +
+    '<rect width="100" height="100" fill="url(#sky' + gid + ')"/>' +
+    stars.map(function (s) { return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity="0.85"/>'; }).join("") +
+    '<circle cx="18" cy="16" r="7" fill="#EAF4FF" opacity="0.9"/>' +
+    '<path d="M0 68 L14 46 L26 58 L40 34 L52 50 L66 30 L80 52 L92 42 L100 60 L100 100 L0 100 Z" fill="#0A1B33"/>' +
+    '<path d="M0 78 L18 58 L34 70 L50 48 L64 66 L82 52 L100 72 L100 100 L0 100 Z" fill="#050C18"/>' +
+    '<rect x="0" y="88" width="100" height="12" fill="#0B2038"/>' +
+    '<rect x="0" y="88" width="100" height="1.4" fill="#EAF4FF" opacity="0.25"/>' +
+    "</svg>"
+  );
+}
+
+function campMedallionHTML(n, desbloqueado) {
+  return (
+    '<div class="tile-media">' +
+    campMountainBadgeSVG(!desbloqueado) +
+    '<div style="position:absolute;inset:0;background:' + (desbloqueado ? "linear-gradient(180deg, rgba(10,27,51,0) 45%, rgba(10,27,51,.2) 100%)" : "rgba(5,10,20,.5)") + '"></div>' +
+    Icon("tent", { size: 30, color: "#fff", stroke: 1.7 }) +
     '<div style="position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:999px;background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">' + n + "</div>" +
     "</div>"
+  );
+}
+
+/* Insignia de logro para las 6 quincenas ("6 conquistas"), con la misma
+   mini escena de montaña de fondo. */
+function campLogroChipHTML(titulo, hecho) {
+  const flag = hecho ? '<div class="flag">' + Icon("check", { size: 11, color: "#fff" }) + "</div>" : "";
+  return (
+    '<div class="logro-chip' + (hecho ? " on" : "") + '">' +
+    '<div class="logro-badge' + (hecho ? " on" : "") + '" style="background:none">' +
+    campMountainBadgeSVG(!hecho) + flag +
+    "</div>" +
+    '<span class="lc-label">' + escapeHtml(titulo) + "</span></div>"
   );
 }
 

@@ -49,6 +49,7 @@ const ICON_PATHS = {
   "trail-map": '<path d="M3 5v15l6-2.5 6 2.5 6-2.5V2l-6 2.5-6-2.5L3 5Z"/><path d="M9 2.5v15"/><path d="M15 4.5v15"/><circle cx="6.2" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="8" r="1" fill="currentColor" stroke="none"/><path d="M6.2 8.5 12 12.5l6-4.5" stroke-dasharray="1.5 2.5"/>',
   "mountain-flag": '<path d="M2 20 9 8 12.5 14 15.5 9.5 22 20H2Z"/><path d="M15.5 9.5V3"/><path d="M15.5 3 20 5 15.5 6.8Z" fill="currentColor" stroke="none"/>',
   "user-badge": '<circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.5-4 4.2-6 7.5-6s6 2 7.5 6"/>',
+  edit: '<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-4-4L4 16v4Z"/><line x1="13.5" y1="6.5" x2="17.5" y2="10.5"/>',
 };
 
 function Icon(name, opts) {

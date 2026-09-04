@@ -10,16 +10,25 @@ function waHref(numero) {
   return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi recorrido en Cumbre 90");
 }
 
+function waHrefPersonal(numero, nombre) {
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
+}
+
 const App = {
   state: null,
   ui: {
     view: "welcome",
     menuOpen: false,
     activeDay: null,
+    activeQuincena: null,
     bellOpen: false,
     celebracionRango: null,
     confirmReset: false,
     onboardingFoto: null,
+    contactoDraft: null,
+    contactoEditId: null,
+    contactoFiltro: "todos",
+    confirmDeleteContacto: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -41,7 +50,27 @@ const App = {
     applyTheme(st.dark);
     this.bindEvents();
     this.render();
+    this.notifyReminders();
     registerServiceWorker();
+  },
+
+  notifyReminders() {
+    if (!("Notification" in window)) return;
+    if (!this.state.notifOn || Notification.permission !== "granted") return;
+    const hoy = hoyISO();
+    if (this.state.notifUltimoAviso === hoy) return;
+    const reminders = getReminders(this.state);
+    if (!reminders.length) return;
+    this.state.notifUltimoAviso = hoy;
+    this.persist(true);
+    try {
+      const primero = reminders[0];
+      new Notification("Cumbre 90 — Recordatorio", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      });
+    } catch (e) {
+      /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+    }
   },
 
   persist(immediate) {
@@ -98,8 +127,9 @@ const App = {
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
       case "pasos": mainHtml = renderPasos(); break;
+      case "contactos": mainHtml = renderContactos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
-      case "plan90": mainHtml = renderPlan90(state); break;
+      case "plan90": mainHtml = ui.activeQuincena ? renderQuincenaDetalle(state, ui.activeQuincena) : renderPlan90(state); break;
       case "premios": mainHtml = renderPremios(state); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "logros": mainHtml = renderLogros(state); break;
@@ -115,6 +145,7 @@ const App = {
 
     let modalHtml = "";
     if (ui.celebracionRango !== null) modalHtml = renderCelebracionModal(ui.celebracionRango, state);
+    else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
 
@@ -157,6 +188,16 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
+      } else if (el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
+        // formulario de contacto (App.ui.contactoDraft): tampoco re-renderiza, para no perder el foco
+        setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
+      } else if (el.id === "contacto-search") {
+        // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
+        const q = el.value.trim().toLowerCase();
+        document.querySelectorAll(".contact-row").forEach((row) => {
+          const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
+          row.classList.toggle("hidden", !match);
+        });
       }
     });
 
@@ -182,6 +223,10 @@ const App = {
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
+        setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
+        return;
+      }
       if (el.type === "file" && el.dataset && el.dataset.target) {
         const file = el.files && el.files[0];
         if (!file) return;
@@ -288,19 +333,39 @@ const Actions = {
     App.showToast("Tarjeta lista para compartir ✨");
   },
 
-  "toggle-quincena": function (arg) {
-    const n = Number(arg);
-    const totalAntes = Object.values(App.state.quincenas).filter(Boolean).length;
-    const next = !App.state.quincenas[n];
-    App.state.quincenas[n] = next;
-    if (next) {
-      App.celebrate();
-      const camp = QUINCENAS.find((q) => q.n === n);
-      App.addActividad("Conquistaste el Campamento: " + camp.nombre);
-    }
-    const totalDespues = Object.values(App.state.quincenas).filter(Boolean).length;
-    if (totalDespues === QUINCENAS.length && totalAntes !== QUINCENAS.length && !App.state.codigoCumbre) {
-      App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+  "open-quincena": function (arg) { App.ui.activeQuincena = Number(arg); App.render(); },
+  "back-to-quincenas": function () { App.ui.activeQuincena = null; App.render(); },
+
+  "toggle-semana-check": function (arg, el) {
+    const weekN = Number(el.dataset.week);
+    const idx = Number(arg);
+    const est = App.state.semanas[weekN];
+    est.checks[idx] = !est.checks[idx];
+    App.persist(true);
+    App.render();
+  },
+
+  "finish-semana": function (arg) {
+    const weekN = Number(arg);
+    const est = App.state.semanas[weekN];
+    if (est.done) return;
+    est.done = true;
+    const semana = SEMANAS.find((s) => s.n === weekN);
+    App.addActividad("Completaste la Semana " + weekN + " (" + semana.paso + ")");
+    App.celebrate();
+
+    const q = QUINCENAS.find((qq) => qq.n === semana.q);
+    const semanasQ = SEMANAS.filter((s) => s.q === q.n);
+    const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
+    if (quincenaCompleta) {
+      App.addActividad("Conquistaste el Campamento: " + q.nombre);
+      const totalCompletas = QUINCENAS.filter((qq2) => {
+        const sqs = SEMANAS.filter((s) => s.q === qq2.n);
+        return sqs.every((s) => App.state.semanas[s.n].done);
+      }).length;
+      if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
+        App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+      }
     }
     App.persist(true);
     App.render();
@@ -366,6 +431,80 @@ const Actions = {
   "close-celebracion-ver": function () {
     App.ui.celebracionRango = null;
     App.ui.view = "perfil";
+    App.render();
+  },
+
+  "add-contacto": function () {
+    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
+    App.ui.contactoEditId = null;
+    App.render();
+  },
+
+  "edit-contacto": function (arg) {
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c) return;
+    App.ui.contactoDraft = Object.assign({}, c);
+    App.ui.contactoEditId = arg;
+    App.ui.confirmDeleteContacto = null;
+    App.render();
+  },
+
+  "cancel-contacto": function () {
+    App.ui.contactoDraft = null;
+    App.ui.contactoEditId = null;
+    App.ui.confirmDeleteContacto = null;
+    App.render();
+  },
+
+  "save-contacto": function () {
+    const d = App.ui.contactoDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    if (App.ui.contactoEditId) {
+      const idx = App.state.contactos.findIndex((x) => x.id === App.ui.contactoEditId);
+      if (idx !== -1) App.state.contactos[idx] = Object.assign({}, App.state.contactos[idx], d);
+    } else {
+      App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO() }, d));
+    }
+    App.ui.contactoDraft = null;
+    App.ui.contactoEditId = null;
+    App.persist(true);
+    App.showToast("Contacto guardado");
+    App.render();
+  },
+
+  "delete-contacto": function (arg) {
+    if (App.ui.confirmDeleteContacto !== arg) {
+      App.ui.confirmDeleteContacto = arg;
+      App.render();
+      return;
+    }
+    App.state.contactos = App.state.contactos.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteContacto = null;
+    App.ui.contactoDraft = null;
+    App.ui.contactoEditId = null;
+    App.persist(true);
+    App.showToast("Contacto eliminado");
+    App.render();
+  },
+
+  "quick-seguimiento": function (arg, el) {
+    const dias = Number(el.dataset.days);
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c) return;
+    c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
+    App.persist(true);
+    App.showToast("Seguimiento programado");
+    App.render();
+  },
+
+  "quick-draft-seguimiento": function (arg) {
+    if (!App.ui.contactoDraft) return;
+    App.ui.contactoDraft.proximoSeguimiento = addDiasISO(hoyISO(), Number(arg));
+    App.render();
+  },
+
+  "filter-contactos": function (arg) {
+    App.ui.contactoFiltro = arg;
     App.render();
   },
 };

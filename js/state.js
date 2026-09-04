@@ -9,6 +9,11 @@ function emptyDayState(diaId) {
   return { done: false, quizOk: false, quizSel: null, fields: {}, checks: dia.checklist.map(() => false) };
 }
 
+function emptySemanaState(n) {
+  const semana = SEMANAS.find((s) => s.n === n);
+  return { done: false, checks: semana.acciones.map(() => false) };
+}
+
 function defaultState() {
   return {
     onboarded: false,
@@ -23,13 +28,33 @@ function defaultState() {
     premios: PREMIOS_DEFECTO.map((p) => ({ ...p })),
     mentorMode: false,
     notifOn: true,
+    notifUltimoAviso: null,
     dias: DIAS.reduce((acc, d) => ({ ...acc, [d.id]: emptyDayState(d.id) }), {}),
-    quincenas: QUINCENAS.reduce((acc, q) => ({ ...acc, [q.n]: false }), {}),
+    semanas: SEMANAS.reduce((acc, s) => ({ ...acc, [s.n]: emptySemanaState(s.n) }), {}),
+    contactos: [],
   };
 }
 
 function hoyISO() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function addDiasISO(baseISO, dias) {
+  const d = new Date(baseISO + "T00:00:00");
+  d.setDate(d.getDate() + dias);
+  return d.toISOString().slice(0, 10);
+}
+
+/* Deriva el mapa {1:bool,...,6:bool} de quincenas completadas a partir de
+   las 12 semanas (una quincena está completa cuando sus 2 semanas lo están).
+   Mantiene compatible mountain.js y las vistas que antes leían state.quincenas. */
+function derivarQuincenas(state) {
+  const map = {};
+  QUINCENAS.forEach((q) => {
+    const semanasQ = SEMANAS.filter((s) => s.q === q.n);
+    map[q.n] = semanasQ.length > 0 && semanasQ.every((s) => state.semanas[s.n] && state.semanas[s.n].done);
+  });
+  return map;
 }
 
 function calcularRacha(racha, ultimaFecha) {
@@ -69,10 +94,25 @@ function hydrateState(parsed) {
     return acc;
   }, {});
 
-  merged.quincenas = QUINCENAS.reduce((acc, q) => {
-    acc[q.n] = !!(parsed.quincenas && parsed.quincenas[q.n]);
+  merged.semanas = SEMANAS.reduce((acc, s) => {
+    const saved = parsed.semanas && parsed.semanas[s.n];
+    const vacio = emptySemanaState(s.n);
+    const checks =
+      saved && Array.isArray(saved.checks) && saved.checks.length === s.acciones.length
+        ? saved.checks
+        : vacio.checks;
+    acc[s.n] = Object.assign({}, vacio, saved || {}, { checks });
     return acc;
   }, {});
+
+  merged.contactos = Array.isArray(parsed.contactos)
+    ? parsed.contactos.map((c) =>
+        Object.assign(
+          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO() },
+          c
+        )
+      )
+    : [];
 
   merged.premios =
     Array.isArray(parsed.premios) && parsed.premios.length
