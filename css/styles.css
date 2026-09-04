@@ -1,20 +1,20 @@
 /* ==========================================================================
    CUMBRE 90 — Hoja de estilos
-   Identidad "Imperio nocturno": violeta cósmico profundo + dorado, al modo
+   Identidad "Imperio nocturno": azul cósmico profundo + dorado, al modo
    de un mapa de aventura de juego. Dos profundidades (crepúsculo / medianoche)
    para el interruptor de modo oscuro. Sin frameworks externos.
    ========================================================================== */
 
 :root {
-  --bg: #170F2E;
-  --bg-2: #221947;
-  --card: #1E1640;
+  --bg: #0A1B33;
+  --bg-2: #0F2745;
+  --card: #123054;
   --border: rgba(232, 185, 78, 0.22);
   --border-soft: rgba(255, 255, 255, 0.08);
   --text: #F5EFE1;
-  --text-soft: #B1A2D6;
-  --accent: #9370FF;
-  --accent-soft: rgba(147, 112, 255, 0.16);
+  --text-soft: #8FB0CE;
+  --accent: #4FA3E3;
+  --accent-soft: rgba(79, 163, 227, 0.18);
   --success: #34D399;
   --success-soft: rgba(52, 211, 153, 0.14);
   --warn: #F0A65C;
@@ -22,8 +22,8 @@
   --gold: #E8B94E;
   --gold-light: #F7DD8E;
   --gold-deep: #A9782A;
-  --shadow: 0 18px 40px -16px rgba(4, 2, 14, 0.65);
-  --shadow-sm: 0 8px 20px -10px rgba(4, 2, 14, 0.55);
+  --shadow: 0 18px 40px -16px rgba(2, 6, 14, 0.65);
+  --shadow-sm: 0 8px 20px -10px rgba(2, 6, 14, 0.55);
   --glow-gold: 0 0 0 1px rgba(232, 185, 78, 0.35), 0 10px 26px -8px rgba(232, 185, 78, 0.3);
   --radius-lg: 22px;
   --radius-md: 16px;
@@ -33,14 +33,14 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0A0716;
-  --bg-2: #140D28;
-  --card: #140D28;
+  --bg: #050D1A;
+  --bg-2: #0A1B33;
+  --card: #0A1B33;
   --border: rgba(232, 185, 78, 0.2);
   --text: #F5EFE1;
-  --text-soft: #9C8CC4;
-  --accent: #A385FF;
-  --accent-soft: rgba(163, 133, 255, 0.16);
+  --text-soft: #7FA0C4;
+  --accent: #6BBBF2;
+  --accent-soft: rgba(107, 187, 242, 0.18);
   --gold: #F0C468;
   --gold-light: #FAE6A8;
 }
@@ -91,12 +91,33 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 900px 500px at 20% -8%, rgba(147, 112, 255, 0.22), transparent 60%),
+    radial-gradient(ellipse 900px 500px at 20% -8%, rgba(79, 163, 227, 0.20), transparent 60%),
     radial-gradient(ellipse 700px 500px at 100% 15%, rgba(232, 185, 78, 0.10), transparent 55%),
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-  background-size: auto, auto, 34px 34px, 34px 34px;
-  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+    radial-gradient(1.6px 1.6px at 12% 8%, rgba(255,255,255,.75), transparent 100%),
+    radial-gradient(1.2px 1.2px at 78% 4%, rgba(255,255,255,.55), transparent 100%),
+    radial-gradient(1.8px 1.8px at 45% 12%, rgba(255,255,255,.65), transparent 100%),
+    radial-gradient(1px 1px at 92% 20%, rgba(255,255,255,.45), transparent 100%),
+    radial-gradient(1.4px 1.4px at 25% 27%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1px 1px at 62% 33%, rgba(255,255,255,.4), transparent 100%),
+    radial-gradient(1.6px 1.6px at 6% 42%, rgba(255,255,255,.55), transparent 100%),
+    radial-gradient(1.2px 1.2px at 95% 47%, rgba(255,255,255,.45), transparent 100%),
+    radial-gradient(1.8px 1.8px at 37% 55%, rgba(255,255,255,.6), transparent 100%),
+    radial-gradient(1px 1px at 72% 61%, rgba(255,255,255,.4), transparent 100%),
+    radial-gradient(1.4px 1.4px at 16% 69%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1px 1px at 53% 76%, rgba(255,255,255,.35), transparent 100%),
+    radial-gradient(1.6px 1.6px at 87% 83%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1px 1px at 22% 90%, rgba(255,255,255,.4), transparent 100%),
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:
+    auto, auto,
+    100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    100% 100%, 100% 100%,
+    34px 34px, 34px 34px;
+  background-position:
+    0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+    -1px -1px, -1px -1px;
 }
 
 .app-shell {
