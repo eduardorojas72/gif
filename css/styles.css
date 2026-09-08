@@ -528,6 +528,33 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .modal-backdrop { position: absolute; inset: 0; background: rgba(4, 2, 12, 0.72); }
 .modal-card { position: relative; z-index: 1; background: linear-gradient(160deg, var(--card), var(--bg-2)); border: 1px solid var(--border); border-radius: 26px; padding: 26px 22px; max-width: 340px; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: var(--shadow); }
 
+/* modal de "logro conseguido" — texto dorado sobre fondo azul, para compartir */
+.logro-modal {
+  background: linear-gradient(165deg, #0A1B33, #163A62 55%, #0A1B33);
+  border: 1px solid var(--gold);
+  box-shadow: var(--glow-gold), 0 20px 50px -18px rgba(2, 6, 14, 0.75);
+}
+.logro-modal-eyebrow {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em;
+  color: var(--text-soft); margin-top: 8px;
+}
+.logro-modal-title {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-size: 23px; font-weight: 700; line-height: 1.3;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--gold);
+  margin-top: 2px;
+}
+.logro-modal-sub { font-size: 12.5px; color: var(--text-soft); line-height: 1.4; margin-top: -2px; }
+
+.share-chip-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
+.share-chip {
+  display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+  padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04); color: var(--text);
+}
+.share-chip:active { transform: scale(.97); }
+
 /* onboarding / welcome */
 .center-screen {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;

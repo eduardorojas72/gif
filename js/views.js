@@ -176,17 +176,27 @@ function renderBellPanel(state) {
   );
 }
 
-function renderCelebracionModal(rangoIndex, state) {
-  const rango = RANGOS[rangoIndex];
+function renderLogroModal(state, ui) {
+  const logro = ui.logro;
+  if (!logro) return "";
+  const actionBtn =
+    logro.tipo === "rango"
+      ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("user-badge", { size: 16, color: "#1B1338" }) + " Ver mi insignia</button>"
+      : logro.tipo === "cumbre"
+      ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("award", { size: 16, color: "#1B1338" }) + " Ver certificado</button>"
+      : "";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="close-modal"></div>' +
-    '<div class="modal-card">' +
-    Icon("award", { size: 40, color: "var(--gold)" }) +
-    '<div style="font-size:18px;font-weight:700;margin-top:4px">¡Felicidades' + (state.nombre ? ", " + escapeHtml(state.nombre) : "") + "!</div>" +
-    '<div style="color:var(--accent);font-size:13.5px;font-weight:600">Alcanzaste el rango de ' + escapeHtml(rango.nombre) + "</div>" +
-    '<button class="btn-primary" style="margin-top:12px" data-action="close-celebracion-ver">Ver mi insignia</button>' +
-    '<button class="link-btn small" style="margin-top:4px" data-action="close-modal">Cerrar</button>' +
+    '<div class="modal-card logro-modal">' +
+    Icon("award", { size: 46, color: "var(--gold)" }) +
+    '<div class="logro-modal-eyebrow">He conseguido el logro de</div>' +
+    '<div class="logro-modal-title">' + escapeHtml(logro.titulo) + "</div>" +
+    (logro.sub ? '<div class="logro-modal-sub">' + escapeHtml(logro.sub) + "</div>" : "") +
+    '<div class="muted small" style="margin-top:12px;line-height:1.5">Compártelo — es una gran forma de que te pregunten de qué se trata 👇</div>' +
+    shareLogroLinksHTML(logro.titulo) +
+    actionBtn +
+    '<button class="link-btn small" style="margin-top:8px" data-action="close-modal">' + (actionBtn ? "Cerrar" : "Genial, seguir") + "</button>" +
     "</div></div>"
   );
 }

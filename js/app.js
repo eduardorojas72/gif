@@ -14,6 +14,29 @@ function waHrefPersonal(numero, nombre) {
   return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
 }
 
+function shareTextForLogro(titulo) {
+  return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+}
+
+function shareLogroLinksHTML(titulo) {
+  const text = shareTextForLogro(titulo);
+  const url = typeof window !== "undefined" && window.location ? window.location.href : "";
+  const enc = encodeURIComponent(text + (url ? " " + url : ""));
+  const waUrl = "https://wa.me/?text=" + enc;
+  const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
+  const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  return (
+    '<div class="share-chip-row">' +
+    nativeBtn +
+    '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
+    '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
+    '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    "</div>"
+  );
+}
+
 const App = {
   state: null,
   ui: {
@@ -22,7 +45,7 @@ const App = {
     activeDay: null,
     activeQuincena: null,
     bellOpen: false,
-    celebracionRango: null,
+    logro: null,
     confirmReset: false,
     onboardingFoto: null,
     contactoDraft: null,
@@ -144,7 +167,7 @@ const App = {
     document.getElementById("menu-slot").innerHTML = renderMenuSheet(ui);
 
     let modalHtml = "";
-    if (ui.celebracionRango !== null) modalHtml = renderCelebracionModal(ui.celebracionRango, state);
+    if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
@@ -322,8 +345,10 @@ const Actions = {
     const est = App.state.dias[dayId];
     if (est.done) return;
     est.done = true;
-    App.addActividad("Completaste la Etapa: " + DIAS.find((d) => d.id === dayId).etapa);
+    const dia = DIAS.find((d) => d.id === dayId);
+    App.addActividad("Completaste la Etapa: " + dia.etapa);
     App.celebrate();
+    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 6 Días conquistada.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
@@ -359,12 +384,18 @@ const Actions = {
     const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
     if (quincenaCompleta) {
       App.addActividad("Conquistaste el Campamento: " + q.nombre);
+      const premio = App.state.premios[q.n - 1];
+      let sub = "Campamento del Plan de 90 Días conquistado.";
+      if (premio) sub += " Desbloqueaste el premio: " + premio.premio + ".";
+      App.ui.logro = { titulo: q.nombre, sub: sub, tipo: "generic" };
+
       const totalCompletas = QUINCENAS.filter((qq2) => {
         const sqs = SEMANAS.filter((s) => s.q === qq2.n);
         return sqs.every((s) => App.state.semanas[s.n].done);
       }).length;
       if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
         App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "¡Completaste las 6 quincenas del Plan de 90 Días!", tipo: "cumbre" };
       }
     }
     App.persist(true);
@@ -377,7 +408,7 @@ const Actions = {
     App.state.rangoIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.celebracionRango = i;
+      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nuevo rango alcanzado en Atomy.", tipo: "rango", rangoIndex: i };
       App.addActividad("Alcanzaste el rango: " + RANGOS[i].nombre);
     }
     App.persist(true);
@@ -427,11 +458,34 @@ const Actions = {
   },
 
   "open-bell": function () { App.ui.bellOpen = true; App.render(); },
-  "close-modal": function () { App.ui.bellOpen = false; App.ui.celebracionRango = null; App.render(); },
-  "close-celebracion-ver": function () {
-    App.ui.celebracionRango = null;
-    App.ui.view = "perfil";
+  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.render(); },
+  "close-logro-action": function () {
+    const logro = App.ui.logro;
+    App.ui.logro = null;
+    if (logro && logro.tipo === "rango") App.ui.view = "perfil";
+    else if (logro && logro.tipo === "cumbre") App.ui.view = "cumbre";
     App.render();
+  },
+
+  "share-logro-native": function (arg) {
+    const text = shareTextForLogro(arg);
+    if (navigator.share) {
+      navigator.share({ title: "Cumbre 90", text: text, url: window.location.href }).catch(() => {});
+    } else {
+      Actions["share-logro-copy"](arg);
+    }
+  },
+
+  "share-logro-copy": function (arg) {
+    const text = shareTextForLogro(arg) + " " + window.location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
+        () => App.showToast("No se pudo copiar el mensaje")
+      );
+    } else {
+      App.showToast("No se pudo copiar el mensaje");
+    }
   },
 
   "add-contacto": function () {
