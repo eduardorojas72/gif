@@ -372,7 +372,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   resize: none; transition: border-color .15s ease;
 }
 .field input:focus, .field textarea:focus { border-color: var(--gold); }
-.field-inline input { background: rgba(0,0,0,0.18); font-size: 12px; padding: 7px 10px; border-radius: 9px; }
+.field-inline input { background: rgba(0,0,0,0.18); color: var(--text); font-size: 12px; padding: 7px 10px; border-radius: 9px; }
+.field-inline input::placeholder { color: var(--text-soft); }
 
 /* toggle */
 .toggle { width: 44px; height: 24px; border-radius: 999px; position: relative; background: rgba(255,255,255,0.1); flex-shrink: 0; transition: background .2s; }
