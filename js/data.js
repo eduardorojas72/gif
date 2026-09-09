@@ -399,7 +399,7 @@ const DIAS = [
 
 const QUINCENAS = [
   { n: 1, nombre: "Cimientos", semanas: "1-2", foco: "Cimentación y testimonio personal", detalle: "100.000 PV · primeros 50 contactos · 1 testimonio" },
-  { n: 2, nombre: "Primer Impulso", semanas: "3-4", foco: "Activación de invitaciones", detalle: "200.000 PV · 20 llamadas · 5 socios nuevos" },
+  { n: 2, nombre: "Primer Impulso", semanas: "3-4", foco: "Activación de invitaciones", detalle: "200.000 PV · 10 llamadas · 10 socios nuevos" },
   { n: 3, nombre: "Paso Firme", semanas: "5-6", foco: "Consolidación y seguimiento 48h", detalle: "300.000 PV · seguimiento riguroso a presentados" },
   { n: 4, nombre: "Consejo de Guías", semanas: "7-8", foco: "Consultoría de red", detalle: "Reunión con patrocinador · identificar 2+2 líderes" },
   { n: 5, nombre: "La Gran Duplicación", semanas: "9-10", foco: "Duplicación y ajuste", detalle: "Evaluar organización · intensificar RRSS" },
@@ -430,17 +430,22 @@ const SEMANAS = [
     ],
   },
   {
-    n: 3, q: 2, metaPV: "200.000 PV", metaContactos: "5 Llamadas / Invitaciones", paso: "Paso 4: Invitaciones Efectivas",
+    n: 3, q: 2, metaPV: "200.000 PV", metaContactos: "10 Llamadas / Presentaciones", paso: "Pasos 4 y 5: Llamadas y Presentación del Negocio",
     acciones: [
       "Alcanzar 200.000 PV Personales mediante cambio de supermercado de consumo en el hogar.",
-      "Realizar 20 llamadas de invitación aplicando la regla de la mente propia.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
-    n: 4, q: 2, metaPV: "200.000 PV", metaContactos: "5 Presentaciones realizadas", paso: "Paso 5: Show the Business",
+    n: 4, q: 2, metaPV: "200.000 PV", metaContactos: "10 Llamadas / Presentaciones", paso: "Pasos 4 y 5: Llamadas y Presentación del Negocio",
     acciones: [
+      "Alcanzar 200.000 PV Personales mediante cambio de supermercado de consumo en el hogar.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
       "Registrar 10 socios nuevos.",
-      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador).",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
