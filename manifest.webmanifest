@@ -1,7 +1,7 @@
 {
-  "name": "Cumbre 90 — Los 8 Pasos al Éxito",
+  "name": "Cumbre 90 — Les 8 Étapes vers le Succès",
   "short_name": "Cumbre 90",
-  "description": "Recorrido guiado por los 8 Pasos al Éxito, el Plan de Arranque de 6 Días y el Plan de 90 Días hacia Sales Master.",
+  "description": "Un parcours guidé à travers les 8 Étapes vers le Succès, le Plan de Démarrage de 6 Jours et le Plan de 90 Jours vers Sales Master.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

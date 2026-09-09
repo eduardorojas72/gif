@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi recorrido en Cumbre 90");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Bonjour, j'ai une question sur mon parcours dans Cumbre 90");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Bonjour" + (nombre ? " " + nombre : "") + " ! Comment vas-tu ?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 J'ai obtenu le succès \"" + titulo + "\" dans mon parcours vers Sales Master avec Atomy ! 🚀 Si tu es curieux, demande-moi de quoi il s'agit.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,14 +25,14 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Partager</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
     '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copier</span></button>" +
     "</div>"
   );
 }
@@ -50,7 +50,7 @@ const App = {
     onboardingFoto: null,
     contactoDraft: null,
     contactoEditId: null,
-    contactoFiltro: "todos",
+    contactoFiltro: "tous",
     confirmDeleteContacto: null,
     pasosVueltos: {},
     lemaVueltos: {},
@@ -90,11 +90,11 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre 90 — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre 90 — Rappel", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " autres)" : primero.text,
       });
     } catch (e) {
-      /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+      /* certains navigateurs restreignent Notification hors d'un geste utilisateur : ignoré */
     }
   },
 
@@ -349,16 +349,16 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const dia = DIAS.find((d) => d.id === dayId);
-    App.addActividad("Completaste la Etapa: " + dia.etapa);
+    App.addActividad("Tu as terminé l'Étape : " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 6 Días conquistada.", tipo: "generic" };
+    App.ui.logro = { titulo: dia.etapa, sub: "Étape " + dia.id + " du Plan de Démarrage — 6 Jours conquise.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
 
   "share-day": function (arg) {
     downloadDiaCard(App.state, Number(arg));
-    App.showToast("Tarjeta lista para compartir ✨");
+    App.showToast("Carte prête à être partagée ✨");
   },
 
   "open-quincena": function (arg) { App.ui.activeQuincena = Number(arg); App.render(); },
@@ -379,17 +379,17 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const semana = SEMANAS.find((s) => s.n === weekN);
-    App.addActividad("Completaste la Semana " + weekN + " (" + semana.paso + ")");
+    App.addActividad("Tu as terminé la Semaine " + weekN + " (" + semana.paso + ")");
     App.celebrate();
 
     const q = QUINCENAS.find((qq) => qq.n === semana.q);
     const semanasQ = SEMANAS.filter((s) => s.q === q.n);
     const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
     if (quincenaCompleta) {
-      App.addActividad("Conquistaste el Campamento: " + q.nombre);
+      App.addActividad("Tu as conquis le Camp : " + q.nombre);
       const premio = App.state.premios[q.n - 1];
-      let sub = "Campamento del Plan de 90 Días conquistado.";
-      if (premio) sub += " Desbloqueaste el premio: " + premio.premio + ".";
+      let sub = "Camp du Plan de 90 Jours conquis.";
+      if (premio) sub += " Tu as débloqué la récompense : " + premio.premio + ".";
       App.ui.logro = { titulo: q.nombre, sub: sub, tipo: "generic" };
 
       const totalCompletas = QUINCENAS.filter((qq2) => {
@@ -398,7 +398,7 @@ const Actions = {
       }).length;
       if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
         App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "¡Completaste las 6 quincenas del Plan de 90 Días!", tipo: "cumbre" };
+        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "Tu as terminé les 6 quinzaines du Plan de 90 Jours !", tipo: "cumbre" };
       }
     }
     App.persist(true);
@@ -411,8 +411,8 @@ const Actions = {
     App.state.rangoIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nuevo rango alcanzado en Atomy.", tipo: "rango", rangoIndex: i };
-      App.addActividad("Alcanzaste el rango: " + RANGOS[i].nombre);
+      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nouveau rang atteint chez Atomy.", tipo: "rango", rangoIndex: i };
+      App.addActividad("Tu as atteint le rang : " + RANGOS[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -440,7 +440,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Active les autorisations de notification dans les réglages de ton navigateur.");
     }
   },
 
@@ -456,7 +456,7 @@ const Actions = {
     App.ui.activeDay = null;
     App.ui.onboardingFoto = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progression réinitialisée");
     App.render();
   },
 
@@ -483,16 +483,16 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Message copié — colle-le où tu veux !"),
+        () => App.showToast("Impossible de copier le message")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Impossible de copier le message");
     }
   },
 
   "add-contacto": function () {
-    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
+    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tiède", estado: "À contacter", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
     App.ui.contactoEditId = null;
     App.render();
   },
@@ -525,7 +525,7 @@ const Actions = {
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact enregistré");
     App.render();
   },
 
@@ -540,7 +540,7 @@ const Actions = {
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact supprimé");
     App.render();
   },
 
@@ -550,7 +550,7 @@ const Actions = {
     if (!c) return;
     c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
     App.persist(true);
-    App.showToast("Seguimiento programado");
+    App.showToast("Suivi programmé");
     App.render();
   },
 

@@ -147,7 +147,7 @@ function mountainSceneHTML(quincenas, cumbreLograda, height) {
     '<line x1="' + peak.x + '" y1="' + peak.y + '" x2="' + peak.x + '" y2="' + (peak.y - 22) + '" stroke="' + flagColor + '" stroke-width="2" stroke-opacity="' + (cumbreLograda ? 1 : 0.5) + '"/>' +
     '<path d="M' + peak.x + ',' + (peak.y - 22) + ' L' + (peak.x + 14) + ',' + (peak.y - 17) + ' L' + peak.x + ',' + (peak.y - 12) + ' Z" fill="' + flagFill + '"/>' +
     "</svg>" +
-    '<div class="mountain-caption">' + doneCount + " de 6 quincenas conquistadas</div>" +
+    '<div class="mountain-caption">' + doneCount + " sur 6 quinzaines conquises</div>" +
     "</div>"
   );
 }
@@ -245,7 +245,7 @@ function heroMountainHTML(overlayHtml) {
     '<div class="hm-layer hm-sharp">' + mountainHeroSVGMarkup("a") + "</div>" +
     '<div class="hm-glow"></div>' +
     '<div class="hm-vignette"></div>' +
-    '<div class="hm-hint">' + Icon("sparkles", { size: 11, color: "rgba(255,255,255,.85)" }) + " Mueve el cursor para revelar la cima</div>" +
+    '<div class="hm-hint">' + Icon("sparkles", { size: 11, color: "rgba(255,255,255,.85)" }) + " Déplace le curseur pour révéler le sommet</div>" +
     (overlayHtml || "") +
     "</div>"
   );
@@ -417,7 +417,7 @@ function wingedMedallionSVG(cx, cy, scale) {
 function cardFooterSVG(cx, y) {
   return (
     '<line x1="' + (cx - 60) + '" y1="' + (y - 26) + '" x2="' + (cx + 60) + '" y2="' + (y - 26) + '" stroke="' + CARD_GOLD + '" stroke-width="1" opacity="0.45"/>' +
-    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Recorrido hacia el éxito con Atomy</text>'
+    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Parcours vers le succès avec Atomy</text>'
   );
 }
 
