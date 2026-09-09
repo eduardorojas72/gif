@@ -306,7 +306,7 @@ function campLogroChipHTML(titulo, hecho) {
    PNG (share.js), así ambas quedan siempre idénticas. Cinco diseños,
    uno por rango:
      0 Consumidor Consciente → fondo azul "brumoso" + título apilado
-     1 Representante de Ventas → tarjeta con lazo azul
+     1 Miembro Atomy → tarjeta con lazo azul
      2 Agente → misma tarjeta con variación (lazo con filo dorado)
      3 Agente Especial → lazo oscuro con texto e hilo dorados
      4 Sales Master → medallón alado dorado bajo el nombre

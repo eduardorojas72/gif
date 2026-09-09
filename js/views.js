@@ -285,15 +285,27 @@ function renderHome(state) {
 
 /* ---------------- Los 8 Pasos ---------------- */
 
-function renderPasos() {
+function renderPasos(ui) {
+  const vueltos = ui.pasosVueltos || {};
   const cards = OCHO_PASOS.map(function (p) {
-    return (
-      '<div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px">' +
+    const flipped = !!vueltos[p.n];
+    const front =
+      '<div class="flip-face flip-front">' +
       pasoMedallionHTML(p.icon, 68) +
       '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:4px">Paso ' + p.n + "</div>" +
       '<div style="font-size:13.5px;font-weight:700;line-height:1.3">' + escapeHtml(p.t) + "</div>" +
       '<div class="muted small" style="line-height:1.45">' + escapeHtml(p.d) + "</div>" +
-      "</div>"
+      '<div class="row gap-2" style="margin-top:auto;padding-top:8px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para el resumen</span></div>' +
+      "</div>";
+    const back =
+      '<div class="flip-face flip-back">' +
+      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Paso " + p.n + " en resumen</div>" +
+      '<div style="font-size:13px;line-height:1.55;margin-top:8px">' + escapeHtml(p.resumen || p.d) + "</div>" +
+      "</div>";
+    return (
+      '<button class="flip-card" data-action="flip-paso" data-arg="' + p.n + '">' +
+      '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
+      "</button>"
     );
   }).join("");
   const header =
