@@ -108,7 +108,7 @@ function hydrateState(parsed) {
   merged.contactos = Array.isArray(parsed.contactos)
     ? parsed.contactos.map((c) =>
         Object.assign(
-          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO() },
+          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Warm", estado: "To contact", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO() },
           c
         )
       )

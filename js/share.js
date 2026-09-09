@@ -37,7 +37,7 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
   };
   img.onerror = function () {
     URL.revokeObjectURL(url);
-    App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+    App.showToast("Couldn't generate the image. Please try again.");
   };
   img.src = url;
 }
@@ -62,8 +62,8 @@ function downloadRecogCard(state) {
 
 function downloadCertificado(state) {
   const t = themeColors();
-  const fecha = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
-  const nombre = safeXml(state.nombre || "Socio Atomy");
+  const fecha = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+  const nombre = safeXml(state.nombre || "Atomy Partner");
   const codigo = state.codigoCumbre || "C90-000000";
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620">' +
@@ -71,14 +71,14 @@ function downloadCertificado(state) {
     '<rect x="24" y="24" width="852" height="572" rx="18" fill="none" stroke="' + t.gold + '" stroke-width="3"/>' +
     '<rect x="40" y="40" width="820" height="540" rx="12" fill="none" stroke="' + t.accent + '" stroke-width="1"/>' +
     '<text x="450" y="140" text-anchor="middle" font-family="Georgia, serif" font-size="20" letter-spacing="6" fill="' + t.accent + '">CUMBRE 90</text>' +
-    '<text x="450" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="' + t.text + '">Certificado de Cumbre</text>' +
-    '<text x="450" y="300" text-anchor="middle" font-family="Arial" font-size="16" fill="' + t.textSoft + '">Se otorga a</text>' +
+    '<text x="450" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="' + t.text + '">Summit Certificate</text>' +
+    '<text x="450" y="300" text-anchor="middle" font-family="Arial" font-size="16" fill="' + t.textSoft + '">Awarded to</text>' +
     '<text x="450" y="350" text-anchor="middle" font-family="Georgia, serif" font-size="34" fill="' + t.gold + '">' + nombre + "</text>" +
-    '<text x="450" y="400" text-anchor="middle" font-family="Arial" font-size="15" fill="' + t.textSoft + '">por completar el Plan de 90 Días y alcanzar el rango de Sales Master</text>' +
+    '<text x="450" y="400" text-anchor="middle" font-family="Arial" font-size="15" fill="' + t.textSoft + '">for completing the 90-Day Plan and reaching the Sales Master rank</text>' +
     '<text x="450" y="470" text-anchor="middle" font-family="Arial" font-size="13" fill="' + t.textSoft + '">' + fecha + "</text>" +
-    '<text x="450" y="560" text-anchor="middle" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Código: ' + codigo + "</text>" +
+    '<text x="450" y="560" text-anchor="middle" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Code: ' + codigo + "</text>" +
     "</svg>";
-  svgToPngDownload(svg, 900, 620, "Certificado-Cumbre90-" + slugFile(state.nombre || "socio") + ".png");
+  svgToPngDownload(svg, 900, 620, "Certificate-Cumbre90-" + slugFile(state.nombre || "partner") + ".png");
 }
 
 function downloadDiaCard(state, diaId) {
@@ -99,21 +99,21 @@ function downloadDiaCard(state, diaId) {
         y += 70;
         return block;
       }).join("")
-    : '<text x="60" y="' + y + '" font-family="Arial" font-size="15" fill="' + t.textSoft + '">Aún no has completado los campos de esta etapa.</text>';
+    : '<text x="60" y="' + y + '" font-family="Arial" font-size="15" fill="' + t.textSoft + '">You haven\'t filled in this stage\'s fields yet.</text>';
 
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
     '<rect width="' + width + '" height="' + height + '" fill="' + t.bg + '"/>' +
     '<rect x="20" y="20" width="' + (width - 40) + '" height="' + (height - 40) + '" rx="20" fill="none" stroke="' + t.gold + '" stroke-width="2.5"/>' +
-    '<text x="60" y="90" font-family="Arial" font-size="13" letter-spacing="4" font-weight="bold" fill="' + t.gold + '">CUMBRE 90 · ETAPA ' + dia.id + "</text>" +
+    '<text x="60" y="90" font-family="Arial" font-size="13" letter-spacing="4" font-weight="bold" fill="' + t.gold + '">CUMBRE 90 · STAGE ' + dia.id + "</text>" +
     '<text x="60" y="140" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="' + t.text + '">' + safeXml(dia.etapa) + "</text>" +
     '<text x="60" y="170" font-family="Arial" font-size="15" fill="' + t.accent + '">' + safeXml(dia.titulo) + "</text>" +
     '<line x1="60" y1="200" x2="' + (width - 60) + '" y2="200" stroke="' + t.border + '" stroke-width="1"/>' +
     lines +
-    '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Recorrido hacia el éxito con Atomy · ' + safeXml(state.nombre || "") + "</text>" +
+    '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Journey to success with Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngDownload(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png");
+  svgToPngDownload(svg, width, height, "Cumbre90-Stage" + dia.id + "-" + slugFile(dia.etapa) + ".png");
 }
 
 function wrapText(str, max) {

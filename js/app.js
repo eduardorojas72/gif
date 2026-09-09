@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi recorrido en Cumbre 90");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hi, I have a question about my journey in Cumbre 90");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hi" + (nombre ? " " + nombre : "") + "! How are you?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 I just achieved \"" + titulo + "\" on my journey to Sales Master with Atomy! 🚀 If you're curious, ask me what it's about.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,14 +25,14 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Share</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
     '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copy</span></button>" +
     "</div>"
   );
 }
@@ -50,7 +50,7 @@ const App = {
     onboardingFoto: null,
     contactoDraft: null,
     contactoEditId: null,
-    contactoFiltro: "todos",
+    contactoFiltro: "all",
     confirmDeleteContacto: null,
     pasosVueltos: {},
     lemaVueltos: {},
@@ -90,11 +90,11 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre 90 — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre 90 — Reminder", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " more)" : primero.text,
       });
     } catch (e) {
-      /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+      /* some browsers restrict Notification outside a user gesture: ignored */
     }
   },
 
@@ -349,16 +349,16 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const dia = DIAS.find((d) => d.id === dayId);
-    App.addActividad("Completaste la Etapa: " + dia.etapa);
+    App.addActividad("You completed Stage: " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 6 Días conquistada.", tipo: "generic" };
+    App.ui.logro = { titulo: dia.etapa, sub: "Stage " + dia.id + " of the 6-Day Startup Plan conquered.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
 
   "share-day": function (arg) {
     downloadDiaCard(App.state, Number(arg));
-    App.showToast("Tarjeta lista para compartir ✨");
+    App.showToast("Card ready to share ✨");
   },
 
   "open-quincena": function (arg) { App.ui.activeQuincena = Number(arg); App.render(); },
@@ -379,17 +379,17 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const semana = SEMANAS.find((s) => s.n === weekN);
-    App.addActividad("Completaste la Semana " + weekN + " (" + semana.paso + ")");
+    App.addActividad("You completed Week " + weekN + " (" + semana.paso + ")");
     App.celebrate();
 
     const q = QUINCENAS.find((qq) => qq.n === semana.q);
     const semanasQ = SEMANAS.filter((s) => s.q === q.n);
     const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
     if (quincenaCompleta) {
-      App.addActividad("Conquistaste el Campamento: " + q.nombre);
+      App.addActividad("You conquered Camp: " + q.nombre);
       const premio = App.state.premios[q.n - 1];
-      let sub = "Campamento del Plan de 90 Días conquistado.";
-      if (premio) sub += " Desbloqueaste el premio: " + premio.premio + ".";
+      let sub = "90-Day Plan camp conquered.";
+      if (premio) sub += " You unlocked the reward: " + premio.premio + ".";
       App.ui.logro = { titulo: q.nombre, sub: sub, tipo: "generic" };
 
       const totalCompletas = QUINCENAS.filter((qq2) => {
@@ -398,7 +398,7 @@ const Actions = {
       }).length;
       if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
         App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "¡Completaste las 6 quincenas del Plan de 90 Días!", tipo: "cumbre" };
+        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "You completed all 6 fortnights of the 90-Day Plan!", tipo: "cumbre" };
       }
     }
     App.persist(true);
@@ -411,8 +411,8 @@ const Actions = {
     App.state.rangoIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nuevo rango alcanzado en Atomy.", tipo: "rango", rangoIndex: i };
-      App.addActividad("Alcanzaste el rango: " + RANGOS[i].nombre);
+      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "New rank reached in Atomy.", tipo: "rango", rangoIndex: i };
+      App.addActividad("You reached the rank: " + RANGOS[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -440,7 +440,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Enable notification permissions from your browser settings.");
     }
   },
 
@@ -456,7 +456,7 @@ const Actions = {
     App.ui.activeDay = null;
     App.ui.onboardingFoto = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progress reset");
     App.render();
   },
 
@@ -483,16 +483,16 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Message copied — paste it anywhere you like!"),
+        () => App.showToast("Couldn't copy the message")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Couldn't copy the message");
     }
   },
 
   "add-contacto": function () {
-    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
+    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Warm", estado: "To contact", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
     App.ui.contactoEditId = null;
     App.render();
   },
@@ -525,7 +525,7 @@ const Actions = {
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact saved");
     App.render();
   },
 
@@ -540,7 +540,7 @@ const Actions = {
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact deleted");
     App.render();
   },
 
@@ -550,7 +550,7 @@ const Actions = {
     if (!c) return;
     c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
     App.persist(true);
-    App.showToast("Seguimiento programado");
+    App.showToast("Follow-up scheduled");
     App.render();
   },
 
