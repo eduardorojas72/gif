@@ -122,6 +122,13 @@ const DIAS = [
     objetivo: "Comprender cómo el consumo coordinado en dos líneas genera prosperidad financiera.",
     contenido: [
       {
+        h: "Tu membresía es 100% gratuita",
+        body: [
+          "Unirte a Atomy no cuesta nada: no hay cuota de inscripción, ni cuota mensual, ni anual, y nunca hay compras obligatorias para mantener tu cuenta activa.",
+          "Lo único que haces es cambiar dónde compras los productos de uso diario que ya compras siempre — el resto del sistema (activación, comisiones, rangos) se construye sobre ese consumo, no sobre pagos adicionales.",
+        ],
+      },
+      {
         h: "Tu primer gran hito: 10.000 PV Personales (PVP)",
         body: [
           "Los PV (Puntos de Valor) son el valor que la empresa asigna a cada producto; los ves en azul debajo del precio en la tienda online.",
@@ -132,7 +139,7 @@ const DIAS = [
       {
         h: "Tu equipo binario: Línea Izquierda y Línea Derecha",
         body: [
-          "No trabajas solo: con la ayuda de tu patrocinador vas construyendo tu estructura en dos líneas de consumo, Izquierda y Derecha.",
+          "No trabajas solo: con la ayuda de tu patrocinador vas construyendo tu estructura en dos líneas de consumo, Izquierda y Derecha, con profundidad ilimitada (no importa cuántos niveles hacia abajo crezca cada línea).",
           "Cada vez que las personas de tu equipo compran para sus hogares, generan PV Grupales (PVG).",
           "Un “Ciclo” o “Ciclaje” ocurre cuando tu línea izquierda y tu línea derecha acumulan cada una 300.000 PVG: el sistema hace un “match” y la empresa paga una comisión directa a tu cuenta bancaria.",
         ],
@@ -153,13 +160,21 @@ const DIAS = [
           "PV Grupales: los genera tu equipo (líneas Izquierda y Derecha). Se reinician únicamente tras pagar una comisión. Suman el consumo colectivo para liquidar comisiones.",
         ],
       },
+      {
+        h: "El camino completo hasta Sales Master",
+        body: [
+          "Tu progreso personal avanza en hitos de PV que nunca se pierden: 10.000 PVP activa tu cuenta, 300.000 PVP te da Agente, y 700.000 PVP te da Agente Especial.",
+          "Sales Master —la meta de tu Plan de 90 Días— se alcanza cuando, además de tus 700.000 PVP, tu línea Izquierda y tu línea Derecha acumulan cada una 2.500.000 PVG en la misma quincena de calificación.",
+          "Este recorrido de Cumbre 90 te lleva exactamente hasta ahí. Los rangos que existen por encima de Sales Master (Diamond Master en adelante) quedan fuera de estos 90 días, pero para entonces ya tendrás el hábito y el equipo para seguir subiendo.",
+        ],
+      },
     ],
     campos: [],
     nota: "Recuerda tus dos grandes hitos: 10.000 PVP (activa tu cuenta) y 300.000 PVP (triplicas tu comisión por ciclo). Tus PV personales nunca se borran ni se reinician.",
     checklist: [
       "Entendí la importancia de alcanzar primero 10.000 PV y proyectar los 300.000 PV personales.",
       "Comprendí el funcionamiento del equilibrio binario (Izquierda / Derecha).",
-      "Realicé la simulación de mis primeros 4 consumos referidos.",
+      "Elegí mis primeros 4 productos preferidos.",
       "Vi al menos un video sobre el Plan de Compensación.",
     ],
     quiz: {
@@ -185,6 +200,7 @@ const DIAS = [
         h: "Elige tu primer pedido (tu consumo consciente)",
         body: [
           "Elige los productos que realmente necesitas reponer en casa hoy mismo (pasta de dientes, champú, detergente, suplementos). La meta es simple: probar la calidad de la marca para poder hablar con propiedad desde el día uno.",
+          "Para ello vamos a la página, entra con tu ID y contraseña.",
         ],
       },
       {
@@ -474,7 +490,7 @@ const RANGOS = [
   { nombre: "Miembro Atomy", meta: "10.000 PV personales", pv: "10.000 PVP", tier: 1 },
   { nombre: "Agente", meta: "300.000 PV personales", pv: "300.000 PVP", tier: 2 },
   { nombre: "Agente Especial", meta: "700.000 PV personales", pv: "700.000 PVP", tier: 2 },
-  { nombre: "Sales Master", meta: "5.000.000 PV grupales por línea", pv: "5.000.000 PVG", tier: 3 },
+  { nombre: "Sales Master", meta: "700.000 PV personales + 2.500.000 PV en cada pierna", pv: "5.000.000 PVG", tier: 3 },
 ];
 
 const MENSAJE_BIENVENIDA =
