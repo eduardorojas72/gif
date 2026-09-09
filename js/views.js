@@ -7,6 +7,7 @@ const MENU_ITEMS = [
   { id: "home", label: "Inicio", icon: "home" },
   { id: "perfil", label: "Mi Perfil", icon: "user-badge" },
   { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
+  { id: "lema", label: "El Lema de Atomy", icon: "heart" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
   { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
@@ -273,6 +274,7 @@ function renderHome(state) {
     mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
 
     '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Los 8 Pasos al Éxito</div><div class="nc-desc">Tu referencia permanente</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">El Lema de Atomy</div><div class="nc-desc">Filosofía y código de ética</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 Contactos</div><div class="nc-desc">' + (state.contactos || []).length + ' registrados · agenda seguimientos</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Arranque — 6 Días</div><div class="nc-desc">Recorre tu mapa día a día</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premios de tu patrocinador</div><div class="nc-desc">Consulta lo que puedes ganar</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
@@ -320,6 +322,45 @@ function renderPasos(ui) {
     '<div><h2>Los 8 Pasos al Éxito</h2><p>Basado en la enseñanza del Presidente Han-Gill Park. Toca cada paso para ver la explicación completa.</p></div></div>';
   return header +
     '<div class="view-stack gap-sm">' + cards + "</div>";
+}
+
+/* ---------------- El Lema de Atomy ---------------- */
+
+function renderLema(ui) {
+  const vueltos = ui.lemaVueltos || {};
+  const cards = LEMA_ATOMY.pilares.map(function (p) {
+    const flipped = !!vueltos[p.n];
+    const front =
+      '<div class="flip-face flip-front">' +
+      medallionHTML(p.icon, 68) +
+      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">Pilar ' + p.n + "</div>" +
+      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div>" +
+      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para ver la explicación completa</span></div>' +
+      "</div>";
+    const back =
+      '<div class="flip-face flip-back">' +
+      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Pilar " + p.n + " — " + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="font-style:italic;margin-top:4px">' + escapeHtml(p.sub) + "</div>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
+      "</div>";
+    return (
+      '<button class="flip-card' + (flipped ? " is-open short" : "") + '" data-action="flip-lema" data-arg="' + p.n + '">' +
+      '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
+      "</button>"
+    );
+  }).join("");
+  const header =
+    '<div class="section-header">' + medallionHTML("heart", 64) +
+    '<div><h2>El Lema de Atomy</h2><p>Filosofía Corporativa y Código de Ética — Presidente Han-Gill Park. Toca cada pilar para ver la explicación completa.</p></div></div>';
+  const intro = '<p class="muted small" style="line-height:1.6;margin-top:-4px">' + escapeHtml(LEMA_ATOMY.intro) + "</p>";
+  const exclamacion =
+    '<div class="card" style="margin-top:14px;text-align:center;border-color:var(--gold)">' +
+    '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)">Exclamación Oficial del Lema</div>' +
+    '<p style="font-size:14px;line-height:1.6;margin-top:6px;font-weight:600">' + escapeHtml(LEMA_ATOMY.exclamacion) + "</p></div>";
+  return header + intro +
+    '<div class="view-stack gap-sm" style="margin-top:14px">' + cards + "</div>" +
+    exclamacion;
 }
 
 /* ---------------- Plan 6 días — mapa ---------------- */

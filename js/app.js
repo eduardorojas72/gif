@@ -53,6 +53,7 @@ const App = {
     contactoFiltro: "todos",
     confirmDeleteContacto: null,
     pasosVueltos: {},
+    lemaVueltos: {},
   },
   saveTimer: null,
   toastTimer: null,
@@ -151,6 +152,7 @@ const App = {
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
       case "pasos": mainHtml = renderPasos(ui); break;
+      case "lema": mainHtml = renderLema(ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
       case "plan90": mainHtml = ui.activeQuincena ? renderQuincenaDetalle(state, ui.activeQuincena) : renderPlan90(state); break;
@@ -565,6 +567,11 @@ const Actions = {
 
   "flip-paso": function (arg) {
     App.ui.pasosVueltos[arg] = !App.ui.pasosVueltos[arg];
+    App.render();
+  },
+
+  "flip-lema": function (arg) {
+    App.ui.lemaVueltos[arg] = !App.ui.lemaVueltos[arg];
     App.render();
   },
 };
