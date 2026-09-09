@@ -453,6 +453,9 @@ const SEMANAS = [
     n: 5, q: 3, metaPV: "300.000 PV", metaContactos: "Seguimiento en 48 Horas", paso: "Paso 6: Seguimiento Sólido",
     acciones: [
       "Completar los 300.000 PV Personales para maximizar el cobro de comisiones.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
@@ -461,6 +464,10 @@ const SEMANAS = [
     acciones: [
       "Asegurar que cada línea activa cuente con al menos 4 consumidores recurrentes.",
       "Identificar 4 líderes de mi estructura: 2 en cada línea.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
@@ -468,18 +475,30 @@ const SEMANAS = [
     acciones: [
       "Reunirme con mi patrocinador para analizar el balance de PV de la línea izquierda y derecha.",
       "Formar a los 4 líderes detectados en mis líneas descendentes.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
     n: 8, q: 4, metaPV: "300.000 PV", metaContactos: "Organizar mini Zoom/Reunión", paso: "Paso 5 y 8: Presentación e Impacto",
     acciones: [
       "Organizar una mini reunión de hogar o Zoom grupal apoyando a los socios descendentes.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
     n: 9, q: 5, metaPV: "300.000 PV", metaContactos: "Revisión de volumen grupal", paso: "Paso 7: Consultoría de Red",
     acciones: [
       "Evaluar el mapa de la organización: asegurar que los socios comprometidos estén duplicando las presentaciones sencillas.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
@@ -487,6 +506,10 @@ const SEMANAS = [
     acciones: [
       "Intensificar las interacciones en redes sociales para mantener alimentada la lista de contactos.",
       "Planificar la compra estratégica y la proyección de volumen para el ciclo de calificación de Sales Master.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
@@ -494,12 +517,20 @@ const SEMANAS = [
     acciones: [
       "Coordinar el consumo colectivo con el equipo para alcanzar 2.500.000 PVG en la línea izquierda y 2.500.000 PVG en la línea derecha.",
       "Asignar compras personales estratégicas en la línea con menor volumen según las normas de la compañía.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
   {
     n: 12, q: 6, metaPV: "700.000 PV Personales", metaContactos: "2,5M PVG Izq / 2,5M PVG Der", paso: "¡LOGRO DE SALES MASTER!",
     acciones: [
       "Celebrar la consecución de la Maestría, edificar el trabajo en equipo y preparar el siguiente ciclo de crecimiento.",
+      "Realizar mínimo 10 llamadas o mensajes de invitación aplicando la regla de la mente propia.",
+      "Registrar 10 socios nuevos.",
+      "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
+      "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
     ],
   },
 ];
