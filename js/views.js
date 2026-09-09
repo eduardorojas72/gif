@@ -290,29 +290,38 @@ function renderPasos(ui) {
   const cards = OCHO_PASOS.map(function (p) {
     const flipped = !!vueltos[p.n];
     const front =
-      '<div class="flip-face flip-front">' +
-      pasoMedallionHTML(p.icon, 68) +
-      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:4px">Paso ' + p.n + "</div>" +
-      '<div style="font-size:13.5px;font-weight:700;line-height:1.3">' + escapeHtml(p.t) + "</div>" +
-      '<div class="muted small" style="line-height:1.45">' + escapeHtml(p.d) + "</div>" +
-      '<div class="row gap-2" style="margin-top:auto;padding-top:8px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para el resumen</span></div>' +
+      '<div class="flip-face flip-front" style="flex-direction:row;align-items:center;text-align:left;gap:14px">' +
+      pasoMedallionHTML(p.icon, 56) +
+      '<div style="flex:1;min-width:0">' +
+      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Paso ' + p.n + "</div>" +
+      '<div style="font-size:14.5px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="line-height:1.45;margin-top:2px">' + escapeHtml(p.d) + "</div>" +
+      "</div>" +
+      Icon("rotate-ccw", { size: 16, color: "var(--gold-light)" }) +
       "</div>";
     const back =
       '<div class="flip-face flip-back">' +
-      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Paso " + p.n + " en resumen</div>" +
-      '<div style="font-size:13px;line-height:1.55;margin-top:8px">' + escapeHtml(p.resumen || p.d) + "</div>" +
+      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Paso " + p.n + " — " + escapeHtml(p.t) + "</div>" +
+      '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+      '<span class="badge soft">' + Icon("target", { size: 11 }) + " " + escapeHtml(p.accion) + "</span>" +
+      '<span class="badge gold">' + Icon("sparkles", { size: 11 }) + " " + escapeHtml(p.objetivo) + "</span>" +
+      "</div>" +
+      '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Explicación detallada</div>' +
+      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(p.explicacion) + "</p>" +
+      '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Ejemplos prácticos</div>' +
+      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(p.ejemplo) + "</p>" +
       "</div>";
     return (
-      '<button class="flip-card" data-action="flip-paso" data-arg="' + p.n + '">' +
+      '<button class="flip-card' + (flipped ? " is-open" : "") + '" data-action="flip-paso" data-arg="' + p.n + '">' +
       '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
       "</button>"
     );
   }).join("");
   const header =
     '<div class="section-header">' + pasosHeaderMedallionHTML(64) +
-    '<div><h2>Los 8 Pasos al Éxito</h2><p>Tu guía de referencia, siempre disponible.</p></div></div>';
+    '<div><h2>Los 8 Pasos al Éxito</h2><p>Basado en la enseñanza del Presidente Han-Gill Park. Toca cada paso para ver la explicación completa.</p></div></div>';
   return header +
-    '<div class="grid-2">' + cards + "</div>";
+    '<div class="view-stack gap-sm">' + cards + "</div>";
 }
 
 /* ---------------- Plan 6 días — mapa ---------------- */
