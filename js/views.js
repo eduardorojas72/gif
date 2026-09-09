@@ -290,14 +290,12 @@ function renderPasos(ui) {
   const cards = OCHO_PASOS.map(function (p) {
     const flipped = !!vueltos[p.n];
     const front =
-      '<div class="flip-face flip-front" style="flex-direction:row;align-items:center;text-align:left;gap:14px">' +
-      pasoMedallionHTML(p.icon, 56) +
-      '<div style="flex:1;min-width:0">' +
-      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Paso ' + p.n + "</div>" +
-      '<div style="font-size:14.5px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
-      '<div class="muted small" style="line-height:1.45;margin-top:2px">' + escapeHtml(p.d) + "</div>" +
-      "</div>" +
-      Icon("rotate-ccw", { size: 16, color: "var(--gold-light)" }) +
+      '<div class="flip-face flip-front">' +
+      pasoMedallionHTML(p.icon, 68) +
+      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">Paso ' + p.n + "</div>" +
+      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="line-height:1.45;margin-top:4px;max-width:44ch">' + escapeHtml(p.d) + "</div>" +
+      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para ver la explicación completa</span></div>' +
       "</div>";
     const back =
       '<div class="flip-face flip-back">' +
