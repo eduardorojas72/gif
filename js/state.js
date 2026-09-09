@@ -2,36 +2,20 @@
    ESTADO Y PERSISTENCIA — 100% local (localStorage), sin backend
 --------------------------------------------------------------- */
 
-const STORAGE_KEY = "cumbre90-estado-v1";
-
-function emptyDayState(diaId) {
-  const dia = DIAS.find((d) => d.id === diaId);
-  return { done: false, quizOk: false, quizSel: null, fields: {}, checks: dia.checklist.map(() => false) };
-}
-
-function emptySemanaState(n) {
-  const semana = SEMANAS.find((s) => s.n === n);
-  return { done: false, checks: semana.acciones.map(() => false) };
-}
+const STORAGE_KEY = "cumbre-master-estado-v1";
 
 function defaultState() {
   return {
     onboarded: false,
     nombre: "",
     foto: null,
-    rangoIndex: 0,
+    dark: false,
+    whatsapp: "",
+    rangoActualIndex: 0,
     racha: 0,
     ultimaFecha: null,
     actividad: [],
-    dark: false,
-    whatsapp: "34600000000",
-    premios: PREMIOS_DEFECTO.map((p) => ({ ...p })),
-    mentorMode: false,
-    notifOn: true,
-    notifUltimoAviso: null,
-    dias: DIAS.reduce((acc, d) => ({ ...acc, [d.id]: emptyDayState(d.id) }), {}),
-    semanas: SEMANAS.reduce((acc, s) => ({ ...acc, [s.n]: emptySemanaState(s.n) }), {}),
-    contactos: [],
+    quincenas: {},
   };
 }
 
@@ -39,23 +23,89 @@ function hoyISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function addDiasISO(baseISO, dias) {
-  const d = new Date(baseISO + "T00:00:00");
-  d.setDate(d.getDate() + dias);
-  return d.toISOString().slice(0, 10);
+/* ---------------- quincenas (1–15 y 16–fin de mes) ---------------- */
+
+const MESES_ES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+function quincenaKeyFromDate(d) {
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const half = d.getDate() <= 15 ? 1 : 2;
+  return y + "-" + String(m).padStart(2, "0") + "-" + half;
 }
 
-/* Deriva el mapa {1:bool,...,6:bool} de quincenas completadas a partir de
-   las 12 semanas (una quincena está completa cuando sus 2 semanas lo están).
-   Mantiene compatible mountain.js y las vistas que antes leían state.quincenas. */
-function derivarQuincenas(state) {
-  const map = {};
-  QUINCENAS.forEach((q) => {
-    const semanasQ = SEMANAS.filter((s) => s.q === q.n);
-    map[q.n] = semanasQ.length > 0 && semanasQ.every((s) => state.semanas[s.n] && state.semanas[s.n].done);
-  });
-  return map;
+function quincenaActualKey() {
+  return quincenaKeyFromDate(new Date());
 }
+
+function parseQuincenaKey(key) {
+  const parts = key.split("-").map(Number);
+  return { year: parts[0], month: parts[1], half: parts[2] };
+}
+
+function quincenaBounds(key) {
+  const { year, month, half } = parseQuincenaKey(key);
+  const start = new Date(year, month - 1, half === 1 ? 1 : 16);
+  const end = half === 1 ? new Date(year, month - 1, 15) : new Date(year, month, 0);
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+  return { start, end };
+}
+
+function quincenaLabel(key) {
+  const { year, month, half } = parseQuincenaKey(key);
+  return (half === 1 ? "1–15" : "16–fin") + " de " + MESES_ES[month - 1] + " " + year;
+}
+
+function quincenaAdyacente(key, delta) {
+  const { year, month, half } = parseQuincenaKey(key);
+  let h = half + delta, m = month, y = year;
+  while (h > 2) { h -= 2; m += 1; if (m > 12) { m = 1; y += 1; } }
+  while (h < 1) { h += 2; m -= 1; if (m < 1) { m = 12; y -= 1; } }
+  return y + "-" + String(m).padStart(2, "0") + "-" + h;
+}
+
+function diasRestantesQuincena(key) {
+  const { end } = quincenaBounds(key);
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  return Math.max(0, Math.round((end - hoy) / 86400000) + 1);
+}
+
+function esQuincenaActual(key) {
+  return key === quincenaActualKey();
+}
+
+/* ---------------- listas Izquierda / Derecha por quincena ---------------- */
+
+function nuevaPersona() {
+  return { id: "p" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", puntos: 0, fecha: null, verificado: false, notas: "" };
+}
+
+function emptyQuincena() {
+  return { izquierda: [], derecha: [], otrosIzquierda: 0, otrosDerecha: 0 };
+}
+
+function getQuincena(state, key) {
+  if (!state.quincenas[key]) state.quincenas[key] = emptyQuincena();
+  return state.quincenas[key];
+}
+
+/* Lectura sin mutar el estado (para usar dentro de las vistas). */
+function peekQuincena(state, key) {
+  return state.quincenas[key] || emptyQuincena();
+}
+
+function sumaLinea(quincena, linea, soloVerificado) {
+  const lista = quincena[linea] || [];
+  const base = Number(linea === "izquierda" ? quincena.otrosIzquierda : quincena.otrosDerecha) || 0;
+  return lista.reduce(function (acc, p) {
+    if (soloVerificado && !p.verificado) return acc;
+    return acc + (Number(p.puntos) || 0);
+  }, base);
+}
+
+/* ---------------- rachas / utilidades compartidas ---------------- */
 
 function calcularRacha(racha, ultimaFecha) {
   const hoy = hoyISO();
@@ -65,64 +115,24 @@ function calcularRacha(racha, ultimaFecha) {
   return { racha: 1, ultimaFecha: hoy };
 }
 
-function diasInactivo(ultimaFecha) {
-  if (!ultimaFecha) return 0;
-  const hoy = new Date(hoyISO());
-  const ult = new Date(ultimaFecha);
-  return Math.round((hoy - ult) / 86400000);
-}
-
-function dayProgress(est, dia) {
-  const totalSteps = dia.checklist.length + 1; // +1 por el quiz
-  const doneSteps = est.checks.filter(Boolean).length + (est.quizOk ? 1 : 0);
-  return est.done ? 1 : doneSteps / totalSteps;
-}
-
 function hydrateState(parsed) {
   const base = defaultState();
   if (!parsed) return base;
   const merged = Object.assign({}, base, parsed);
 
-  merged.dias = DIAS.reduce((acc, d) => {
-    const saved = parsed.dias && parsed.dias[d.id];
-    const vacio = emptyDayState(d.id);
-    const checks =
-      saved && Array.isArray(saved.checks) && saved.checks.length === d.checklist.length
-        ? saved.checks
-        : vacio.checks;
-    acc[d.id] = Object.assign({}, vacio, saved || {}, { checks });
+  const quincenasSaved = parsed.quincenas && typeof parsed.quincenas === "object" ? parsed.quincenas : {};
+  merged.quincenas = Object.keys(quincenasSaved).reduce(function (acc, key) {
+    const saved = quincenasSaved[key] || {};
+    const izquierda = Array.isArray(saved.izquierda) ? saved.izquierda.map(function (p) { return Object.assign(nuevaPersona(), p); }) : [];
+    const derecha = Array.isArray(saved.derecha) ? saved.derecha.map(function (p) { return Object.assign(nuevaPersona(), p); }) : [];
+    acc[key] = { izquierda: izquierda, derecha: derecha, otrosIzquierda: Number(saved.otrosIzquierda) || 0, otrosDerecha: Number(saved.otrosDerecha) || 0 };
     return acc;
   }, {});
-
-  merged.semanas = SEMANAS.reduce((acc, s) => {
-    const saved = parsed.semanas && parsed.semanas[s.n];
-    const vacio = emptySemanaState(s.n);
-    const checks =
-      saved && Array.isArray(saved.checks) && saved.checks.length === s.acciones.length
-        ? saved.checks
-        : vacio.checks;
-    acc[s.n] = Object.assign({}, vacio, saved || {}, { checks });
-    return acc;
-  }, {});
-
-  merged.contactos = Array.isArray(parsed.contactos)
-    ? parsed.contactos.map((c) =>
-        Object.assign(
-          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO() },
-          c
-        )
-      )
-    : [];
-
-  merged.premios =
-    Array.isArray(parsed.premios) && parsed.premios.length
-      ? parsed.premios.map((p) => Object.assign({ hito: "", premio: "", imagen: null }, p))
-      : PREMIOS_DEFECTO.map((p) => Object.assign({ imagen: null }, p));
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
-  merged.rangoIndex =
-    typeof parsed.rangoIndex === "number" && parsed.rangoIndex >= 0 && parsed.rangoIndex < RANGOS.length
-      ? parsed.rangoIndex
+  merged.rangoActualIndex =
+    typeof parsed.rangoActualIndex === "number" && parsed.rangoActualIndex >= 0 && parsed.rangoActualIndex < RANGOS_MASTER.length
+      ? parsed.rangoActualIndex
       : 0;
 
   return merged;

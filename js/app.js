@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi recorrido en Cumbre 90");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi camino hacia Imperial Master");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cuántos puntos vas a pedir esta quincena y en qué fecha?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 ¡He alcanzado el rango de \"" + titulo + "\" en mi camino hacia Imperial Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -42,18 +42,15 @@ const App = {
   ui: {
     view: "welcome",
     menuOpen: false,
-    activeDay: null,
-    activeQuincena: null,
     bellOpen: false,
     logro: null,
     confirmReset: false,
     onboardingFoto: null,
-    contactoDraft: null,
-    contactoEditId: null,
-    contactoFiltro: "todos",
-    confirmDeleteContacto: null,
-    pasosVueltos: {},
-    lemaVueltos: {},
+    quincenaKey: null,
+    lineaActiva: "izquierda",
+    personaDraft: null,
+    confirmDeletePersona: null,
+    rangosVueltos: {},
   },
   saveTimer: null,
   toastTimer: null,
@@ -75,27 +72,7 @@ const App = {
     applyTheme(st.dark);
     this.bindEvents();
     this.render();
-    this.notifyReminders();
     registerServiceWorker();
-  },
-
-  notifyReminders() {
-    if (!("Notification" in window)) return;
-    if (!this.state.notifOn || Notification.permission !== "granted") return;
-    const hoy = hoyISO();
-    if (this.state.notifUltimoAviso === hoy) return;
-    const reminders = getReminders(this.state);
-    if (!reminders.length) return;
-    this.state.notifUltimoAviso = hoy;
-    this.persist(true);
-    try {
-      const primero = reminders[0];
-      new Notification("Cumbre 90 — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
-      });
-    } catch (e) {
-      /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
-    }
   },
 
   persist(immediate) {
@@ -139,6 +116,12 @@ const App = {
     const state = this.state, ui = this.ui;
     const isAuth = ui.view !== "welcome" && ui.view !== "onboarding";
 
+    // Garantiza que la quincena que se va a mostrar/editar ya exista en el estado
+    // (los campos data-field de "otros puntos" necesitan el objeto creado de antemano).
+    if (isAuth && (ui.view === "planeador" || ui.view === "listas")) {
+      getQuincena(state, ui.quincenaKey || quincenaActualKey());
+    }
+
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
@@ -150,18 +133,13 @@ const App = {
     switch (ui.view) {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
-      case "home": mainHtml = renderHome(state); break;
-      case "pasos": mainHtml = renderPasos(ui); break;
-      case "lema": mainHtml = renderLema(ui); break;
-      case "contactos": mainHtml = renderContactos(state, ui); break;
-      case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
-      case "plan90": mainHtml = ui.activeQuincena ? renderQuincenaDetalle(state, ui.activeQuincena) : renderPlan90(state); break;
-      case "premios": mainHtml = renderPremios(state); break;
+      case "home": mainHtml = renderHome(state, ui); break;
+      case "plan": mainHtml = renderPlanCompensacion(ui); break;
+      case "planeador": mainHtml = renderPlaneador(state, ui); break;
+      case "listas": mainHtml = renderListas(state, ui); break;
       case "perfil": mainHtml = renderPerfil(state); break;
-      case "logros": mainHtml = renderLogros(state); break;
-      case "cumbre": mainHtml = renderCumbre(state); break;
       case "ajustes": mainHtml = renderAjustes(state, ui); break;
-      default: mainHtml = renderHome(state);
+      default: mainHtml = renderHome(state, ui);
     }
     const container = document.getElementById("view-container");
     container.className = "view-container" + (isAuth ? " view-stack" : "");
@@ -171,7 +149,7 @@ const App = {
 
     let modalHtml = "";
     if (ui.logro) modalHtml = renderLogroModal(state, ui);
-    else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
+    else if (ui.personaDraft) modalHtml = renderPersonaModal(ui);
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
 
@@ -203,7 +181,8 @@ const App = {
       if (handler) handler(arg, el);
     });
 
-    // campos de texto (data-field): actualizan estado sin re-render, para no perder el foco
+    // campos de texto (data-field / data-draft-field / data-roster-field): actualizan
+    // estado sin re-render, para no perder el foco mientras se escribe.
     root.addEventListener("input", (e) => {
       const el = e.target;
       if (el.dataset && el.dataset.field) {
@@ -214,45 +193,22 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
-        // formulario de contacto (App.ui.contactoDraft): tampoco re-renderiza, para no perder el foco
-        setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
-      } else if (el.id === "contacto-search") {
-        // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
-        const q = el.value.trim().toLowerCase();
-        document.querySelectorAll(".contact-row").forEach((row) => {
-          const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
-          row.classList.toggle("hidden", !match);
-        });
+      } else if (el.dataset && el.dataset.draftField && this.ui.personaDraft) {
+        setPath(this.ui.personaDraft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.rosterField) {
+        const q = getQuincena(this.state, el.dataset.qkey);
+        const lista = q[el.dataset.linea] || [];
+        const persona = lista.find((p) => p.id === el.dataset.id);
+        if (persona) {
+          persona[el.dataset.rosterField] = el.dataset.rosterField === "puntos" ? Number(el.value) || 0 : el.value;
+          this.persist();
+        }
       }
-    });
-
-    // montaña hero (Plan de 6 días): revelado tipo "linterna" que sigue al cursor
-    root.addEventListener("pointermove", (e) => {
-      const hero = e.target.closest && e.target.closest(".hero-mountain");
-      if (!hero) return;
-      const rect = hero.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      hero.style.setProperty("--mx", (x - 170) + "px");
-      hero.style.setProperty("--my", (y - 170) + "px");
-      hero.classList.add("hm-active");
-    });
-    root.addEventListener("pointerout", (e) => {
-      const hero = e.target.closest && e.target.closest(".hero-mountain");
-      if (!hero || hero.contains(e.relatedTarget)) return;
-      hero.style.removeProperty("--mx");
-      hero.style.removeProperty("--my");
-      hero.classList.remove("hm-active");
     });
 
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
-      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
-        setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
-        return;
-      }
       if (el.type === "file" && el.dataset && el.dataset.target) {
         const file = el.files && el.files[0];
         if (!file) return;
@@ -310,7 +266,6 @@ const Actions = {
   "close-menu": function () { App.ui.menuOpen = false; App.render(); },
 
   "goto": function (arg) {
-    App.ui.activeDay = null;
     App.ui.view = arg;
     App.ui.menuOpen = false;
     App.ui.confirmReset = false;
@@ -320,160 +275,116 @@ const Actions = {
     window.scrollTo(0, 0);
   },
 
-  "open-day": function (arg) { App.ui.activeDay = Number(arg); App.render(); },
-  "back-to-map": function () { App.ui.activeDay = null; App.render(); },
+  "open-bell": function () { App.ui.bellOpen = true; App.render(); },
+  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.render(); },
 
-  "answer-quiz": function (arg, el) {
-    const dayId = Number(el.dataset.day);
-    const idx = Number(arg);
-    const dia = DIAS.find((d) => d.id === dayId);
-    const est = App.state.dias[dayId];
-    est.quizSel = idx;
-    if (idx === dia.quiz.correcta) est.quizOk = true;
-    App.persist(true);
+  "flip-rango": function (arg) {
+    App.ui.rangosVueltos[arg] = !App.ui.rangosVueltos[arg];
     App.render();
   },
 
-  "toggle-check": function (arg, el) {
-    const dayId = Number(el.dataset.day);
-    const idx = Number(arg);
-    const est = App.state.dias[dayId];
-    est.checks[idx] = !est.checks[idx];
-    App.persist(true);
+  "nav-quincena": function (arg) {
+    const actual = App.ui.quincenaKey || quincenaActualKey();
+    App.ui.quincenaKey = quincenaAdyacente(actual, Number(arg));
     App.render();
   },
 
-  "finish-day": function (arg) {
-    const dayId = Number(arg);
-    const est = App.state.dias[dayId];
-    if (est.done) return;
-    est.done = true;
-    const dia = DIAS.find((d) => d.id === dayId);
-    App.addActividad("Completaste la Etapa: " + dia.etapa);
-    App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 6 Días conquistada.", tipo: "generic" };
-    App.persist(true);
+  "set-linea": function (arg) {
+    App.ui.lineaActiva = arg;
     App.render();
   },
 
-  "share-day": function (arg) {
-    downloadDiaCard(App.state, Number(arg));
-    App.showToast("Tarjeta lista para compartir ✨");
-  },
-
-  "open-quincena": function (arg) { App.ui.activeQuincena = Number(arg); App.render(); },
-  "back-to-quincenas": function () { App.ui.activeQuincena = null; App.render(); },
-
-  "toggle-semana-check": function (arg, el) {
-    const weekN = Number(el.dataset.week);
-    const idx = Number(arg);
-    const est = App.state.semanas[weekN];
-    est.checks[idx] = !est.checks[idx];
-    App.persist(true);
+  "add-persona": function (arg) {
+    App.ui.personaDraft = { linea: arg, id: null, nombre: "", telefono: "", notas: "" };
+    App.ui.confirmDeletePersona = null;
     App.render();
   },
 
-  "finish-semana": function (arg) {
-    const weekN = Number(arg);
-    const est = App.state.semanas[weekN];
-    if (est.done) return;
-    est.done = true;
-    const semana = SEMANAS.find((s) => s.n === weekN);
-    App.addActividad("Completaste la Semana " + weekN + " (" + semana.paso + ")");
-    App.celebrate();
+  "edit-persona": function (arg, el) {
+    const qKey = App.ui.quincenaKey || quincenaActualKey();
+    const linea = el.dataset.linea;
+    const q = getQuincena(App.state, qKey);
+    const p = (q[linea] || []).find((x) => x.id === arg);
+    if (!p) return;
+    App.ui.personaDraft = { linea: linea, id: p.id, nombre: p.nombre, telefono: p.telefono, notas: p.notas };
+    App.ui.confirmDeletePersona = null;
+    App.render();
+  },
 
-    const q = QUINCENAS.find((qq) => qq.n === semana.q);
-    const semanasQ = SEMANAS.filter((s) => s.q === q.n);
-    const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
-    if (quincenaCompleta) {
-      App.addActividad("Conquistaste el Campamento: " + q.nombre);
-      const premio = App.state.premios[q.n - 1];
-      let sub = "Campamento del Plan de 90 Días conquistado.";
-      if (premio) sub += " Desbloqueaste el premio: " + premio.premio + ".";
-      App.ui.logro = { titulo: q.nombre, sub: sub, tipo: "generic" };
+  "cancel-persona": function () {
+    App.ui.personaDraft = null;
+    App.ui.confirmDeletePersona = null;
+    App.render();
+  },
 
-      const totalCompletas = QUINCENAS.filter((qq2) => {
-        const sqs = SEMANAS.filter((s) => s.q === qq2.n);
-        return sqs.every((s) => App.state.semanas[s.n].done);
-      }).length;
-      if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
-        App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "¡Completaste las 6 quincenas del Plan de 90 Días!", tipo: "cumbre" };
+  "save-persona": function () {
+    const d = App.ui.personaDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    const qKey = App.ui.quincenaKey || quincenaActualKey();
+    const q = getQuincena(App.state, qKey);
+    if (d.id) {
+      const p = (q[d.linea] || []).find((x) => x.id === d.id);
+      if (p) {
+        p.nombre = d.nombre;
+        p.telefono = d.telefono;
+        p.notas = d.notas;
       }
-    }
-    App.persist(true);
-    App.render();
-  },
-
-  "set-rango": function (arg) {
-    const i = Number(arg);
-    const avanza = i > App.state.rangoIndex;
-    App.state.rangoIndex = i;
-    if (avanza) {
-      App.celebrate();
-      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nuevo rango alcanzado en Atomy.", tipo: "rango", rangoIndex: i };
-      App.addActividad("Alcanzaste el rango: " + RANGOS[i].nombre);
-    }
-    App.persist(true);
-    App.render();
-  },
-
-  "download-recog-card": function () { downloadRecogCard(App.state); },
-  "download-cert": function () { downloadCertificado(App.state); },
-
-  "toggle-mentor": function () {
-    App.state.mentorMode = !App.state.mentorMode;
-    App.persist();
-    App.render();
-  },
-
-  "toggle-notif": function () {
-    if (!("Notification" in window)) return;
-    if (Notification.permission === "granted") {
-      App.state.notifOn = !App.state.notifOn;
-      App.persist();
-      App.render();
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then((perm) => {
-        App.state.notifOn = perm === "granted";
-        App.persist();
-        App.render();
-      });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      const nueva = Object.assign(nuevaPersona(), { nombre: d.nombre, telefono: d.telefono, notas: d.notas });
+      q[d.linea] = q[d.linea] || [];
+      q[d.linea].push(nueva);
     }
+    App.ui.personaDraft = null;
+    App.persist(true);
+    App.showToast("Persona guardada");
+    App.render();
   },
 
-  "reset-progress": function () {
-    if (!App.ui.confirmReset) {
-      App.ui.confirmReset = true;
+  "delete-persona": function (arg, el) {
+    if (App.ui.confirmDeletePersona !== arg) {
+      App.ui.confirmDeletePersona = arg;
       App.render();
       return;
     }
-    Storage.clear();
-    App.state = defaultState();
-    App.ui.confirmReset = false;
-    App.ui.activeDay = null;
-    App.ui.onboardingFoto = null;
-    App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    const qKey = App.ui.quincenaKey || quincenaActualKey();
+    const linea = el.dataset.linea;
+    const q = getQuincena(App.state, qKey);
+    q[linea] = (q[linea] || []).filter((x) => x.id !== arg);
+    App.ui.confirmDeletePersona = null;
+    App.ui.personaDraft = null;
+    App.persist(true);
+    App.showToast("Persona eliminada");
     App.render();
   },
 
-  "open-bell": function () { App.ui.bellOpen = true; App.render(); },
-  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.render(); },
-  "close-logro-action": function () {
-    const logro = App.ui.logro;
-    App.ui.logro = null;
-    if (logro && logro.tipo === "rango") App.ui.view = "perfil";
-    else if (logro && logro.tipo === "cumbre") App.ui.view = "cumbre";
+  "toggle-verificado": function (arg, el) {
+    const qKey = el.dataset.qkey;
+    const linea = el.dataset.linea;
+    const q = getQuincena(App.state, qKey);
+    const p = (q[linea] || []).find((x) => x.id === arg);
+    if (!p) return;
+    p.verificado = !p.verificado;
+    App.persist(true);
+    App.render();
+  },
+
+  "set-rango-master": function (arg) {
+    const i = Number(arg);
+    const avanza = i > App.state.rangoActualIndex;
+    App.state.rangoActualIndex = i;
+    if (avanza) {
+      App.celebrate();
+      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nuevo rango de Maestría alcanzado en Atomy." };
+      App.addActividad("Alcanzaste el rango: " + RANGOS_MASTER[i].nombre);
+    }
+    App.persist(true);
     App.render();
   },
 
   "share-logro-native": function (arg) {
     const text = shareTextForLogro(arg);
     if (navigator.share) {
-      navigator.share({ title: "Cumbre 90", text: text, url: window.location.href }).catch(() => {});
+      navigator.share({ title: "Cumbre Master", text: text, url: window.location.href }).catch(() => {});
     } else {
       Actions["share-logro-copy"](arg);
     }
@@ -491,87 +402,20 @@ const Actions = {
     }
   },
 
-  "add-contacto": function () {
-    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
-    App.ui.contactoEditId = null;
-    App.render();
-  },
-
-  "edit-contacto": function (arg) {
-    const c = App.state.contactos.find((x) => x.id === arg);
-    if (!c) return;
-    App.ui.contactoDraft = Object.assign({}, c);
-    App.ui.contactoEditId = arg;
-    App.ui.confirmDeleteContacto = null;
-    App.render();
-  },
-
-  "cancel-contacto": function () {
-    App.ui.contactoDraft = null;
-    App.ui.contactoEditId = null;
-    App.ui.confirmDeleteContacto = null;
-    App.render();
-  },
-
-  "save-contacto": function () {
-    const d = App.ui.contactoDraft;
-    if (!d || !d.nombre || !d.nombre.trim()) return;
-    if (App.ui.contactoEditId) {
-      const idx = App.state.contactos.findIndex((x) => x.id === App.ui.contactoEditId);
-      if (idx !== -1) App.state.contactos[idx] = Object.assign({}, App.state.contactos[idx], d);
-    } else {
-      App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO() }, d));
-    }
-    App.ui.contactoDraft = null;
-    App.ui.contactoEditId = null;
-    App.persist(true);
-    App.showToast("Contacto guardado");
-    App.render();
-  },
-
-  "delete-contacto": function (arg) {
-    if (App.ui.confirmDeleteContacto !== arg) {
-      App.ui.confirmDeleteContacto = arg;
+  "reset-progress": function () {
+    if (!App.ui.confirmReset) {
+      App.ui.confirmReset = true;
       App.render();
       return;
     }
-    App.state.contactos = App.state.contactos.filter((x) => x.id !== arg);
-    App.ui.confirmDeleteContacto = null;
-    App.ui.contactoDraft = null;
-    App.ui.contactoEditId = null;
-    App.persist(true);
-    App.showToast("Contacto eliminado");
-    App.render();
-  },
-
-  "quick-seguimiento": function (arg, el) {
-    const dias = Number(el.dataset.days);
-    const c = App.state.contactos.find((x) => x.id === arg);
-    if (!c) return;
-    c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
-    App.persist(true);
-    App.showToast("Seguimiento programado");
-    App.render();
-  },
-
-  "quick-draft-seguimiento": function (arg) {
-    if (!App.ui.contactoDraft) return;
-    App.ui.contactoDraft.proximoSeguimiento = addDiasISO(hoyISO(), Number(arg));
-    App.render();
-  },
-
-  "filter-contactos": function (arg) {
-    App.ui.contactoFiltro = arg;
-    App.render();
-  },
-
-  "flip-paso": function (arg) {
-    App.ui.pasosVueltos[arg] = !App.ui.pasosVueltos[arg];
-    App.render();
-  },
-
-  "flip-lema": function (arg) {
-    App.ui.lemaVueltos[arg] = !App.ui.lemaVueltos[arg];
+    Storage.clear();
+    App.state = defaultState();
+    App.ui.confirmReset = false;
+    App.ui.onboardingFoto = null;
+    App.ui.quincenaKey = null;
+    App.ui.personaDraft = null;
+    App.ui.view = "welcome";
+    App.showToast("Progreso reiniciado");
     App.render();
   },
 };

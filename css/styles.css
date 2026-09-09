@@ -617,6 +617,38 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 .loading-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; color: var(--text-soft); font-size: 14px; }
 
+/* ---- Cumbre Master: tabs, resumen fijo, tabla simple ---- */
+.tabs { display: flex; gap: 6px; background: rgba(255,255,255,0.04); border-radius: 12px; padding: 4px; }
+.tab-btn { flex: 1; text-align: center; padding: 9px 10px; border-radius: 9px; font-size: 13px; font-weight: 700; color: var(--text-soft); }
+.tab-btn.active { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #1B1338; }
+
+.resumen-linea { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.resumen-linea .card { padding: 12px; }
+.resumen-linea .rl-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gold-light); }
+.resumen-linea .rl-value { font-size: 18px; font-weight: 700; margin-top: 3px; }
+.resumen-linea .rl-sub { font-size: 11.5px; color: var(--text-soft); margin-top: 2px; }
+
+.table-simple { width: 100%; overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border-soft); }
+.table-simple table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 480px; }
+.table-simple th { text-align: left; padding: 9px 10px; background: rgba(255,255,255,0.04); color: var(--gold-light); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.table-simple td { padding: 9px 10px; border-top: 1px solid var(--border-soft); color: var(--text); vertical-align: top; }
+.table-simple td.num { white-space: nowrap; font-weight: 600; }
+
+.roster-row .rr-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.roster-row input[type="number"], .roster-row input[type="date"] {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft); color: var(--text);
+  border-radius: 9px; padding: 8px 10px; font-size: 13px; outline: none;
+}
+.roster-row input[type="number"]:focus, .roster-row input[type="date"]:focus { border-color: var(--gold); }
+.roster-check { display: flex; align-items: center; gap: 8px; margin-top: 8px; cursor: pointer; }
+.roster-check .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.roster-check.on .box { background: linear-gradient(180deg, var(--gold-light), var(--gold)); border-color: var(--gold); color: #1B1338; }
+.roster-check .lbl { font-size: 12.5px; font-weight: 600; color: var(--text-soft); }
+.roster-check.on .lbl { color: var(--success); }
+
+.quincena-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.quincena-nav .qn-label { font-size: 13.5px; font-weight: 700; text-align: center; flex: 1; }
+
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
