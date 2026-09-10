@@ -608,6 +608,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .text-center { text-align: center; }
 .mt-0 { margin-top: 0; }
 .row { display: flex; align-items: center; }
+.row.gap-1 { gap: 4px; }
 .row.gap-2 { gap: 8px; }
 .row.gap-3 { gap: 12px; }
 .row.between { justify-content: space-between; }
@@ -616,6 +617,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .small { font-size: 12px; }
 
 .loading-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; color: var(--text-soft); font-size: 14px; }
+
+.escenario-card textarea { transition: border-color .15s ease; }
+.escenario-card textarea:focus { border-color: var(--gold); }
+.avance-dot { width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--border); background: transparent; transition: background .15s ease, border-color .15s ease, transform .1s ease; }
+.avance-dot:active { transform: scale(0.9); }
+.avance-dot.on { background: linear-gradient(180deg, var(--gold-light), var(--gold)); border-color: var(--gold); }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }

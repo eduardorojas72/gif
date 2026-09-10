@@ -151,6 +151,7 @@ const App = {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
+      case "escenario": mainHtml = renderEscenarioVida(state); break;
       case "pasos": mainHtml = renderPasos(ui); break;
       case "lema": mainHtml = renderLema(ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
@@ -251,6 +252,12 @@ const App = {
       const el = e.target;
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
         setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
+        if (el.dataset.draftField === "estado" && el.value === "Première Commande") {
+          const d = this.ui.contactoDraft;
+          if (!d.notaSeguimiento || !d.notaSeguimiento.trim()) d.notaSeguimiento = PRIMER_PEDIDO_NOTA;
+          if (!d.proximoSeguimiento) d.proximoSeguimiento = addDiasISO(hoyISO(), 3);
+          this.render();
+        }
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target) {
@@ -572,6 +579,26 @@ const Actions = {
 
   "flip-lema": function (arg) {
     App.ui.lemaVueltos[arg] = !App.ui.lemaVueltos[arg];
+    App.render();
+  },
+
+  "set-escenario-avance": function (arg, el) {
+    const catId = el.dataset.cat;
+    const lvl = Number(arg);
+    const entry = App.state.escenarioVida[catId];
+    if (!entry) return;
+    entry.avance = entry.avance === lvl ? lvl - 1 : lvl;
+
+    const completo = ESCENARIO_CATEGORIAS.every((c) => App.state.escenarioVida[c.id].avance === 4);
+    if (completo && !App.state.escenarioCompletado) {
+      App.state.escenarioCompletado = true;
+      App.celebrate();
+      App.ui.logro = { titulo: "Scénario de Vie", sub: "Tu as relié les 8 points en un cercle parfait — tu sais maintenant clairement ton « pourquoi ».", tipo: "generic" };
+      App.addActividad("Tu as complété ton Scénario de Vie — cercle parfait !");
+    } else if (!completo) {
+      App.state.escenarioCompletado = false;
+    }
+    App.persist(true);
     App.render();
   },
 };

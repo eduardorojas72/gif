@@ -53,6 +53,9 @@ const ICON_PATHS = {
   copy: '<rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4H5.5A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>',
   hash: '<line x1="9" y1="3.5" x2="7" y2="20.5"/><line x1="17" y1="3.5" x2="15" y2="20.5"/><line x1="3.5" y1="9" x2="20.5" y2="9"/><line x1="3.5" y1="15" x2="20.5" y2="15"/>',
   heart: '<path d="M12 20.5S3.5 15.2 3.5 9.3A4.8 4.8 0 0 1 12 6.4a4.8 4.8 0 0 1 8.5 2.9c0 5.9-8.5 11.2-8.5 11.2Z"/>',
+  plane: '<path d="M3 12.8 20.5 4l-6.3 16.5-2.9-7.3L3 12.8Z"/>',
+  coins: '<circle cx="9" cy="14.5" r="5.5"/><path d="M13.2 5.3a5.5 5.5 0 1 1 0 10.4"/><path d="M6.7 14.5h4.6"/>',
+  car: '<path d="M5 16.5 6.2 11a2 2 0 0 1 1.9-1.4h7.8a2 2 0 0 1 1.9 1.4l1.2 5.5"/><rect x="3.5" y="16.5" width="17" height="3.5" rx="1"/><circle cx="7.5" cy="18.2" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.5" cy="18.2" r="1.3" fill="currentColor" stroke="none"/>',
 };
 
 function Icon(name, opts) {
