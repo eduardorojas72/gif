@@ -502,6 +502,34 @@ const DATA = {
       body: "Pueden costar entre un 30% y un 80% más, y la etiqueta ecológica no equivale automáticamente a saludable (hay galletas o refrescos \"bio\" igual de ultraprocesados). Resérvalos para lo que de verdad te importe o necesites por alergias o intolerancias."
     },
     {
+      title: "Ve al cine o teatro fuera del fin de semana",
+      body: "Muchas salas tienen un \"día del espectador\" entre semana con entradas bastante más baratas que el fin de semana, y las sesiones de mañana o primera hora suelen tener tarifa reducida."
+    },
+    {
+      title: "Hazte con la tarjeta de socio del cine o teatro que frecuentas",
+      body: "Suelen ser gratis, acumulan puntos y dan entradas más baratas en tu cumpleaños o en días especiales. Si vas mucho, un pase mensual ilimitado se amortiza con solo un par de visitas al mes."
+    },
+    {
+      title: "Aprovecha carnés de joven, estudiante o descuentos por edad",
+      body: "Muchas salas aplican descuentos importantes con carné joven, carné de estudiante o para mayores en días concretos: pregunta antes de pagar la entrada a tarifa completa."
+    },
+    {
+      title: "Entra con tu propia bebida o snack si el local lo permite",
+      body: "El margen en palomitas y refrescos de cine suele ser altísimo. En muchos sitios tienes derecho a entrar con comida comprada fuera si el propio local vende ese mismo tipo de producto: infórmate antes."
+    },
+    {
+      title: "Compra entradas de última hora con descuento",
+      body: "Algunas plataformas venden butacas sin vender de la función del mismo día con descuentos importantes sobre el precio de taquilla."
+    },
+    {
+      title: "En el teatro, un asiento más alto sale mucho más barato",
+      body: "Optar por el anfiteatro o el \"gallinero\" en vez del patio de butacas puede costar la mitad o menos, con una pérdida de visión mínima en la mayoría de salas."
+    },
+    {
+      title: "Prueba las filmotecas y el teatro alternativo",
+      body: "Las filmotecas públicas y las salas de teatro independiente ofrecen cine clásico o dramaturgia de calidad a precios mucho más bajos que los grandes circuitos comerciales."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },

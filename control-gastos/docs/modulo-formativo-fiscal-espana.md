@@ -277,6 +277,15 @@ Vía administrativa formal cuando un establecimiento (restaurante, tienda, hotel
 - **Tramitación:** quedarse con la copia blanca y la del consumidor (nunca dejar la blanca en el local); presentar la copia blanca en la OMIC municipal o en la sede electrónica de la Comunidad Autónoma, adjuntando ticket/factura y pruebas.
 - **Si el establecimiento se niega a entregarla:** es una infracción administrativa grave con multas elevadas para el local. En ese caso: no discutir, llamar a la Policía Local (112/092) indicando que el establecimiento se niega a facilitar la Hoja de Reclamaciones obligatoria — la patrulla puede levantar atestado e inspeccionar el local, lo que suele derivar en sanción directa.
 
+## 11. Ocio cultural más barato (España)
+
+- **Bono Cultural Joven:** 200 € para quienes cumplen 18 años, destinados a artes escénicas, cine, música, libros, etc.
+- **Fiesta del Cine:** evento bianual con entradas a ≈3,50 € en la gran mayoría de salas del país.
+- **Cine Senior:** entradas a 2 € en días seleccionados para mayores de 65 años, en programas impulsados por administraciones públicas.
+- **Derecho a entrar con comida propia al cine:** la normativa de consumo española ampara al usuario a entrar con su propia bebida y comida compradas fuera, siempre que el propio cine venda ese mismo tipo de producto en su ambigú (el argumento habitual es que cobrar por "no dejar entrar comida externa" cuando se vende ese producto dentro se considera una práctica abusiva).
+- **Redes de teatros públicos** (Centro Dramático Nacional, Teatros del Canal, teatros municipales): tarifas subvencionadas un 40-60% más baratas que la cartelera comercial.
+- **Filmotecas autonómicas/nacionales** (ej. Filmoteca Española / Cine Doré en Madrid, Filmoteca de Catalunya): proyecciones en versión original y clásicos a 2-4 € la entrada.
+
 ---
 
 *Compilado a partir de mensajes del usuario durante el desarrollo de Hucha (sept. 2026). Revisar y actualizar cifras contra fuente oficial antes de cualquier uso futuro.*
