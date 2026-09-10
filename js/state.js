@@ -16,6 +16,7 @@ function defaultState() {
     ultimaFecha: null,
     actividad: [],
     quincenas: {},
+    catalogoProductos: emptyCatalogoProductos(),
   };
 }
 
@@ -83,7 +84,25 @@ function nuevaPersona() {
 }
 
 function emptyQuincena() {
-  return { izquierda: [], derecha: [], otrosIzquierda: 0, otrosDerecha: 0, reunionHecha: false };
+  return { izquierda: [], derecha: [], otrosIzquierda: 0, otrosDerecha: 0, reunionHecha: false, compras: {} };
+}
+
+function nuevoProductoCatalogo(seed) {
+  seed = seed || {};
+  return {
+    id: seed.id || "prod" + Math.random().toString(36).slice(2, 9),
+    categoria: seed.categoria || "Mis productos",
+    nombre: seed.nombre || "",
+    pv: seed.pv || 0,
+    precio: seed.precio || 0,
+    probado: false,
+  };
+}
+
+function emptyCatalogoProductos() {
+  return CATALOGO_PRODUCTOS_ATOMY.map(function (p, i) {
+    return nuevoProductoCatalogo({ id: "prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
+  });
 }
 
 function getQuincena(state, key) {
@@ -125,9 +144,19 @@ function hydrateState(parsed) {
     const saved = quincenasSaved[key] || {};
     const izquierda = Array.isArray(saved.izquierda) ? saved.izquierda.map(function (p) { return Object.assign(nuevaPersona(), p); }) : [];
     const derecha = Array.isArray(saved.derecha) ? saved.derecha.map(function (p) { return Object.assign(nuevaPersona(), p); }) : [];
-    acc[key] = { izquierda: izquierda, derecha: derecha, otrosIzquierda: Number(saved.otrosIzquierda) || 0, otrosDerecha: Number(saved.otrosDerecha) || 0, reunionHecha: !!saved.reunionHecha };
+    acc[key] = {
+      izquierda: izquierda, derecha: derecha,
+      otrosIzquierda: Number(saved.otrosIzquierda) || 0, otrosDerecha: Number(saved.otrosDerecha) || 0,
+      reunionHecha: !!saved.reunionHecha,
+      compras: saved.compras && typeof saved.compras === "object" ? saved.compras : {},
+    };
     return acc;
   }, {});
+
+  merged.catalogoProductos =
+    Array.isArray(parsed.catalogoProductos) && parsed.catalogoProductos.length
+      ? parsed.catalogoProductos.map(function (p) { return Object.assign(nuevoProductoCatalogo(), p); })
+      : emptyCatalogoProductos();
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoActualIndex =

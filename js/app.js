@@ -51,6 +51,7 @@ const App = {
     personaDraft: null,
     confirmDeletePersona: null,
     rangosVueltos: {},
+    calculadoraAbierta: false,
   },
   saveTimer: null,
   toastTimer: null,
@@ -374,6 +375,28 @@ const Actions = {
   "toggle-reunion-enfoque": function (arg, el) {
     const q = getQuincena(App.state, el.dataset.qkey);
     q.reunionHecha = !q.reunionHecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-calculadora-productos": function () {
+    App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
+    App.render();
+  },
+  "toggle-producto-probado": function (arg) {
+    const p = App.state.catalogoProductos[Number(arg)];
+    if (!p) return;
+    p.probado = !p.probado;
+    App.persist(true);
+    App.render();
+  },
+  "add-producto": function () {
+    App.state.catalogoProductos.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    App.persist(true);
+    App.render();
+  },
+  "delete-producto": function (arg) {
+    App.state.catalogoProductos.splice(Number(arg), 1);
     App.persist(true);
     App.render();
   },
