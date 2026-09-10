@@ -53,6 +53,29 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_INTRO =
+  "Il tuo Scenario di Vita è la base di tutto il tuo percorso: prima di imparare la strada, definisci la tua destinazione. Prima di lavorare tanto per lavorare, decidi per cosa. Scrivi i tuoi obiettivi in ciascuna delle 8 aree della tua vita equilibrata — più sono chiari e dettagliati (cifre, luoghi, date), più forza ti daranno nei giorni difficili.";
+
+const ESCENARIO_LEMA = "Determina i tuoi sogni! Sii straordinario o sii estremo.";
+
+const ESCENARIO_PASOS = [
+  "Scrivi i tuoi obiettivi e sogni in ogni categoria, nel modo più dettagliato e concreto possibile: cifre, date, luoghi.",
+  "Segna il tuo livello di avanzamento in ogni area toccando i punti del grafico — più lontano dal centro, più vicino sei al tuo obiettivo.",
+  "Torna qui spesso e aggiorna i tuoi progressi: vederli crescere ti mantiene concentrato sul tuo «perché».",
+  "Continua a lavorare finché non unisci tutti i punti in un cerchio perfetto — quel giorno avrai raggiunto il tuo Scenario di Vita.",
+];
+
+const ESCENARIO_CATEGORIAS = [
+  { id: "casa", label: "Casa", icon: "home", pilar: "Vivere bene", ejemplo: "Attualmente vivo in un appartamento di [dimensione], ma entro il [data] avrò una casa di proprietà di [dimensione] dal valore di oltre $[importo]." },
+  { id: "auto", label: "Auto", icon: "car", pilar: "Vivere bene", ejemplo: "Attualmente ho una [marca e modello], ma comprerò una [marca e modello] dal valore di oltre $[importo] entro il [data]." },
+  { id: "viajes", label: "Viaggi", icon: "plane", pilar: "Amare", ejemplo: "Porterò il mio/la mia partner in un viaggio di [numero] giorni a [destinazione] come premio per la mia promozione di grado, entro il [data]." },
+  { id: "familia", label: "Famiglia", icon: "heart", pilar: "Amare", ejemplo: "Invierò [un prodotto per il benessere] e $[importo] al mese ai miei genitori, a partire dal [data]." },
+  { id: "donacion", label: "Donazione", icon: "gift", pilar: "Contribuire", ejemplo: "Donerò $[importo] al mese a [una causa o fondazione], a partire dal [data]." },
+  { id: "educacion", label: "Istruzione", icon: "book-open", pilar: "Imparare", ejemplo: "Manderò i miei figli a studiare [corso di laurea o paese] entro il [data]." },
+  { id: "tiempolibre", label: "Svago", icon: "sparkles", pilar: "Vivere bene", ejemplo: "Attualmente ho quasi nessun tempo libero, ma praticherò [uno sport o un hobby] [numero] volte a settimana per la mia salute, e gareggerò in [un torneo o obiettivo] entro il [data]." },
+  { id: "negocio", label: "Business", icon: "trending-up", pilar: "Vivere bene", ejemplo: "Attualmente guadagno $[importo] al mese come [il mio grado attuale], e salirò a [il grado successivo] guadagnando $[importo] al mese entro il [data]." },
+];
+
 const LEMA_ATOMY = {
   intro: "Il Motto di Atomy non è semplicemente un insieme di parole motivazionali, ma il nucleo filosofico e spirituale su cui si fonda l'intera visione, gestione e cultura organizzativa dell'azienda. Formulato dal Presidente Han-Gill Park, stabilisce il quadro etico su come le persone devono comportarsi, sia negli affari che nella vita quotidiana.",
   exclamacion: "Custodire l'anima! Creare la visione! Seguire la fede! Servire con umiltà! Andiamo, andiamo, andiamo!",
@@ -536,7 +559,9 @@ const SEMANAS = [
 ];
 
 const CONTACTO_NIVELES = ["Caldo", "Tiepido", "Freddo"];
-const CONTACTO_ESTADOS = ["Da contattare", "Contattato", "Presentato", "Follow-up", "Partner", "Consumatore", "Scartato"];
+const CONTACTO_ESTADOS = ["Da contattare", "Contattato", "Presentato", "Primo Ordine", "Follow-up", "Partner", "Consumatore", "Scartato"];
+
+const PRIMER_PEDIDO_NOTA = "L'ordine è arrivato? Come si è trovato/a con i prodotti? A chi potrebbe consigliarlo?";
 
 const PREMIOS_DEFECTO = [
   { hito: "Raggiungere 300.000 PVP", premio: "Set 4 Passi in regalo", imagen: null },
