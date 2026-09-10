@@ -267,6 +267,8 @@ const UI = {
       expensesSnapshot: d.expensesSnapshot || {},
       currentSavingsMonthly: d.currentSavingsMonthly != null ? d.currentSavingsMonthly : null,
       archetypeKey: LOGIC.computeArchetype(d).key,
+      savingsBehavior: d.savingsBehavior || "pasivo",
+      incomeExpenseProfileKey: LOGIC.computeIncomeExpenseProfile(d).key,
       onboardingDone: true
     });
     STORE.saveSettings(settings);
@@ -381,6 +383,12 @@ const UI = {
         <p class="muted-small">No la meta ideal, sino lo que de verdad consigues guardar ahora mismo.</p>
         <form class="form ob-form" data-next>
           <input type="number" name="currentSavingsMonthly" min="0" step="0.01" value="${d.currentSavingsMonthly || ""}" placeholder="Ej. 50" required />
+          <label>¿Qué haces con lo que ahorras?
+            <select name="savingsBehavior">
+              <option value="pasivo" ${(d.savingsBehavior || "pasivo") === "pasivo" ? "selected" : ""}>Lo dejo en la cuenta o en efectivo</option>
+              <option value="invierte" ${d.savingsBehavior === "invierte" ? "selected" : ""}>Lo invierto o lo pongo a producir</option>
+            </select>
+          </label>
           ${this.obNavHTML()}
         </form>`,
       savingsGoalMonthly: () => `
@@ -441,6 +449,7 @@ const UI = {
         </form>`,
       archetype: () => {
         const result = LOGIC.computeArchetype(d);
+        const profile = LOGIC.computeIncomeExpenseProfile(d);
         return `
           <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
           <div class="archetype-reveal">
@@ -448,6 +457,12 @@ const UI = {
             <p class="archetype-kicker">Tu arquetipo financiero es...</p>
             <h1>${result.label}</h1>
             <p>${result.description}</p>
+          </div>
+          <div class="risk-badge risk-badge--${profile.key}">
+            <span class="risk-badge-label">Perfil de ingreso y gasto</span>
+            <strong>${profile.label}</strong>
+            <span class="risk-badge-level">Riesgo: ${profile.risk}</span>
+            <p>${profile.description}</p>
           </div>
           <div class="modal-actions">
             <button type="button" class="btn btn-ghost" id="ob-back">Atrás</button>
@@ -843,6 +858,18 @@ const UI = {
                 <strong>${arch.label}</strong>
                 <p class="muted-small">${arch.description}</p>
               </div>
+            </div>`;
+        })() : ""}
+
+        ${s.incomeExpenseProfileKey ? (() => {
+          const profile = DATA.incomeExpenseProfiles.find((p) => p.key === s.incomeExpenseProfileKey);
+          if (!profile) return "";
+          return `
+            <div class="risk-badge risk-badge--${profile.key}">
+              <span class="risk-badge-label">Perfil de ingreso y gasto</span>
+              <strong>${profile.label}</strong>
+              <span class="risk-badge-level">Riesgo: ${profile.risk}</span>
+              <p>${profile.description}</p>
             </div>`;
         })() : ""}
 

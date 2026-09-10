@@ -129,6 +129,41 @@ const DATA = {
     }
   ],
 
+  // Perfiles según la relación ingreso/gasto (complementa al arquetipo con una
+  // lectura más directa del nivel de riesgo financiero actual).
+  incomeExpenseProfiles: [
+    {
+      key: "endeudado",
+      label: "En situación de endeudamiento",
+      risk: "Muy alto",
+      description: "Gastas más de lo que ganas: tu tasa de ahorro es negativa y cubres la diferencia con tarjetas, préstamos o ayuda externa. Antes de ahorrar, lo primero es frenar la deuda que sigue creciendo."
+    },
+    {
+      key: "al_dia",
+      label: "Al día / de mes en mes",
+      risk: "Alto",
+      description: "Tus ingresos cubren justo tus gastos: no generas deuda nueva, pero tampoco tienes margen para imprevistos o emergencias."
+    },
+    {
+      key: "ahorrador_pasivo",
+      label: "Ahorrador pasivo",
+      risk: "Bajo (riesgo de inflación)",
+      description: "Gastas menos de lo que ganas, pero el excedente se queda quieto en la cuenta o en efectivo: tienes seguridad, pero ese dinero va perdiendo poder adquisitivo poco a poco."
+    },
+    {
+      key: "inversor",
+      label: "Acumulador eficiente / inversor",
+      risk: "Bajo / controlado",
+      description: "Gastas menos de lo que ganas y destinas ese excedente a activos, fondos o proyectos: estás construyendo patrimonio a largo plazo."
+    },
+    {
+      key: "frugal_fire",
+      label: "Frugal / estilo FIRE",
+      risk: "Muy bajo",
+      description: "Gastas muy por debajo de tus ingresos, ahorrando el 50% o más: buscas la independencia financiera o la jubilación anticipada."
+    }
+  ],
+
   // Consejos de ahorro originales, inspirados en principios de educación financiera
   // conocidos (regla 50/30/20, automatización del ahorro, aversión a la pérdida, etc.)
   tips: [

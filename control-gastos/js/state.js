@@ -37,7 +37,9 @@ const STORE = {
     workGoal: "",
     expensesSnapshot: {},
     currentSavingsMonthly: null,
-    archetypeKey: null
+    archetypeKey: null,
+    savingsBehavior: "pasivo", // "pasivo" | "invierte"
+    incomeExpenseProfileKey: null
   },
 
   _read(key, fallback) {
@@ -463,6 +465,27 @@ const LOGIC = {
 
     const archetype = DATA.archetypes.find((a) => a.key === key) || DATA.archetypes[DATA.archetypes.length - 1];
     return Object.assign({ expenseRatio, savingsRatio, dailyWorkHours, incomeGap, totalExpenses }, archetype);
+  },
+
+  // ---------- Perfil según ingreso vs. gasto ----------
+  // Clasificación más directa (endeudado / al día / ahorrador pasivo /
+  // inversor / frugal-FIRE) basada solo en cuánto gastas frente a cuánto
+  // ganas, con el destino del ahorro como matiz entre ahorrador pasivo e
+  // inversor. Complementa al arquetipo con una lectura de nivel de riesgo.
+  computeIncomeExpenseProfile(d) {
+    const income = Number(d.monthlyIncome) || 0;
+    const expenses = d.expensesSnapshot || {};
+    const totalExpenses = Object.values(expenses).reduce((sum, v) => sum + (Number(v) || 0), 0);
+    const ratio = income ? totalExpenses / income : 0;
+
+    let key;
+    if (ratio > 1.02) key = "endeudado";
+    else if (ratio >= 0.98) key = "al_dia";
+    else if (ratio < 0.5) key = "frugal_fire";
+    else key = d.savingsBehavior === "invierte" ? "inversor" : "ahorrador_pasivo";
+
+    const profile = DATA.incomeExpenseProfiles.find((p) => p.key === key) || DATA.incomeExpenseProfiles[1];
+    return Object.assign({ ratio }, profile);
   },
 
   // Genera un movimiento de gasto simulado, como si viniera de una tarjeta

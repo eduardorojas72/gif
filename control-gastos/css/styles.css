@@ -437,6 +437,28 @@ h1, h2, h3 {
 .archetype-card-kicker { color: var(--text-soft); font-size: 11px; margin: 0; text-transform: uppercase; letter-spacing: 0.04em; }
 .archetype-card strong { display: block; margin: 2px 0; }
 
+/* ---------- Perfil de ingreso y gasto (nivel de riesgo) ---------- */
+.risk-badge {
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+}
+.risk-badge-label { display: block; color: var(--text-soft); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
+.risk-badge strong { display: block; font-size: 15px; }
+.risk-badge-level { display: inline-block; font-size: 11.5px; font-weight: 700; margin: 4px 0 6px; }
+.risk-badge p { margin: 0; font-size: 13px; color: var(--text-soft); }
+.risk-badge--endeudado { border-left-color: var(--danger); background: rgba(192, 57, 43, 0.08); }
+.risk-badge--endeudado .risk-badge-level { color: var(--danger); }
+.risk-badge--al_dia { border-left-color: var(--gold); background: rgba(201, 139, 18, 0.08); }
+.risk-badge--al_dia .risk-badge-level { color: var(--gold); }
+.risk-badge--ahorrador_pasivo { border-left-color: var(--gold); background: rgba(201, 139, 18, 0.06); }
+.risk-badge--ahorrador_pasivo .risk-badge-level { color: var(--gold); }
+.risk-badge--inversor { border-left-color: var(--accent); background: rgba(23, 98, 75, 0.08); }
+.risk-badge--inversor .risk-badge-level { color: var(--accent); }
+.risk-badge--frugal_fire { border-left-color: var(--income); background: rgba(27, 138, 90, 0.08); }
+.risk-badge--frugal_fire .risk-badge-level { color: var(--income); }
+
 /* ---------- Plan de mañana ---------- */
 .plan-banner {
   display: flex;
