@@ -474,6 +474,22 @@ const DATA = {
       body: "Revisa que no te cobren suplementos que no figuraban en el menú (cubierto, pan, servicio de mesa) ni precios distintos a los anunciados en la carta o el escaparate."
     },
     {
+      title: "La montaña suele salir más barata que la playa",
+      body: "Fuera de temporada de esquí, el alojamiento de montaña baja mucho de precio y el senderismo es gratis; en la costa, además del alojamiento caro en temporada alta, se suman gastos \"invisibles\" como tumbonas, parking y precios inflados en los chiringuitos."
+    },
+    {
+      title: "Compara camping o apartamento con cocina frente al hotel",
+      body: "Un camping o un apartamento con cocina reduce muchísimo el gasto en comida frente a comer fuera cada día o un régimen cerrado de hotel; a cambio, si vas de parcela puede que necesites invertir en tienda, sacos o cocina portátil si no los tienes ya."
+    },
+    {
+      title: "Aplica el \"efecto radio de 15 km\"",
+      body: "Alojarte 10-15 minutos en coche del centro turístico principal (o de la playa) puede bajar el precio del alojamiento entre un 30% y un 50%."
+    },
+    {
+      title: "Haz la compra básica antes de salir de viaje",
+      body: "Los supermercados de zonas muy turísticas suelen tener sobreprecio en temporada alta. Comprar lo básico (comida, droguería) en tu súper habitual antes de salir ahorra bastante."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
