@@ -5,6 +5,7 @@
 
 const MENU_ITEMS = [
   { id: "home", label: "Home", icon: "home" },
+  { id: "escenario", label: "Life Scenario", icon: "compass" },
   { id: "perfil", label: "My Profile", icon: "user-badge" },
   { id: "pasos", label: "The 8 Steps", icon: "footprints" },
   { id: "lema", label: "Atomy's Motto", icon: "heart" },
@@ -269,6 +270,8 @@ function renderHome(state) {
     '<div class="muted small" style="margin-top:12px">' + mensaje + "</div>" +
     "</div>" +
 
+    escenarioVidaHomeCardHTML(state) +
+
     proximosHtml +
 
     mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
@@ -282,6 +285,81 @@ function renderHome(state) {
     (cumbreLograda
       ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' You reached the Summit! View achievement</button>'
       : "")
+  );
+}
+
+/* ---------------- Life Scenario ---------------- */
+
+function escenarioVidaHomeCardHTML(state) {
+  const esc = state.escenarioVida;
+  const iniciadas = ESCENARIO_CATEGORIAS.filter(function (c) { return (esc[c.id] || {}).avance > 0 || ((esc[c.id] || {}).meta || "").trim(); }).length;
+  const completas = ESCENARIO_CATEGORIAS.filter(function (c) { return (esc[c.id] || {}).avance === 4; }).length;
+
+  if (state.escenarioCompletado) {
+    return (
+      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--gold);background:var(--accent-soft)" data-action="goto" data-arg="escenario">' +
+      '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Life Scenario</span></div>' +
+      '<div style="font-size:14.5px;font-weight:700;margin-top:6px">🏆 Perfect circle! You reached your 8 goals.</div>' +
+      '<div class="muted small" style="margin-top:2px">Tap to review them or set yourself bigger goals.</div>' +
+      "</button>"
+    );
+  }
+  if (iniciadas === 0) {
+    return (
+      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--accent)" data-action="goto" data-arg="escenario">' +
+      '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--accent)" }) + '<span style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Before you begin</span></div>' +
+      '<div style="font-size:14.5px;font-weight:700;margin-top:6px">Define your Life Scenario — your “why”</div>' +
+      '<div class="muted small" style="margin-top:2px">It\'s the first step of Step 1. Determine your dreams across 8 areas of your life before moving forward.</div>' +
+      "</button>"
+    );
+  }
+  const pct = Math.round((completas / ESCENARIO_CATEGORIAS.length) * 100);
+  return (
+    '<button class="card card-hover" style="text-align:left;width:100%" data-action="goto" data-arg="escenario">' +
+    '<div class="row between"><div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--accent)" }) + '<span style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Life Scenario</span></div>' +
+    '<span class="muted small">' + completas + "/" + ESCENARIO_CATEGORIAS.length + "</span></div>" +
+    '<div class="progressbar gold thin" style="margin-top:8px"><div style="width:' + Math.max(pct, 4) + '%"></div></div>' +
+    '<div class="muted small" style="margin-top:8px">Keep completing your goals until you reach the perfect circle.</div>' +
+    "</button>"
+  );
+}
+
+function escenarioCategoriaHTML(cat, esc) {
+  const data = esc[cat.id] || { meta: "", avance: 0 };
+  const dots = [1, 2, 3, 4].map(function (lvl) {
+    const on = lvl <= data.avance;
+    return '<button class="avance-dot' + (on ? " on" : "") + '" data-action="set-escenario-avance" data-cat="' + cat.id + '" data-arg="' + lvl + '" aria-label="Level ' + lvl + '"></button>';
+  }).join("");
+  return (
+    '<div class="card escenario-card">' +
+    '<div class="row gap-3" style="align-items:flex-start">' +
+    medallionHTML(cat.icon, 40) +
+    '<div style="flex:1;min-width:0">' +
+    '<div style="font-weight:700;font-size:14.5px">' + escapeHtml(cat.label) + "</div>" +
+    '<div class="muted small" style="margin-top:1px;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px">' + escapeHtml(cat.pilar) + "</div>" +
+    '<div class="row gap-1" style="margin-top:8px">' + dots + "</div>" +
+    "</div></div>" +
+    '<textarea rows="2" placeholder="' + escapeHtml(cat.ejemplo) + '" data-field="escenarioVida.' + cat.id + '.meta" ' +
+    'style="margin-top:10px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(data.meta) + "</textarea>" +
+    "</div>"
+  );
+}
+
+function renderEscenarioVida(state) {
+  const esc = state.escenarioVida;
+  const completas = ESCENARIO_CATEGORIAS.filter(function (c) { return (esc[c.id] || {}).avance === 4; }).length;
+  const cards = ESCENARIO_CATEGORIAS.map(function (c) { return escenarioCategoriaHTML(c, esc); }).join("");
+  const pasos = "<ol style=\"margin:0;padding-left:18px\">" + ESCENARIO_PASOS.map(function (p) { return '<li class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(p) + "</li>"; }).join("") + "</ol>";
+
+  return (
+    sectionHeaderHTML("Life Scenario", ESCENARIO_LEMA, "compass") +
+    '<div class="card"><p class="small" style="line-height:1.6">' + escapeHtml(ESCENARIO_INTRO) + "</p></div>" +
+    '<div class="card" style="text-align:center">' +
+    escenarioRadarSVG(ESCENARIO_CATEGORIAS, esc) +
+    '<div class="muted small" style="margin-top:6px">' + completas + " of " + ESCENARIO_CATEGORIAS.length + " goals in the perfect circle</div>" +
+    "</div>" +
+    '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">How do I fill it in?</div>' + pasos + "</div>" +
+    '<div class="view-stack gap-sm">' + cards + "</div>"
   );
 }
 
@@ -772,11 +850,12 @@ function renderContactos(state, ui) {
           contactoNivelBadge(c.nivel) +
           "</div>" +
           '<div class="row between" style="margin-top:10px;align-items:center">' +
-          '<span class="small" style="font-weight:600">' + escapeHtml(c.estado) + "</span>" +
+          '<span class="small" style="font-weight:600' + (c.estado === "First Order" ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
           '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
           "</div>" +
           (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(c.notaSeguimiento) + '”</div>' : "") +
           '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="3">+3 d</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="7">+1 wk</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="30">+1 mo</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="60">+2 mo</button>' +
@@ -827,6 +906,7 @@ function renderContactoModal(ui) {
     '<div class="field"><label>Notes</label><textarea rows="2" data-draft-field="notas" placeholder="How you met, interests...">' + escapeHtml(d.notas) + "</textarea></div>" +
     '<div class="field"><label>Next follow-up</label><input type="date" data-draft-field="proximoSeguimiento" value="' + (d.proximoSeguimiento || "") + '"></div>' +
     '<div class="row gap-2">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="3">+3 days</button>' +
     '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="7">+1 week</button>' +
     '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="30">+1 month</button>' +
     '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="60">+2 months</button>' +

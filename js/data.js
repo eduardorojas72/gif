@@ -53,6 +53,29 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_INTRO =
+  "Your Life Scenario is the foundation of your whole journey: before you learn the route, define your destination. Before working just to work, decide what for. Write your goals in each of the 8 areas of your balanced life — the clearer and more detailed they are (numbers, places, dates), the more strength they'll give you on the hard days.";
+
+const ESCENARIO_LEMA = "Determine your dreams! Be extraordinary or be extreme.";
+
+const ESCENARIO_PASOS = [
+  "Write your goals and dreams for each category, as specifically and concretely as possible: numbers, dates, places.",
+  "Mark your progress in each area by tapping the points on the chart — the farther from the center, the closer you are to your goal.",
+  "Come back often and update your progress: watching it grow keeps you focused on your “why.”",
+  "Keep working until you connect all the points into a perfect circle — that's the day you'll have achieved your Life Scenario.",
+];
+
+const ESCENARIO_CATEGORIAS = [
+  { id: "casa", label: "House", icon: "home", pilar: "Live Well", ejemplo: "Right now I live in a [size] apartment, but by [date] I'll own a [size] house worth more than $[amount]." },
+  { id: "auto", label: "Car", icon: "car", pilar: "Live Well", ejemplo: "Right now I drive a [make and model], but I'll buy a [make and model] worth more than $[amount] by [date]." },
+  { id: "viajes", label: "Travel", icon: "plane", pilar: "Love", ejemplo: "I'll take my partner on a [number]-day trip to [destination] as a reward for my rank promotion, by [date]." },
+  { id: "familia", label: "Family", icon: "heart", pilar: "Love", ejemplo: "I'll send [a wellness product] and $[amount] a month to my parents, starting [date]." },
+  { id: "donacion", label: "Donation", icon: "gift", pilar: "Contribute", ejemplo: "I'll donate $[amount] a month to [a cause or foundation], starting [date]." },
+  { id: "educacion", label: "Education", icon: "book-open", pilar: "Learn", ejemplo: "I'll send my kids to study [degree or country] by [date]." },
+  { id: "tiempolibre", label: "Leisure", icon: "sparkles", pilar: "Live Well", ejemplo: "Right now I barely have any free time, but I'll [practice a sport or hobby] [number] times a week for my health, and compete in [a tournament or goal] by [date]." },
+  { id: "negocio", label: "Business", icon: "trending-up", pilar: "Live Well", ejemplo: "Right now I earn $[amount] a month as [my current rank], and I'll move up to [the next rank] earning $[amount] a month by [date]." },
+];
+
 const LEMA_ATOMY = {
   intro: "Atomy's Motto is not simply a set of motivational words — it is the philosophical and spiritual core on which the company's entire vision, management, and organizational culture is built. Formulated by President Han-Gill Park, it sets out the ethical framework for how people should conduct themselves, both in business and in daily life.",
   exclamacion: "Cherish the Spirit! Create the Vision! Follow the Faith! Serve in Humility! Let's go, let's go, let's go!",
@@ -536,7 +559,9 @@ const SEMANAS = [
 ];
 
 const CONTACTO_NIVELES = ["Hot", "Warm", "Cold"];
-const CONTACTO_ESTADOS = ["To contact", "Contacted", "Presented", "Follow-up", "Partner", "Consumer", "Discarded"];
+const CONTACTO_ESTADOS = ["To contact", "Contacted", "Presented", "First Order", "Follow-up", "Partner", "Consumer", "Discarded"];
+
+const PRIMER_PEDIDO_NOTA = "Did the order arrive? How did they feel about it? Who could they recommend it to?";
 
 const PREMIOS_DEFECTO = [
   { hito: "Reach 300,000 PPV", premio: "Set of 4 Steps gift", imagen: null },
