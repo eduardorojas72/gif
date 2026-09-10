@@ -637,6 +637,7 @@ const AGENDA_TIPOS = [
   { id: "presentacion", label: "Presentación de producto", icon: "presentation" },
   { id: "registro", label: "Registro de nuevo socio", icon: "user-badge" },
   { id: "formacion", label: "Formación", icon: "book-open" },
+  { id: "video-rrss", label: "Videos de producto (RRSS)", icon: "video" },
 ];
 
 const BUCKET_LIST_EJEMPLOS = [
