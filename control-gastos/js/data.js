@@ -390,6 +390,34 @@ const DATA = {
       body: "Sube las persianas en las horas de sol para aprovechar el calor natural y bájalas al anochecer para crear una capa aislante frente al exterior; si tu ventana oscilobatiente tiene modo invierno (un perno en el canto de la hoja), gíralo para que el cierre apriete más en los meses fríos."
     },
     {
+      title: "Evita el pago contra reembolso en compras dudosas",
+      body: "El repartidor no verifica el contenido del paquete ni te deja abrirlo antes de cobrar, y una vez entregado el dinero no hay forma de recuperarlo. Paga con tarjeta o PayPal siempre que puedas: tienes derecho a reclamar si el producto no llega o no coincide con lo comprado."
+    },
+    {
+      title: "Usa tarjeta virtual o PayPal en tiendas que no conoces",
+      body: "Una tarjeta virtual con el importe justo (o que se autodestruye tras el uso) limita el daño si la web resulta fraudulenta; con PayPal, además, puedes abrir una disputa y recuperar el dinero si el vendedor no responde."
+    },
+    {
+      title: "Antes de comprar en una tienda desconocida, revisa 4 cosas",
+      body: "Que tenga aviso legal con razón social y dirección física, que la URL empiece por https:// (desconfía de dominios raros que imitan marcas conocidas), que haya un contacto claro y verificable, y que el precio no sea sospechosamente bajo frente al resto del mercado."
+    },
+    {
+      title: "Comprueba el histórico de precios antes de fiarte de una oferta",
+      body: "Algunas tiendas suben el precio semanas antes para luego \"rebajarlo\" de vuelta al de siempre. Un vistazo al histórico del producto evita caer en descuentos que no son reales."
+    },
+    {
+      title: "Aprovecha cupones y el truco del carrito abandonado",
+      body: "Busca códigos de descuento antes de pagar y suscríbete a la newsletter para el descuento de bienvenida (puedes darte de baja después). Dejar el carrito lleno sin terminar la compra también suele generar un cupón extra a las 24-48 horas."
+    },
+    {
+      title: "Navega en incógnito al buscar vuelos o viajes",
+      body: "Algunas webs de viajes suben el precio si detectan búsquedas repetidas del mismo trayecto a través de las cookies. El modo incógnito evita ese seguimiento."
+    },
+    {
+      title: "Cómo reclamar un cargo fraudulento o un pedido que no llegó",
+      body: "Guarda el extracto con el cargo, la confirmación de compra, las pruebas del problema (seguimiento del envío, fotos, capturas de la oferta original) y tus intentos de contacto con la tienda sin respuesta. Con eso, pide a tu banco abrir una disputa (chargeback) por fraude o incumplimiento del comercio; si usaste los datos de la tarjeta en una web sospechosa, bloquéala y pide una nueva de inmediato."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
