@@ -265,6 +265,54 @@ const DATA = {
     {
       title: "Fondo de emergencia antes que inversión",
       body: "Antes de invertir, ten ahorrado el equivalente a 3-6 meses de gastos básicos. Te protege de tener que endeudarte ante un imprevisto."
+    },
+    {
+      title: "Optimiza tus facturas de luz, gas e internet",
+      body: "Revisa la potencia eléctrica contratada (si nunca te han saltado los plomos, seguramente pagas de más) y compara tarifas al menos una vez al año: el mercado suele tener descuentos de bienvenida o de retención."
+    },
+    {
+      title: "Reduce el consumo de agua con aireadores",
+      body: "Cuestan poco y se instalan en minutos en el grifo y la ducha: reducen el caudal hasta un 40% sin que notes pérdida de presión."
+    },
+    {
+      title: "Ve al súper con lista cerrada y sin hambre",
+      body: "Comprar sin planificar puede sumar hasta un 20% de gasto extra en productos no esenciales, además de comida que acaba tirándose."
+    },
+    {
+      title: "Compara el precio por kilo o litro, no el del envase",
+      body: "Los formatos \"familiares\" o de \"ahorro\" no siempre son los más baratos: la etiqueta con el precio por unidad de medida es la referencia real."
+    },
+    {
+      title: "Prioriza fruta, verdura y pescado de temporada",
+      body: "Suelen costar entre un 20% y un 40% menos que los productos importados o fuera de temporada."
+    },
+    {
+      title: "Ahorra en combustible con hábitos simples",
+      body: "Mantener la presión correcta de los neumáticos y evitar acelerones bruscos reduce el consumo hasta un 3%; comparar precios entre gasolineras cercanas también marca diferencia."
+    },
+    {
+      title: "Mantén solo una suscripción activa a la vez",
+      body: "En lugar de pagar varias plataformas de streaming o gimnasios a la vez, ve alternando cuál tienes activa según lo que realmente vayas a usar ese mes."
+    },
+    {
+      title: "Compra de segunda mano lo que uses poco",
+      body: "Para herramientas, libros o equipamiento deportivo de uso ocasional, mira primero en plataformas de segunda mano antes de comprar nuevo."
+    },
+    {
+      title: "Calcula el impacto real con el \"Factor 365\"",
+      body: "Multiplica un gasto diario por 365 (o semanal por 52) para ver su peso anual real: un café de 1,80 € al día no son 1,80 €, son casi 660 € al año. Verlo así ayuda a decidir qué merece la pena de verdad."
+    },
+    {
+      title: "Sustituye en vez de prohibir",
+      body: "Prohibirte algo de golpe suele generar frustración y que acabes volviendo a caer. Mejor optimiza el coste del hábito (un termo en vez del café de máquina) o fíjate un presupuesto fijo para esos gastos libres."
+    },
+    {
+      title: "Abre una \"cuenta de bolsillo\" para gastos libres",
+      body: "Asigna una cantidad fija al mes a una tarjeta o cuenta aparte para tus caprichos. Cuando se acaba el saldo, se acaban las microcompras hasta el mes siguiente."
+    },
+    {
+      title: "Revisa las comisiones de tu banco",
+      body: "Comprueba que cumples los requisitos para no pagar mantenimiento (nómina domiciliada, recibos, etc.). Si te cobran comisiones evitables, plantéate cambiar de entidad."
     }
   ],
 
