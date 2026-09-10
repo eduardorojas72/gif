@@ -969,6 +969,13 @@ const UI = {
         <ul class="resource-list">
           ${DATA.resources.articles.map((a) => `<li><a href="${a.url}" target="_blank" rel="noopener noreferrer">${a.title}</a> <span class="muted-small">(${a.source})</span></li>`).join("")}
         </ul>
+
+        ${DATA.resources.videos && DATA.resources.videos.length ? `
+          <h2 class="section-title">Vídeos recomendados</h2>
+          <ul class="resource-list">
+            ${DATA.resources.videos.map((v) => `<li><a href="${v.url}" target="_blank" rel="noopener noreferrer">${v.title}</a> <span class="muted-small">(${v.source})</span></li>`).join("")}
+          </ul>
+        ` : ""}
       </section>
     `;
   },

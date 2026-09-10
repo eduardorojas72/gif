@@ -165,6 +165,22 @@ const DATA = {
       body: "Si algo no estaba en tu lista, dale un día. Muchas ganas de comprar desaparecen solas cuando dejan de ser impulsivas."
     },
     {
+      title: "Vigila los gastos hormiga",
+      body: "Los pequeños consumos diarios, como un café o un antojo, parecen insignificantes, pero vacían tu bolsillo mes a mes. Presta atención a esos importes menores para evitar fugas de dinero imprevistas, y cuidado con los precios terminados en .99: tu cerebro los percibe como mucho más baratos de lo que realmente son."
+    },
+    {
+      title: "Prueba el método del redondeo o del céntimo",
+      body: "Aparta las monedas sueltas del día o redondea el costo de tus compras para guardar la diferencia en una alcancía o cuenta digital. Son cantidades pequeñas, pero acumuladas a lo largo del mes se notan."
+    },
+    {
+      title: "Aprende a decir que no a las horas extra",
+      body: "Trabajar más horas no siempre significa ganar más de verdad: entre el cansancio y el tiempo perdido, el balance puede salir en contra. Si tu prioridad es \"trabajar menos\", practica formas claras y profesionales de poner límites antes de aceptar horas extra por costumbre."
+    },
+    {
+      title: "Antes de sumar horas, revisa qué te compensa de verdad",
+      body: "Si necesitas ganar más, valora primero alternativas a simplemente trabajar más horas: ingresos pasivos, mejorar tu productividad en el horario que ya tienes o negociar tu salario. Sumar horas sin límite es la puerta de entrada al arquetipo \"El Hámster\"."
+    },
+    {
       title: "Evita la inflación de estilo de vida",
       body: "Cuando tus ingresos suban, aumenta tu ahorro en la misma proporción antes de aumentar tus gastos fijos."
     },
@@ -201,7 +217,16 @@ const DATA = {
       { title: "Mejores libros de ahorro y finanzas personales", source: "PreAhorro", url: "https://preahorro.com/finanzas-personales/mejores-libros-ahorro-finanzas-personales/" },
       { title: "TED Talks de finanzas personales (las más inspiradoras)", source: "100 Ladrillos", url: "https://blog.100ladrillos.com/ted-talks/" },
       { title: "8 charlas TED imprescindibles sobre finanzas", source: "Risbel Magazine", url: "https://risbelmagazine.es/mejores-videos-educacion-financiera-charlas-ted/" },
-      { title: "Gamification for Personal-Finance Apps", source: "Trophy.so", url: "https://trophy.so/blog/gamification-for-personal-finance-apps" }
+      { title: "Gamification for Personal-Finance Apps", source: "Trophy.so", url: "https://trophy.so/blog/gamification-for-personal-finance-apps" },
+      { title: "Cómo gastar menos", source: "TranquiFinanzas", url: "https://tranquifinanzas.com/como-gastar-menos/" },
+      { title: "5 formas de decirle a tu jefe que no quieres hacer horas extras", source: "Oficina de Empleo", url: "https://www.oficinaempleo.com/blog/5-formas-de-decirle-a-tu-jefe-que-no-quieres-hacer-horas-extras/" },
+      { title: "8 estrategias para evitar trabajar horas extras", source: "Speexx", url: "https://www.speexx.com/es/speexx-blog/8-estrategias-para-evitar-trabajar-horas-extras/" },
+      { title: "Ingresos pasivos: cómo ganar más dinero y trabajar menos", source: "Forbes España", url: "https://forbes.es/economia/721394/ingresos-pasivos-como-ganar-mas-dinero-y-trabajar-menos/" },
+      { title: "Trabajar menos, producir más", source: "Mercadeo Global", url: "https://mercadeoglobal.com/blog/trabajar-menos-producir-mas/" }
+    ],
+    // Vídeos cortos de referencia (redes sociales) sobre técnicas de ahorro.
+    videos: [
+      { title: "¡Ahorra sin darte cuenta! El método del redondeo", source: "Facebook · dinerocomsv", url: "https://www.facebook.com/watch/?v=3663749137099051" }
     ]
   },
 
