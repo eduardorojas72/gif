@@ -201,13 +201,17 @@ const DATA = {
     books: [
       { title: "La bolsa o la vida", author: "Vicki Robin y Joe Dominguez", note: "Un clásico que invita a replantear la relación entre tiempo, trabajo y dinero." },
       { title: "Economía básica", author: "Thomas Sowell", note: "Introducción clara a cómo funcionan los mercados y la toma de decisiones económicas." },
-      { title: "Ten peor coche que tu vecino", author: "—", note: "Sobre cambiar la forma de ver el dinero para mejorar la capacidad de ahorro." },
-      { title: "Invierte en ti", author: "—", note: "Gestión de la economía familiar con vista a la jubilación." },
+      { title: "Ten peor coche que tu vecino", author: "Luis Pita", note: "Sobre la 'libertad financiera' medida en años de tranquilidad: pautas sencillas para automatizar el preahorro y recortar gastos prescindibles sin sacrificar calidad de vida." },
+      { title: "Invierte en ti", author: "Natalia de Santiago", note: "Guía práctica y directa para estructurar el presupuesto familiar, gestionar el ahorro mensual y entender los productos bancarios cotidianos sin tecnicismos." },
       { title: "Invierte con poco", author: "—", note: "Cómo empezar a mejorar tu situación económica con poco capital inicial." },
       { title: "Finanzas para todos", author: "Paco de León", note: "Guía ilustrada que propone revisar nuestras creencias sobre el dinero (moldeadas por la familia, la cultura y el sistema) para cambiar de verdad nuestra relación con las finanzas." },
       { title: "Padre Rico, Padre Pobre (Ed. 25 aniversario)", author: "Robert Kiyosaki", note: "Un clásico que contrasta dos mentalidades sobre el dinero y explica por qué distinguir activos de pasivos es clave para la libertad financiera." },
+      { title: "El cuadrante del flujo del dinero", author: "Robert T. Kiyosaki", note: "Continuación de \"Padre Rico, Padre Pobre\": explica las cuatro formas de generar ingresos (empleado, autónomo, dueño de negocio, inversor) y por qué cambiar de cuadrante es clave para la libertad financiera." },
       { title: "Haz que el dinero te elija", author: "—", note: "Sobre teoría y filosofía del dinero: replantea qué problema resuelve realmente el dinero en tu vida." },
-      { title: "Fundamentos de economía", author: "Paul R. Krugman, Robin Wells y Martha L. Olney", note: "Introducción accesible a los conceptos básicos de economía, útil para entender el contexto detrás de las decisiones financieras del día a día." }
+      { title: "Fundamentos de economía", author: "Paul R. Krugman, Robin Wells y Martha L. Olney", note: "Introducción accesible a los conceptos básicos de economía, útil para entender el contexto detrás de las decisiones financieras del día a día." },
+      { title: "La psicología del dinero", author: "Morgan Housel", note: "El comportamiento, las emociones y los hábitos pesan mucho más en las finanzas de un hogar que los conocimientos matemáticos: clave para tomar decisiones sensatas a largo plazo." },
+      { title: "El hombre más rico de Babilonia", author: "George S. Clason", note: "Un clásico brevísimo basado en parábolas que enseña reglas atemporales del ahorro doméstico: pagarte a ti mismo primero, controlar los gastos y proteger el capital." },
+      { title: "El inversor inteligente", author: "Benjamin Graham", note: "Aborda la inversión en general, pero sus capítulos sobre disciplina, prudencia y la diferencia entre especular y proteger el capital son fundamentales para la seguridad económica familiar." }
     ],
     talks: [
       { title: "Domina tus finanzas personales en un 2x3", author: "Alicia Márquez (TEDx)", note: "El método \"2x3\" para identificar las principales amenazas a la libertad financiera." },
