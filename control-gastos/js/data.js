@@ -338,6 +338,38 @@ const DATA = {
       body: "Comprueba que cumples los requisitos para no pagar mantenimiento (nómina domiciliada, recibos, etc.). Si te cobran comisiones evitables, plantéate cambiar de entidad."
     },
     {
+      title: "Elimina las tarjetas guardadas en apps de compra",
+      body: "Quita los datos de pago guardados en tiendas online y apps de comida a domicilio o transporte: tener que levantarte a buscar la tarjeta física frena bastante la compra por aburrimiento o impulso."
+    },
+    {
+      title: "Lleva un registro de 14 días de tus gastos menores",
+      body: "Apunta solo lo que gastes por debajo de 5 € durante dos semanas y multiplica el subtotal por 26 para ver el impacto anualizado. Tomar conciencia del acumulado suele ser el mayor empujón para cambiar el hábito."
+    },
+    {
+      title: "Audita tus suscripciones en 30 minutos",
+      body: "Revisa el extracto bancario buscando cargos recurrentes del mismo importe, y comprueba también los ajustes de suscripciones del móvil (iOS/Android) y de PayPal, que no siempre aparecen claros en el banco. Clasifica cada una en imprescindible, pausar o cancelar ya, y da de baja las que sobren en el momento: mantienes el acceso hasta el fin del periodo pagado sin riesgo de que se renueve."
+    },
+    {
+      title: "Usa una tarjeta virtual para las pruebas gratuitas",
+      body: "Regístrate con una tarjeta virtual de importe limitado, o cancela la suscripción justo después de darte de alta: la prueba sigue activa hasta su fecha de fin sin que te cobren nada al terminar."
+    },
+    {
+      title: "Comparte planes familiares y paga anual en lo esencial",
+      body: "Si convives con más personas, consolidad en un plan familiar (nube, música) en vez de pagar cuentas duplicadas, y cambia a pago anual en los servicios que sí usas de verdad: suele haber descuentos del 15-20%."
+    },
+    {
+      title: "Amenaza con cambiarte de operador para conseguir descuento",
+      body: "Si no tienes permanencia, inicia el trámite de cambio hacia un operador de bajo coste con la misma cobertura. Tu operador actual suele llamarte con una oferta de retención bastante mejor para que te quedes; si no te ofrecen nada, completas el cambio igualmente."
+    },
+    {
+      title: "Pásate a la marca low-cost de tu propio operador",
+      body: "Muchas compañías tienen una \"segunda marca\" más barata que usa la misma red, sin los extras que no necesitas (TV, soporte presencial, permanencia larga). El ahorro suele ser mayor y más estable que negociar cada año."
+    },
+    {
+      title: "Repasa qué pagas de más en tu paquete de internet y móvil",
+      body: "Si solo ves plataformas bajo demanda, no necesitas la TV de pago del paquete; bajar de 1 Gbps a 300-600 Mb no se nota en el uso normal; y unir varias líneas familiares en la misma cuenta suele salir más barato que contratos sueltos."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
