@@ -238,6 +238,35 @@ Derecho a devolver un producto o cancelar un contrato comprado por internet/tel�
 
 **Si la tienda rechaza la devolución dentro de plazo** (infracción del RDL 1/2007): (1) conservar pruebas del intento de devolución (capturas, emails, justificante de envío); (2) reclamación formal a la tienda citando el artículo 71 de la Ley de Consumidores y el derecho a reclamar el doble por retraso; (3) chargeback al banco/PayPal aportando esas pruebas (vía más rápida si se pagó con tarjeta); (4) OMIC/Junta Arbitral de Consumo (tiendas en España) o Centro Europeo del Consumidor / plataforma ODR de la Comisión Europea (tiendas en otro país de la UE) — gratuitas, 1-4 meses; o proceso monitorio judicial (cualquier importe, sin abogado obligatorio si es <2.000 €, gratuito, 3-6 meses).
 
+## 9. Derechos del pasajero aéreo (UE) y objetos en control de seguridad
+
+### Objetos no permitidos en el control de seguridad
+
+Los agentes no confiscan legalmente los objetos (salvo que sean ilegales): impiden su paso a la zona de embarque, y solo si el pasajero lo entrega voluntariamente para destruir se pierde. Alternativas para no perderlo (todas requieren margen de tiempo antes del vuelo, ya que implican salir y volver a pasar el filtro):
+1. **Consigna del aeropuerto:** oficinas fuera de la zona de embarque donde dejarlo pagando una tarifa por día y recogerlo a la vuelta.
+2. **Envío postal/mensajería en la terminal:** empaquetarlo y enviárselo uno mismo a casa desde una oficina de correos o taquilla automática de la zona pública.
+3. **Facturarlo como equipaje de bodega:** volver al mostrador de la aerolínea si el objeto cumple la normativa para ir en bodega.
+4. **Entregarlo a un acompañante** que siga en la zona pública.
+
+### Reglamento (CE) 261/2004 — retrasos, cancelaciones y overbooking (vuelos UE)
+
+- **Derecho de atención** (retraso >2h según distancia): comida, bebida, 2 llamadas/emails gratis y, si hay pernocta, hotel + transporte, todo a cargo de la aerolínea.
+- **Compensación económica** (salvo "circunstancias extraordinarias" — clima extremo, huelga de controladores — que la aerolínea debe probar):
+  - 250 € vuelos ≤1.500 km.
+  - 400 € vuelos intracomunitarios >1.500 km y el resto de 1.500-3.500 km.
+  - 600 € vuelos internacionales >3.500 km.
+- Un retraso de llegada >3 horas cuenta legalmente como cancelación a efectos de la compensación.
+
+### Equipaje facturado (perdido, dañado o retrasado)
+
+- **PIR (Parte de Irregularidad del Equipaje):** rellenar en el mostrador de la aerolínea/handling antes de salir de la zona de equipajes, es imprescindible para reclamar.
+- **Plazos del Convenio de Montreal** (tratado internacional, aplica más allá de la UE): daños, 7 días desde la recepción; retraso en la entrega, 21 días desde que se entrega la maleta; pérdida definitiva, tras 21 días sin localizarla (indemnización máxima legal ≈1.500 €/pasajero).
+
+### Cómo reclamar a una aerolínea
+
+1. Reclamación previa por escrito a la aerolínea (formulario web o atención al cliente) — conservar la referencia.
+2. Si no responde en 1 mes o la rechaza: escalar a la autoridad reguladora — en España, la AESA (Agencia Estatal de Seguridad Aérea), gratuito, con billetes + reclamación previa + justificantes. Su resolución es vinculante para la aerolínea en el ámbito español. (Cada país de la UE tiene su propio organismo nacional equivalente bajo el mismo reglamento 261/2004).
+
 ---
 
 *Compilado a partir de mensajes del usuario durante el desarrollo de Hucha (sept. 2026). Revisar y actualizar cifras contra fuente oficial antes de cualquier uso futuro.*
