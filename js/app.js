@@ -122,6 +122,9 @@ const App = {
     if (isAuth && (ui.view === "planeador" || ui.view === "listas")) {
       getQuincena(state, ui.quincenaKey || quincenaActualKey());
     }
+    if (isAuth && ui.view === "listas") {
+      getCatalogoProductos(state, state.pais || "CO");
+    }
 
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
@@ -211,6 +214,11 @@ const App = {
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
+      if (el.tagName === "INPUT" && el.dataset && el.dataset.field && (el.dataset.field.indexOf("quincenas.") === 0 && el.dataset.field.indexOf(".compras.") !== -1 || el.dataset.field.indexOf("catalogoProductos.") === 0)) {
+        // recalcula los totales de la calculadora de productos al salir del campo (no en cada tecla, para no perder el foco)
+        this.render();
+        return;
+      }
       if (el.type === "file" && el.dataset && el.dataset.target) {
         const file = el.files && el.files[0];
         if (!file) return;
@@ -383,20 +391,30 @@ const Actions = {
     App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
     App.render();
   },
+  "set-pais-catalogo": function (arg) {
+    if (!PAISES_CATALOGO.some(function (p) { return p.id === arg; })) return;
+    App.state.pais = arg;
+    getCatalogoProductos(App.state, arg);
+    App.persist(true);
+    App.render();
+  },
   "toggle-producto-probado": function (arg) {
-    const p = App.state.catalogoProductos[Number(arg)];
+    const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
+    const p = catalogo[Number(arg)];
     if (!p) return;
     p.probado = !p.probado;
     App.persist(true);
     App.render();
   },
   "add-producto": function () {
-    App.state.catalogoProductos.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
+    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
     App.persist(true);
     App.render();
   },
   "delete-producto": function (arg) {
-    App.state.catalogoProductos.splice(Number(arg), 1);
+    const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
+    catalogo.splice(Number(arg), 1);
     App.persist(true);
     App.render();
   },

@@ -108,7 +108,17 @@ const CLUBES_EXITO = [
   { nombre: "Club de Líderes Imperial", requisito: "Llegar a ser Imperial Master.", nota: "" },
 ];
 
-const CATALOGO_PRODUCTOS_ATOMY = [
+const PAISES_CATALOGO = [
+  { id: "CO", label: "Colombia", moneda: "COP", simbolo: "$", locale: "es-CO" },
+  { id: "EU", label: "Europa", moneda: "EUR", simbolo: "€", locale: "es-ES" },
+  { id: "MX", label: "México", moneda: "MXN", simbolo: "$", locale: "es-MX" },
+  { id: "BR", label: "Brasil", moneda: "BRL", simbolo: "R$", locale: "pt-BR" },
+  { id: "CA", label: "Canadá", moneda: "CAD", simbolo: "$", locale: "en-CA" },
+  { id: "US", label: "Estados Unidos", moneda: "USD", simbolo: "$", locale: "en-US" },
+];
+
+const CATALOGO_PRODUCTOS_POR_PAIS = {
+  CO: [
   { categoria: "Cuidado de la Salud", nombre: "Hemo Him G", precio: 440000, pv: 70000 },
   { categoria: "Cuidado de la Salud", nombre: "Bióticos", precio: 290000, pv: 30000 },
   { categoria: "Cuidado de la Salud", nombre: "Omega 3", precio: 110000, pv: 10000 },
@@ -215,9 +225,17 @@ const CATALOGO_PRODUCTOS_ATOMY = [
   { categoria: "Otros", nombre: "Escenario de Vida", precio: 5000, pv: 0 },
   { categoria: "Otros", nombre: "Bolsa Laminada", precio: 1700, pv: 0 },
   { categoria: "Otros", nombre: "Bolsa Multiusos", precio: 2600, pv: 0 },
-];
+  ],
+  EU: [],
+  MX: [],
+  BR: [],
+  CA: [],
+  US: [],
+};
 
-const CATALOGO_PRODUCTOS_NOTA = "Catálogo de referencia (Colombia) a partir de tu propia lista — Atomy actualiza sus productos con frecuencia y cada país tiene un catálogo distinto, así que puede estar desfasado. Edita, agrega o elimina productos aquí para mantenerlo al día.";
+const CATALOGO_PRODUCTOS_NOTA = "Catálogo de referencia a partir de tu propia lista — Atomy actualiza sus productos con frecuencia y cada país tiene un catálogo distinto, así que puede estar desfasado. Edita, agrega o elimina productos aquí para mantenerlo al día.";
+
+const CATALOGO_PRODUCTOS_NOTA_VACIO = "Aún no tenemos cargado el catálogo de este país. Toca \"+ Añadir producto\" para empezar a construirlo (o envíale a tu asistente capturas de pantalla de los precios/PV de tu país para cargarlo completo).";
 
 const META_PV_QUINCENA = 2500000;
 

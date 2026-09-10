@@ -16,7 +16,8 @@ function defaultState() {
     ultimaFecha: null,
     actividad: [],
     quincenas: {},
-    catalogoProductos: emptyCatalogoProductos(),
+    pais: "CO",
+    catalogoProductos: { CO: emptyCatalogoProductosPais("CO") },
   };
 }
 
@@ -99,10 +100,20 @@ function nuevoProductoCatalogo(seed) {
   };
 }
 
-function emptyCatalogoProductos() {
-  return CATALOGO_PRODUCTOS_ATOMY.map(function (p, i) {
-    return nuevoProductoCatalogo({ id: "prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
+function paisCatalogoInfo(paisId) {
+  return PAISES_CATALOGO.find(function (p) { return p.id === paisId; }) || PAISES_CATALOGO[0];
+}
+
+function emptyCatalogoProductosPais(paisId) {
+  const base = CATALOGO_PRODUCTOS_POR_PAIS[paisId] || [];
+  return base.map(function (p, i) {
+    return nuevoProductoCatalogo({ id: paisId + "-prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
   });
+}
+
+function getCatalogoProductos(state, paisId) {
+  if (!state.catalogoProductos[paisId]) state.catalogoProductos[paisId] = emptyCatalogoProductosPais(paisId);
+  return state.catalogoProductos[paisId];
 }
 
 function getQuincena(state, key) {
@@ -153,10 +164,23 @@ function hydrateState(parsed) {
     return acc;
   }, {});
 
-  merged.catalogoProductos =
-    Array.isArray(parsed.catalogoProductos) && parsed.catalogoProductos.length
-      ? parsed.catalogoProductos.map(function (p) { return Object.assign(nuevoProductoCatalogo(), p); })
-      : emptyCatalogoProductos();
+  merged.pais = PAISES_CATALOGO.some(function (p) { return p.id === parsed.pais; }) ? parsed.pais : "CO";
+
+  const catalogosGuardados = Array.isArray(parsed.catalogoProductos)
+    ? { CO: parsed.catalogoProductos } // formato antiguo (un solo país): se migra a Colombia
+    : parsed.catalogoProductos && typeof parsed.catalogoProductos === "object"
+    ? parsed.catalogoProductos
+    : {};
+  merged.catalogoProductos = Object.keys(catalogosGuardados).reduce(function (acc, paisId) {
+    const lista = catalogosGuardados[paisId];
+    if (Array.isArray(lista) && lista.length) {
+      acc[paisId] = lista.map(function (p) { return Object.assign(nuevoProductoCatalogo(), p); });
+    }
+    return acc;
+  }, {});
+  if (!merged.catalogoProductos[merged.pais]) {
+    merged.catalogoProductos[merged.pais] = emptyCatalogoProductosPais(merged.pais);
+  }
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoActualIndex =
