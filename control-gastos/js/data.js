@@ -490,6 +490,18 @@ const DATA = {
       body: "Los supermercados de zonas muy turísticas suelen tener sobreprecio en temporada alta. Comprar lo básico (comida, droguería) en tu súper habitual antes de salir ahorra bastante."
     },
     {
+      title: "Combina supermercado, mercado y mercadillo según lo que compres",
+      body: "Los básicos de despensa (arroz, legumbres, pasta, aceite, conservas, limpieza) suelen salir mejor en el súper con marca blanca; la fruta, verdura, carne y pescado frescos rinden más y se tiran menos comprados en el mercado de abastos o el mercadillo semanal, aunque cuesten un poco más."
+    },
+    {
+      title: "El mercadillo es el aliado de la fruta y verdura de temporada",
+      body: "Suele salir más barato que el súper porque compras justo la cantidad que necesitas al peso, aunque tenga horarios reducidos y algunos puestos solo acepten efectivo."
+    },
+    {
+      title: "Los productos \"bio\" no siempre justifican el sobreprecio",
+      body: "Pueden costar entre un 30% y un 80% más, y la etiqueta ecológica no equivale automáticamente a saludable (hay galletas o refrescos \"bio\" igual de ultraprocesados). Resérvalos para lo que de verdad te importe o necesites por alergias o intolerancias."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
