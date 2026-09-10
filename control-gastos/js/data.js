@@ -346,6 +346,10 @@ const DATA = {
       body: "Preparar el menú en una fiambrera térmica suele costar bastante menos que la cuota del comedor. Revisa también si existen becas de comedor según tus ingresos familiares."
     },
     {
+      title: "Organiza los almuerzos por tema semanal",
+      body: "Asigna un tipo de almuerzo a cada día (ej. lunes fruta y frutos secos, martes bocadillo integral, miércoles algo horneado en casa, jueves lácteo con cereal, viernes libre) para no improvisar cada mañana. Hornea o corta todo el domingo y congela en porciones: ahorras tiempo, evitas compras de última hora y no repites siempre lo mismo."
+    },
+    {
       title: "Comparte el trayecto al colegio",
       body: "Turnarte con otras familias del mismo curso para llevar a los niños ahorra combustible y tiempo a todos; mira también si hay abonos de transporte con descuento para estudiantes."
     },
