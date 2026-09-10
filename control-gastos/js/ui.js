@@ -90,8 +90,11 @@ const UI = {
     this.openModal(`
       <h2>🎉 ¡Logro alcanzado!</h2>
       <img src="${dataURL}" alt="Logro alcanzado" class="achievement-preview" />
+      <p class="muted-small">${goal.photo ? "" : "¿Tienes una foto de ese momento? Añádela para una tarjeta con más recuerdo."}</p>
+      <input type="file" accept="image/*" id="celebrate-photo-input" hidden />
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" data-close-modal>Cerrar</button>
+        <label class="btn btn-secondary" for="celebrate-photo-input">${goal.photo ? "📷 Cambiar foto" : "📷 Añadir foto"}</label>
         <button type="button" class="btn btn-primary" id="share-goal-celebrate">Compartir 📤</button>
       </div>
     `);
@@ -101,6 +104,16 @@ const UI = {
         const text = "¡Logré \"" + goal.label + "\" ahorrando con Hucha! 🎉🐷";
         const result = await SHARE.shareCard(dataURL, text);
         if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
+      });
+    }
+    const photoInput = document.getElementById("celebrate-photo-input");
+    if (photoInput) {
+      photoInput.addEventListener("change", async () => {
+        const file = photoInput.files && photoInput.files[0];
+        if (!file) return;
+        const photoDataURL = await SHARE.resizeImageFile(file, 1000, 0.85);
+        const updated = STORE.setGoalPhoto(goal.id, photoDataURL);
+        UI.celebrateGoal(updated);
       });
     }
   },
@@ -758,6 +771,11 @@ const UI = {
                     <strong>${purpose ? purpose.icon : "🎯"} ${g.label}</strong>
                     <button class="icon-btn" data-action="remove-goal" data-id="${g.id}" aria-label="Eliminar meta">🗑️</button>
                   </div>
+                  <div class="goal-photo-row">
+                    ${g.photo ? `<img src="${g.photo}" class="goal-photo-thumb" alt="" />` : ""}
+                    <label class="btn btn-ghost btn-sm" for="goal-photo-input-${g.id}">${g.photo ? "📷 Cambiar foto" : "📷 Añadir foto"}</label>
+                    <input type="file" accept="image/*" id="goal-photo-input-${g.id}" data-action="goal-photo-input" data-id="${g.id}" hidden />
+                  </div>
                   ${g.achieved
                     ? `<div class="goal-achieved-row"><span>✅ ¡Lograda!</span><button class="btn btn-primary btn-sm" data-action="share-goal" data-id="${g.id}">Compartir 📤</button></div>`
                     : `
@@ -1180,6 +1198,20 @@ const UI = {
         if (confirm("¿Eliminar esta meta?")) {
           STORE.removeGoal(btn.dataset.id);
           UI.render("metas");
+        }
+      })
+    );
+    view.querySelectorAll('[data-action="goal-photo-input"]').forEach((input) =>
+      input.addEventListener("change", async () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        try {
+          const dataURL = await SHARE.resizeImageFile(file, 1000, 0.85);
+          STORE.setGoalPhoto(input.dataset.id, dataURL);
+          UI.toast("Foto añadida");
+          UI.render("metas");
+        } catch (e) {
+          UI.toast("No se pudo cargar la foto");
         }
       })
     );

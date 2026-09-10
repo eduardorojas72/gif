@@ -476,6 +476,8 @@ h1, h2, h3 {
 .goal-item.is-achieved { background: rgba(242, 201, 76, 0.12); }
 .goal-item-head { display: flex; justify-content: space-between; align-items: center; }
 .goal-achieved-row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 13.5px; color: var(--income); }
+.goal-photo-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.goal-photo-thumb { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
 
 /* ---------- Categorías personalizadas ---------- */
 .custom-cat-list { display: flex; flex-wrap: wrap; gap: 6px; }

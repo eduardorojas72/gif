@@ -44,6 +44,64 @@ const SHARE = {
     return "unavailable";
   },
 
+  // Redimensiona una foto elegida por el usuario en el cliente (nunca sale
+  // del dispositivo) para que no infle demasiado el localStorage.
+  resizeImageFile(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error);
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const scale = Math.min(1, (maxDim || 1000) / Math.max(img.width, img.height));
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", quality || 0.85));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  },
+
+  loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  },
+
+  // Dibuja `img` recortada (tipo "cover", sin deformar) dentro del
+  // rectángulo redondeado (x, y, w, h).
+  drawImageCover(ctx, img, x, y, w, h, radius) {
+    const destAspect = w / h;
+    const srcAspect = img.width / img.height;
+    let sx, sy, sw, sh;
+    if (srcAspect > destAspect) {
+      sh = img.height;
+      sw = sh * destAspect;
+      sx = (img.width - sw) / 2;
+      sy = 0;
+    } else {
+      sw = img.width;
+      sh = sw / destAspect;
+      sx = 0;
+      sy = (img.height - sh) / 2;
+    }
+    ctx.save();
+    this.roundRectPath(ctx, x, y, w, h, radius);
+    ctx.clip();
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+    ctx.restore();
+  },
+
   // Confeti de fiesta: tiras de papel de colores + un par de "regalitos"
   // brillantes, explotando hacia arriba desde (cx, cy).
   drawConfettiBurst(ctx, cx, cy, scale) {
@@ -329,15 +387,90 @@ const SHARE = {
   },
 
   // Tarjeta de logro para una meta de ahorro con propósito propio
-  // (p. ej. "Cena con amigos"), independiente de la racha diaria.
-  buildGoalCardDataURL({ goal, userName }) {
-    return this.buildCelebrationCardDataURL({
-      headlineLines: ["¡Logro alcanzado", "gracias a Hucha!"],
-      caption: goal.label,
-      userName,
-      hueFrom: "#F2C94C",
-      hueTo: "#EB8B3D"
-    });
+  // (p. ej. "Cena con amigos"). Color propio (coral/magenta) distinto del
+  // resto de tarjetas, y admite una foto del momento en un marco amplio
+  // (no un círculo) para que se vea a todo el grupo.
+  async buildGoalCardDataURL({ goal, userName }) {
+    await this.ensureFonts();
+    const W = 1080, H = 1350;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    const hueFrom = "#FF7AA2", hueTo = "#C23B7D";
+
+    this.roundRectPath(ctx, 0, 0, W, H, 56);
+    ctx.clip();
+
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0, hueFrom);
+    bgGrad.addColorStop(1, hueTo);
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.lineWidth = 6;
+    this.roundRectPath(ctx, 14, 14, W - 28, H - 28, 44);
+    ctx.stroke();
+
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.font = "700 36px 'Space Grotesk', system-ui, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.fillText("🐷 Hucha", 56, 76);
+
+    // Titular manuscrito en blanco, ligeramente girado, en dos líneas para
+    // dejar sitio amplio a la foto debajo.
+    ctx.save();
+    ctx.translate(W / 2, 190);
+    ctx.rotate(-0.025);
+    ctx.textAlign = "center";
+    ctx.font = "700 74px 'Caveat', 'Segoe Script', cursive";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("¡Logro alcanzado", 0, -36);
+    ctx.fillText("gracias a Hucha!", 0, 40);
+    ctx.restore();
+
+    let photoImg = null;
+    if (goal.photo) {
+      try { photoImg = await this.loadImage(goal.photo); } catch (e) { photoImg = null; }
+    }
+
+    if (photoImg) {
+      const frame = { x: 64, y: 300, w: W - 128, h: 780 };
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.25)";
+      ctx.shadowBlur = 30;
+      ctx.shadowOffsetY = 10;
+      ctx.fillStyle = "#FFFFFF";
+      this.roundRectPath(ctx, frame.x - 10, frame.y - 10, frame.w + 20, frame.h + 20, 34);
+      ctx.fill();
+      ctx.restore();
+      this.drawImageCover(ctx, photoImg, frame.x, frame.y, frame.w, frame.h, 26);
+
+      // acentos de confeti en las esquinas del marco, sin invadir la foto
+      this.drawConfettiBurst(ctx, frame.x + 10, frame.y, 0.45);
+      this.drawConfettiBurst(ctx, frame.x + frame.w - 10, frame.y, 0.45);
+    } else {
+      // Sin foto todavía: trofeo + confeti, como el resto de tarjetas.
+      this.drawConfettiBurst(ctx, W / 2, 560, 0.9);
+      ctx.textAlign = "center";
+      ctx.font = "210px system-ui, sans-serif";
+      ctx.fillText("🏆", W / 2, 840);
+    }
+
+    ctx.textAlign = "left";
+    ctx.font = "700 40px 'Courier New', Courier, monospace";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(goal.label, 56, H - 90);
+    if (userName) {
+      ctx.textAlign = "right";
+      ctx.font = "600 30px Inter, system-ui, sans-serif";
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.fillText(userName, W - 56, H - 90);
+    }
+
+    return canvas.toDataURL("image/png");
   },
 
   dataURLToBlob(dataURL) {

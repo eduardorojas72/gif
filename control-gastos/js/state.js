@@ -178,6 +178,14 @@ const STORE = {
       this.saveGoals(goals);
     }
     return goal;
+  },
+  setGoalPhoto(id, dataURL) {
+    const goals = this.getGoals();
+    const goal = goals.find((g) => g.id === id);
+    if (!goal) return null;
+    goal.photo = dataURL;
+    this.saveGoals(goals);
+    return goal;
   }
 };
 
