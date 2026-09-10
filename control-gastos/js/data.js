@@ -350,6 +350,38 @@ const DATA = {
       body: "Asigna un tipo de almuerzo a cada día (ej. lunes fruta y frutos secos, martes bocadillo integral, miércoles algo horneado en casa, jueves lácteo con cereal, viernes libre) para no improvisar cada mañana. Hornea o corta todo el domingo y congela en porciones: ahorras tiempo, evitas compras de última hora y no repites siempre lo mismo."
     },
     {
+      title: "Cenas rápidas y económicas entre semana",
+      body: "Basa las cenas en huevos, conservas de calidad (atún, caballa) y verduras congeladas o en conserva: una tortilla, un revuelto, unas hojas de lechuga rellenas o una quesadilla con sobras se preparan en menos de 15 minutos sin romper el presupuesto. Ten siempre estos comodines en la despensa para resolver la cena cualquier día."
+    },
+    {
+      title: "Planifica el menú con lo que ya tienes",
+      body: "Antes de hacer la lista, revisa la nevera, el congelador y la despensa: diseña el menú semanal en torno a lo que ya tienes y caduca pronto. Por categorías en vez de platos fijos (ej. \"lunes de legumbre\", \"martes de conserva o huevo\") te deja margen para adaptarte sin que se estropee nada."
+    },
+    {
+      title: "Haz la lista de la compra por pasillos, sin improvisar",
+      body: "Organízala según el recorrido del supermercado (frescos, secos, congelados) para no dar vueltas ni caer en compras de impulso. Y antes de llevarte un \"pack ahorro\", compara el precio por kilo o litro: solo compensa si de verdad lo vas a consumir a tiempo."
+    },
+    {
+      title: "Organiza la nevera con la regla FIFO",
+      body: "Coloca lo recién comprado al fondo y mueve hacia delante lo más antiguo (\"first in, first out\"); reserva un estante visible de \"consumir primero\" para que nada se quede olvidado hasta caducar."
+    },
+    {
+      title: "Dale una segunda vida a las sobras",
+      body: "Verduras blandas para cremas, purés o caldos; pan duro para picatostes o pan rallado; restos de carne o pescado para croquetas o rellenos: casi nada tiene que acabar en la basura."
+    },
+    {
+      title: "Conserva mejor lo que compras",
+      body: "Envuelve las verduras de hoja en papel absorbente dentro de un túper para que duren el doble, guarda plátanos, manzanas y tomates lejos de otras frutas (aceleran su maduración) y congela pan, carne o pescado ya porcionados para descongelar solo lo que vayas a usar."
+    },
+    {
+      title: "Compra a granel solo lo que no caduca",
+      body: "Legumbres secas, arroz, pasta, avena, frutos secos crudos, aceite, conservas, harinas y congelados básicos aguantan meses o años bien guardados: los formatos grandes o a granel pueden bajar el precio hasta un 40%."
+    },
+    {
+      title: "No compres en grande lo que se estropea rápido",
+      body: "Fruta y verdura muy perecedera, pan de molde, snacks ya abiertos, especias poco habituales, salsas frescas o café molido pierden calidad o acaban en la basura antes de terminarlos. Regla simple: si lo que vas a tirar pesa más que lo que ahorras, compra el formato pequeño."
+    },
+    {
       title: "Comparte el trayecto al colegio",
       body: "Turnarte con otras familias del mismo curso para llevar a los niños ahorra combustible y tiempo a todos; mira también si hay abonos de transporte con descuento para estudiantes."
     },
