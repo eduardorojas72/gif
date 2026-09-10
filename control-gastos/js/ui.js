@@ -137,6 +137,55 @@ const UI = {
     }
   },
 
+  // ---------- Importar movimientos desde CSV: modal de revisión ----------
+  openCSVImportPreview(result) {
+    const rowsHTML = result.rows.map((r, i) => `
+      <tr data-idx="${i}">
+        <td>${r.date}</td>
+        <td>${r.description}</td>
+        <td class="${r.type === "income" ? "text-income" : "text-expense"}">${r.type === "income" ? "+" : "−"} ${LOGIC.formatMoney(r.amount)}</td>
+        <td><select class="csv-cat-select" data-idx="${i}">${this.categoryOptionsHTML(r.type, r.category)}</select></td>
+      </tr>`).join("");
+
+    this.openModal(`
+      <h2>Revisar movimientos importados</h2>
+      <p class="muted-small">${result.rows.length} movimiento${result.rows.length === 1 ? "" : "s"} detectado${result.rows.length === 1 ? "" : "s"}${result.skipped ? `, ${result.skipped} fila${result.skipped === 1 ? "" : "s"} omitida${result.skipped === 1 ? "" : "s"} por no reconocerse` : ""}. Revisa las categorías sugeridas antes de importar.</p>
+      <div class="table-scroll">
+        <table class="sheet-table">
+          <thead><tr><th>Fecha</th><th>Descripción</th><th>Importe</th><th>Categoría</th></tr></thead>
+          <tbody id="csv-preview-body">${rowsHTML}</tbody>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button>
+        <button type="button" class="btn btn-primary" id="csv-import-confirm">Importar ${result.rows.length} movimiento${result.rows.length === 1 ? "" : "s"}</button>
+      </div>
+    `);
+
+    document.querySelectorAll(".csv-cat-select").forEach((sel) =>
+      sel.addEventListener("change", () => {
+        result.rows[Number(sel.dataset.idx)].category = sel.value;
+      })
+    );
+
+    document.getElementById("csv-import-confirm").addEventListener("click", () => {
+      result.rows.forEach((r) => {
+        STORE.addTransaction({
+          type: r.type,
+          category: r.category,
+          description: r.description,
+          amount: r.amount,
+          date: r.date,
+          method: null,
+          source: "imported"
+        });
+      });
+      UI.closeModal();
+      UI.toast(result.rows.length + " movimiento" + (result.rows.length === 1 ? "" : "s") + " importado" + (result.rows.length === 1 ? "" : "s"));
+      UI.render("movimientos");
+    });
+  },
+
   render(tab) {
     if (tab) this.currentTab = tab;
     document.querySelectorAll(".tab-btn").forEach((b) => {
@@ -750,7 +799,7 @@ const UI = {
                   <td>${this.categoryLabel(t.category)}</td>
                   <td>${t.description || ""}</td>
                   <td>${t.method ? this.methodLabel(t.method) : "—"}</td>
-                  <td>${t.source === "linked" ? "🔗 Enlazado" : "✍️ Manual"}</td>
+                  <td>${t.source === "linked" ? "🔗 Enlazado" : t.source === "imported" ? "📄 Importado" : "✍️ Manual"}</td>
                   <td class="${t.type === "income" ? "text-income" : "text-expense"}">${t.type === "income" ? "+" : "−"} ${LOGIC.formatMoney(t.amount)}</td>
                   <td><button class="icon-btn" data-action="delete-tx" data-id="${t.id}" aria-label="Eliminar">🗑️</button></td>
                 </tr>
@@ -823,6 +872,11 @@ const UI = {
               <button class="btn btn-primary btn-sm" data-action="connect" data-id="${b.id}">Conectar</button>
             </li>`).join("")}
         </ul>
+
+        <h2 class="section-title">📄 Importar movimientos reales desde CSV</h2>
+        <p class="muted-small">Descarga el extracto de tu banca online en formato CSV y impórtalo aquí. El archivo se procesa en tu dispositivo: nunca se envía a ningún servidor.</p>
+        <label class="btn btn-secondary btn-block" for="csv-import-input">📄 Elegir archivo CSV</label>
+        <input type="file" accept=".csv,text/csv" id="csv-import-input" hidden />
       </section>
     `;
   },
@@ -1342,6 +1396,27 @@ const UI = {
         UI.checkBudgetAlert();
       })
     );
+
+    // ---- Cuentas: importar movimientos desde CSV ----
+    const csvInput = view.querySelector("#csv-import-input");
+    if (csvInput) {
+      csvInput.addEventListener("change", () => {
+        const file = csvInput.files && csvInput.files[0];
+        csvInput.value = "";
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = LOGIC.parseBankCSV(String(reader.result || ""));
+          if (!result.rows.length) {
+            UI.toast("No se pudo leer ningún movimiento de este archivo. Revisa el formato.", "warn");
+            return;
+          }
+          UI.openCSVImportPreview(result);
+        };
+        reader.onerror = () => UI.toast("No se pudo leer el archivo.", "warn");
+        reader.readAsText(file);
+      });
+    }
 
     // ---- Metas: perfil, cuenta, guardado, categorías ----
     const editProfileBtn = view.querySelector('[data-action="edit-profile"]');

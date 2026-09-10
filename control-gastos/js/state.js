@@ -496,6 +496,118 @@ const LOGIC = {
     return map[profileKey] || null;
   },
 
+  // ---------- Importar movimientos desde CSV bancario ----------
+  // Todo se procesa en el dispositivo del usuario: el archivo nunca sale de
+  // aquí. Es un parser tolerante (delimitador , o ;, con o sin cabecera,
+  // fecha ISO o DD/MM/AAAA, importe con coma o punto decimal) porque cada
+  // banco exporta su CSV con un formato ligeramente distinto.
+  _normalizeText(s) {
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  },
+
+  _splitCSVLine(line, delimiter) {
+    const result = [];
+    let cur = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
+        else inQuotes = !inQuotes;
+      } else if (ch === delimiter && !inQuotes) {
+        result.push(cur.trim());
+        cur = "";
+      } else {
+        cur += ch;
+      }
+    }
+    result.push(cur.trim());
+    return result;
+  },
+
+  parseCSVRows(text) {
+    const lines = text.split(/\r\n|\n|\r/).filter((l) => l.trim().length);
+    if (!lines.length) return [];
+    const delimiter = (lines[0].split(";").length > lines[0].split(",").length) ? ";" : ",";
+    return lines.map((line) => this._splitCSVLine(line, delimiter));
+  },
+
+  _parseCSVDate(raw) {
+    const s = String(raw || "").trim();
+    let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+    m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})/);
+    if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+    return null;
+  },
+
+  _parseCSVAmount(raw) {
+    let s = String(raw || "").trim().replace(/[^\d,.\-]/g, "");
+    if (!s) return NaN;
+    const lastComma = s.lastIndexOf(",");
+    const lastDot = s.lastIndexOf(".");
+    if (lastComma > -1 && lastComma > lastDot) {
+      s = s.replace(/\./g, "").replace(",", ".");
+    } else if (lastDot > -1 && lastDot > lastComma) {
+      s = s.replace(/,/g, "");
+    }
+    return parseFloat(s);
+  },
+
+  guessCategoryFor(type, description) {
+    const norm = this._normalizeText(description);
+    const map = (DATA.categoryKeywords[type === "income" ? "income" : "expense"]) || {};
+    for (const catId in map) {
+      if (map[catId].some((kw) => norm.includes(kw))) return catId;
+    }
+    return type === "income" ? "otros_ing" : "otros";
+  },
+
+  // Devuelve { rows: [{date, description, amount, type, category}], skipped }
+  parseBankCSV(text) {
+    const rows = this.parseCSVRows(text);
+    if (!rows.length) return { rows: [], skipped: 0 };
+
+    const header = rows[0].map((h) => this._normalizeText(h));
+    let dateIdx = header.findIndex((h) => /fecha|date/.test(h));
+    let descIdx = header.findIndex((h) => /concepto|descripcion|detalle|description/.test(h));
+    let amountIdx = header.findIndex((h) => /importe|amount|cantidad|monto/.test(h));
+    const hasHeader = dateIdx !== -1 || descIdx !== -1 || amountIdx !== -1;
+
+    let dataRows;
+    if (hasHeader) {
+      dataRows = rows.slice(1);
+      if (dateIdx === -1) dateIdx = 0;
+      if (descIdx === -1) descIdx = 1;
+      if (amountIdx === -1) amountIdx = rows[0].length - 1;
+    } else {
+      dateIdx = 0; descIdx = 1; amountIdx = 2;
+      dataRows = rows;
+    }
+
+    const parsed = [];
+    let skipped = 0;
+    dataRows.forEach((cols) => {
+      const date = this._parseCSVDate(cols[dateIdx]);
+      const amount = this._parseCSVAmount(cols[amountIdx]);
+      const description = (cols[descIdx] || "").trim();
+      if (!date || isNaN(amount) || amount === 0) {
+        skipped++;
+        return;
+      }
+      const type = amount < 0 ? "expense" : "income";
+      parsed.push({
+        date,
+        description: description || "Movimiento importado",
+        amount: Math.abs(amount),
+        type,
+        category: this.guessCategoryFor(type, description)
+      });
+    });
+
+    return { rows: parsed, skipped };
+  },
+
   // Genera un movimiento de gasto simulado, como si viniera de una tarjeta
   // o pago móvil enlazado. Placeholder de una integración real (Open Banking).
   simulateLinkedExpense(accountId) {

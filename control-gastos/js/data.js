@@ -27,6 +27,29 @@ const DATA = {
     { id: "transferencia", label: "Transferencia" }
   ],
 
+  // Palabras clave (sin acentos, en minúscula) para sugerir una categoría al
+  // importar movimientos desde un CSV bancario, a partir del texto del
+  // concepto/descripción. Es solo una sugerencia editable, no una regla fija.
+  categoryKeywords: {
+    expense: {
+      alimentacion: ["mercadona", "carrefour", "lidl", "dia ", "alcampo", "eroski", "supermercado", "aldi", "fruteria", "panaderia", "carniceria", "walmart", "soriana", "chedraui", "exito", "jumbo", "coto"],
+      transporte: ["uber", "cabify", "didi", "renfe", "metro", "autobus", "taxi", "gasolina", "gasolinera", "repsol", "cepsa", "shell", "parking", "peaje", "transporte"],
+      vivienda: ["alquiler", "hipoteca", "comunidad de propietarios", "inmobiliaria"],
+      ocio: ["cine", "teatro", "concierto", "restaurante", "cafeteria", " bar ", "discoteca"],
+      salud: ["farmacia", "clinica", "hospital", "dentista", "fisioterap"],
+      compras: ["amazon", "zara", "el corte ingles", "decathlon", "ikea", "primark", "mercado libre", "aliexpress"],
+      suscripciones: ["netflix", "spotify", "hbo", "disney+", "amazon prime", "icloud", "google one", "youtube premium"],
+      educacion: ["universidad", "colegio", "udemy", "libreria", "coursera"],
+      atomy: ["atomy"]
+    },
+    income: {
+      salario: ["nomina", "salario", "payroll"],
+      freelance: ["factura emitida", "freelance", "honorarios"],
+      ventas: ["venta", "wallapop", "vinted", "mercadolibre venta"],
+      regalos: ["regalo"]
+    }
+  },
+
   // País → moneda, para preguntarlo una vez en el cuestionario inicial y
   // formatear todos los importes automáticamente.
   countries: [
