@@ -943,7 +943,15 @@ const UI = {
   },
 
   // ================= CONSEJOS =================
+  budgetSimAmounts(income) {
+    const n = Math.max(0, Number(income) || 0);
+    return { needs: n * 0.5, wants: n * 0.3, savings: n * 0.2 };
+  },
+
   renderConsejos() {
+    const settings = STORE.getSettings();
+    const simIncome = settings.monthlyIncome || "";
+    const amounts = this.budgetSimAmounts(simIncome);
     return `
       <section class="card">
         <div class="card-head"><h1>Consejos para ahorrar</h1></div>
@@ -953,6 +961,33 @@ const UI = {
               <h3>${t.title}</h3>
               <p>${t.body}</p>
             </div>`).join("")}
+        </div>
+
+        <h2 class="section-title">🧮 Simulador 50/30/20</h2>
+        <p class="muted-small">Escribe tu ingreso neto mensual y reparte automáticamente entre necesidades, estilo de vida y ahorro.</p>
+        <div class="budget-sim">
+          <label>Ingreso mensual neto
+            <input type="number" id="sim-income" min="0" step="0.01" value="${simIncome}" placeholder="Ej. 2500" />
+          </label>
+          <div class="budget-sim-results">
+            <div class="budget-sim-row budget-sim-row--needs">
+              <span>50% · Necesidades básicas</span>
+              <strong id="sim-needs">${LOGIC.formatMoney(amounts.needs)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--wants">
+              <span>30% · Estilo de vida</span>
+              <strong id="sim-wants">${LOGIC.formatMoney(amounts.wants)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--savings">
+              <span>20% · Ahorro y futuro</span>
+              <strong id="sim-savings">${LOGIC.formatMoney(amounts.savings)}</strong>
+            </div>
+          </div>
+          <ol class="budget-sim-steps">
+            <li>Calcula tus ingresos netos reales: suma los sueldos fijos o el promedio de lo que entra a la cuenta cada mes.</li>
+            <li>Automatiza el preahorro: nada más cobrar, transfiere el 20% a una cuenta separada. Si no lo ves en la cuenta principal, no lo gastas.</li>
+            <li>Clasifica tus gastos en necesidades u ocio: revisa los movimientos del último mes para ajustar los límites de cada categoría.</li>
+          </ol>
         </div>
 
         <h2 class="section-title">Para profundizar: libros</h2>
@@ -1351,6 +1386,17 @@ const UI = {
         });
       })
     );
+
+    // ---- Consejos: simulador 50/30/20 ----
+    const simIncomeInput = view.querySelector("#sim-income");
+    if (simIncomeInput) {
+      simIncomeInput.addEventListener("input", () => {
+        const amounts = UI.budgetSimAmounts(simIncomeInput.value);
+        document.getElementById("sim-needs").textContent = LOGIC.formatMoney(amounts.needs);
+        document.getElementById("sim-wants").textContent = LOGIC.formatMoney(amounts.wants);
+        document.getElementById("sim-savings").textContent = LOGIC.formatMoney(amounts.savings);
+      });
+    }
 
     // ---- Resumen ----
     view.querySelectorAll(".period-tab").forEach((btn) =>

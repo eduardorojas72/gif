@@ -511,6 +511,33 @@ h1, h2, h3 {
 .chip-x { border: none; background: none; cursor: pointer; font-size: 14px; color: var(--text-soft); padding: 0 4px; }
 .category-add-row { grid-template-columns: 1fr 2fr 0.6fr auto; }
 
+/* ---------- Simulador 50/30/20 ---------- */
+.budget-sim { display: flex; flex-direction: column; gap: 14px; }
+.budget-sim label { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
+.budget-sim input {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+.budget-sim-results { display: flex; flex-direction: column; gap: 8px; }
+.budget-sim-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+}
+.budget-sim-row strong { font-family: "Space Grotesk", sans-serif; font-size: 15px; }
+.budget-sim-row--needs { background: rgba(23, 98, 75, 0.12); }
+.budget-sim-row--wants { background: rgba(201, 139, 18, 0.14); }
+.budget-sim-row--savings { background: rgba(63, 169, 131, 0.16); }
+.budget-sim-steps { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--text-soft); }
+
 /* ---------- Niveles de racha (piedras) ---------- */
 .tier-chip {
   display: inline-block;
