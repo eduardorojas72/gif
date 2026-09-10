@@ -1,6 +1,6 @@
 {
-  "name": "Control de Gastos",
-  "short_name": "Gastos",
+  "name": "Hucha",
+  "short_name": "Hucha",
   "description": "Registra ingresos y gastos, ponte una meta diaria y comparte tus logros de ahorro.",
   "start_url": "./index.html",
   "scope": "./",

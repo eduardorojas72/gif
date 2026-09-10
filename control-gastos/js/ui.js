@@ -902,7 +902,7 @@ const UI = {
         const existingPlan = STORE.getPlan(tomorrow);
         let resultHTML;
         let dataURL = null;
-        const text = "¡Hoy cumplí mi meta de gasto diario con Control de Gastos! 💪 Racha de " + LOGIC.currentStreak() + " día(s).";
+        const text = "¡Hoy cumplí mi meta de gasto diario con Hucha! 🐷 Racha de " + LOGIC.currentStreak() + " día(s).";
 
         if (record.met) {
           AUDIO.playSuccess();
@@ -1075,7 +1075,7 @@ const UI = {
         const dataURL = SHARE.buildCardDataURL({
           date: d.date, goal: d.goal, spent: d.spent, streak: LOGIC.currentStreak(), userName: settings.userName
         });
-        SHARE.shareCard(dataURL, "¡Cumplí mi meta de gasto diario con Control de Gastos! 💪").then((result) => {
+        SHARE.shareCard(dataURL, "¡Cumplí mi meta de gasto diario con Hucha! 🐷").then((result) => {
           if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
         });
       })
