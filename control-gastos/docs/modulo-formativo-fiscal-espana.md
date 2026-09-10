@@ -176,6 +176,19 @@ Descuento regulado sobre la tarifa PVPC para consumidores vulnerables, del 40% a
 
 **Solicitud:** pedir el formulario a una comercializadora de referencia (mercado regulado) → presentar formulario firmado por mayores de 14 años + DNI/NIE de la unidad familiar + certificado de empadronamiento conjunto + libro de familia + documentación de circunstancias especiales si aplica → la comercializadora resuelve en máximo 15 días hábiles.
 
+### Bono Social Térmico
+
+Ayuda para calefacción, agua caliente y cocina (gas natural, butano, propano, electricidad o biomasa). **No se solicita**: se concede de oficio a quien ya sea beneficiario del Bono Social Eléctrico a 31 de diciembre del año anterior, sin necesidad de tener contrato de gas canalizado.
+
+- **Pago:** único anual, por transferencia a la cuenta donde está domiciliada la factura de la luz. Importe entre ~35 €/año (vulnerable, zona climática cálida) y >300 €/año (vulnerable severo, zona muy fría), según:
+  1. Grado de vulnerabilidad: severo cobra un 60% más que simple.
+  2. Zona climática de la vivienda (Zona A, cálida/costa, a Zona E, fría/montaña o interior).
+- **Gestión:** la ejecuta la Comunidad Autónoma (aunque el fondo es del Gobierno central) — en el primer trimestre del año reciben el listado de beneficiarios, notifican la concesión y piden confirmar/actualizar el IBAN (plazo habitual de 10-15 días; también se puede renunciar explícitamente).
+
+### Alternativa para gas: Tarifa de Último Recurso (TUR)
+
+Si no se cumplen los requisitos del Bono Social pero se usa gas natural canalizado: la TUR es la tarifa regulada para hogares con consumo <50.000 kWh/año, con precios por kWh inferiores a las tarifas fijas del mercado libre. Se contrata solo con Comercializadoras de Último Recurso (CUR) — las cuatro que operan en España son filiales reguladas de las grandes energéticas (Endesa, Iberdrola, Naturgy, TotalEnergies).
+
 ---
 
 *Compilado a partir de mensajes del usuario durante el desarrollo de Hucha (sept. 2026). Revisar y actualizar cifras contra fuente oficial antes de cualquier uso futuro.*
