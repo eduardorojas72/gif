@@ -336,6 +336,30 @@ const DATA = {
     {
       title: "Revisa las comisiones de tu banco",
       body: "Comprueba que cumples los requisitos para no pagar mantenimiento (nómina domiciliada, recibos, etc.). Si te cobran comisiones evitables, plantéate cambiar de entidad."
+    },
+    {
+      title: "Reutiliza libros de texto y material escolar",
+      body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
+    },
+    {
+      title: "Lleva la comida de casa al cole si el centro lo permite",
+      body: "Preparar el menú en una fiambrera térmica suele costar bastante menos que la cuota del comedor. Revisa también si existen becas de comedor según tus ingresos familiares."
+    },
+    {
+      title: "Comparte el trayecto al colegio",
+      body: "Turnarte con otras familias del mismo curso para llevar a los niños ahorra combustible y tiempo a todos; mira también si hay abonos de transporte con descuento para estudiantes."
+    },
+    {
+      title: "Compra material escolar sin prisa y sin licencias",
+      body: "Adquiere solo lo imprescindible la primera semana; el resto puede esperar a que haya ofertas. Las carpetas y mochilas sin personajes con licencia suelen costar bastante menos."
+    },
+    {
+      title: "Elige uniforme neutro y una talla de margen",
+      body: "Compra las prendas básicas sin escudo en tiendas generalistas y cose el distintivo aparte; una talla más de margen en ropa y calzado ayuda a que dure todo el curso."
+    },
+    {
+      title: "Prioriza las extraescolares municipales o del colegio",
+      body: "Las actividades organizadas por el ayuntamiento o la asociación de padres suelen ser bastante más económicas que las academias privadas."
     }
   ],
 
