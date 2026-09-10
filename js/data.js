@@ -66,14 +66,14 @@ const ESCENARIO_PASOS = [
 ];
 
 const ESCENARIO_CATEGORIAS = [
-  { id: "casa", label: "Casa", icon: "home", pilar: "Vivir bien", ejemplo: "Para [fecha] tendré una casa propia de [tamaño] en [zona], con [n.º] habitaciones, lista para mi familia." },
-  { id: "familia", label: "Familia", icon: "heart", pilar: "Amar", ejemplo: "Tener todos los fines de semana libres, sin preocupaciones de trabajo, para pasarlos con mis hijos." },
-  { id: "educacion", label: "Educación", icon: "book-open", pilar: "Aprender", ejemplo: "Pagar la carrera universitaria que escoja mi hija/o, o completar el curso que siempre quise hacer." },
-  { id: "donacion", label: "Donación", icon: "gift", pilar: "Contribuir", ejemplo: "Donar el 5% de mis comisiones mensuales a una causa que me importe, empezando en [fecha]." },
-  { id: "dinero", label: "Dinero", icon: "coins", pilar: "Vivir bien", ejemplo: "Ganar $[monto] mensuales para cubrir mis gastos, pagar mis deudas y darme el gusto que quiero." },
-  { id: "viajes", label: "Viajes", icon: "plane", pilar: "Amar", ejemplo: "Ir de viaje con mi familia o mi pareja en los próximos [n.º] meses, sin pensar en el presupuesto." },
-  { id: "crecimiento", label: "Crecimiento personal", icon: "bulb", pilar: "Aprender", ejemplo: "Ver 1 video de formación al día, asistir a un One Day Seminar y perder el miedo a hablar en público." },
-  { id: "servicio", label: "Servicio", icon: "users", pilar: "Contribuir", ejemplo: "Ser mentor de 2 nuevos socios y ayudarles a completar su Plan de 90 Días, como alguien hizo conmigo." },
+  { id: "casa", label: "Casa", icon: "home", pilar: "Vivir bien", ejemplo: "Actualmente vivo en un apartamento de [tamaño], pero para el [fecha] tendré una casa propia de [tamaño] valorada en más de $[monto]." },
+  { id: "auto", label: "Auto", icon: "car", pilar: "Vivir bien", ejemplo: "Actualmente tengo un [marca y modelo], pero compraré un [marca y modelo] valorado en más de $[monto] para el [fecha]." },
+  { id: "viajes", label: "Viajes", icon: "plane", pilar: "Amar", ejemplo: "Llevaré a mi pareja a un viaje de [n.º] días a [destino] como recompensa por mi ascenso de rango, para el [fecha]." },
+  { id: "familia", label: "Familia", icon: "heart", pilar: "Amar", ejemplo: "Enviaré [un producto de bienestar] y $[monto] mensuales a mis padres, a partir del [fecha]." },
+  { id: "donacion", label: "Donación", icon: "gift", pilar: "Contribuir", ejemplo: "Donaré $[monto] mensuales a [una causa o fundación], a partir del [fecha]." },
+  { id: "educacion", label: "Educación", icon: "book-open", pilar: "Aprender", ejemplo: "Enviaré a mis hijos a estudiar [carrera o país] para el [fecha]." },
+  { id: "tiempolibre", label: "Ocio", icon: "sparkles", pilar: "Vivir bien", ejemplo: "Actualmente casi no tengo tiempo libre, pero practicaré [un deporte o afición] [n.º] veces por semana para mi salud, y competiré en [un torneo o meta] para el [fecha]." },
+  { id: "negocio", label: "Negocio", icon: "trending-up", pilar: "Vivir bien", ejemplo: "Actualmente gano $[monto] mensuales como [mi rango actual], y ascenderé a [el siguiente rango] ganando $[monto] mensuales para el [fecha]." },
 ];
 
 const LEMA_ATOMY = {
@@ -559,7 +559,9 @@ const SEMANAS = [
 ];
 
 const CONTACTO_NIVELES = ["Caliente", "Tibio", "Frío"];
-const CONTACTO_ESTADOS = ["Por contactar", "Contactado", "Presentado", "Seguimiento", "Socio", "Consumidor", "Descartado"];
+const CONTACTO_ESTADOS = ["Por contactar", "Contactado", "Presentado", "Primer Pedido", "Seguimiento", "Socio", "Consumidor", "Descartado"];
+
+const PRIMER_PEDIDO_NOTA = "¿Le llegó el pedido? ¿Cómo se ha sentido con los productos? ¿A quién se lo podría recomendar?";
 
 const PREMIOS_DEFECTO = [
   { hito: "Alcanzar 300.000 PVP", premio: "Set de 4 Pasos de regalo", imagen: null },

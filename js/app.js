@@ -252,6 +252,12 @@ const App = {
       const el = e.target;
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
         setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
+        if (el.dataset.draftField === "estado" && el.value === "Primer Pedido") {
+          const d = this.ui.contactoDraft;
+          if (!d.notaSeguimiento || !d.notaSeguimiento.trim()) d.notaSeguimiento = PRIMER_PEDIDO_NOTA;
+          if (!d.proximoSeguimiento) d.proximoSeguimiento = addDiasISO(hoyISO(), 3);
+          this.render();
+        }
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target) {

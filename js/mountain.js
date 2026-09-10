@@ -76,7 +76,7 @@ function sectionHeaderHTML(title, desc, iconName, iconColor) {
 --------------------------------------------------------------- */
 
 function escenarioRadarSVG(categorias, escenario) {
-  const cx = 130, cy = 130, Rmax = 82, Rlabel = 106;
+  const cx = 150, cy = 150, Rmax = 82, Rlabel = 106;
   const n = categorias.length;
   const angleOf = (i) => (-90 + i * (360 / n)) * (Math.PI / 180);
   const pt = (i, r) => {
@@ -122,7 +122,7 @@ function escenarioRadarSVG(categorias, escenario) {
   });
 
   return (
-    '<svg viewBox="0 0 260 260" width="100%" style="max-width:340px;display:block;margin:0 auto">' +
+    '<svg viewBox="0 0 300 300" width="100%" style="max-width:340px;display:block;margin:0 auto">' +
     rings + axes + dataPoly + markers + labels +
     "</svg>"
   );

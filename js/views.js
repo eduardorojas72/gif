@@ -850,11 +850,12 @@ function renderContactos(state, ui) {
           contactoNivelBadge(c.nivel) +
           "</div>" +
           '<div class="row between" style="margin-top:10px;align-items:center">' +
-          '<span class="small" style="font-weight:600">' + escapeHtml(c.estado) + "</span>" +
+          '<span class="small" style="font-weight:600' + (c.estado === "Primer Pedido" ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
           '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
           "</div>" +
           (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(c.notaSeguimiento) + '”</div>' : "") +
           '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="3">+3 días</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="7">+1 sem</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="30">+1 mes</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="60">+2 meses</button>' +
@@ -905,6 +906,7 @@ function renderContactoModal(ui) {
     '<div class="field"><label>Notas</label><textarea rows="2" data-draft-field="notas" placeholder="Cómo lo conociste, intereses...">' + escapeHtml(d.notas) + "</textarea></div>" +
     '<div class="field"><label>Próximo seguimiento</label><input type="date" data-draft-field="proximoSeguimiento" value="' + (d.proximoSeguimiento || "") + '"></div>' +
     '<div class="row gap-2">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="3">+3 días</button>' +
     '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="7">+1 semana</button>' +
     '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="30">+1 mes</button>' +
     '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento" data-arg="60">+2 meses</button>' +
