@@ -53,6 +53,29 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_INTRO =
+  "El Escenario de Vida es la base de todo tu recorrido: antes de aprender la ruta, define tu destino. Antes de trabajar por trabajar, decide para qué. Escribe tus metas en cada una de las 8 áreas de tu vida balanceada — cuanto más claras y detalladas (cifras, lugares, fechas), más fuerza tendrán para sostenerte en los días difíciles.";
+
+const ESCENARIO_LEMA = "¡Determina tus sueños! Sé extraordinario o sé extremo.";
+
+const ESCENARIO_PASOS = [
+  "Escribe tus metas y sueños en cada categoría, de la forma más detallada y concreta posible: cifras, fechas, lugares.",
+  "Marca tu nivel de avance en cada área tocando los puntos del gráfico — entre más lejos del centro, más cerca estás de tu meta.",
+  "Vuelve aquí seguido y actualiza tu avance: verlo crecer te mantiene enfocado en tu “por qué”.",
+  "Sigue trabajando hasta unir todos los puntos en un círculo perfecto — ese día habrás alcanzado tu Escenario de Vida.",
+];
+
+const ESCENARIO_CATEGORIAS = [
+  { id: "casa", label: "Casa", icon: "home", pilar: "Vivir bien", ejemplo: "Para [fecha] tendré una casa propia de [tamaño] en [zona], con [n.º] habitaciones, lista para mi familia." },
+  { id: "familia", label: "Familia", icon: "heart", pilar: "Amar", ejemplo: "Tener todos los fines de semana libres, sin preocupaciones de trabajo, para pasarlos con mis hijos." },
+  { id: "educacion", label: "Educación", icon: "book-open", pilar: "Aprender", ejemplo: "Pagar la carrera universitaria que escoja mi hija/o, o completar el curso que siempre quise hacer." },
+  { id: "donacion", label: "Donación", icon: "gift", pilar: "Contribuir", ejemplo: "Donar el 5% de mis comisiones mensuales a una causa que me importe, empezando en [fecha]." },
+  { id: "dinero", label: "Dinero", icon: "coins", pilar: "Vivir bien", ejemplo: "Ganar $[monto] mensuales para cubrir mis gastos, pagar mis deudas y darme el gusto que quiero." },
+  { id: "viajes", label: "Viajes", icon: "plane", pilar: "Amar", ejemplo: "Ir de viaje con mi familia o mi pareja en los próximos [n.º] meses, sin pensar en el presupuesto." },
+  { id: "crecimiento", label: "Crecimiento personal", icon: "bulb", pilar: "Aprender", ejemplo: "Ver 1 video de formación al día, asistir a un One Day Seminar y perder el miedo a hablar en público." },
+  { id: "servicio", label: "Servicio", icon: "users", pilar: "Contribuir", ejemplo: "Ser mentor de 2 nuevos socios y ayudarles a completar su Plan de 90 Días, como alguien hizo conmigo." },
+];
+
 const LEMA_ATOMY = {
   intro: "El Lema de Atomy no es simplemente un conjunto de palabras motivacionales, sino el núcleo filosófico y espiritual sobre el cual se cimenta toda la visión, gestión y cultura organizacional de la empresa. Formulado por el Presidente Han-Gill Park, establece el marco ético sobre cómo deben conducirse las personas tanto en el negocio como en su vida diaria.",
   exclamacion: "¡Apreciar el alma! ¡Crear la visión! ¡Seguir la fe! ¡Servir con humildad! ¡Vamos, vamos, vamos!",

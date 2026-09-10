@@ -14,6 +14,13 @@ function emptySemanaState(n) {
   return { done: false, checks: semana.acciones.map(() => false) };
 }
 
+function emptyEscenarioVida() {
+  return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
+    acc[c.id] = { meta: "", avance: 0 };
+    return acc;
+  }, {});
+}
+
 function defaultState() {
   return {
     onboarded: false,
@@ -32,6 +39,8 @@ function defaultState() {
     dias: DIAS.reduce((acc, d) => ({ ...acc, [d.id]: emptyDayState(d.id) }), {}),
     semanas: SEMANAS.reduce((acc, s) => ({ ...acc, [s.n]: emptySemanaState(s.n) }), {}),
     contactos: [],
+    escenarioVida: emptyEscenarioVida(),
+    escenarioCompletado: false,
   };
 }
 
@@ -118,6 +127,16 @@ function hydrateState(parsed) {
     Array.isArray(parsed.premios) && parsed.premios.length
       ? parsed.premios.map((p) => Object.assign({ hito: "", premio: "", imagen: null }, p))
       : PREMIOS_DEFECTO.map((p) => Object.assign({ imagen: null }, p));
+
+  merged.escenarioVida = ESCENARIO_CATEGORIAS.reduce((acc, c) => {
+    const saved = parsed.escenarioVida && parsed.escenarioVida[c.id];
+    acc[c.id] = {
+      meta: saved && typeof saved.meta === "string" ? saved.meta : "",
+      avance: saved && typeof saved.avance === "number" ? Math.max(0, Math.min(4, saved.avance)) : 0,
+    };
+    return acc;
+  }, {});
+  merged.escenarioCompletado = !!parsed.escenarioCompletado;
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =

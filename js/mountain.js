@@ -70,6 +70,64 @@ function sectionHeaderHTML(title, desc, iconName, iconColor) {
   );
 }
 
+/* ---------------------------------------------------------------
+   RADAR DEL ESCENARIO DE VIDA — octágono de 8 ejes (uno por categoría),
+   con anillos de nivel 1-4 y marcadores tocables para fijar el avance.
+--------------------------------------------------------------- */
+
+function escenarioRadarSVG(categorias, escenario) {
+  const cx = 130, cy = 130, Rmax = 82, Rlabel = 106;
+  const n = categorias.length;
+  const angleOf = (i) => (-90 + i * (360 / n)) * (Math.PI / 180);
+  const pt = (i, r) => {
+    const a = angleOf(i);
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  };
+
+  let rings = "";
+  for (let lvl = 1; lvl <= 4; lvl++) {
+    const r = (lvl / 4) * Rmax;
+    const pts = categorias.map((c, i) => { const p = pt(i, r); return p.x.toFixed(1) + "," + p.y.toFixed(1); }).join(" ");
+    rings += '<polygon points="' + pts + '" fill="none" stroke="var(--border)" stroke-width="1" opacity="' + (lvl === 4 ? 0.5 : 0.28) + '"/>';
+  }
+
+  let axes = "";
+  categorias.forEach((c, i) => {
+    const p = pt(i, Rmax);
+    axes += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) + '" stroke="var(--border)" stroke-width="1" opacity="0.4"/>';
+  });
+
+  const dataPts = categorias.map((c, i) => {
+    const av = (escenario[c.id] && escenario[c.id].avance) || 0;
+    const p = pt(i, (av / 4) * Rmax);
+    return p.x.toFixed(1) + "," + p.y.toFixed(1);
+  }).join(" ");
+  const dataPoly = '<polygon points="' + dataPts + '" fill="var(--gold)" fill-opacity="0.22" stroke="var(--gold)" stroke-width="2"/>';
+
+  let markers = "", labels = "";
+  categorias.forEach((c, i) => {
+    const av = (escenario[c.id] && escenario[c.id].avance) || 0;
+    for (let lvl = 1; lvl <= 4; lvl++) {
+      const p = pt(i, (lvl / 4) * Rmax);
+      const on = lvl <= av;
+      markers +=
+        '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="7" ' +
+        'fill="' + (on ? "var(--gold)" : "var(--card)") + '" stroke="' + (on ? "var(--gold)" : "var(--border)") + '" stroke-width="1.4" ' +
+        'data-action="set-escenario-avance" data-cat="' + c.id + '" data-arg="' + lvl + '" style="cursor:pointer"/>';
+    }
+    const lp = pt(i, Rlabel);
+    const cosv = Math.cos(angleOf(i));
+    const anchor = cosv > 0.35 ? "start" : cosv < -0.35 ? "end" : "middle";
+    labels += '<text x="' + lp.x.toFixed(1) + '" y="' + lp.y.toFixed(1) + '" text-anchor="' + anchor + '" dominant-baseline="middle" font-size="10.5" font-weight="700" fill="var(--text-soft)">' + escapeHtml(c.label) + "</text>";
+  });
+
+  return (
+    '<svg viewBox="0 0 260 260" width="100%" style="max-width:340px;display:block;margin:0 auto">' +
+    rings + axes + dataPoly + markers + labels +
+    "</svg>"
+  );
+}
+
 function mountainSceneHTML(quincenas, cumbreLograda, height) {
   height = height || 190;
   const peak = { x: 160, y: 18 };
