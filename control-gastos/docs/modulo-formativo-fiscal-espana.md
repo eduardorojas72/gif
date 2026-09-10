@@ -3,7 +3,7 @@
 > **Nota de alcance:** este documento reúne material de investigación aportado
 > por el usuario durante el desarrollo de Hucha. Es contenido **específico de
 > España** (impuestos, fiscalidad de inversión, seguros, becas, mercado
-> eléctrico regulado) que **no se
+> eléctrico regulado, protección al consumidor en compras online) que **no se
 > ha incorporado a la app** porque Hucha da servicio a usuarios de ~20 países
 > (ver `DATA.countries` en `js/data.js`) y este material no generaliza. Se
 > guarda aquí como referencia para un futuro "módulo formativo" específico
@@ -201,6 +201,42 @@ Si no se cumplen los requisitos del Bono Social pero se usa gas natural canaliza
 - Requisitos: consumo anual >50.000 kWh, uso exclusivamente residencial, contadores individuales o repartidores de costes instalados en cada vivienda, e inspección técnica periódica de la instalación en regla.
 - Trámite: aprobación en junta de propietarios → el administrador de fincas/presidente reúne CIF de la comunidad, DNI del responsable, CUPS de la caldera central, certificado de la mantenedora (revisión al día) y certificado de instalación de repartidores → solicitud a una de las 4 CUR por su canal específico para comunidades.
 - Incentivo de eficiencia: el precio regulado cubre el consumo promedio histórico de la comunidad; el excedente sobre esa media tiene un pequeño recargo en el término de energía, para incentivar el ahorro individual por vivienda.
+
+## 8. Protección al consumidor en compras online (España/UE)
+
+### Chargeback (retrocesión de cargo)
+
+Disputa financiera forzosa regulada por las redes de tarjetas (Visa/Mastercard) y amparada por PSD2 (Real Decreto-ley 19/2018 en España); el banco emisor exige al banco del comercio la devolución de fondos por fraude o incumplimiento grave.
+
+**Cómo funciona:** (1) el titular presenta la disputa a su banco emisor con las pruebas; (2) el emisor traslada la reclamación al banco adquirente (del comercio) — en fraude claro o no entrega, suele haber abono provisional mientras se investiga; (3) el comercio tiene 30-45 días para alegar (ej. albarán de entrega firmado); (4) si no responde o las pruebas son insuficientes, el abono se hace definitivo; si hay desacuerdo, la red de pago arbitra.
+
+**Motivos válidos:** operación no autorizada (clonación/robo), mercancía no recibida (tracking falso o inexistente), incumplimiento de contrato (producto distinto a lo comprado, o negativa a aplicar el derecho de desistimiento), duplicidad de cobro.
+
+**Plazos:** operaciones no autorizadas (fraude directo) hasta 13 meses desde el cobro (PSD2); incumplimiento comercial (no entrega/desistimiento) hasta 120 días desde la compra o la fecha prevista de entrega (reglas de red Visa/Mastercard, no de un país concreto).
+
+**Coste para el comercio:** cada chargeback perdido conlleva una penalización de la pasarela al comercio (habitualmente 15-30 € adicionales al importe devuelto).
+
+**Documentación a reunir antes de contactar al banco:** extracto con fecha/importe/comercio; justificante de compra (factura o email de confirmación); prueba del fraude o incumplimiento (tracking sin entrega, fotos del producto recibido vs. oferta anunciada); prueba de haber contactado al comercio sin respuesta satisfactoria; copia de denuncia policial si hay estafa deliberada o uso no autorizado de la tarjeta (agiliza la resolución).
+
+**Pasos con el banco:** contactar al departamento de fraude/atención al cliente y abrir la disputa → adjuntar toda la documentación → bloquear y reemplazar la tarjeta si se usó en una web sospechosa → esperar la investigación (el comercio tiene 30-45 días para responder).
+
+### Escalado si el banco deniega el chargeback (vía administrativa española)
+
+1. **Reclamación formal al Servicio de Atención al Cliente (SAC) o Defensor del Cliente del banco** — por escrito (oficina con sello, burofax o email certificado). Citar el Real Decreto-ley 19/2018 (operación no autorizada: reembolso obligatorio antes de fin del día hábil siguiente salvo negligencia grave probada) o la falta de diligencia en activar el chargeback (incumplimiento comercial). El banco debe responder en máximo 15 días hábiles (servicios de pago) o 1 mes (otras consultas).
+2. **Banco de España (Oficina de Reclamaciones)** si el SAC deniega o no responde a tiempo: sede electrónica `clientebancario.bde.es` > Reclamaciones, adjuntando la reclamación previa, la respuesta (o su ausencia), extracto, denuncia policial y justificantes. El Banco de España emite un informe motivado; si es favorable, la mayoría de entidades pagan para evitar sanciones (el informe no es ejecutivo pero tiene fuerte peso reputacional).
+3. **Vías complementarias:** Oficina Municipal de Información al Consumidor (OMIC) o Dirección General de Consumo autonómica (mediación, para comercios en España/UE); proceso monitorio judicial para importes <2.000 €, sin necesidad de abogado ni procurador, en el Juzgado de Primera Instancia.
+
+### Derecho de desistimiento (compras a distancia, UE)
+
+Derecho a devolver un producto o cancelar un contrato comprado por internet/teléfono/fuera de establecimiento, sin justificar motivo ni penalización (transposición de la Directiva UE 2011/83 — RDL 1/2007 en España).
+
+- **Plazo:** mínimo 14 días naturales desde la recepción del producto (o firma del contrato para servicios); si la tienda no informó claramente de este derecho, se amplía automáticamente hasta 12 meses adicionales.
+- **Cómo ejercerlo:** notificar a la empresa antes de que venza el plazo (formulario web o email con datos, número de pedido y declaración explícita de desistimiento) → devolver el producto en máximo 14 días desde la notificación (no hace falta conservar el precinto de fábrica, pero sin daños por uso más allá de comprobar que funciona) → la empresa reembolsa el importe íntegro (incluido el envío ordinario inicial) en máximo 14 días desde la comunicación, por el mismo método de pago.
+- **Gastos de devolución:** los paga el comprador solo si la tienda lo advirtió explícitamente antes de la compra; si no lo indicó, los paga la empresa.
+- **Penalización por retraso del reembolso:** si pasan más de 14 días desde la notificación acreditada sin que la tienda devuelva el dinero, la ley (LGDCU) permite reclamar el doble de la suma adeudada.
+- **Excepciones sin derecho de desistimiento:** productos personalizados/a medida; bienes precintados por higiene/salud ya desprecintados (ropa interior, cosméticos, auriculares in-ear); prensa y publicaciones periódicas; grabaciones/software desprecintados tras la entrega; contenido digital descargado/ejecutado con consentimiento previo; billetes de avión, hotel o entradas con fecha específica.
+
+**Si la tienda rechaza la devolución dentro de plazo** (infracción del RDL 1/2007): (1) conservar pruebas del intento de devolución (capturas, emails, justificante de envío); (2) reclamación formal a la tienda citando el artículo 71 de la Ley de Consumidores y el derecho a reclamar el doble por retraso; (3) chargeback al banco/PayPal aportando esas pruebas (vía más rápida si se pagó con tarjeta); (4) OMIC/Junta Arbitral de Consumo (tiendas en España) o Centro Europeo del Consumidor / plataforma ODR de la Comisión Europea (tiendas en otro país de la UE) — gratuitas, 1-4 meses; o proceso monitorio judicial (cualquier importe, sin abogado obligatorio si es <2.000 €, gratuito, 3-6 meses).
 
 ---
 
