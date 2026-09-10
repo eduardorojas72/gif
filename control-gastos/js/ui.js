@@ -1029,10 +1029,27 @@ const UI = {
     return { needs: n * 0.5, wants: n * 0.3, savings: n * 0.2 };
   },
 
+  // Reparte un presupuesto mensual de alimentación en fondo fijo semanal (80%),
+  // despensa mensual (15%) y margen de ajuste semanal (5%); y el fondo fijo
+  // semanal, a su vez, en 3 bloques de prioridad (básicos/lácteos/opcionales).
+  groceryBudgetSplit(monthlyBudget) {
+    const n = Math.max(0, Number(monthlyBudget) || 0);
+    const weeklyFixed = (n * 0.8) / 4;
+    const pantryFund = n * 0.15;
+    const weeklyMargin = (n * 0.05) / 4;
+    return {
+      weeklyFixed, pantryFund, weeklyMargin,
+      block1: weeklyFixed * 0.7,
+      block2: weeklyFixed * 0.2,
+      block3: weeklyFixed * 0.1
+    };
+  },
+
   renderConsejos() {
     const settings = STORE.getSettings();
     const simIncome = settings.monthlyIncome || "";
     const amounts = this.budgetSimAmounts(simIncome);
+    const groceryAmounts = this.groceryBudgetSplit("");
     return `
       <section class="card">
         <div class="card-head"><h1>Consejos para ahorrar</h1></div>
@@ -1068,6 +1085,48 @@ const UI = {
             <li>Calcula tus ingresos netos reales: suma los sueldos fijos o el promedio de lo que entra a la cuenta cada mes.</li>
             <li>Automatiza el preahorro: nada más cobrar, transfiere el 20% a una cuenta separada. Si no lo ves en la cuenta principal, no lo gastas.</li>
             <li>Clasifica tus gastos en necesidades u ocio: revisa los movimientos del último mes para ajustar los límites de cada categoría.</li>
+          </ol>
+        </div>
+
+        <h2 class="section-title">🛒 Presupuesto de la compra por bloques</h2>
+        <p class="muted-small">Escribe tu presupuesto mensual de alimentación y repártelo en fondo semanal, despensa y margen de ajuste; el fondo semanal se reparte a su vez por prioridad.</p>
+        <div class="budget-sim">
+          <label>Presupuesto mensual de alimentación
+            <input type="number" id="grocery-budget-income" min="0" step="0.01" placeholder="Ej. 400" />
+          </label>
+          <div class="budget-sim-results">
+            <div class="budget-sim-row budget-sim-row--needs">
+              <span>80% ÷ 4 · Fondo fijo semanal</span>
+              <strong id="grocery-weekly">${LOGIC.formatMoney(groceryAmounts.weeklyFixed)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--wants">
+              <span>15% · Despensa mensual</span>
+              <strong id="grocery-pantry">${LOGIC.formatMoney(groceryAmounts.pantryFund)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--savings">
+              <span>5% ÷ 4 · Margen de ajuste semanal</span>
+              <strong id="grocery-margin">${LOGIC.formatMoney(groceryAmounts.weeklyMargin)}</strong>
+            </div>
+          </div>
+          <p class="muted-small" style="margin:2px 0 0">El fondo fijo semanal, repartido por prioridad:</p>
+          <div class="budget-sim-results">
+            <div class="budget-sim-row budget-sim-row--needs">
+              <span>70% · Bloque 1: básicos imprescindibles</span>
+              <strong id="grocery-block1">${LOGIC.formatMoney(groceryAmounts.block1)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--wants">
+              <span>20% · Bloque 2: lácteos y complementos</span>
+              <strong id="grocery-block2">${LOGIC.formatMoney(groceryAmounts.block2)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--savings">
+              <span>10% · Bloque 3: opcionales (el primero en recortar)</span>
+              <strong id="grocery-block3">${LOGIC.formatMoney(groceryAmounts.block3)}</strong>
+            </div>
+          </div>
+          <ol class="budget-sim-steps">
+            <li>Calcula el total estimado antes de ir al súper: apunta el precio aproximado junto a cada producto de tu lista.</li>
+            <li>Ve sumando con la calculadora del móvil según metes cosas al carro; si al llegar al bloque 3 te pasas, deja los opcionales en la estantería.</li>
+            <li>Compra primero los congelados y secos: así aseguras la base de tus comidas aunque a fin de mes vayas más justo.</li>
           </ol>
         </div>
 
@@ -1532,6 +1591,20 @@ const UI = {
         document.getElementById("sim-needs").textContent = LOGIC.formatMoney(amounts.needs);
         document.getElementById("sim-wants").textContent = LOGIC.formatMoney(amounts.wants);
         document.getElementById("sim-savings").textContent = LOGIC.formatMoney(amounts.savings);
+      });
+    }
+
+    // ---- Consejos: presupuesto de la compra por bloques ----
+    const groceryBudgetInput = view.querySelector("#grocery-budget-income");
+    if (groceryBudgetInput) {
+      groceryBudgetInput.addEventListener("input", () => {
+        const amounts = UI.groceryBudgetSplit(groceryBudgetInput.value);
+        document.getElementById("grocery-weekly").textContent = LOGIC.formatMoney(amounts.weeklyFixed);
+        document.getElementById("grocery-pantry").textContent = LOGIC.formatMoney(amounts.pantryFund);
+        document.getElementById("grocery-margin").textContent = LOGIC.formatMoney(amounts.weeklyMargin);
+        document.getElementById("grocery-block1").textContent = LOGIC.formatMoney(amounts.block1);
+        document.getElementById("grocery-block2").textContent = LOGIC.formatMoney(amounts.block2);
+        document.getElementById("grocery-block3").textContent = LOGIC.formatMoney(amounts.block3);
       });
     }
 
