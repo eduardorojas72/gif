@@ -418,6 +418,10 @@ function renderListas(state, ui) {
   return (
     sectionHeaderHTML("Listas 200+200", "Planea con tu equipo cuántos puntos pedirá cada persona, y en qué fecha de la quincena.", "users") +
     quincenaNavHTML(qKey) +
+    '<div class="roster-check' + (q.reunionHecha ? " on" : "") + '" data-action="toggle-reunion-enfoque" data-qkey="' + qKey + '">' +
+    '<div class="box">' + (q.reunionHecha ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
+    '<span class="lbl">' + (q.reunionHecha ? "Reunión de enfoque hecha esta quincena" : "Marcar: hice mi reunión de enfoque a mis socios") + "</span>" +
+    "</div>" +
     resumenLineasHTML(planIzq, verIzq, planDer, verDer) +
     '<div class="tabs">' +
     '<button class="tab-btn' + (linea === "izquierda" ? " active" : "") + '" data-action="set-linea" data-arg="izquierda">Izquierda (' + (q.izquierda || []).length + ")</button>" +

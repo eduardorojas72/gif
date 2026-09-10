@@ -371,6 +371,13 @@ const Actions = {
     App.render();
   },
 
+  "toggle-reunion-enfoque": function (arg, el) {
+    const q = getQuincena(App.state, el.dataset.qkey);
+    q.reunionHecha = !q.reunionHecha;
+    App.persist(true);
+    App.render();
+  },
+
   "set-rango-master": function (arg) {
     const i = Number(arg);
     const avanza = i > App.state.rangoActualIndex;

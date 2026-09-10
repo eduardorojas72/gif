@@ -83,7 +83,7 @@ function nuevaPersona() {
 }
 
 function emptyQuincena() {
-  return { izquierda: [], derecha: [], otrosIzquierda: 0, otrosDerecha: 0 };
+  return { izquierda: [], derecha: [], otrosIzquierda: 0, otrosDerecha: 0, reunionHecha: false };
 }
 
 function getQuincena(state, key) {
@@ -125,7 +125,7 @@ function hydrateState(parsed) {
     const saved = quincenasSaved[key] || {};
     const izquierda = Array.isArray(saved.izquierda) ? saved.izquierda.map(function (p) { return Object.assign(nuevaPersona(), p); }) : [];
     const derecha = Array.isArray(saved.derecha) ? saved.derecha.map(function (p) { return Object.assign(nuevaPersona(), p); }) : [];
-    acc[key] = { izquierda: izquierda, derecha: derecha, otrosIzquierda: Number(saved.otrosIzquierda) || 0, otrosDerecha: Number(saved.otrosDerecha) || 0 };
+    acc[key] = { izquierda: izquierda, derecha: derecha, otrosIzquierda: Number(saved.otrosIzquierda) || 0, otrosDerecha: Number(saved.otrosDerecha) || 0, reunionHecha: !!saved.reunionHecha };
     return acc;
   }, {});
 
