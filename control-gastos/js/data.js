@@ -71,7 +71,8 @@ const DATA = {
   ],
   savingsPurposes: [
     { id: "viajar", label: "Viajar", icon: "✈️" },
-    { id: "familia", label: "Salir con familia o amigos", icon: "🎉" },
+    { id: "familia", label: "Salir en familia", icon: "👨‍👩‍👧" },
+    { id: "amigos", label: "Salir con amigos", icon: "🎉" },
     { id: "auto", label: "Comprar un auto", icon: "🚗" },
     { id: "casa", label: "Comprar una casa", icon: "🏠" },
     { id: "ayudar", label: "Ayudar a familiares", icon: "🤝" },

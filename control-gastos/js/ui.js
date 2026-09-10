@@ -82,6 +82,29 @@ const UI = {
     }
   },
 
+  async celebrateGoal(goal) {
+    AUDIO.playSuccess();
+    this.confettiBurst();
+    const settings = STORE.getSettings();
+    const dataURL = await SHARE.buildGoalCardDataURL({ goal, userName: settings.userName });
+    this.openModal(`
+      <h2>🎉 ¡Logro alcanzado!</h2>
+      <img src="${dataURL}" alt="Logro alcanzado" class="achievement-preview" />
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal>Cerrar</button>
+        <button type="button" class="btn btn-primary" id="share-goal-celebrate">Compartir 📤</button>
+      </div>
+    `);
+    const shareBtn = document.getElementById("share-goal-celebrate");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", async () => {
+        const text = "¡Logré \"" + goal.label + "\" ahorrando con Hucha! 🎉🐷";
+        const result = await SHARE.shareCard(dataURL, text);
+        if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
+      });
+    }
+  },
+
   // ---------- Comprobación de la meta diaria ----------
   checkBudgetAlert() {
     const settings = STORE.getSettings();
@@ -677,6 +700,7 @@ const UI = {
   renderMetas() {
     const s = STORE.getSettings();
     const custom = STORE.getCustomCategories();
+    const goals = STORE.getGoals();
 
     return `
       <section class="card">
@@ -720,6 +744,48 @@ const UI = {
             <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
         </form>
+
+        <h2 class="section-title">🎯 Tus metas de ahorro</h2>
+        <p class="muted-small">Ponle nombre a lo que quieres lograr (p. ej. "Cena con amigos") y cuánto necesitas ahorrar. Cuando lo alcances, te lo celebramos.</p>
+        ${goals.length ? `
+          <ul class="goal-list">
+            ${goals.map((g) => {
+              const p = LOGIC.goalProgress(g);
+              const purpose = DATA.savingsPurposes.find((x) => x.id === g.purpose);
+              return `
+                <li class="goal-item ${g.achieved ? "is-achieved" : ""}">
+                  <div class="goal-item-head">
+                    <strong>${purpose ? purpose.icon : "🎯"} ${g.label}</strong>
+                    <button class="icon-btn" data-action="remove-goal" data-id="${g.id}" aria-label="Eliminar meta">🗑️</button>
+                  </div>
+                  ${g.achieved
+                    ? `<div class="goal-achieved-row"><span>✅ ¡Lograda!</span><button class="btn btn-primary btn-sm" data-action="share-goal" data-id="${g.id}">Compartir 📤</button></div>`
+                    : `
+                      <div class="progress-track"><div class="progress-fill" style="width:${p.pct}%"></div></div>
+                      <p class="muted-small">${LOGIC.formatMoney(p.saved)} / ${LOGIC.formatMoney(g.targetAmount)}</p>
+                    `}
+                </li>`;
+            }).join("")}
+          </ul>
+        ` : ""}
+        <form id="goal-form" class="form">
+          <label>¿Qué quieres lograr?
+            <input type="text" name="label" placeholder="Ej. Cena con amigos" required />
+          </label>
+          <label>Propósito
+            <select name="purpose">
+              ${DATA.savingsPurposes.map((p) => `<option value="${p.id}">${p.icon} ${p.label}</option>`).join("")}
+            </select>
+          </label>
+          <label>¿Cuánto necesitas ahorrar?
+            <input type="number" name="targetAmount" min="0" step="0.01" placeholder="Ej. 50" required />
+          </label>
+          <button type="submit" class="btn btn-secondary btn-block">Añadir meta</button>
+        </form>
+
+        <h2 class="section-title">💌 Invitar</h2>
+        <p class="muted-small">Comparte Hucha con alguien a quien aprecies, sin premios ni letra pequeña — solo una recomendación.</p>
+        <button class="btn btn-secondary btn-block" data-action="invite">Invitar / recomendar</button>
 
         <h2 class="section-title">Categorías personalizadas</h2>
         <p class="muted-small">Las categorías por defecto (incluida "Compra de Productos Atomy") ya están disponibles. Añade las tuyas si te faltan.</p>
@@ -978,6 +1044,12 @@ const UI = {
         });
 
         UI.render("hoy");
+
+        // El cierre de día puede hacer que una meta con propósito también
+        // se cumpla; se avisa con un toast para no chocar con este modal.
+        LOGIC.checkGoalsAchieved().forEach((g) => {
+          UI.toast("🎉 ¡Lograste tu meta \"" + g.label + "\"! Ve a Metas para compartirlo.");
+        });
       });
     }
 
@@ -1088,6 +1160,42 @@ const UI = {
       })
     );
 
+    // ---- Metas de ahorro por propósito ----
+    const goalForm = view.querySelector("#goal-form");
+    if (goalForm) {
+      goalForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        STORE.addGoal({
+          label: fd.get("label"),
+          purpose: fd.get("purpose"),
+          targetAmount: parseFloat(fd.get("targetAmount")) || 0
+        });
+        UI.toast("Meta añadida");
+        UI.render("metas");
+      });
+    }
+    view.querySelectorAll('[data-action="remove-goal"]').forEach((btn) =>
+      btn.addEventListener("click", () => {
+        if (confirm("¿Eliminar esta meta?")) {
+          STORE.removeGoal(btn.dataset.id);
+          UI.render("metas");
+        }
+      })
+    );
+    view.querySelectorAll('[data-action="share-goal"]').forEach((btn) =>
+      btn.addEventListener("click", async () => {
+        const goal = STORE.getGoals().find((g) => g.id === btn.dataset.id);
+        if (!goal) return;
+        const settings = STORE.getSettings();
+        const dataURL = await SHARE.buildGoalCardDataURL({ goal, userName: settings.userName });
+        const text = "¡Logré \"" + goal.label + "\" ahorrando con Hucha! 🎉🐷";
+        SHARE.shareCard(dataURL, text).then((result) => {
+          if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
+        });
+      })
+    );
+
     // ---- Resumen ----
     view.querySelectorAll(".period-tab").forEach((btn) =>
       btn.addEventListener("click", () => {
@@ -1111,14 +1219,23 @@ const UI = {
 
     const shareTierBtn = view.querySelector('[data-action="share-tier"]');
     if (shareTierBtn) {
-      shareTierBtn.addEventListener("click", () => {
+      shareTierBtn.addEventListener("click", async () => {
         const settings = STORE.getSettings();
         const streak = LOGIC.currentStreak();
-        const tier = LOGIC.streakTier(streak);
-        const dataURL = SHARE.buildTierCardDataURL({ streak, userName: settings.userName });
-        const text = "Llevo " + LOGIC.daysInCurrentTier(streak) + " días en el " + tier.label.toLowerCase() + " de Hucha 🐷 (racha total: " + streak + " días).";
+        const dataURL = await SHARE.buildTierCardDataURL({ streak, userName: settings.userName });
+        const text = SHARE.inviteText(streak);
         SHARE.shareCard(dataURL, text).then((result) => {
           if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
+        });
+      });
+    }
+
+    const inviteBtn = view.querySelector('[data-action="invite"]');
+    if (inviteBtn) {
+      inviteBtn.addEventListener("click", () => {
+        const streak = LOGIC.currentStreak();
+        SHARE.shareText(SHARE.inviteText(streak)).then((result) => {
+          if (result === "copied") UI.toast("Mensaje copiado, ¡ya puedes pegarlo donde quieras!");
         });
       });
     }

@@ -6,6 +6,170 @@ const SHARE = {
     "Ahorrar, un día a la vez."
   ],
 
+  async ensureFonts() {
+    try {
+      await Promise.all([
+        document.fonts.load('700 60px "Caveat"'),
+        document.fonts.load('600 60px "Caveat"')
+      ]);
+      await document.fonts.ready;
+    } catch (e) {
+      // Si la fuente no carga (sin red, navegador antiguo...) se dibuja con
+      // la fuente de sistema de respaldo; no es un error fatal.
+    }
+  },
+
+  inviteText(streak) {
+    if (streak > 0) {
+      return "Llevo " + streak + (streak === 1 ? " día" : " días") + " sin pasarme del presupuesto con Hucha 🐷, deberías probarla.";
+    }
+    return "Estoy controlando mis gastos con Hucha 🐷, deberías probarla.";
+  },
+
+  async shareText(text) {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Hucha", text });
+        return "shared";
+      } catch (e) {
+        if (e && e.name === "AbortError") return "cancelled";
+      }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return "copied";
+      } catch (e) { /* portapapeles no disponible: se ignora */ }
+    }
+    return "unavailable";
+  },
+
+  // Confeti de fiesta: tiras de papel de colores + un par de "regalitos"
+  // brillantes, explotando hacia arriba desde (cx, cy).
+  drawConfettiBurst(ctx, cx, cy, scale) {
+    const colors = ["#FFFFFF", "#F2C94C", "#EB5757", "#56CCF2", "#BB6BD9", "#6FCF97"];
+    const rng = (seed) => {
+      const x = Math.sin(seed * 999) * 10000;
+      return x - Math.floor(x);
+    };
+    for (let i = 0; i < 26; i++) {
+      const angle = -Math.PI / 2 + (rng(i) - 0.5) * 2.6;
+      const dist = (60 + rng(i + 50) * 220) * scale;
+      const px = cx + Math.cos(angle) * dist;
+      const py = cy + Math.sin(angle) * dist;
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(rng(i + 100) * Math.PI * 2);
+      ctx.fillStyle = colors[i % colors.length];
+      const w = (7 + rng(i + 20) * 6) * scale;
+      const h = (12 + rng(i + 30) * 8) * scale;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+    // un par de streamers curvos
+    ctx.strokeStyle = "rgba(255,255,255,0.85)";
+    ctx.lineWidth = 3 * scale;
+    ctx.lineCap = "round";
+    [[-1, 0.85], [1, 1]].forEach(([dir, k]) => {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.bezierCurveTo(
+        cx + dir * 60 * scale, cy - 140 * scale * k,
+        cx + dir * 160 * scale, cy - 90 * scale * k,
+        cx + dir * 190 * scale, cy - 220 * scale * k
+      );
+      ctx.stroke();
+    });
+    // "regalitos" brillantes
+    [[-150, -170], [170, -140], [90, -260]].forEach(([dx, dy], i) => {
+      ctx.save();
+      ctx.translate(cx + dx * scale, cy + dy * scale);
+      ctx.rotate((rng(i + 200) - 0.5) * 1.2);
+      const g = ctx.createLinearGradient(-16 * scale, -16 * scale, 16 * scale, 16 * scale);
+      g.addColorStop(0, "#FFF3CE");
+      g.addColorStop(1, "#F2C94C");
+      ctx.fillStyle = g;
+      const s = 26 * scale;
+      ctx.fillRect(-s / 2, -s / 2, s, s);
+      ctx.restore();
+    });
+  },
+
+  // Plantilla compartida de "celebración": fondo cálido (tintado según hueFrom/
+  // hueTo), confeti, trofeo, titular manuscrito y una leyenda estilo máquina de
+  // escribir abajo a la izquierda. La usan la tarjeta de nivel y la de metas.
+  async buildCelebrationCardDataURL({ headlineLines, caption, userName, hueFrom, hueTo }) {
+    await this.ensureFonts();
+    const W = 1080, H = 1350;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+
+    this.roundRectPath(ctx, 0, 0, W, H, 56);
+    ctx.clip();
+
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0, hueFrom || "#F2994A");
+    bgGrad.addColorStop(1, hueTo || "#EB6B2E");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // marco fino de contraste
+    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.lineWidth = 6;
+    this.roundRectPath(ctx, 14, 14, W - 28, H - 28, 44);
+    ctx.stroke();
+
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.font = "700 36px 'Space Grotesk', system-ui, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.fillText("🐷 Hucha", 56, 76);
+
+    // titular manuscrito, con un ligero giro para que parezca escrito a mano
+    const headlineCenterY = 250;
+    const lineHeight = 82;
+    ctx.save();
+    ctx.translate(W / 2, headlineCenterY);
+    ctx.rotate(-0.03);
+    ctx.textAlign = "center";
+    ctx.font = "700 80px 'Caveat', 'Segoe Script', cursive";
+    ctx.fillStyle = "#FFFFFF";
+    const startY = -((headlineLines.length - 1) * lineHeight) / 2;
+    headlineLines.forEach((line, i) => {
+      ctx.fillText(line, 0, startY + i * lineHeight);
+    });
+    ctx.restore();
+
+    // El confeti y el trofeo se colocan siempre a una distancia fija por
+    // debajo del final del titular, sea de 2 o 3 líneas.
+    const headlineBottom = headlineCenterY + ((headlineLines.length - 1) * lineHeight) / 2 + lineHeight / 2;
+    const confettiCy = headlineBottom + 260;
+    const trophyY = confettiCy + 290;
+
+    this.drawConfettiBurst(ctx, W / 2, confettiCy, 0.9);
+
+    ctx.textAlign = "center";
+    ctx.font = "210px system-ui, sans-serif";
+    ctx.fillText("🏆", W / 2, trophyY);
+
+    if (caption) {
+      ctx.textAlign = "left";
+      ctx.font = "700 40px 'Courier New', Courier, monospace";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText(caption, 56, H - 90);
+    }
+    if (userName) {
+      ctx.textAlign = "right";
+      ctx.font = "600 30px Inter, system-ui, sans-serif";
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.fillText(userName, W - 56, H - 90);
+    }
+
+    return canvas.toDataURL("image/png");
+  },
+
   roundRectPath(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -25,64 +189,6 @@ const SHARE = {
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-  },
-
-  // Gema facetada dibujada a mano (los emojis no tienen variantes de color
-  // por piedra, así que para esmeralda/rubí/topacio/diamante se dibuja esto
-  // en vez del emoji, con el color exacto del nivel).
-  drawGem(ctx, cx, cy, r, from, to) {
-    ctx.save();
-    ctx.translate(cx, cy);
-
-    const grad = ctx.createLinearGradient(0, -r, 0, r);
-    grad.addColorStop(0, from);
-    grad.addColorStop(1, to);
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(-r * 0.55, -r * 0.65);
-    ctx.lineTo(r * 0.55, -r * 0.65);
-    ctx.lineTo(r * 0.95, -r * 0.15);
-    ctx.lineTo(0, r);
-    ctx.lineTo(-r * 0.95, -r * 0.15);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(255,255,255,0.55)";
-    ctx.lineWidth = Math.max(2, r * 0.035);
-    ctx.beginPath();
-    ctx.moveTo(-r * 0.55, -r * 0.65);
-    ctx.lineTo(r * 0.55, -r * 0.65);
-    ctx.stroke();
-
-    ctx.strokeStyle = "rgba(255,255,255,0.3)";
-    ctx.beginPath();
-    ctx.moveTo(-r * 0.55, -r * 0.65);
-    ctx.lineTo(0, r);
-    ctx.moveTo(r * 0.55, -r * 0.65);
-    ctx.lineTo(0, r);
-    ctx.moveTo(-r * 0.95, -r * 0.15);
-    ctx.lineTo(r * 0.95, -r * 0.15);
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.beginPath();
-    ctx.ellipse(-r * 0.18, -r * 0.35, r * 0.14, r * 0.22, -0.4, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  },
-
-  // Dibuja el emblema del nivel (emoji o gema vectorial según el nivel) en
-  // el punto (cx, cy), con tamaño de fuente/gema equivalente a fontPx.
-  drawTierEmblem(ctx, tier, cx, cy, fontPx) {
-    if (tier.gem) {
-      this.drawGem(ctx, cx, cy, fontPx * 0.42, tier.from, tier.to);
-    } else {
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.font = fontPx + "px system-ui, sans-serif";
-      ctx.fillText(tier.emoji, cx, cy + fontPx * 0.03);
-    }
   },
 
   buildCardDataURL({ date, goal, spent, streak, userName }) {
@@ -206,68 +312,32 @@ const SHARE = {
   },
 
   // Tarjeta de "nivel" para presumir la racha en cualquier momento, no solo
-  // al cerrar el día. Más protagonismo para la piedra/gema del nivel actual.
+  // al cerrar el día. El tono de fondo cambia según la piedra del nivel.
   buildTierCardDataURL({ streak, userName }) {
-    const W = 1080, H = 1080;
-    const canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext("2d");
     const tier = LOGIC.streakTier(streak || 0);
     const daysInTier = LOGIC.daysInCurrentTier(streak || 0);
+    const headlineLines = tier.key === "start"
+      ? [daysInTier + (daysInTier === 1 ? " día" : " días"), "sin pasarme"]
+      : [daysInTier + (daysInTier === 1 ? " día" : " días"), "en el nivel " + tier.label.replace("Nivel ", "")];
+    return this.buildCelebrationCardDataURL({
+      headlineLines,
+      caption: "Racha de " + streak + " día" + (streak === 1 ? "" : "s"),
+      userName,
+      hueFrom: tier.from,
+      hueTo: tier.to
+    });
+  },
 
-    this.roundRectPath(ctx, 0, 0, W, H, 56);
-    ctx.clip();
-
-    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
-    bgGrad.addColorStop(0, "#0E3B2E");
-    bgGrad.addColorStop(1, "#123C2F");
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, W, H);
-
-    this.softGlow(ctx, W / 2, 380, 420, tier.from);
-    this.softGlow(ctx, 140, H - 160, 260, tier.to);
-    this.softGlow(ctx, W - 120, H - 120, 220, tier.to);
-
-    ctx.textBaseline = "middle";
-    ctx.textAlign = "left";
-    ctx.font = "700 40px 'Space Grotesk', system-ui, sans-serif";
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillText("🐷 Hucha", 60, 80);
-    ctx.textAlign = "right";
-    ctx.font = "600 30px Inter, system-ui, sans-serif";
-    ctx.fillStyle = "#CFE8DE";
-    ctx.fillText("Racha de " + streak + " días", W - 60, 80);
-
-    ctx.textAlign = "center";
-    this.drawTierEmblem(ctx, tier, W / 2, 370, 230);
-
-    ctx.font = "700 64px 'Space Grotesk', system-ui, sans-serif";
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(tier.label, W / 2, 560);
-
-    const chipLabel = daysInTier + (daysInTier === 1 ? " día" : " días") + " en el " + tier.label.toLowerCase();
-    ctx.font = "700 44px Inter, system-ui, sans-serif";
-    const chipW = ctx.measureText(chipLabel).width + 64;
-    const chipX = (W - chipW) / 2;
-    const chipGrad = ctx.createLinearGradient(chipX, 0, chipX + chipW, 0);
-    chipGrad.addColorStop(0, tier.from);
-    chipGrad.addColorStop(1, tier.to);
-    this.roundRectPath(ctx, chipX, 640, chipW, 90, 45);
-    ctx.fillStyle = chipGrad;
-    ctx.fill();
-    ctx.fillStyle = tier.text;
-    ctx.fillText(chipLabel, W / 2, 685);
-
-    ctx.font = "italic 400 32px Inter, system-ui, sans-serif";
-    ctx.fillStyle = "#CFE8DE";
-    ctx.fillText("Sin pasarme de mi meta diaria, un día a la vez.", W / 2, 830);
-
-    ctx.font = "600 34px Inter, system-ui, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fillText("Hucha" + (userName ? " · " + userName : ""), W / 2, 960);
-
-    return canvas.toDataURL("image/png");
+  // Tarjeta de logro para una meta de ahorro con propósito propio
+  // (p. ej. "Cena con amigos"), independiente de la racha diaria.
+  buildGoalCardDataURL({ goal, userName }) {
+    return this.buildCelebrationCardDataURL({
+      headlineLines: ["¡Logro alcanzado", "gracias a Hucha!"],
+      caption: goal.label,
+      userName,
+      hueFrom: "#F2C94C",
+      hueTo: "#EB8B3D"
+    });
   },
 
   dataURLToBlob(dataURL) {

@@ -463,6 +463,20 @@ h1, h2, h3 {
 }
 .toggle-opt.is-active { background: var(--accent); color: #fff; }
 
+/* ---------- Metas de ahorro por propósito ---------- */
+.goal-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.goal-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.goal-item.is-achieved { background: rgba(242, 201, 76, 0.12); }
+.goal-item-head { display: flex; justify-content: space-between; align-items: center; }
+.goal-achieved-row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 13.5px; color: var(--income); }
+
 /* ---------- Categorías personalizadas ---------- */
 .custom-cat-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {

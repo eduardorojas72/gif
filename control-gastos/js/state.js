@@ -7,7 +7,8 @@ const STORE = {
     accounts: "cg_accounts",
     days: "cg_days",
     customCategories: "cg_custom_categories",
-    plans: "cg_plans"
+    plans: "cg_plans",
+    goals: "cg_goals"
   },
 
   defaultSettings: {
@@ -145,6 +146,38 @@ const STORE = {
   },
   getPlan(date) {
     return this.getPlans()[date] || "";
+  },
+
+  // Metas de ahorro con propósito (p. ej. "Cena con amigos"), independientes
+  // de la meta de ahorro mensual general.
+  getGoals() {
+    return this._read(this.keys.goals, []);
+  },
+  saveGoals(goals) {
+    this._write(this.keys.goals, goals);
+  },
+  addGoal(goal) {
+    const goals = this.getGoals();
+    const record = Object.assign(
+      { id: "goal_" + Date.now().toString(36), createdAt: LOGIC.todayStr(), achieved: false, achievedAt: null },
+      goal
+    );
+    goals.push(record);
+    this.saveGoals(goals);
+    return record;
+  },
+  removeGoal(id) {
+    this.saveGoals(this.getGoals().filter((g) => g.id !== id));
+  },
+  markGoalAchieved(id) {
+    const goals = this.getGoals();
+    const goal = goals.find((g) => g.id === id);
+    if (goal && !goal.achieved) {
+      goal.achieved = true;
+      goal.achievedAt = LOGIC.todayStr();
+      this.saveGoals(goals);
+    }
+    return goal;
   }
 };
 
@@ -227,6 +260,42 @@ const LOGIC = {
       goal,
       pct: goal ? Math.max(0, Math.min(100, Math.round((saved / goal) * 100))) : 0
     };
+  },
+
+  // Progreso de una meta de ahorro con propósito: suma lo ahorrado (meta de
+  // gasto - gastado real) desde el día en que se creó la meta hasta hoy.
+  goalProgress(goal) {
+    const settings = STORE.getSettings();
+    const days = STORE.getDays();
+    let saved = 0;
+    Object.values(days).forEach((d) => {
+      if (d.date >= goal.createdAt) saved += (d.goal - d.spent);
+    });
+    const today = this.todayStr();
+    if (!days[today] && settings.dailyGoal) {
+      saved += (settings.dailyGoal - this.spentToday());
+    }
+    saved = Math.max(0, saved);
+    return {
+      saved,
+      target: goal.targetAmount,
+      pct: goal.targetAmount ? Math.max(0, Math.min(100, Math.round((saved / goal.targetAmount) * 100))) : 0
+    };
+  },
+
+  // Revisa las metas sin alcanzar y marca como logradas las que ya llegaron
+  // a su importe objetivo. Devuelve la lista de las recién alcanzadas para
+  // que la UI pueda celebrarlas.
+  checkGoalsAchieved() {
+    const newlyAchieved = [];
+    STORE.getGoals().forEach((goal) => {
+      if (goal.achieved) return;
+      const progress = this.goalProgress(goal);
+      if (progress.saved >= goal.targetAmount) {
+        newlyAchieved.push(STORE.markGoalAchieved(goal.id));
+      }
+    });
+    return newlyAchieved;
   },
 
   // ---------- Rangos de fechas para las gráficas (día/semana/mes) ----------
@@ -329,10 +398,10 @@ const LOGIC = {
     { min: 3, key: "bronce", label: "Nivel Bronce", emoji: "🥉", from: "#E3A667", to: "#B06B2E", text: "#3A1F05" },
     { min: 7, key: "plata", label: "Nivel Plata", emoji: "🥈", from: "#E7ECE9", to: "#AEBDB5", text: "#1C2A23" },
     { min: 14, key: "oro", label: "Nivel Oro", emoji: "🥇", from: "#F2C94C", to: "#C98B12", text: "#3A2A05" },
-    { min: 30, key: "esmeralda", label: "Nivel Esmeralda", emoji: "💎", gem: true, from: "#3FD68C", to: "#0E8F52", text: "#053622" },
-    { min: 60, key: "rubi", label: "Nivel Rubí", emoji: "💎", gem: true, from: "#FF6B7A", to: "#C81E3A", text: "#3A0510" },
-    { min: 120, key: "topacio", label: "Nivel Topacio", emoji: "💎", gem: true, from: "#FFD873", to: "#E0932B", text: "#3A2205" },
-    { min: 240, key: "diamante", label: "Nivel Diamante", emoji: "💎", gem: true, from: "#BEE9FF", to: "#4FA8D8", text: "#052436" }
+    { min: 30, key: "esmeralda", label: "Nivel Esmeralda", emoji: "💎", from: "#3FD68C", to: "#0E8F52", text: "#053622" },
+    { min: 60, key: "rubi", label: "Nivel Rubí", emoji: "💎", from: "#FF6B7A", to: "#C81E3A", text: "#3A0510" },
+    { min: 120, key: "topacio", label: "Nivel Topacio", emoji: "💎", from: "#FFD873", to: "#E0932B", text: "#3A2205" },
+    { min: 240, key: "diamante", label: "Nivel Diamante", emoji: "💎", from: "#BEE9FF", to: "#4FA8D8", text: "#052436" }
   ],
   streakTier(streak) {
     const tiers = this.STREAK_TIERS;
@@ -343,9 +412,12 @@ const LOGIC = {
     return current;
   },
   // Días que lleva el usuario dentro del nivel actual (no la racha total).
+  // El nivel "empezando" arranca en streak=1 (min=0 es solo el valor
+  // centinela para streak=0, que nunca llega a mostrarse), así que ahí el
+  // conteo coincide directamente con la racha.
   daysInCurrentTier(streak) {
     const tier = this.streakTier(streak);
-    return streak - tier.min + 1;
+    return tier.key === "start" ? streak : streak - tier.min + 1;
   },
 
   // Genera un movimiento de gasto simulado, como si viniera de una tarjeta
