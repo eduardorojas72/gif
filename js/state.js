@@ -106,9 +106,13 @@ function paisCatalogoInfo(paisId) {
 
 function emptyCatalogoProductosPais(paisId) {
   const base = CATALOGO_PRODUCTOS_POR_PAIS[paisId] || [];
-  return base.map(function (p, i) {
+  const productos = base.map(function (p, i) {
     return nuevoProductoCatalogo({ id: paisId + "-prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
   });
+  const lineasLibres = Array.from({ length: 20 }, function (_, i) {
+    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Mis productos" });
+  });
+  return productos.concat(lineasLibres);
 }
 
 function getCatalogoProductos(state, paisId) {
