@@ -80,6 +80,55 @@ const DATA = {
     { id: "otro", label: "Otro", icon: "✨" }
   ],
 
+  // Categorías de la "foto" de gastos mensuales del cuestionario de diagnóstico,
+  // distintas de expenseCategories (esas son para registrar movimientos día a día).
+  expenseSnapshotCategories: [
+    { id: "alquiler", label: "Alquiler / hipoteca", icon: "🏠" },
+    { id: "coche", label: "Coche / transporte", icon: "🚗" },
+    { id: "servicios", label: "Servicios (luz, agua, internet...)", icon: "💡" },
+    { id: "alimentacion", label: "Alimentación", icon: "🍽️" },
+    { id: "seguros", label: "Seguros", icon: "🛡️" },
+    { id: "deudasTarjetas", label: "Deudas de tarjetas", icon: "💳" },
+    { id: "deudasPrestamos", label: "Deudas de préstamos", icon: "🏦" },
+    { id: "salidas", label: "Salidas y ocio", icon: "🎉" },
+    { id: "otros", label: "Otros", icon: "✨" }
+  ],
+
+  // Arquetipos financieros del diagnóstico inicial: cada uno describe una
+  // relación distinta entre ingreso, horas trabajadas, gasto y ahorro real.
+  archetypes: [
+    {
+      key: "ahorrador",
+      label: "El Ahorrador Consciente",
+      emoji: "🌱",
+      description: "Gastas por debajo de lo que ganas y ya estás construyendo un colchón de verdad. Sigue así: automatiza ese ahorro para que no dependa de la fuerza de voluntad."
+    },
+    {
+      key: "hamster",
+      label: "El Hámster",
+      emoji: "🐹",
+      description: "Trabajas muchas horas (o varios empleos) pero el dinero apenas te alcanza para ahorrar algo. La rueda gira rápido, pero no avanzas. El problema no es cuánto trabajas, sino cuánto se te va."
+    },
+    {
+      key: "grifo",
+      label: "El Grifo Abierto",
+      emoji: "🚰",
+      description: "Tus gastos igualan o superan lo que ingresas cada mes. Antes de pensar en ahorrar, hay que cerrar la fuga: identifica en qué se te va el dinero y ponle límite."
+    },
+    {
+      key: "sonador",
+      label: "El Soñador",
+      emoji: "💭",
+      description: "Tienes claro cuánto te gustaría ganar, pero la distancia con tu ingreso actual es grande y todavía no hay un plan concreto para cerrarla. Soñar en grande está bien; ahora toca el primer paso pequeño."
+    },
+    {
+      key: "equilibrista",
+      label: "El Equilibrista",
+      emoji: "⚖️",
+      description: "Vas manteniendo el equilibrio entre lo que ganas y lo que gastas, sin grandes sobresaltos. Con un par de ajustes puedes pasar de sostenerte a avanzar de verdad."
+    }
+  ],
+
   // Consejos de ahorro originales, inspirados en principios de educación financiera
   // conocidos (regla 50/30/20, automatización del ahorro, aversión a la pérdida, etc.)
   tips: [

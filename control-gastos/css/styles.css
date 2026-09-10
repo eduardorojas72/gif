@@ -420,6 +420,23 @@ h1, h2, h3 {
 .ob-check input { width: auto; }
 .modal-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 
+/* ---------- Diagnóstico financiero: arquetipo ---------- */
+.archetype-reveal { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 8px 0; }
+.archetype-emoji { font-size: 64px; line-height: 1; }
+.archetype-kicker { color: var(--text-soft); font-size: 13px; margin: 4px 0 0; text-transform: uppercase; letter-spacing: 0.04em; }
+.archetype-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(23, 98, 75, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.archetype-card-emoji { font-size: 32px; line-height: 1; }
+.archetype-card-kicker { color: var(--text-soft); font-size: 11px; margin: 0; text-transform: uppercase; letter-spacing: 0.04em; }
+.archetype-card strong { display: block; margin: 2px 0; }
+
 /* ---------- Plan de mañana ---------- */
 .plan-banner {
   display: flex;

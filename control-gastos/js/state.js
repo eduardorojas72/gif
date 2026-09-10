@@ -27,7 +27,17 @@ const STORE = {
     currentlyMeetingGoal: null,
     obstacles: [],
     savingsPurposes: [],
-    savingsPurposeOther: ""
+    savingsPurposeOther: "",
+    // Cuestionario de diagnóstico financiero (arquetipo)
+    desiredIncome: null,
+    hoursPerDay: null,
+    overtimeHours: null,
+    multipleJobs: false,
+    commuteMinutes: null,
+    workGoal: "",
+    expensesSnapshot: {},
+    currentSavingsMonthly: null,
+    archetypeKey: null
   },
 
   _read(key, fallback) {
@@ -426,6 +436,33 @@ const LOGIC = {
   daysInCurrentTier(streak) {
     const tier = this.streakTier(streak);
     return tier.key === "start" ? streak : streak - tier.min + 1;
+  },
+
+  // ---------- Diagnóstico financiero: arquetipo ----------
+  // Clasifica al usuario en un "arquetipo" a partir de sus respuestas del
+  // cuestionario inicial: cuánto gana vs. cuánto le gustaría ganar, cuántas
+  // horas trabaja, cuánto gasta por categoría y cuánto logra ahorrar de
+  // verdad. Reglas evaluadas en orden de prioridad; la primera que aplica gana.
+  computeArchetype(d) {
+    const income = Number(d.monthlyIncome) || 0;
+    const desired = Number(d.desiredIncome) || 0;
+    const expenses = d.expensesSnapshot || {};
+    const totalExpenses = Object.values(expenses).reduce((sum, v) => sum + (Number(v) || 0), 0);
+    const currentSavings = Number(d.currentSavingsMonthly) || 0;
+    const expenseRatio = income ? totalExpenses / income : 0;
+    const savingsRatio = income ? currentSavings / income : 0;
+    const dailyWorkHours = (Number(d.hoursPerDay) || 0) + (Number(d.overtimeHours) || 0) / 5 + (Number(d.commuteMinutes) || 0) / 60;
+    const incomeGap = desired && income ? Math.max(0, (desired - income) / desired) : 0;
+
+    let key;
+    if (expenseRatio >= 1) key = "grifo";
+    else if ((dailyWorkHours >= 9 || d.multipleJobs) && savingsRatio < 0.05) key = "hamster";
+    else if (incomeGap >= 0.35 && savingsRatio < 0.1) key = "sonador";
+    else if (savingsRatio >= 0.15 && expenseRatio <= 0.85) key = "ahorrador";
+    else key = "equilibrista";
+
+    const archetype = DATA.archetypes.find((a) => a.key === key) || DATA.archetypes[DATA.archetypes.length - 1];
+    return Object.assign({ expenseRatio, savingsRatio, dailyWorkHours, incomeGap, totalExpenses }, archetype);
   },
 
   // Genera un movimiento de gasto simulado, como si viniera de una tarjeta

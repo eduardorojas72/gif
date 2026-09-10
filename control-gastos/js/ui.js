@@ -171,10 +171,12 @@ const UI = {
   },
   STEP_NUMBER: {
     accountMode: 1, userName: 2, age: 3, country: 4, monthlyIncome: 5,
-    occupation: 6, savingsGoalMonthly: 7, meetingGoal: 8, obstacles: 9,
-    diagnosis: 9, purposes: 10, summary: 11
+    desiredIncome: 6, occupation: 7, workHours: 8, workGoal: 9,
+    expensesSnapshot: 10, currentSavingsMonthly: 11, savingsGoalMonthly: 12,
+    meetingGoal: 13, obstacles: 14, diagnosis: 14, purposes: 15,
+    archetype: 16, summary: 17
   },
-  TOTAL_STEPS: 11,
+  TOTAL_STEPS: 17,
 
   nextStep(step, data) {
     const flow = {
@@ -182,13 +184,19 @@ const UI = {
       userName: "age",
       age: "country",
       country: "monthlyIncome",
-      monthlyIncome: "occupation",
-      occupation: "savingsGoalMonthly",
+      monthlyIncome: "desiredIncome",
+      desiredIncome: "occupation",
+      occupation: "workHours",
+      workHours: "workGoal",
+      workGoal: "expensesSnapshot",
+      expensesSnapshot: "currentSavingsMonthly",
+      currentSavingsMonthly: "savingsGoalMonthly",
       savingsGoalMonthly: "meetingGoal",
       meetingGoal: () => (data.currentlyMeetingGoal ? "purposes" : "obstacles"),
       obstacles: "diagnosis",
       diagnosis: "purposes",
-      purposes: "summary",
+      purposes: "archetype",
+      archetype: "summary",
       summary: null
     };
     const next = flow[step];
@@ -250,6 +258,15 @@ const UI = {
       savingsPurposes: d.savingsPurposes || [],
       savingsPurposeOther: d.savingsPurposeOther || "",
       dailyGoal: d.dailyGoal || STORE.getSettings().dailyGoal,
+      desiredIncome: d.desiredIncome || null,
+      hoursPerDay: d.hoursPerDay || null,
+      overtimeHours: d.overtimeHours || null,
+      multipleJobs: !!d.multipleJobs,
+      commuteMinutes: d.commuteMinutes || null,
+      workGoal: d.workGoal || "",
+      expensesSnapshot: d.expensesSnapshot || {},
+      currentSavingsMonthly: d.currentSavingsMonthly != null ? d.currentSavingsMonthly : null,
+      archetypeKey: LOGIC.computeArchetype(d).key,
       onboardingDone: true
     });
     STORE.saveSettings(settings);
@@ -304,11 +321,66 @@ const UI = {
           <input type="number" name="monthlyIncome" min="0" step="0.01" value="${d.monthlyIncome || ""}" placeholder="Ingreso mensual" required />
           ${this.obNavHTML()}
         </form>`,
+      desiredIncome: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cuánto te gustaría ganar al mes, idealmente?</h1>
+        <p class="muted-small">Así podemos comparar tu ingreso actual con el que sueñas tener.</p>
+        <form class="form ob-form" data-next>
+          <input type="number" name="desiredIncome" min="0" step="0.01" value="${d.desiredIncome || ""}" placeholder="Ingreso mensual deseado" required />
+          ${this.obNavHTML()}
+        </form>`,
       occupation: () => `
         <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
         <h1>¿En qué trabajas?</h1>
         <form class="form ob-form" data-next>
           <input type="text" name="occupation" value="${d.occupation || ""}" placeholder="Ej. Diseñadora, comercio, estudiante..." />
+          ${this.obNavHTML()}
+        </form>`,
+      workHours: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>Cuéntanos de tu jornada laboral</h1>
+        <form class="form ob-form" data-next>
+          <label>Horas que trabajas al día
+            <input type="number" name="hoursPerDay" min="0" max="24" step="0.5" value="${d.hoursPerDay || ""}" placeholder="Ej. 8" required />
+          </label>
+          <label>Horas extra a la semana (opcional)
+            <input type="number" name="overtimeHours" min="0" step="0.5" value="${d.overtimeHours || ""}" placeholder="Ej. 5" />
+          </label>
+          <label>Minutos de traslado, solo ida (opcional)
+            <input type="number" name="commuteMinutes" min="0" step="1" value="${d.commuteMinutes || ""}" placeholder="Ej. 30" />
+          </label>
+          <label class="toggle-row">
+            <input type="checkbox" name="multipleJobs" ${d.multipleJobs ? "checked" : ""} />
+            Tengo más de un trabajo o fuente de ingreso activa
+          </label>
+          ${this.obNavHTML()}
+        </form>`,
+      workGoal: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>Si pudieras mejorar tu situación, ¿qué priorizarías?</h1>
+        <div class="ob-choice-grid">
+          <button class="ob-choice" data-workgoal="ganar_mas">💰 Ganar más</button>
+          <button class="ob-choice" data-workgoal="trabajar_menos">🕒 Trabajar menos</button>
+          <button class="ob-choice" data-workgoal="ambas">✨ Ambas</button>
+        </div>`,
+      expensesSnapshot: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cuánto gastas al mes en cada categoría?</h1>
+        <p class="muted-small">Una estimación aproximada está bien, no hace falta ser exacto.</p>
+        <form class="form ob-form" data-next>
+          ${DATA.expenseSnapshotCategories.map((c) => `
+            <label>${c.icon} ${c.label}
+              <input type="number" name="expense_${c.id}" min="0" step="0.01" value="${(d.expensesSnapshot && d.expensesSnapshot[c.id]) || ""}" placeholder="0.00" />
+            </label>
+          `).join("")}
+          ${this.obNavHTML()}
+        </form>`,
+      currentSavingsMonthly: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cuánto logras ahorrar realmente cada mes, hoy en día?</h1>
+        <p class="muted-small">No la meta ideal, sino lo que de verdad consigues guardar ahora mismo.</p>
+        <form class="form ob-form" data-next>
+          <input type="number" name="currentSavingsMonthly" min="0" step="0.01" value="${d.currentSavingsMonthly || ""}" placeholder="Ej. 50" required />
           ${this.obNavHTML()}
         </form>`,
       savingsGoalMonthly: () => `
@@ -367,6 +439,21 @@ const UI = {
           <input type="text" name="savingsPurposeOther" value="${d.savingsPurposeOther || ""}" placeholder="Otro (opcional)" />
           ${this.obNavHTML()}
         </form>`,
+      archetype: () => {
+        const result = LOGIC.computeArchetype(d);
+        return `
+          <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+          <div class="archetype-reveal">
+            <span class="archetype-emoji">${result.emoji}</span>
+            <p class="archetype-kicker">Tu arquetipo financiero es...</p>
+            <h1>${result.label}</h1>
+            <p>${result.description}</p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="ob-back">Atrás</button>
+            <button type="button" class="btn btn-primary" id="ob-continue">Continuar</button>
+          </div>`;
+      },
       summary: () => {
         const daysInMonth = LOGIC.daysInMonth(LOGIC.todayStr());
         const suggested = d.monthlyIncome && d.savingsGoalMonthly
@@ -415,6 +502,9 @@ const UI = {
     view.querySelectorAll(".ob-choice[data-bool]").forEach((btn) =>
       btn.addEventListener("click", () => this.onboardNext({ currentlyMeetingGoal: btn.dataset.bool === "true" }))
     );
+    view.querySelectorAll(".ob-choice[data-workgoal]").forEach((btn) =>
+      btn.addEventListener("click", () => this.onboardNext({ workGoal: btn.dataset.workgoal }))
+    );
 
     const continueBtn = view.querySelector("#ob-continue");
     if (continueBtn) continueBtn.addEventListener("click", () => this.onboardNext({}));
@@ -425,16 +515,29 @@ const UI = {
         e.preventDefault();
         const fd = new FormData(form);
         const patch = {};
+        const numericFields = new Set([
+          "age", "monthlyIncome", "savingsGoalMonthly", "dailyGoal",
+          "desiredIncome", "hoursPerDay", "overtimeHours", "commuteMinutes", "currentSavingsMonthly"
+        ]);
         if (step === "obstacles") {
           patch.obstacles = fd.getAll("obstacles");
         } else if (step === "purposes") {
           patch.savingsPurposes = fd.getAll("savingsPurposes");
           patch.savingsPurposeOther = fd.get("savingsPurposeOther") || "";
+        } else if (step === "expensesSnapshot") {
+          const snapshot = {};
+          DATA.expenseSnapshotCategories.forEach((c) => {
+            const value = fd.get("expense_" + c.id);
+            snapshot[c.id] = value ? parseFloat(value) : 0;
+          });
+          patch.expensesSnapshot = snapshot;
         } else {
           for (const [key, value] of fd.entries()) {
+            if (key === "multipleJobs") continue;
             const num = parseFloat(value);
-            patch[key] = (key === "age" || key === "monthlyIncome" || key === "savingsGoalMonthly" || key === "dailyGoal") && value !== "" ? num : value;
+            patch[key] = numericFields.has(key) && value !== "" ? num : value;
           }
+          if (step === "workHours") patch.multipleJobs = fd.get("multipleJobs") === "on";
         }
         this.onboardNext(patch);
       });
@@ -728,6 +831,20 @@ const UI = {
           </div>
           <button class="btn btn-secondary btn-sm" data-action="edit-profile">Editar mi perfil ✏️</button>
         </div>
+
+        ${s.archetypeKey ? (() => {
+          const arch = DATA.archetypes.find((a) => a.key === s.archetypeKey);
+          if (!arch) return "";
+          return `
+            <div class="archetype-card">
+              <span class="archetype-card-emoji">${arch.emoji}</span>
+              <div>
+                <p class="archetype-card-kicker">Tu arquetipo financiero</p>
+                <strong>${arch.label}</strong>
+                <p class="muted-small">${arch.description}</p>
+              </div>
+            </div>`;
+        })() : ""}
 
         <label class="toggle-switch-row">
           <span>Modo de cuenta</span>
