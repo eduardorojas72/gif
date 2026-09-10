@@ -322,6 +322,32 @@ const LOGIC = {
     return best;
   },
 
+  // Niveles de racha (piedras preciosas). Cuanto más se sube, más raro el
+  // color; a partir de Diamante se queda ahí, pero los días siguen contando.
+  STREAK_TIERS: [
+    { min: 0, key: "start", label: "Racha empezando", emoji: "🔥", from: "#8FD9B6", to: "#3FA983", text: "#0E3B2E" },
+    { min: 3, key: "bronce", label: "Nivel Bronce", emoji: "🥉", from: "#E3A667", to: "#B06B2E", text: "#3A1F05" },
+    { min: 7, key: "plata", label: "Nivel Plata", emoji: "🥈", from: "#E7ECE9", to: "#AEBDB5", text: "#1C2A23" },
+    { min: 14, key: "oro", label: "Nivel Oro", emoji: "🥇", from: "#F2C94C", to: "#C98B12", text: "#3A2A05" },
+    { min: 30, key: "esmeralda", label: "Nivel Esmeralda", emoji: "💎", gem: true, from: "#3FD68C", to: "#0E8F52", text: "#053622" },
+    { min: 60, key: "rubi", label: "Nivel Rubí", emoji: "💎", gem: true, from: "#FF6B7A", to: "#C81E3A", text: "#3A0510" },
+    { min: 120, key: "topacio", label: "Nivel Topacio", emoji: "💎", gem: true, from: "#FFD873", to: "#E0932B", text: "#3A2205" },
+    { min: 240, key: "diamante", label: "Nivel Diamante", emoji: "💎", gem: true, from: "#BEE9FF", to: "#4FA8D8", text: "#052436" }
+  ],
+  streakTier(streak) {
+    const tiers = this.STREAK_TIERS;
+    let current = tiers[0];
+    for (const t of tiers) {
+      if (streak >= t.min) current = t;
+    }
+    return current;
+  },
+  // Días que lleva el usuario dentro del nivel actual (no la racha total).
+  daysInCurrentTier(streak) {
+    const tier = this.streakTier(streak);
+    return streak - tier.min + 1;
+  },
+
   // Genera un movimiento de gasto simulado, como si viniera de una tarjeta
   // o pago móvil enlazado. Placeholder de una integración real (Open Banking).
   simulateLinkedExpense(accountId) {

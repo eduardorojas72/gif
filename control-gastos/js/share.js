@@ -6,13 +6,6 @@ const SHARE = {
     "Ahorrar, un día a la vez."
   ],
 
-  streakTier(streak) {
-    if (streak >= 14) return { label: "🏅 Racha de oro", from: "#F2C94C", to: "#C98B12", text: "#3A2A05" };
-    if (streak >= 7) return { label: "🥈 Racha sólida", from: "#E7ECE9", to: "#AEBDB5", text: "#1C2A23" };
-    if (streak >= 3) return { label: "🥉 Racha en marcha", from: "#E3A667", to: "#B06B2E", text: "#3A1F05" };
-    return { label: "🔥 Racha empezando", from: "#8FD9B6", to: "#3FA983", text: "#0E3B2E" };
-  },
-
   roundRectPath(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -34,13 +27,71 @@ const SHARE = {
     ctx.restore();
   },
 
+  // Gema facetada dibujada a mano (los emojis no tienen variantes de color
+  // por piedra, así que para esmeralda/rubí/topacio/diamante se dibuja esto
+  // en vez del emoji, con el color exacto del nivel).
+  drawGem(ctx, cx, cy, r, from, to) {
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    const grad = ctx.createLinearGradient(0, -r, 0, r);
+    grad.addColorStop(0, from);
+    grad.addColorStop(1, to);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.55, -r * 0.65);
+    ctx.lineTo(r * 0.55, -r * 0.65);
+    ctx.lineTo(r * 0.95, -r * 0.15);
+    ctx.lineTo(0, r);
+    ctx.lineTo(-r * 0.95, -r * 0.15);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.lineWidth = Math.max(2, r * 0.035);
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.55, -r * 0.65);
+    ctx.lineTo(r * 0.55, -r * 0.65);
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.3)";
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.55, -r * 0.65);
+    ctx.lineTo(0, r);
+    ctx.moveTo(r * 0.55, -r * 0.65);
+    ctx.lineTo(0, r);
+    ctx.moveTo(-r * 0.95, -r * 0.15);
+    ctx.lineTo(r * 0.95, -r * 0.15);
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.beginPath();
+    ctx.ellipse(-r * 0.18, -r * 0.35, r * 0.14, r * 0.22, -0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  // Dibuja el emblema del nivel (emoji o gema vectorial según el nivel) en
+  // el punto (cx, cy), con tamaño de fuente/gema equivalente a fontPx.
+  drawTierEmblem(ctx, tier, cx, cy, fontPx) {
+    if (tier.gem) {
+      this.drawGem(ctx, cx, cy, fontPx * 0.42, tier.from, tier.to);
+    } else {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = fontPx + "px system-ui, sans-serif";
+      ctx.fillText(tier.emoji, cx, cy + fontPx * 0.03);
+    }
+  },
+
   buildCardDataURL({ date, goal, spent, streak, userName }) {
     const W = 1080, H = 1350;
     const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext("2d");
-    const tier = this.streakTier(streak || 0);
+    const tier = LOGIC.streakTier(streak || 0);
     const tagline = this.TAGLINES[new Date(date + "T00:00:00").getDate() % this.TAGLINES.length];
 
     // Fondo con esquinas redondeadas
@@ -53,9 +104,9 @@ const SHARE = {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    // Resplandores decorativos
-    this.softGlow(ctx, 120, 160, 260, "#F2C94C");
-    this.softGlow(ctx, W - 100, H - 220, 320, "#3FA983");
+    // Resplandores decorativos, tintados según el nivel de racha actual
+    this.softGlow(ctx, 120, 160, 260, tier.from);
+    this.softGlow(ctx, W - 100, H - 220, 320, tier.to);
 
     // Confeti de monedas sutil
     const dots = [[90, 420], [980, 300], [140, 900], [950, 760], [520, 90], [860, 1180], [70, 620]];
@@ -78,7 +129,7 @@ const SHARE = {
     // Chip de racha arriba a la derecha
     if (streak > 0) {
       ctx.font = "600 28px Inter, system-ui, sans-serif";
-      const chipLabel = tier.label + " · " + streak + "d";
+      const chipLabel = tier.emoji + " " + tier.label + " · " + streak + "d";
       const chipW = ctx.measureText(chipLabel).width + 48;
       const chipX = W - 64 - chipW;
       const chipGrad = ctx.createLinearGradient(chipX, 0, chipX + chipW, 0);
@@ -135,7 +186,10 @@ const SHARE = {
       ctx.fill();
       ctx.font = "600 46px Inter, system-ui, sans-serif";
       ctx.fillStyle = "#FFFFFF";
-      ctx.fillText("🔥 " + streak + " días seguidos sin pasarme", W / 2, bandY + 55);
+      const bandText = tier.key === "start"
+        ? "🔥 " + streak + " días seguidos sin pasarme"
+        : tier.emoji + " " + streak + " días en el " + tier.label.toLowerCase();
+      ctx.fillText(bandText, W / 2, bandY + 55);
       taglineY = 1140;
     }
 
@@ -147,6 +201,71 @@ const SHARE = {
     ctx.font = "600 34px Inter, system-ui, sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.fillText("Hucha" + (userName ? " · " + userName : ""), W / 2, taglineY + 120);
+
+    return canvas.toDataURL("image/png");
+  },
+
+  // Tarjeta de "nivel" para presumir la racha en cualquier momento, no solo
+  // al cerrar el día. Más protagonismo para la piedra/gema del nivel actual.
+  buildTierCardDataURL({ streak, userName }) {
+    const W = 1080, H = 1080;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    const tier = LOGIC.streakTier(streak || 0);
+    const daysInTier = LOGIC.daysInCurrentTier(streak || 0);
+
+    this.roundRectPath(ctx, 0, 0, W, H, 56);
+    ctx.clip();
+
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0, "#0E3B2E");
+    bgGrad.addColorStop(1, "#123C2F");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    this.softGlow(ctx, W / 2, 380, 420, tier.from);
+    this.softGlow(ctx, 140, H - 160, 260, tier.to);
+    this.softGlow(ctx, W - 120, H - 120, 220, tier.to);
+
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.font = "700 40px 'Space Grotesk', system-ui, sans-serif";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("🐷 Hucha", 60, 80);
+    ctx.textAlign = "right";
+    ctx.font = "600 30px Inter, system-ui, sans-serif";
+    ctx.fillStyle = "#CFE8DE";
+    ctx.fillText("Racha de " + streak + " días", W - 60, 80);
+
+    ctx.textAlign = "center";
+    this.drawTierEmblem(ctx, tier, W / 2, 370, 230);
+
+    ctx.font = "700 64px 'Space Grotesk', system-ui, sans-serif";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(tier.label, W / 2, 560);
+
+    const chipLabel = daysInTier + (daysInTier === 1 ? " día" : " días") + " en el " + tier.label.toLowerCase();
+    ctx.font = "700 44px Inter, system-ui, sans-serif";
+    const chipW = ctx.measureText(chipLabel).width + 64;
+    const chipX = (W - chipW) / 2;
+    const chipGrad = ctx.createLinearGradient(chipX, 0, chipX + chipW, 0);
+    chipGrad.addColorStop(0, tier.from);
+    chipGrad.addColorStop(1, tier.to);
+    this.roundRectPath(ctx, chipX, 640, chipW, 90, 45);
+    ctx.fillStyle = chipGrad;
+    ctx.fill();
+    ctx.fillStyle = tier.text;
+    ctx.fillText(chipLabel, W / 2, 685);
+
+    ctx.font = "italic 400 32px Inter, system-ui, sans-serif";
+    ctx.fillStyle = "#CFE8DE";
+    ctx.fillText("Sin pasarme de mi meta diaria, un día a la vez.", W / 2, 830);
+
+    ctx.font = "600 34px Inter, system-ui, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillText("Hucha" + (userName ? " · " + userName : ""), W / 2, 960);
 
     return canvas.toDataURL("image/png");
   },

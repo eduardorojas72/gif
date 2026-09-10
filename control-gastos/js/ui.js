@@ -229,8 +229,9 @@ const UI = {
     const num = this.STEP_NUMBER[step] || 1;
     const renderers = {
       accountMode: () => `
+        <img class="ob-mascot" src="icons/mascot-piggy.svg" alt="Hucha" />
         <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
-        <h1>¿Cómo quieres usar la app?</h1>
+        <h1>¡Hola! Soy Hucha 🐷 ¿Cómo quieres usarme?</h1>
         <div class="ob-choice-grid">
           <button class="ob-choice" data-value="individual">🙋 Cuenta personal</button>
           <button class="ob-choice" data-value="compartida">👨‍👩‍👧 Cuenta familiar / compartida</button>
@@ -417,15 +418,27 @@ const UI = {
     const txs = LOGIC.transactionsForDate(today).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
     const planToday = STORE.getPlan(today);
     const savings = LOGIC.savingsProgressThisMonth();
+    const streak = LOGIC.currentStreak();
+    const tier = LOGIC.streakTier(streak);
 
     return `
       <section class="card">
+        <div class="hoy-banner"><img src="icons/scene-campfire.svg" alt="" /></div>
+
         <div class="card-head">
           <h1>Hoy</h1>
           <span class="muted">${new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</span>
         </div>
 
         ${settings.userName ? `<p class="muted-small">Hola, ${settings.userName} · ${settings.accountMode === "compartida" ? "cuenta familiar 👨‍👩‍👧" : "cuenta personal 🙋"}</p>` : ""}
+
+        ${streak > 0 ? `
+          <div class="tier-chip" style="background:linear-gradient(90deg, ${tier.from}, ${tier.to}); color:${tier.text}">
+            ${tier.key === "start"
+              ? `🔥 ${streak} ${streak === 1 ? "día" : "días"} seguidos sin pasarte`
+              : `${tier.emoji} ${streak} ${streak === 1 ? "día" : "días"} en el ${tier.label.toLowerCase()}`}
+          </div>
+        ` : ""}
 
         ${planToday ? `
           <div class="plan-banner">
@@ -801,6 +814,21 @@ const UI = {
         ` : `<p class="muted">No hay gastos registrados en este periodo.</p>`}
 
         <h2 class="section-title">Racha de metas cumplidas</h2>
+
+        ${streak > 0 ? (() => {
+          const tier = LOGIC.streakTier(streak);
+          const daysInTier = LOGIC.daysInCurrentTier(streak);
+          return `
+            <div class="tier-banner" style="background:linear-gradient(135deg, ${tier.from}, ${tier.to}); color:${tier.text}">
+              <span class="tier-banner-emoji">${tier.emoji}</span>
+              <div class="tier-banner-text">
+                <strong>${daysInTier} ${daysInTier === 1 ? "día" : "días"} en el ${tier.label}</strong>
+                <span>Racha total: ${streak} ${streak === 1 ? "día" : "días"} sin pasarte de tu meta</span>
+              </div>
+              <button class="btn btn-sm tier-banner-btn" data-action="share-tier">Compartir 📤</button>
+            </div>`;
+        })() : ""}
+
         <div class="streak-row">
           <div class="streak-box"><span class="streak-num">${streak}</span><span class="muted-small">Racha actual</span></div>
           <div class="streak-box"><span class="streak-num">${best}</span><span class="muted-small">Mejor racha</span></div>
@@ -1080,5 +1108,19 @@ const UI = {
         });
       })
     );
+
+    const shareTierBtn = view.querySelector('[data-action="share-tier"]');
+    if (shareTierBtn) {
+      shareTierBtn.addEventListener("click", () => {
+        const settings = STORE.getSettings();
+        const streak = LOGIC.currentStreak();
+        const tier = LOGIC.streakTier(streak);
+        const dataURL = SHARE.buildTierCardDataURL({ streak, userName: settings.userName });
+        const text = "Llevo " + LOGIC.daysInCurrentTier(streak) + " días en el " + tier.label.toLowerCase() + " de Hucha 🐷 (racha total: " + streak + " días).";
+        SHARE.shareCard(dataURL, text).then((result) => {
+          if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
+        });
+      });
+    }
   }
 };

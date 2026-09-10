@@ -64,7 +64,7 @@ h1, h2, h3 {
   z-index: 5;
 }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-family: "Space Grotesk", sans-serif; }
-.brand-mark { font-size: 22px; }
+.brand-mark { width: 30px; height: 30px; display: block; }
 
 .status-pill {
   font-size: 12px;
@@ -90,6 +90,14 @@ h1, h2, h3 {
   flex-direction: column;
   gap: 14px;
 }
+
+.hoy-banner {
+  margin: -20px -20px 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+  line-height: 0;
+}
+.hoy-banner img { width: 100%; height: 140px; object-fit: cover; display: block; }
 
 .card-head {
   display: flex;
@@ -282,6 +290,7 @@ h1, h2, h3 {
 .achievement-preview { width: 100%; border-radius: 12px; margin: 8px 0; }
 
 /* Tabbar */
+.tabbar[hidden] { display: none; }
 .tabbar {
   position: fixed;
   bottom: 0;
@@ -371,6 +380,7 @@ h1, h2, h3 {
 
 /* ---------- Onboarding ---------- */
 .ob-card { gap: 16px; position: relative; }
+.ob-mascot { width: 96px; height: 96px; align-self: center; }
 .ob-close { position: absolute; top: 4px; right: 4px; font-size: 18px; }
 .ob-progress { color: var(--text-soft); font-size: 12px; margin: 0; letter-spacing: 0.02em; text-transform: uppercase; }
 .ob-form { gap: 14px; }
@@ -467,6 +477,28 @@ h1, h2, h3 {
 }
 .chip-x { border: none; background: none; cursor: pointer; font-size: 14px; color: var(--text-soft); padding: 0 4px; }
 .category-add-row { grid-template-columns: 1fr 2fr 0.6fr auto; }
+
+/* ---------- Niveles de racha (piedras) ---------- */
+.tier-chip {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  align-self: flex-start;
+}
+.tier-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 16px;
+  padding: 16px;
+}
+.tier-banner-emoji { font-size: 44px; line-height: 1; }
+.tier-banner-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.tier-banner-text strong { font-size: 17px; font-family: "Space Grotesk", sans-serif; }
+.tier-banner-text span { font-size: 12.5px; opacity: 0.85; }
+.tier-banner-btn { background: rgba(255,255,255,0.35); color: inherit; white-space: nowrap; }
 
 /* ---------- Resumen: periodos y gráfico de barras ---------- */
 .period-tabs { display: flex; gap: 6px; }

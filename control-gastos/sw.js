@@ -1,4 +1,4 @@
-const CACHE_NAME = "control-gastos-v1";
+const CACHE_NAME = "control-gastos-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -10,7 +10,9 @@ const ASSETS = [
   "./js/share.js",
   "./js/ui.js",
   "./js/app.js",
-  "./icons/icon.svg"
+  "./icons/icon.svg",
+  "./icons/mascot-piggy.svg",
+  "./icons/scene-campfire.svg"
 ];
 
 self.addEventListener("install", (event) => {
