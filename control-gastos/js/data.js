@@ -211,7 +211,9 @@ const DATA = {
       { title: "Fundamentos de economía", author: "Paul R. Krugman, Robin Wells y Martha L. Olney", note: "Introducción accesible a los conceptos básicos de economía, útil para entender el contexto detrás de las decisiones financieras del día a día." },
       { title: "La psicología del dinero", author: "Morgan Housel", note: "El comportamiento, las emociones y los hábitos pesan mucho más en las finanzas de un hogar que los conocimientos matemáticos: clave para tomar decisiones sensatas a largo plazo." },
       { title: "El hombre más rico de Babilonia", author: "George S. Clason", note: "Un clásico brevísimo basado en parábolas que enseña reglas atemporales del ahorro doméstico: pagarte a ti mismo primero, controlar los gastos y proteger el capital." },
-      { title: "El inversor inteligente", author: "Benjamin Graham", note: "Aborda la inversión en general, pero sus capítulos sobre disciplina, prudencia y la diferencia entre especular y proteger el capital son fundamentales para la seguridad económica familiar." }
+      { title: "El inversor inteligente", author: "Benjamin Graham", note: "Aborda la inversión en general, pero sus capítulos sobre disciplina, prudencia y la diferencia entre especular y proteger el capital son fundamentales para la seguridad económica familiar." },
+      { title: "Kakebo: el arte japonés de ahorrar dinero", author: "Fumiko Chiba", note: "Más que un libro, una metodología práctica: registra tus ingresos y gastos diarios en cuatro categorías claras para tomar conciencia de en qué se te va el dinero mes a mes." },
+      { title: "Pequeño cerdo capitalista", author: "Sofía Macías", note: "Un libro dinámico y accesible para empezar desde cero a presupuestar, salir de deudas y organizar el presupuesto familiar sin complicaciones." }
     ],
     talks: [
       { title: "Domina tus finanzas personales en un 2x3", author: "Alicia Márquez (TEDx)", note: "El método \"2x3\" para identificar las principales amenazas a la libertad financiera." },
