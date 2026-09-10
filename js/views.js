@@ -1040,7 +1040,8 @@ function actividadRowHTML(dia, a) {
     '<div style="flex:1;min-width:0">' +
     '<div class="row gap-2">' + Icon(tipo.icon, { size: 13, color: "var(--gold-light)" }) +
     '<span style="font-weight:700;font-size:13.5px' + (a.hecha ? ";text-decoration:line-through" : "") + '">' + escapeHtml(tipo.label) + "</span>" +
-    (a.hora ? '<span class="muted small">· ' + escapeHtml(a.hora) + "</span>" : "") + "</div>" +
+    (a.hora ? '<span class="muted small">· ' + escapeHtml(a.hora) + "</span>" : "") +
+    (a.recordar ? Icon("bell", { size: 12, color: "var(--gold-light)" }) : "") + "</div>" +
     (a.nota ? '<div class="muted small" style="margin-top:3px">' + escapeHtml(a.nota) + "</div>" : "") +
     "</div>" +
     '<button class="icon-btn" data-action="edit-actividad" data-dia="' + dia + '" data-arg="' + a.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
@@ -1054,7 +1055,7 @@ function zoomRowHTML(dia, z) {
     '<div class="row between" style="align-items:flex-start">' +
     '<div class="row gap-2" style="min-width:0">' + Icon("video", { size: 14, color: "var(--gold-light)" }) +
     '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Reunión sin título") + "</div>" +
-    (z.hora ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(z.hora) + "</div>" : "") + "</div></div>" +
+    (z.hora ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(z.hora) + (z.recordar ? " " : "") + (z.recordar ? Icon("bell", { size: 11, color: "var(--gold-light)" }) : "") + "</div>" : "") + "</div></div>" +
     '<button class="icon-btn" data-action="edit-zoom" data-dia="' + dia + '" data-arg="' + z.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
     "</div>" +
     (z.enlace
@@ -1108,6 +1109,26 @@ function renderAgenda(state, ui) {
   );
 }
 
+function recordatorioFieldHTML(d, toggleAction) {
+  const on = !!d.recordar;
+  const minOpts = [0, 10, 30, 60].map(function (m) {
+    const label = m === 0 ? "A esa hora" : m + " min antes";
+    return '<option value="' + m + '"' + (Number(d.recordarMin) === m ? " selected" : "") + ">" + label + "</option>";
+  }).join("");
+  return (
+    '<div class="field">' +
+    '<div class="row gap-2" style="align-items:center">' +
+    '<button class="check-dot' + (on ? " on" : "") + '" data-action="' + toggleAction + '">' + (on ? Icon("check", { size: 13, color: "#1B1338" }) : Icon("bell", { size: 13 })) + "</button>" +
+    '<button class="check-label' + (on ? " on" : "") + '" style="padding:0;flex:1;text-align:left" data-action="' + toggleAction + '">Avisarme con una notificación</button>' +
+    "</div>" +
+    (on
+      ? '<select data-draft-field="recordarMin" style="width:100%;margin-top:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:9px 12px;font-size:13.5px;outline:none">' + minOpts + "</select>" +
+        '<p class="muted small" style="margin-top:4px">Solo avisa mientras tengas Cumbre 90 abierto en el navegador o instalado, con las notificaciones activadas en Ajustes.</p>'
+      : "") +
+    "</div>"
+  );
+}
+
 function renderActividadModal(ui) {
   const d = ui.actividadDraft;
   if (!d) return "";
@@ -1128,6 +1149,7 @@ function renderActividadModal(ui) {
     '<div class="field"><label>Tipo</label><select data-draft-field="tipo" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + tipoOpts + "</select></div>" +
     '<div class="field"><label>Hora (opcional)</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
     '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="Con quién, dónde, qué necesitas llevar...">' + escapeHtml(d.nota || "") + "</textarea></div>" +
+    recordatorioFieldHTML(d, "toggle-actividad-recordar") +
     "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-actividad">Guardar</button>' +
     deleteBtn +
@@ -1155,6 +1177,7 @@ function renderZoomModal(ui) {
     '<div class="field"><label>Título</label><input type="text" data-draft-field="titulo" value="' + escapeHtml(d.titulo || "") + '" placeholder="Ej. Formación semanal del equipo"></div>' +
     '<div class="field"><label>Hora</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
     '<div class="field"><label>Enlace de conexión</label><input type="text" inputmode="url" data-draft-field="enlace" value="' + escapeHtml(d.enlace || "") + '" placeholder="https://zoom.us/j/..."></div>' +
+    recordatorioFieldHTML(d, "toggle-zoom-recordar") +
     "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-zoom">Guardar</button>' +
     deleteBtn +

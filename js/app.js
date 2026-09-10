@@ -85,7 +85,43 @@ const App = {
     this.bindEvents();
     this.render();
     this.notifyReminders();
+    this.checkAgendaAlarmas();
+    setInterval(() => this.checkAgendaAlarmas(), 30000);
     registerServiceWorker();
+  },
+
+  checkAgendaAlarmas() {
+    if (!("Notification" in window) || Notification.permission !== "granted" || !this.state.notifOn) return;
+    const now = new Date();
+    const hoy = hoyISO();
+    const dia = this.state.agenda[diaSemanaHoyId()];
+    if (!dia) return;
+
+    const revisar = (item, titulo, cuerpo) => {
+      if (!item.recordar || !item.hora || item.ultimoAviso === hoy) return;
+      const [hh, mm] = item.hora.split(":").map(Number);
+      if (Number.isNaN(hh) || Number.isNaN(mm)) return;
+      const objetivo = new Date(now);
+      objetivo.setHours(hh, mm, 0, 0);
+      objetivo.setMinutes(objetivo.getMinutes() - (Number(item.recordarMin) || 0));
+      const diffMs = now - objetivo;
+      if (diffMs < 0 || diffMs >= 5 * 60000) return;
+      try {
+        new Notification(titulo, { body: cuerpo });
+      } catch (e) {
+        /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+      }
+      item.ultimoAviso = hoy;
+      this.persist(true);
+    };
+
+    (dia.actividades || []).forEach((a) => {
+      const tipo = agendaTipoInfo(a.tipo);
+      revisar(a, "Cumbre 90 — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+    });
+    (dia.zooms || []).forEach((z) => {
+      revisar(z, "Cumbre 90 — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+    });
   },
 
   notifyReminders() {
@@ -264,8 +300,8 @@ const App = {
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
-      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft)) {
-        const draft = this.ui.contactoDraft || this.ui.actividadDraft;
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
         if (draft === this.ui.contactoDraft && el.dataset.draftField === "estado" && el.value === "Primer Pedido") {
           if (!draft.notaSeguimiento || !draft.notaSeguimiento.trim()) draft.notaSeguimiento = PRIMER_PEDIDO_NOTA;
@@ -794,6 +830,24 @@ const Actions = {
     } else {
       App.showToast("No se pudo copiar el enlace");
     }
+  },
+
+  "toggle-actividad-recordar": function () {
+    if (!App.ui.actividadDraft) return;
+    App.ui.actividadDraft.recordar = !App.ui.actividadDraft.recordar;
+    if (App.ui.actividadDraft.recordar && !("Notification" in window ? Notification.permission === "granted" : false)) {
+      Actions["toggle-notif"]();
+    }
+    App.render();
+  },
+
+  "toggle-zoom-recordar": function () {
+    if (!App.ui.zoomDraft) return;
+    App.ui.zoomDraft.recordar = !App.ui.zoomDraft.recordar;
+    if (App.ui.zoomDraft.recordar && !("Notification" in window ? Notification.permission === "granted" : false)) {
+      Actions["toggle-notif"]();
+    }
+    App.render();
   },
 };
 

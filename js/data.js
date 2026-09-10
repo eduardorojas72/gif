@@ -491,6 +491,7 @@ const SEMANAS = [
       "Registrar y estructurar los primeros 50 nombres en la Lista de 250 Contactos.",
       "Asistir al One Day Seminar y conectarme al sistema de eventos.",
       "Asistir a las formaciones de Zoom del equipo.",
+      "Hacer mi primera reunión de enfoque a mis socios (acompañado de mi patrocinador).",
     ],
   },
   {
@@ -501,6 +502,7 @@ const SEMANAS = [
       "Registrar a los primeros socios en las líneas Izquierda y Derecha.",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
       "Hacer seguimiento riguroso dentro de las 48 horas a todos los contactos presentados.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -511,6 +513,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -521,6 +524,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -531,6 +535,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -542,6 +547,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -553,6 +559,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -563,6 +570,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -573,6 +581,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -584,6 +593,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -595,6 +605,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
   {
@@ -605,6 +616,7 @@ const SEMANAS = [
       "Registrar 10 socios nuevos.",
       "Ayudar a ubicar estos socios en las líneas Izquierda y Derecha (pido ayuda a mi patrocinador para este paso).",
       "Guiar a los socios nuevos a completar el módulo de los 6 Días de Arranque.",
+      "Hacer mi reunión de enfoque a mis socios.",
     ],
   },
 ];

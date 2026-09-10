@@ -20,11 +20,11 @@ function diaSemanaHoyId() {
 }
 
 function nuevaActividadAgenda() {
-  return { id: "a" + Math.random().toString(36).slice(2, 9), tipo: "llamada", hora: "", nota: "", hecha: false };
+  return { id: "a" + Math.random().toString(36).slice(2, 9), tipo: "llamada", hora: "", nota: "", hecha: false, recordar: false, recordarMin: 10, ultimoAviso: null };
 }
 
 function nuevoZoomAgenda() {
-  return { id: "z" + Math.random().toString(36).slice(2, 9), titulo: "", hora: "", enlace: "" };
+  return { id: "z" + Math.random().toString(36).slice(2, 9), titulo: "", hora: "", enlace: "", recordar: false, recordarMin: 10, ultimoAviso: null };
 }
 
 function emptyAgendaDia() {
