@@ -2,7 +2,8 @@
 
 > **Nota de alcance:** este documento reúne material de investigación aportado
 > por el usuario durante el desarrollo de Hucha. Es contenido **específico de
-> España** (impuestos, fiscalidad de inversión, seguros, becas) que **no se
+> España** (impuestos, fiscalidad de inversión, seguros, becas, mercado
+> eléctrico regulado) que **no se
 > ha incorporado a la app** porque Hucha da servicio a usuarios de ~20 países
 > (ver `DATA.countries` en `js/data.js`) y este material no generaliza. Se
 > guarda aquí como referencia para un futuro "módulo formativo" específico
@@ -126,6 +127,54 @@ Derecho según umbral: ≤Umbral 1 → todas las cuantías (fija por renta + res
 - Pensión compensatoria recibida por el progenitor custodio → tributa como rendimiento del trabajo en su IRPF, se computa automáticamente.
 - Pensión compensatoria pagada por el progenitor custodio → se deduce de su base imponible, reduciendo la renta computable.
 - Si la pensión fijada no se cobra por impago, hay que aportar la demanda/denuncia de ejecución para que no se compute artificialmente como ingreso.
+
+## 7. Optimización de la factura eléctrica
+
+**Conceptos de la factura:**
+
+| Concepto | Tipo de coste | ¿De qué depende? | Cómo optimizarlo |
+| --- | --- | --- | --- |
+| Término de potencia | Fijo | De los kW contratados | Ajustar los kW a las necesidades reales sin que salten los plomos |
+| Término de energía | Variable | Del consumo real (kWh) | Concentrar el uso de electrodomésticos en horas valle/llana, o reducir consumo |
+| Peajes y cargos | Regulado | Del marco normativo oficial | Vienen integrados en los precios del kW y kWh ofertados por la compañía |
+
+**PVPC (mercado regulado) vs. mercado libre:**
+- **PVPC:** precio del kWh cambia cada hora según el mercado mayorista, con 3 tramos horarios (Punta/caro, Llano/medio, Valle/económico — Valle: 00:00-08:00h, fines de semana y festivos). Conviene si puedes concentrar consumo en horas valle, o si cumples requisitos para el Bono Social Eléctrico (descuentos del 40-80%).
+- **Mercado libre:** la comercializadora fija un precio libre (tarifa plana 24h, o con su propia discriminación horaria). Conviene si no puedes adaptar horarios y prefieres un precio bajo e independiente de la hora.
+- Por perfil de hogar: flexible → PVPC (programar electrodomésticos de noche/findes); familia numerosa/vulnerable → PVPC + Bono Social; consumo repartido todo el día → mercado libre con tarifa fija sin permanencia.
+
+**Cómo saber si pagas de más por potencia:**
+- **Método preciso:** cada hogar tiene una distribuidora asignada (no confundir con la comercializadora que factura) — ej. i-DE (Iberdrola), e-distribución (Endesa), UFD (Naturgy), E-Redes, Viesgo. Se identifica por el código CUPS en la factura. En el área privada de la distribuidora (app/web), en el apartado "Potencia"/"Picos de potencia", se ve el pico máximo de kW demandado cada mes de los últimos 12 (por tramo Punta y Valle).
+- **Regla de margen de seguridad:** bajar la potencia contratada al pico máximo real + 0,3-0,5 kW de margen (ej. contratada 4,6 kW, pico real 3,1 kW → bajar a 3,45 kW).
+- **Método rápido de estimación** (sin acceso al portal): sumar el electrodoméstico de mayor consumo activo a la vez (vitro/inducción ~2,0-2,5 kW, horno ~1,5-2,0 kW, aire acondicionado/calefactor ~1,0-2,0 kW, lavadora en calentamiento ~1,5-2,0 kW) + base constante (frigorífico, luces, TV, router ~0,3-0,5 kW).
+- **Ahorro:** bajar 1 kW de potencia contratada ahorra ~40-50 €/año (impuestos incluidos).
+- **Coste del trámite:** derechos de enganche de la distribuidora ≈9,04 € + IVA (~11 €) al bajar, cobrados en la siguiente factura — se amortiza en 2-3 meses. Volver a subirla es más caro (~45 €/kW). La normativa limita a un cambio de potencia al año, así que conviene no quedarse corto.
+
+**Cómo tramitar la bajada de potencia:**
+1. Confirmar la potencia actual y la deseada en la factura más reciente (escalones estándar, ej. 4,6→3,45→2,3 kW).
+2. Contactar con la comercializadora (recomendado: área de cliente/app > Contratos > Modificar potencia; o por teléfono).
+3. Indicar el nuevo valor (se puede diferenciar tramo Punta y Valle).
+4. Con contador digital telegestionado, el cambio se ejecuta en remoto en 1-5 días hábiles o en el siguiente ciclo de facturación.
+
+Guión de llamada sugerido: *"Hola, llamo para solicitar una reducción de la potencia contratada en mi suministro con CUPS [número CUPS]. Actualmente tengo [ej. 4,6 kW] y quiero ajustarla a [ej. 3,45 kW] en el tramo punta [y en el tramo valle]. Ya he verificado mis picos máximos de consumo en la distribuidora y este tramo cubre perfectamente las necesidades de mi hogar. Por favor, tramiten el cambio sin incluir ningún servicio adicional de mantenimiento o asistencia."*
+
+**Comparador oficial:** usar el Comparador de Ofertas de Energía de la CNMC (`comparador.cnmc.gob.es`) en vez de comparadores privados que cobran comisión de las comercializadoras; se puede subir la factura en PDF o introducir el CUPS.
+
+**Vigilar servicios adicionales:** revisar que la factura no incluya mantenimiento de electrodomésticos, asistencia en el hogar o seguros vinculados no solicitados (ahorro de 3-8 €/mes al eliminarlos).
+
+### Bono Social Eléctrico
+
+Descuento regulado sobre la tarifa PVPC para consumidores vulnerables, del 40% al 80% (hasta 100% en riesgo de exclusión social gestionado por servicios sociales).
+
+**Requisitos previos:** ser titular del contrato, que corresponda a la vivienda habitual (empadronamiento), y tener/cambiar a tarifa PVPC con potencia contratada ≤10 kW.
+
+**Categorías por renta (respecto al IPREM):**
+- Consumidor vulnerable (40-65%): renta anual de la unidad de convivencia ≤1,5×IPREM sin menores, ≤2×IPREM con 1 menor, ≤2,5×IPREM con 2 menores.
+- Consumidor vulnerable severo (80%): renta ≤50% de los límites del vulnerable simple.
+- Categorías directas: familias numerosas (derecho automático a vulnerable, y a severo si ≤2×IPREM); pensionistas con cuantía mínima y sin otros ingresos >500 €/año; beneficiarios del Ingreso Mínimo Vital (IMV).
+- El límite de renta sube +0,5×IPREM si hay: discapacidad ≥33%, víctima de violencia de género/terrorismo, dependencia reconocida (Grado II o III), o familia monoparental con menor a cargo.
+
+**Solicitud:** pedir el formulario a una comercializadora de referencia (mercado regulado) → presentar formulario firmado por mayores de 14 años + DNI/NIE de la unidad familiar + certificado de empadronamiento conjunto + libro de familia + documentación de circunstancias especiales si aplica → la comercializadora resuelve en máximo 15 días hábiles.
 
 ---
 
