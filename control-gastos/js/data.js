@@ -370,6 +370,26 @@ const DATA = {
       body: "Si solo ves plataformas bajo demanda, no necesitas la TV de pago del paquete; bajar de 1 Gbps a 300-600 Mb no se nota en el uso normal; y unir varias líneas familiares en la misma cuenta suele salir más barato que contratos sueltos."
     },
     {
+      title: "Detecta las fugas de aire en puertas y ventanas",
+      body: "Pasa una vela cerca de marcos y juntas en un día de viento (si la llama oscila, hay fuga) o cierra la ventana con un folio en el marco (si se desliza fácil, el cierre no aprieta bien). Las fugas de aire pueden subir el gasto en calefacción o aire acondicionado entre un 20% y un 30%."
+    },
+    {
+      title: "Sella puertas y ventanas con burletes",
+      body: "Los burletes de espuma o silicona (5-10 € el rollo) y los bajopuertas de cepillo cortan las corrientes de aire y se amortizan en pocas semanas."
+    },
+    {
+      title: "Aísla la caja de la persiana",
+      body: "Suele ser el gran punto de fuga de la fachada: rellenarla con paneles aislantes (poliestireno, lana de roca) evita la entrada de aire exterior."
+    },
+    {
+      title: "Ventila poco tiempo pero a fondo",
+      body: "Airea la casa 10-15 minutos con las ventanas abiertas de par en par a primera hora, en vez de dejarlas entreabiertas todo el día: renuevas el aire sin enfriar paredes ni muebles."
+    },
+    {
+      title: "Usa persianas y cortinas como aislante extra",
+      body: "Sube las persianas en las horas de sol para aprovechar el calor natural y bájalas al anochecer para crear una capa aislante frente al exterior; si tu ventana oscilobatiente tiene modo invierno (un perno en el canto de la hoja), gíralo para que el cierre apriete más en los meses fríos."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
