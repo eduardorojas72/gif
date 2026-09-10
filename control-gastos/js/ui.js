@@ -1045,11 +1045,27 @@ const UI = {
     };
   },
 
+  // Sistema de los 6 frascos (T. Harv Eker): reparte el ingreso en 6 cuentas
+  // con un propósito fijo cada una. Alternativa con más categorías que el
+  // 50/30/20, útil para quien quiere separar también educación y donación.
+  sixJarsAmounts(income) {
+    const n = Math.max(0, Number(income) || 0);
+    return {
+      necessities: n * 0.55,
+      play: n * 0.10,
+      freedom: n * 0.10,
+      education: n * 0.10,
+      longTerm: n * 0.10,
+      give: n * 0.05
+    };
+  },
+
   renderConsejos() {
     const settings = STORE.getSettings();
     const simIncome = settings.monthlyIncome || "";
     const amounts = this.budgetSimAmounts(simIncome);
     const groceryAmounts = this.groceryBudgetSplit("");
+    const jarsAmounts = this.sixJarsAmounts(simIncome);
     return `
       <section class="card">
         <div class="card-head"><h1>Consejos para ahorrar</h1></div>
@@ -1086,6 +1102,41 @@ const UI = {
             <li>Automatiza el preahorro: nada más cobrar, transfiere el 20% a una cuenta separada. Si no lo ves en la cuenta principal, no lo gastas.</li>
             <li>Clasifica tus gastos en necesidades u ocio: revisa los movimientos del último mes para ajustar los límites de cada categoría.</li>
           </ol>
+        </div>
+
+        <h2 class="section-title">🏺 Sistema de los 6 frascos</h2>
+        <p class="muted-small">Otra alternativa al 50/30/20 (método de T. Harv Eker): reparte el ingreso en 6 "frascos" con un propósito fijo cada uno, incluyendo educación y donación como categorías propias.</p>
+        <div class="budget-sim">
+          <label>Ingreso mensual neto
+            <input type="number" id="jars-income" min="0" step="0.01" value="${simIncome}" placeholder="Ej. 2500" />
+          </label>
+          <div class="budget-sim-results">
+            <div class="budget-sim-row budget-sim-row--needs">
+              <span>55% · Necesidades</span>
+              <strong id="jars-necessities">${LOGIC.formatMoney(jarsAmounts.necessities)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--wants">
+              <span>10% · Ocio ("Play")</span>
+              <strong id="jars-play">${LOGIC.formatMoney(jarsAmounts.play)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--savings">
+              <span>10% · Libertad financiera</span>
+              <strong id="jars-freedom">${LOGIC.formatMoney(jarsAmounts.freedom)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--needs">
+              <span>10% · Educación</span>
+              <strong id="jars-education">${LOGIC.formatMoney(jarsAmounts.education)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--wants">
+              <span>10% · Ahorro para grandes compras</span>
+              <strong id="jars-longterm">${LOGIC.formatMoney(jarsAmounts.longTerm)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--savings">
+              <span>5% · Donación</span>
+              <strong id="jars-give">${LOGIC.formatMoney(jarsAmounts.give)}</strong>
+            </div>
+          </div>
+          <p class="muted-small" style="margin:2px 0 0">Puedes usar el 50/30/20, los 6 frascos o el reparto por bloques de la compra: elige el que te resulte más fácil de mantener, no hace falta seguir los tres a la vez.</p>
         </div>
 
         <h2 class="section-title">🛒 Presupuesto de la compra por bloques</h2>
@@ -1591,6 +1642,20 @@ const UI = {
         document.getElementById("sim-needs").textContent = LOGIC.formatMoney(amounts.needs);
         document.getElementById("sim-wants").textContent = LOGIC.formatMoney(amounts.wants);
         document.getElementById("sim-savings").textContent = LOGIC.formatMoney(amounts.savings);
+      });
+    }
+
+    // ---- Consejos: sistema de los 6 frascos ----
+    const jarsIncomeInput = view.querySelector("#jars-income");
+    if (jarsIncomeInput) {
+      jarsIncomeInput.addEventListener("input", () => {
+        const amounts = UI.sixJarsAmounts(jarsIncomeInput.value);
+        document.getElementById("jars-necessities").textContent = LOGIC.formatMoney(amounts.necessities);
+        document.getElementById("jars-play").textContent = LOGIC.formatMoney(amounts.play);
+        document.getElementById("jars-freedom").textContent = LOGIC.formatMoney(amounts.freedom);
+        document.getElementById("jars-education").textContent = LOGIC.formatMoney(amounts.education);
+        document.getElementById("jars-longterm").textContent = LOGIC.formatMoney(amounts.longTerm);
+        document.getElementById("jars-give").textContent = LOGIC.formatMoney(amounts.give);
       });
     }
 
