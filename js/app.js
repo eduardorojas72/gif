@@ -63,6 +63,7 @@ const App = {
     zoomDraft: null,
     zoomEditId: null,
     confirmDeleteZoom: null,
+    calculadoraAbierta: false,
   },
   saveTimer: null,
   toastTimer: null,
@@ -202,7 +203,14 @@ const App = {
       case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
-      case "plan90": mainHtml = ui.activeQuincena ? renderQuincenaDetalle(state, ui.activeQuincena) : renderPlan90(state); break;
+      case "plan90":
+        if (ui.activeQuincena) {
+          getComprasQuincena(state, ui.activeQuincena);
+          mainHtml = renderQuincenaDetalle(state, ui, ui.activeQuincena);
+        } else {
+          mainHtml = renderPlan90(state);
+        }
+        break;
       case "premios": mainHtml = renderPremios(state); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "logros": mainHtml = renderLogros(state); break;
@@ -847,6 +855,31 @@ const Actions = {
     if (App.ui.zoomDraft.recordar && !("Notification" in window ? Notification.permission === "granted" : false)) {
       Actions["toggle-notif"]();
     }
+    App.render();
+  },
+
+  "toggle-calculadora-productos": function () {
+    App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
+    App.render();
+  },
+
+  "toggle-producto-probado": function (arg) {
+    const p = App.state.catalogoProductos[Number(arg)];
+    if (!p) return;
+    p.probado = !p.probado;
+    App.persist(true);
+    App.render();
+  },
+
+  "add-producto": function () {
+    App.state.catalogoProductos.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-producto": function (arg) {
+    App.state.catalogoProductos.splice(Number(arg), 1);
+    App.persist(true);
     App.render();
   },
 };

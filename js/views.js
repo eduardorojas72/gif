@@ -700,7 +700,74 @@ function renderPlan90(state) {
     banner;
 }
 
-function renderQuincenaDetalle(state, qn) {
+function productoRowHTML(qn, compras, p, i) {
+  const cantidad = Number(compras[p.id]) || 0;
+  return (
+    '<div class="card" style="padding:10px 12px">' +
+    '<div class="row gap-2" style="align-items:center">' +
+    '<input type="text" placeholder="Nombre del producto" value="' + escapeHtml(p.nombre) + '" data-field="catalogoProductos.' + i + '.nombre" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);font-size:13.5px;padding:4px 2px;outline:none">' +
+    '<button class="check-dot' + (p.probado ? " on" : "") + '" style="width:24px;height:24px;flex-shrink:0" data-action="toggle-producto-probado" data-arg="' + i + '" title="Marcar como probado">' + (p.probado ? Icon("check", { size: 11, color: "#fff" }) : "") + "</button>" +
+    '<button class="icon-btn" style="flex-shrink:0" data-action="delete-producto" data-arg="' + i + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">' +
+    '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">PV</label><input type="number" min="0" value="' + (Number(p.pv) || 0) + '" data-field="catalogoProductos.' + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+    '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">Precio</label><input type="number" min="0" value="' + (Number(p.precio) || 0) + '" data-field="catalogoProductos.' + i + '.precio" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+    '<div style="flex:1;min-width:90px"><label class="muted small" style="display:block">Esta quincena</label><input type="number" min="0" value="' + cantidad + '" data-field="comprasQuincena.' + qn + "." + p.id + '" style="width:100%;background:var(--bg);border:1px solid var(--gold-deep);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+    "</div></div>"
+  );
+}
+
+function productosCalculadoraHTML(state, ui, qn) {
+  const compras = getComprasQuincena(state, qn);
+  const catalogo = state.catalogoProductos;
+  let totalPV = 0, totalPrecio = 0, planeados = 0, probados = 0;
+  catalogo.forEach(function (p) {
+    const cant = Number(compras[p.id]) || 0;
+    if (cant > 0) {
+      totalPV += cant * (Number(p.pv) || 0);
+      totalPrecio += cant * (Number(p.precio) || 0);
+      planeados++;
+    }
+    if (p.probado) probados++;
+  });
+  const open = !!ui.calculadoraAbierta;
+
+  let rows = "";
+  if (open) {
+    const categorias = [];
+    catalogo.forEach(function (p) { if (categorias.indexOf(p.categoria) === -1) categorias.push(p.categoria); });
+    rows = categorias.map(function (cat) {
+      const itemsHtml = catalogo
+        .map(function (p, i) { return { p: p, i: i }; })
+        .filter(function (o) { return o.p.categoria === cat; })
+        .map(function (o) { return productoRowHTML(qn, compras, o.p, o.i); })
+        .join("");
+      return '<div style="font-weight:700;font-size:11.5px;color:var(--gold-light);text-transform:uppercase;letter-spacing:.05em;margin-top:14px">' + escapeHtml(cat) + "</div>" + itemsHtml;
+    }).join("");
+  }
+
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-calculadora-productos">' +
+    '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Calculadora de productos</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Marca qué productos ya probaste, y cuántos planeas comprar esta quincena — así sabes cuántos PV representa y cuánto vas a pagar, para tu reunión de enfoque.</p>' +
+    '<div class="row gap-2" style="margin-top:10px">' +
+    '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">PV planeados</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + totalPV.toLocaleString("es") + "</div></div>" +
+    '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">Total a pagar</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">$' + totalPrecio.toLocaleString("es") + "</div></div>" +
+    "</div>" +
+    '<div class="muted small" style="margin-top:8px">' + probados + " de " + catalogo.length + " productos probados · " + planeados + " planeados esta quincena</div>" +
+    (open
+      ? '<p class="muted small" style="margin-top:10px;line-height:1.5;font-style:italic">' + escapeHtml(CATALOGO_PRODUCTOS_NOTA) + "</p>" +
+        '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
+        '<button class="btn-secondary" style="margin-top:12px" data-action="add-producto">+ Añadir producto</button>'
+      : "") +
+    "</div>"
+  );
+}
+
+function renderQuincenaDetalle(state, ui, qn) {
   const q = QUINCENAS.find(function (x) { return x.n === qn; });
   const semanas = SEMANAS.filter(function (s) { return s.q === qn; });
   const qDone = semanas.every(function (s) { return state.semanas[s.n] && state.semanas[s.n].done; });
@@ -740,7 +807,8 @@ function renderQuincenaDetalle(state, qn) {
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(q.foco) + "</p>" +
     "</div>" +
     semanasHtml +
-    (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "")
+    (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "") +
+    productosCalculadoraHTML(state, ui, qn)
   );
 }
 

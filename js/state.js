@@ -43,6 +43,29 @@ function emptyBucketList() {
   return Array.from({ length: 100 }, function () { return nuevoBucketItem(); });
 }
 
+function nuevoProductoCatalogo(seed) {
+  seed = seed || {};
+  return {
+    id: seed.id || "prod" + Math.random().toString(36).slice(2, 9),
+    categoria: seed.categoria || "Mis productos",
+    nombre: seed.nombre || "",
+    pv: seed.pv || 0,
+    precio: seed.precio || 0,
+    probado: false,
+  };
+}
+
+function emptyCatalogoProductos() {
+  return CATALOGO_PRODUCTOS_ATOMY.map(function (p, i) {
+    return nuevoProductoCatalogo({ id: "prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
+  });
+}
+
+function getComprasQuincena(state, qn) {
+  if (!state.comprasQuincena[qn]) state.comprasQuincena[qn] = {};
+  return state.comprasQuincena[qn];
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -73,6 +96,8 @@ function defaultState() {
     bucketList: emptyBucketList(),
     agenda: emptyAgenda(),
     lemaFoco: { pilar: null, racha: 0, ultimaFecha: null },
+    catalogoProductos: emptyCatalogoProductos(),
+    comprasQuincena: {},
   };
 }
 
@@ -190,6 +215,12 @@ function hydrateState(parsed) {
         ultimaFecha: parsed.lemaFoco.ultimaFecha || null,
       }
     : { pilar: null, racha: 0, ultimaFecha: null };
+
+  merged.catalogoProductos =
+    Array.isArray(parsed.catalogoProductos) && parsed.catalogoProductos.length
+      ? parsed.catalogoProductos.map(function (p) { return Object.assign(nuevoProductoCatalogo(), p); })
+      : emptyCatalogoProductos();
+  merged.comprasQuincena = parsed.comprasQuincena && typeof parsed.comprasQuincena === "object" ? parsed.comprasQuincena : {};
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =
