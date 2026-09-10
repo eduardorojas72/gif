@@ -346,7 +346,44 @@ function escenarioCategoriaHTML(cat, esc) {
   );
 }
 
-function renderEscenarioVida(state) {
+function bucketRowHTML(i, item) {
+  const ejemplo = BUCKET_LIST_EJEMPLOS[i % BUCKET_LIST_EJEMPLOS.length];
+  return (
+    '<div class="card" style="padding:10px 12px">' +
+    '<div class="row gap-2" style="align-items:flex-start">' +
+    '<button class="avance-dot' + (item.cumplido ? " on" : "") + '" style="flex-shrink:0;margin-top:3px" data-action="toggle-bucket-cumplido" data-arg="' + i + '" aria-label="Marcar como cumplido"></button>' +
+    '<div style="flex:1;min-width:0">' +
+    '<div class="row gap-2">' +
+    '<span class="muted small" style="flex-shrink:0;width:22px">' + (i + 1) + ".</span>" +
+    '<input type="text" placeholder="' + escapeHtml(ejemplo.texto) + '" value="' + escapeHtml(item.texto) + '" data-field="bucketList.' + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (item.cumplido ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13.5px;padding:4px 2px;outline:none">' +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:6px;padding-left:26px;flex-wrap:wrap">' +
+    '<input type="date" value="' + (item.fecha || "") + '" data-field="bucketList.' + i + '.fecha" style="flex:1;min-width:120px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none">' +
+    '<input type="text" placeholder="' + escapeHtml(ejemplo.porque) + '" value="' + escapeHtml(item.porque) + '" data-field="bucketList.' + i + '.porque" style="flex:1.6;min-width:140px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none">' +
+    "</div></div></div></div>"
+  );
+}
+
+function bucketListSectionHTML(state, ui) {
+  const lista = state.bucketList;
+  const escritas = lista.filter(function (i) { return (i.texto || "").trim(); }).length;
+  const cumplidas = lista.filter(function (i) { return i.cumplido; }).length;
+  const open = !!ui.bucketListOpen;
+  const rows = open ? lista.map(function (item, i) { return bucketRowHTML(i, item); }).join("") : "";
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-bucket-list">' +
+    '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Lista de 100 — mis sueños</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Apunta hasta 100 cosas que te gustaría lograr, tener o vivir — con fecha y tu “por qué”. No hace falta llenarla en orden ni de una sola vez.</p>' +
+    '<div class="muted small" style="margin-top:4px">' + escritas + " escritas · " + cumplidas + " cumplidas</div>" +
+    (open ? '<div class="view-stack gap-sm" style="margin-top:12px">' + rows + "</div>" : "") +
+    "</div>"
+  );
+}
+
+function renderEscenarioVida(state, ui) {
   const esc = state.escenarioVida;
   const completas = ESCENARIO_CATEGORIAS.filter(function (c) { return (esc[c.id] || {}).avance === 4; }).length;
   const cards = ESCENARIO_CATEGORIAS.map(function (c) { return escenarioCategoriaHTML(c, esc); }).join("");
@@ -360,7 +397,8 @@ function renderEscenarioVida(state) {
     '<div class="muted small" style="margin-top:6px">' + completas + " de " + ESCENARIO_CATEGORIAS.length + " metas en el círculo perfecto</div>" +
     "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">¿Cómo se llena?</div>' + pasos + "</div>" +
-    '<div class="view-stack gap-sm">' + cards + "</div>"
+    '<div class="view-stack gap-sm">' + cards + "</div>" +
+    bucketListSectionHTML(state, ui)
   );
 }
 
@@ -405,7 +443,54 @@ function renderPasos(ui) {
 
 /* ---------------- El Lema de Atomy ---------------- */
 
-function renderLema(ui) {
+function lemaFocoHTML(state) {
+  const foco = state.lemaFoco || { pilar: null, racha: 0, ultimaFecha: null };
+  const hoy = hoyISO();
+  const yaHoy = foco.ultimaFecha === hoy;
+  const pilarSel = foco.pilar != null ? LEMA_ATOMY.pilares.find(function (p) { return p.n === foco.pilar; }) : null;
+
+  const selector = LEMA_ATOMY.pilares.map(function (p) {
+    const active = foco.pilar === p.n;
+    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-lema-foco" data-arg="' + p.n + '">' + escapeHtml(p.t) + "</button>";
+  }).join(" ");
+
+  return (
+    '<div class="card" style="margin-top:14px">' +
+    '<div class="row gap-2">' + Icon("flame", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Tu pilar de enfoque</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">¿Cuál de los 4 pilares sientes que menos estás cumpliendo? Elígelo, ponte la meta de vivirlo cada día, y marca aquí tu racha.</p>' +
+    '<div class="row gap-2" style="flex-wrap:wrap;margin-top:10px">' + selector + "</div>" +
+    (pilarSel
+      ? '<div style="margin-top:16px;text-align:center">' +
+        '<div style="font-size:34px;font-weight:700;color:var(--gold-light)">' + foco.racha + "</div>" +
+        '<div class="muted small">' + (foco.racha === 1 ? "día seguido" : "días seguidos") + " viviendo “" + escapeHtml(pilarSel.t) + "”</div>" +
+        '<button class="btn-primary" style="margin-top:12px"' + (yaHoy ? " disabled" : "") + ' data-action="marcar-lema-hoy">' +
+        (yaHoy ? Icon("check", { size: 16, color: "#fff" }) + " Ya marcaste hoy" : "Hoy lo cumplí") +
+        "</button>" +
+        "</div>"
+      : "") +
+    "</div>"
+  );
+}
+
+function renderCarteleraModal() {
+  const pilaresList = LEMA_ATOMY.pilares.map(function (p) {
+    return '<div style="font-size:16.5px;font-weight:700;margin-top:10px">¡' + escapeHtml(p.t) + "!</div>";
+  }).join("");
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="close-modal"></div>' +
+    '<div class="modal-card" style="border-color:var(--gold);max-width:340px">' +
+    medallionHTML("heart", 60) +
+    '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold);margin-top:14px">El Lema de Atomy</div>' +
+    pilaresList +
+    '<div style="font-size:15px;font-weight:700;color:var(--gold-light);margin-top:16px;line-height:1.5">¡Vamos, vamos, vamos!<br>¡Que lo logramos!</div>' +
+    '<div class="muted small" style="margin-top:18px;line-height:1.5">📌 Captura esta pantalla, imprímela o ponla de fondo — en un lugar donde la veas todos los días.</div>' +
+    '<button class="link-btn small" style="margin-top:16px" data-action="close-modal">Cerrar</button>' +
+    "</div></div>"
+  );
+}
+
+function renderLema(state, ui) {
   const vueltos = ui.lemaVueltos || {};
   const cards = LEMA_ATOMY.pilares.map(function (p) {
     const flipped = !!vueltos[p.n];
@@ -417,14 +502,28 @@ function renderLema(ui) {
       '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div>" +
       '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para ver la explicación completa</span></div>' +
       "</div>";
+    const acciones = p.acciones && p.acciones.length
+      ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Acciones diarias</div>' +
+        "<ul style=\"margin:5px 0 0;padding-left:18px\">" + p.acciones.map(function (a) { return '<li style="font-size:13px;line-height:1.55;margin-top:4px">' + escapeHtml(a) + "</li>"; }).join("") + "</ul>"
+      : "";
+    const marcos = p.marcos && p.marcos.length
+      ? p.marcos.map(function (m) {
+          return (
+            '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(m.nombre) + "</div>" +
+            '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
+            '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
+          );
+        }).join("")
+      : "";
     const back =
       '<div class="flip-face flip-back">' +
       '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Pilar " + p.n + " — " + escapeHtml(p.t) + "</div>" +
       '<div class="muted small" style="font-style:italic;margin-top:4px">' + escapeHtml(p.sub) + "</div>" +
       '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
+      acciones + marcos +
       "</div>";
     return (
-      '<button class="flip-card' + (flipped ? " is-open short" : "") + '" data-action="flip-lema" data-arg="' + p.n + '">' +
+      '<button class="flip-card' + (flipped ? " is-open" : "") + '" data-action="flip-lema" data-arg="' + p.n + '">' +
       '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
       "</button>"
     );
@@ -433,13 +532,16 @@ function renderLema(ui) {
     '<div class="section-header">' + medallionHTML("heart", 64) +
     '<div><h2>El Lema de Atomy</h2><p>Filosofía Corporativa y Código de Ética — Presidente Han-Gill Park. Toca cada pilar para ver la explicación completa.</p></div></div>';
   const intro = '<p class="muted small" style="line-height:1.6;margin-top:-4px">' + escapeHtml(LEMA_ATOMY.intro) + "</p>";
+  const carteleraBtn =
+    '<button class="btn-secondary" style="margin-top:12px" data-action="open-cartelera">' + Icon("image-plus", { size: 15 }) + " Ver cartelera para poner en un lugar visible</button>";
   const exclamacion =
     '<div class="card" style="margin-top:14px;text-align:center;border-color:var(--gold)">' +
     '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)">Exclamación Oficial del Lema</div>' +
     '<p style="font-size:14px;line-height:1.6;margin-top:6px;font-weight:600">' + escapeHtml(LEMA_ATOMY.exclamacion) + "</p></div>";
-  return header + intro +
+  return header + intro + carteleraBtn +
     '<div class="view-stack gap-sm" style="margin-top:14px">' + cards + "</div>" +
-    exclamacion;
+    exclamacion +
+    lemaFocoHTML(state);
 }
 
 /* ---------------- Plan 6 días — mapa ---------------- */

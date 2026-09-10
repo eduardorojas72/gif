@@ -54,6 +54,8 @@ const App = {
     confirmDeleteContacto: null,
     pasosVueltos: {},
     lemaVueltos: {},
+    carteleraOpen: false,
+    bucketListOpen: false,
     agendaDia: null,
     actividadDraft: null,
     actividadEditId: null,
@@ -158,10 +160,10 @@ const App = {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
-      case "escenario": mainHtml = renderEscenarioVida(state); break;
+      case "escenario": mainHtml = renderEscenarioVida(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "pasos": mainHtml = renderPasos(ui); break;
-      case "lema": mainHtml = renderLema(ui); break;
+      case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
       case "plan90": mainHtml = ui.activeQuincena ? renderQuincenaDetalle(state, ui.activeQuincena) : renderPlan90(state); break;
@@ -183,6 +185,7 @@ const App = {
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
     else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
+    else if (ui.carteleraOpen) modalHtml = renderCarteleraModal();
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
 
@@ -479,7 +482,50 @@ const Actions = {
   },
 
   "open-bell": function () { App.ui.bellOpen = true; App.render(); },
-  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.render(); },
+  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.ui.carteleraOpen = false; App.render(); },
+  "open-cartelera": function () { App.ui.carteleraOpen = true; App.render(); },
+
+  "toggle-bucket-list": function () {
+    App.ui.bucketListOpen = !App.ui.bucketListOpen;
+    App.render();
+  },
+
+  "toggle-bucket-cumplido": function (arg) {
+    const item = App.state.bucketList[Number(arg)];
+    if (!item) return;
+    item.cumplido = !item.cumplido;
+    App.persist(true);
+    App.render();
+  },
+
+  "set-lema-foco": function (arg) {
+    const n = Number(arg);
+    if (App.state.lemaFoco.pilar !== n) {
+      App.state.lemaFoco = { pilar: n, racha: 0, ultimaFecha: null };
+    }
+    App.persist(true);
+    App.render();
+  },
+
+  "marcar-lema-hoy": function () {
+    const foco = App.state.lemaFoco;
+    if (!foco || foco.pilar == null) return;
+    const hoy = hoyISO();
+    if (foco.ultimaFecha === hoy) return;
+    const rh = calcularRacha(foco.racha, foco.ultimaFecha);
+    foco.racha = rh.racha;
+    foco.ultimaFecha = rh.ultimaFecha;
+    const pilar = LEMA_ATOMY.pilares.find((p) => p.n === foco.pilar);
+    if (foco.racha === 7) {
+      App.showToast("¡1 semana seguida viviendo “" + pilar.t + "”! 🔥");
+    } else if (foco.racha === 21) {
+      App.celebrate();
+      App.ui.logro = { titulo: pilar.t, sub: "21 días seguidos — ya es un hábito.", tipo: "generic" };
+      App.addActividad("Convertiste “" + pilar.t + "” en un hábito de 21 días.");
+    }
+    App.persist(true);
+    App.render();
+  },
   "close-logro-action": function () {
     const logro = App.ui.logro;
     App.ui.logro = null;

@@ -35,6 +35,14 @@ function emptyAgenda() {
   return DIAS_SEMANA.reduce(function (acc, d) { acc[d.id] = emptyAgendaDia(); return acc; }, {});
 }
 
+function nuevoBucketItem() {
+  return { texto: "", fecha: "", porque: "", cumplido: false };
+}
+
+function emptyBucketList() {
+  return Array.from({ length: 100 }, function () { return nuevoBucketItem(); });
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -62,7 +70,9 @@ function defaultState() {
     contactos: [],
     escenarioVida: emptyEscenarioVida(),
     escenarioCompletado: false,
+    bucketList: emptyBucketList(),
     agenda: emptyAgenda(),
+    lemaFoco: { pilar: null, racha: 0, ultimaFecha: null },
   };
 }
 
@@ -167,6 +177,19 @@ function hydrateState(parsed) {
     acc[d.id] = { actividades: actividades, zooms: zooms };
     return acc;
   }, {});
+
+  merged.bucketList = Array.from({ length: 100 }, function (_, i) {
+    const saved = Array.isArray(parsed.bucketList) ? parsed.bucketList[i] : null;
+    return Object.assign(nuevoBucketItem(), saved || {});
+  });
+
+  merged.lemaFoco = parsed.lemaFoco && typeof parsed.lemaFoco === "object"
+    ? {
+        pilar: typeof parsed.lemaFoco.pilar === "number" ? parsed.lemaFoco.pilar : null,
+        racha: Number(parsed.lemaFoco.racha) || 0,
+        ultimaFecha: parsed.lemaFoco.ultimaFecha || null,
+      }
+    : { pilar: null, racha: 0, ultimaFecha: null };
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =
