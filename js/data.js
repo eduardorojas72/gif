@@ -78,23 +78,23 @@ const ESCENARIO_CATEGORIAS = [
 
 const LEMA_ATOMY = {
   intro: "El Lema de Atomy no es simplemente un conjunto de palabras motivacionales, sino el núcleo filosófico y espiritual sobre el cual se cimenta toda la visión, gestión y cultura organizacional de la empresa. Formulado por el Presidente Han-Gill Park, establece el marco ético sobre cómo deben conducirse las personas tanto en el negocio como en su vida diaria.",
-  exclamacion: "¡Apreciar el alma! ¡Crear la visión! ¡Seguir la fe! ¡Servir con humildad! ¡Vamos, vamos, vamos!",
+  exclamacion: "¡Apreciar el Espíritu! ¡Gestionar la Visión! ¡Seguir sobre la Fe! ¡Servir con Humildad! ¡Vamos, vamos, vamos! ¡Que lo logramos!",
   pilares: [
     {
-      n: 1, t: "Apreciar el alma", sub: "Cherish the Spirit", icon: "heart",
-      explicacion: "El ser humano es la creación más valiosa de Dios. Las personas jamás deben ser utilizadas como un medio para lograr un fin económico o comercial; las personas son el fin en sí mismas. En Atomy, la prioridad absoluta es el bienestar, desarrollo y éxito del ser humano por encima del interés corporativo.",
+      n: 1, t: "Apreciar el Espíritu", sub: "Cherish the Spirit", icon: "heart",
+      explicacion: "Considera a las personas como los seres más valiosos, creados a imagen de Dios, sin usarlos como un medio para un fin. Las personas jamás deben ser utilizadas para lograr un fin económico o comercial; son el fin en sí mismas. En Atomy, la prioridad absoluta es el bienestar, desarrollo y éxito del ser humano por encima del interés corporativo.",
     },
     {
-      n: 2, t: "Crear la visión", sub: "Create the Vision", icon: "eye",
-      explicacion: "El futuro no es algo que simplemente se espera, sino una realidad que se diseña activamente en la mente. Quien visualiza de forma clara y detallada su Escenario de Vida puede dirigir sus pensamientos y acciones diarias para transformar su realidad y alcanzar sus objetivos.",
+      n: 2, t: "Gestionar la Visión", sub: "Create the Vision", icon: "eye",
+      explicacion: "Representa el principio de predecir y planificar el futuro con claridad y dirección. El futuro no es algo que simplemente se espera, sino una realidad que se diseña activamente en la mente: quien visualiza de forma clara y detallada su Escenario de Vida puede dirigir sus pensamientos y acciones diarias para transformar su realidad y alcanzar sus objetivos.",
     },
     {
-      n: 3, t: "Seguir la fe", sub: "Follow the Faith", icon: "compass",
-      explicacion: "La verdadera fe consiste en creer firmemente en aquello que aún no es visible. Mantener una fe inquebrantable en la visión diseñada permite superar la duda, los obstáculos inevitables y el escepticismo externo con perseverancia y convicción.",
+      n: 3, t: "Seguir sobre la Fe", sub: "Follow the Faith", icon: "compass",
+      explicacion: "Implica avanzar con confianza y firmeza en los principios y valores de la empresa. La verdadera fe consiste en creer firmemente en aquello que aún no es visible: mantener una fe inquebrantable en la visión diseñada permite superar la duda, los obstáculos inevitables y el escepticismo externo con perseverancia y convicción.",
     },
     {
-      n: 4, t: "Servir con humildad", sub: "Serve in Humility", icon: "users",
-      explicacion: "La actitud es la cualidad de liderazgo más importante. Por más elevadas que sean nuestras metas o logros, la posición personal debe ser siempre de humildad: servir a los demás con respeto, mantener una mente dispuesta a aprender y anteponer el bienestar del equipo al ego personal.",
+      n: 4, t: "Servir con Humildad", sub: "Serve in Humility", icon: "users",
+      explicacion: "Define la actitud de liderazgo enfocado en el servicio y el bienestar de los demás. Por más elevadas que sean nuestras metas o logros, la posición personal debe ser siempre de humildad: servir a los demás con respeto, mantener una mente dispuesta a aprender y anteponer el bienestar del equipo al ego personal.",
     },
   ],
 };
