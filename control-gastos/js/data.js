@@ -446,6 +446,22 @@ const DATA = {
       body: "Avisa a tu banco antes de salir y usa una tarjeta sin comisión por cambio de divisa o retiro en cajeros extranjeros; revisa si el destino cobra tasa turística por noche en el alojamiento; y compra una eSIM prepago antes de salir para evitar el roaming internacional."
     },
     {
+      title: "Reclama en el hotel en el momento, no al hacer check-out",
+      body: "Si la habitación tiene un problema grave (plagas, sin agua caliente, ruido insoportable, categoría distinta a la pagada), baja a recepción de inmediato, documenta con fotos o vídeo, y pregunta directamente cómo lo van a solucionar ahora mismo."
+    },
+    {
+      title: "Pide hablar con el responsable de turno para compensaciones reales",
+      body: "Los recepcionistas solo pueden ofrecer cosas pequeñas (desayuno, late check-out); para un upgrade, un descuento de verdad o una noche gratis, hace falta hablar con el supervisor o director de turno."
+    },
+    {
+      title: "Conoce qué compensación pedir según la gravedad",
+      body: "Molestia leve → desayuno o late check-out; problema medio (aire acondicionado roto, ruido, limpieza) → cambio de habitación, upgrade o 15-30% de descuento; problema grave (plagas, overbooking, riesgo de seguridad) → noche gratis, traslado a otro hotel o devolución íntegra."
+    },
+    {
+      title: "Si el hotel es de una cadena, reclama también al servicio corporativo",
+      body: "Si estás en su programa de fidelidad, una queja formal después de la estancia al departamento central suele traducirse en puntos equivalentes a varias noches gratis."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
