@@ -368,3 +368,125 @@ h1, h2, h3 {
 @media (max-width: 380px) {
   .tab-btn span:last-child { display: none; }
 }
+
+/* ---------- Onboarding ---------- */
+.ob-card { gap: 16px; position: relative; }
+.ob-close { position: absolute; top: 4px; right: 4px; font-size: 18px; }
+.ob-progress { color: var(--text-soft); font-size: 12px; margin: 0; letter-spacing: 0.02em; text-transform: uppercase; }
+.ob-form { gap: 14px; }
+.ob-form input, .ob-form select, .ob-form textarea {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+.ob-choice-grid { display: flex; flex-direction: column; gap: 10px; }
+.ob-choice {
+  text-align: left;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ob-choice:active { background: rgba(23, 98, 75, 0.1); }
+.ob-checks { display: flex; flex-direction: column; gap: 8px; }
+.ob-checks--grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ob-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.ob-check input { width: auto; }
+.modal-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+/* ---------- Plan de mañana ---------- */
+.plan-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(242, 201, 76, 0.15);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.plan-banner p { margin: 4px 0 0; font-size: 13.5px; }
+.hoy-close-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---------- Ahorro ---------- */
+.savings-block { border-top: 1px dashed var(--border); padding-top: 12px; }
+.progress-fill--savings { background: var(--gold); }
+
+/* ---------- Perfil / cuenta ---------- */
+.profile-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.toggle-switch-row { display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; }
+.toggle-switch {
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 3px;
+}
+.toggle-opt {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-soft);
+}
+.toggle-opt.is-active { background: var(--accent); color: #fff; }
+
+/* ---------- Categorías personalizadas ---------- */
+.custom-cat-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 6px 5px 10px;
+  font-size: 12.5px;
+}
+.chip-x { border: none; background: none; cursor: pointer; font-size: 14px; color: var(--text-soft); padding: 0 4px; }
+.category-add-row { grid-template-columns: 1fr 2fr 0.6fr auto; }
+
+/* ---------- Resumen: periodos y gráfico de barras ---------- */
+.period-tabs { display: flex; gap: 6px; }
+.period-tab {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-soft);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.period-tab.is-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.period-total { display: flex; flex-direction: column; gap: 2px; }
+.period-total strong { font-size: 24px; font-family: "Space Grotesk", sans-serif; }
+.bar-chart { display: flex; flex-direction: column; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 70px; align-items: center; gap: 8px; font-size: 12.5px; }
+.bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+.bar-value { text-align: right; font-weight: 600; }

@@ -9,6 +9,7 @@ const DATA = {
     { id: "compras", label: "Compras", icon: "🛍️" },
     { id: "suscripciones", label: "Suscripciones", icon: "🔁" },
     { id: "educacion", label: "Educación", icon: "📚" },
+    { id: "atomy", label: "Compra de Productos Atomy", icon: "📦" },
     { id: "otros", label: "Otros", icon: "✨" }
   ],
   incomeCategories: [
@@ -26,16 +27,80 @@ const DATA = {
     { id: "transferencia", label: "Transferencia" }
   ],
 
+  // País → moneda, para preguntarlo una vez en el cuestionario inicial y
+  // formatear todos los importes automáticamente.
+  countries: [
+    { code: "ES", name: "España", currency: "EUR" },
+    { code: "MX", name: "México", currency: "MXN" },
+    { code: "CO", name: "Colombia", currency: "COP" },
+    { code: "AR", name: "Argentina", currency: "ARS" },
+    { code: "CL", name: "Chile", currency: "CLP" },
+    { code: "PE", name: "Perú", currency: "PEN" },
+    { code: "EC", name: "Ecuador", currency: "USD" },
+    { code: "US", name: "Estados Unidos", currency: "USD" },
+    { code: "GT", name: "Guatemala", currency: "GTQ" },
+    { code: "CR", name: "Costa Rica", currency: "CRC" },
+    { code: "PA", name: "Panamá", currency: "USD" },
+    { code: "DO", name: "República Dominicana", currency: "DOP" },
+    { code: "UY", name: "Uruguay", currency: "UYU" },
+    { code: "BO", name: "Bolivia", currency: "BOB" },
+    { code: "PY", name: "Paraguay", currency: "PYG" },
+    { code: "HN", name: "Honduras", currency: "HNL" },
+    { code: "SV", name: "El Salvador", currency: "USD" },
+    { code: "NI", name: "Nicaragua", currency: "NIO" },
+    { code: "VE", name: "Venezuela", currency: "VES" },
+    { code: "GB", name: "Reino Unido", currency: "GBP" },
+    { code: "OTRO", name: "Otro país", currency: "USD" }
+  ],
+
+  currencySymbols: {
+    EUR: "€", USD: "$", MXN: "MX$", GBP: "£", COP: "COL$", ARS: "AR$",
+    CLP: "CL$", PEN: "S/", GTQ: "Q", CRC: "₡", DOP: "RD$", UYU: "$U",
+    BOB: "Bs", PYG: "₲", HNL: "L", NIO: "C$", VES: "Bs.S"
+  },
+
+  // Opciones del cuestionario inicial.
+  obstacles: [
+    { id: "no_se", label: "No sé en qué se me va el dinero" },
+    { id: "impulso", label: "Compro cosas por impulso" },
+    { id: "suscripciones", label: "Tengo suscripciones que no uso" },
+    { id: "deudas", label: "Tengo deudas o pagos de tarjeta pendientes" },
+    { id: "irregular", label: "Mis ingresos son irregulares" },
+    { id: "imprevistos", label: "Gastos inesperados o familiares" },
+    { id: "sin_presupuesto", label: "Nunca he llevado un presupuesto" }
+  ],
+  savingsPurposes: [
+    { id: "viajar", label: "Viajar", icon: "✈️" },
+    { id: "familia", label: "Salir con familia o amigos", icon: "🎉" },
+    { id: "auto", label: "Comprar un auto", icon: "🚗" },
+    { id: "casa", label: "Comprar una casa", icon: "🏠" },
+    { id: "ayudar", label: "Ayudar a familiares", icon: "🤝" },
+    { id: "donar", label: "Donar a una ONG", icon: "💚" },
+    { id: "otro", label: "Otro", icon: "✨" }
+  ],
+
   // Consejos de ahorro originales, inspirados en principios de educación financiera
   // conocidos (regla 50/30/20, automatización del ahorro, aversión a la pérdida, etc.)
   tips: [
+    {
+      title: "No es cuestión de ganar más",
+      body: "Es cuestión de gastar con inteligencia. Antes de buscar un ingreso extra, revisa primero en qué se te está yendo el dinero que ya ganas."
+    },
+    {
+      title: "Sobres virtuales por categoría",
+      body: "Una técnica clásica de presupuesto: asigna un límite mensual a cada categoría, como si fuera un sobre de efectivo. Cuando el sobre se acaba, ese gasto espera al mes siguiente. Es un complemento a tu meta de gasto diario."
+    },
+    {
+      title: "Paga primero la deuda más cara",
+      body: "Si tienes varias deudas, prioriza la que tenga el interés más alto (normalmente la tarjeta de crédito). A largo plazo ahorrarás más que pagando primero la de menor saldo."
+    },
     {
       title: "Págate a ti mismo primero",
       body: "En cuanto recibas un ingreso, aparta un porcentaje fijo hacia el ahorro antes de gastar en cualquier otra cosa. Automatizarlo evita que dependas de la fuerza de voluntad."
     },
     {
       title: "Regla 50/30/20",
-      body: "Destina aproximadamente un 50% de tus ingresos a necesidades, un 30% a deseos y un 20% a ahorro o deuda. Úsala como referencia, no como obligación rígida."
+      body: "Una forma sencilla de repartir tu ingreso mensual: 50% a necesidades (vivienda, comida, transporte), 30% a deseos (ocio, compras) y 20% a ahorro o pago de deudas. Úsala como referencia, no como obligación rígida; esta app calcula tu meta de ahorro diario a partir de la cuota que definas, no necesariamente del 20%."
     },
     {
       title: "Las rachas motivan más que las cifras",

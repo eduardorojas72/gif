@@ -5,14 +5,28 @@ const STORE = {
     settings: "cg_settings",
     transactions: "cg_transactions",
     accounts: "cg_accounts",
-    days: "cg_days"
+    days: "cg_days",
+    customCategories: "cg_custom_categories",
+    plans: "cg_plans"
   },
 
   defaultSettings: {
     currency: "EUR",
+    country: null,
     dailyGoal: null,
     soundEnabled: true,
-    userName: ""
+    userName: "",
+    // Perfil recogido en el cuestionario inicial
+    onboardingDone: false,
+    accountMode: "individual", // "individual" | "compartida"
+    age: null,
+    monthlyIncome: null,
+    occupation: "",
+    savingsGoalMonthly: null,
+    currentlyMeetingGoal: null,
+    obstacles: [],
+    savingsPurposes: [],
+    savingsPurposeOther: ""
   },
 
   _read(key, fallback) {
@@ -93,6 +107,44 @@ const STORE = {
   },
   saveDays(days) {
     this._write(this.keys.days, days);
+  },
+
+  getCustomCategories() {
+    return this._read(this.keys.customCategories, { expense: [], income: [] });
+  },
+  saveCustomCategories(cats) {
+    this._write(this.keys.customCategories, cats);
+  },
+  addCustomCategory(type, label, icon) {
+    const cats = this.getCustomCategories();
+    const bucket = type === "income" ? "income" : "expense";
+    const id = "custom_" + bucket + "_" + Date.now().toString(36);
+    cats[bucket].push({ id, label, icon: icon || "🏷️", custom: true });
+    this.saveCustomCategories(cats);
+    return id;
+  },
+  removeCustomCategory(type, id) {
+    const cats = this.getCustomCategories();
+    const bucket = type === "income" ? "income" : "expense";
+    cats[bucket] = cats[bucket].filter((c) => c.id !== id);
+    this.saveCustomCategories(cats);
+  },
+
+  // Planes escritos la noche anterior, guardados por la fecha a la que aplican.
+  getPlans() {
+    return this._read(this.keys.plans, {});
+  },
+  savePlans(plans) {
+    this._write(this.keys.plans, plans);
+  },
+  setPlan(date, text) {
+    const plans = this.getPlans();
+    if (text && text.trim()) plans[date] = text.trim();
+    else delete plans[date];
+    this.savePlans(plans);
+  },
+  getPlan(date) {
+    return this.getPlans()[date] || "";
   }
 };
 
@@ -105,8 +157,7 @@ const LOGIC = {
 
   formatMoney(amount, currency) {
     const cur = currency || STORE.getSettings().currency || "EUR";
-    const symbols = { EUR: "€", USD: "$", MXN: "MX$", GBP: "£" };
-    const symbol = symbols[cur] || cur + " ";
+    const symbol = DATA.currencySymbols[cur] || cur + " ";
     const n = Number(amount) || 0;
     return (n < 0 ? "-" : "") + symbol + Math.abs(n).toFixed(2);
   },
@@ -141,6 +192,73 @@ const LOGIC = {
     return Object.entries(totals)
       .map(([category, amount]) => ({ category, amount, pct: total ? (amount / total) * 100 : 0 }))
       .sort((a, b) => b.amount - a.amount);
+  },
+
+  // ---------- Ahorro: meta de gasto diario vs. meta de ahorro mensual ----------
+  daysInMonth(dateStr) {
+    const [y, m] = dateStr.split("-").map(Number);
+    return new Date(y, m, 0).getDate();
+  },
+  monthKeyOf(dateStr) {
+    return dateStr.slice(0, 7); // YYYY-MM
+  },
+  dailySavingsTarget() {
+    const settings = STORE.getSettings();
+    if (!settings.savingsGoalMonthly) return 0;
+    return settings.savingsGoalMonthly / this.daysInMonth(this.todayStr());
+  },
+  // Suma lo "ahorrado" (meta de gasto - gastado real) en los días ya cerrados
+  // de este mes, más una estimación en vivo del día de hoy si aún no se cerró.
+  savingsProgressThisMonth() {
+    const settings = STORE.getSettings();
+    const goal = settings.savingsGoalMonthly || 0;
+    const days = STORE.getDays();
+    const thisMonth = this.monthKeyOf(this.todayStr());
+    let saved = 0;
+    Object.values(days).forEach((d) => {
+      if (this.monthKeyOf(d.date) === thisMonth) saved += (d.goal - d.spent);
+    });
+    const today = this.todayStr();
+    if (!days[today] && settings.dailyGoal) {
+      saved += (settings.dailyGoal - this.spentToday());
+    }
+    return {
+      saved,
+      goal,
+      pct: goal ? Math.max(0, Math.min(100, Math.round((saved / goal) * 100))) : 0
+    };
+  },
+
+  // ---------- Rangos de fechas para las gráficas (día/semana/mes) ----------
+  periodRange(period, refDate) {
+    const ref = refDate || this.todayStr();
+    if (period === "day") return { start: ref, end: ref };
+    if (period === "week") {
+      const d = new Date(ref + "T00:00:00");
+      const dow = (d.getDay() + 6) % 7; // lunes = 0
+      const start = new Date(d); start.setDate(d.getDate() - dow);
+      const end = new Date(start); end.setDate(start.getDate() + 6);
+      return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+    }
+    // month
+    return { start: ref.slice(0, 7) + "-01", end: ref.slice(0, 7) + "-31" };
+  },
+  transactionsInRange(start, end, type) {
+    return STORE.getTransactions().filter((t) => {
+      if (t.date < start || t.date > end) return false;
+      return !type || t.type === type;
+    });
+  },
+  periodBreakdown(period, type) {
+    const { start, end } = this.periodRange(period);
+    const txs = this.transactionsInRange(start, end, type || "expense");
+    const totals = {};
+    txs.forEach((t) => { totals[t.category] = (totals[t.category] || 0) + Number(t.amount || 0); });
+    const total = Object.values(totals).reduce((a, b) => a + b, 0);
+    const items = Object.entries(totals)
+      .map(([category, amount]) => ({ category, amount, pct: total ? (amount / total) * 100 : 0 }))
+      .sort((a, b) => b.amount - a.amount);
+    return { start, end, total, items, top: items[0] || null };
   },
 
   // Evalúa y cierra un día concreto contra la meta diaria. Idempotente.

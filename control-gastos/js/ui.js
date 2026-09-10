@@ -3,30 +3,36 @@
 const UI = {
   currentTab: "hoy",
 
-  categoriesFor(type) {
+  // ---------- Categorías (por defecto + personalizadas) ----------
+  baseCategoriesFor(type) {
     return type === "income" ? DATA.incomeCategories : DATA.expenseCategories;
   },
-
+  categoriesFor(type) {
+    const custom = STORE.getCustomCategories()[type === "income" ? "income" : "expense"] || [];
+    return this.baseCategoriesFor(type).concat(custom);
+  },
   categoryLabel(id) {
-    const all = DATA.expenseCategories.concat(DATA.incomeCategories);
+    const all = this.categoriesFor("expense").concat(this.categoriesFor("income"));
     const found = all.find((c) => c.id === id);
     return found ? found.icon + " " + found.label : id;
   },
-
   methodLabel(id) {
     const m = DATA.paymentMethods.find((x) => x.id === id);
     return m ? m.label : id;
   },
-
   categoryOptionsHTML(type, selected) {
     return this.categoriesFor(type)
       .map((c) => `<option value="${c.id}" ${c.id === selected ? "selected" : ""}>${c.icon} ${c.label}</option>`)
       .join("");
   },
-
   methodOptionsHTML(selected) {
     return DATA.paymentMethods
       .map((m) => `<option value="${m.id}" ${m.id === selected ? "selected" : ""}>${m.label}</option>`)
+      .join("");
+  },
+  countryOptionsHTML(selected) {
+    return DATA.countries
+      .map((c) => `<option value="${c.code}" ${c.code === selected ? "selected" : ""}>${c.name} (${c.currency})</option>`)
       .join("");
   },
 
@@ -110,14 +116,295 @@ const UI = {
       cuentas: this.renderCuentas,
       metas: this.renderMetas,
       consejos: this.renderConsejos,
-      logros: this.renderLogros
+      resumen: this.renderResumen
     };
     view.innerHTML = (renderers[this.currentTab] || this.renderHoy).call(this);
     this.wire(this.currentTab);
     this.checkBudgetAlert();
   },
 
-  // ---------- Vista: Hoy ----------
+  // ================= CUESTIONARIO INICIAL (ONBOARDING) =================
+  OBSTACLE_TIP_MAP: {
+    no_se: ["Registra hasta los gastos pequeños"],
+    impulso: ["Espera 24 horas antes de una compra no planificada"],
+    suscripciones: ["Revisa tus suscripciones cada trimestre"],
+    deudas: ["Paga primero la deuda más cara"],
+    irregular: ["Págate a ti mismo primero"],
+    imprevistos: ["Fondo de emergencia antes que inversión"],
+    sin_presupuesto: ["Regla 50/30/20", "Sobres virtuales por categoría"]
+  },
+  STEP_NUMBER: {
+    accountMode: 1, userName: 2, age: 3, country: 4, monthlyIncome: 5,
+    occupation: 6, savingsGoalMonthly: 7, meetingGoal: 8, obstacles: 9,
+    diagnosis: 9, purposes: 10, summary: 11
+  },
+  TOTAL_STEPS: 11,
+
+  nextStep(step, data) {
+    const flow = {
+      accountMode: "userName",
+      userName: "age",
+      age: "country",
+      country: "monthlyIncome",
+      monthlyIncome: "occupation",
+      occupation: "savingsGoalMonthly",
+      savingsGoalMonthly: "meetingGoal",
+      meetingGoal: () => (data.currentlyMeetingGoal ? "purposes" : "obstacles"),
+      obstacles: "diagnosis",
+      diagnosis: "purposes",
+      purposes: "summary",
+      summary: null
+    };
+    const next = flow[step];
+    return typeof next === "function" ? next() : next;
+  },
+
+  startOnboarding(prefill, editing) {
+    this.onboard = {
+      step: "accountMode",
+      history: [],
+      editing: !!editing,
+      data: Object.assign({ obstacles: [], savingsPurposes: [] }, prefill || {})
+    };
+    document.getElementById("tabbar").hidden = true;
+    document.getElementById("status-pill").hidden = true;
+    this.renderOnboardingView();
+  },
+
+  cancelOnboarding() {
+    document.getElementById("tabbar").hidden = false;
+    this.render("metas");
+  },
+
+  onboardGo(step) {
+    this.onboard.history.push(this.onboard.step);
+    this.onboard.step = step;
+    this.renderOnboardingView();
+  },
+  onboardBack() {
+    const prev = this.onboard.history.pop();
+    if (!prev) return;
+    this.onboard.step = prev;
+    this.renderOnboardingView();
+  },
+  onboardNext(patch) {
+    Object.assign(this.onboard.data, patch);
+    const next = this.nextStep(this.onboard.step, this.onboard.data);
+    if (!next) {
+      this.finishOnboarding();
+      return;
+    }
+    this.onboardGo(next);
+  },
+
+  finishOnboarding() {
+    const d = this.onboard.data;
+    const country = DATA.countries.find((c) => c.code === d.country);
+    const settings = Object.assign({}, STORE.getSettings(), {
+      accountMode: d.accountMode || "individual",
+      userName: d.userName || "",
+      age: d.age || null,
+      country: d.country || null,
+      currency: country ? country.currency : STORE.getSettings().currency,
+      monthlyIncome: d.monthlyIncome || null,
+      occupation: d.occupation || "",
+      savingsGoalMonthly: d.savingsGoalMonthly || null,
+      currentlyMeetingGoal: !!d.currentlyMeetingGoal,
+      obstacles: d.obstacles || [],
+      savingsPurposes: d.savingsPurposes || [],
+      savingsPurposeOther: d.savingsPurposeOther || "",
+      dailyGoal: d.dailyGoal || STORE.getSettings().dailyGoal,
+      onboardingDone: true
+    });
+    STORE.saveSettings(settings);
+    document.getElementById("tabbar").hidden = false;
+    this.toast("¡Perfil guardado! Empecemos 💪");
+    this.render("hoy");
+  },
+
+  renderOnboardingView() {
+    const view = document.getElementById("view");
+    const step = this.onboard.step;
+    const d = this.onboard.data;
+    const num = this.STEP_NUMBER[step] || 1;
+    const renderers = {
+      accountMode: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cómo quieres usar la app?</h1>
+        <div class="ob-choice-grid">
+          <button class="ob-choice" data-value="individual">🙋 Cuenta personal</button>
+          <button class="ob-choice" data-value="compartida">👨‍👩‍👧 Cuenta familiar / compartida</button>
+        </div>`,
+      userName: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cómo te llamas?</h1>
+        <form class="form ob-form" data-next>
+          <input type="text" name="userName" value="${d.userName || ""}" placeholder="Tu nombre" required autofocus />
+          ${this.obNavHTML()}
+        </form>`,
+      age: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cuántos años tienes?</h1>
+        <form class="form ob-form" data-next>
+          <input type="number" name="age" min="10" max="110" value="${d.age || ""}" placeholder="Edad" required />
+          ${this.obNavHTML()}
+        </form>`,
+      country: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿En qué país vives?</h1>
+        <p class="muted-small">Así configuramos tu moneda automáticamente.</p>
+        <form class="form ob-form" data-next>
+          <select name="country" required>
+            <option value="" disabled ${!d.country ? "selected" : ""}>Selecciona un país</option>
+            ${this.countryOptionsHTML(d.country)}
+          </select>
+          ${this.obNavHTML()}
+        </form>`,
+      monthlyIncome: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cuánto ganas al mes aproximadamente?</h1>
+        <form class="form ob-form" data-next>
+          <input type="number" name="monthlyIncome" min="0" step="0.01" value="${d.monthlyIncome || ""}" placeholder="Ingreso mensual" required />
+          ${this.obNavHTML()}
+        </form>`,
+      occupation: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿En qué trabajas?</h1>
+        <form class="form ob-form" data-next>
+          <input type="text" name="occupation" value="${d.occupation || ""}" placeholder="Ej. Diseñadora, comercio, estudiante..." />
+          ${this.obNavHTML()}
+        </form>`,
+      savingsGoalMonthly: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Cuánto te gustaría ahorrar cada mes?</h1>
+        <p class="muted-small">Esta será tu cuota de ahorro deseada.</p>
+        <form class="form ob-form" data-next>
+          <input type="number" name="savingsGoalMonthly" min="0" step="0.01" value="${d.savingsGoalMonthly || ""}" placeholder="Meta de ahorro mensual" required />
+          ${this.obNavHTML()}
+        </form>`,
+      meetingGoal: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Actualmente estás logrando esa meta de ahorro?</h1>
+        <div class="ob-choice-grid">
+          <button class="ob-choice" data-bool="true">✅ Sí, ya lo consigo</button>
+          <button class="ob-choice" data-bool="false">❌ No, todavía no</button>
+        </div>`,
+      obstacles: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Qué se te dificulta más? Elige todas las que apliquen</h1>
+        <form class="form ob-form" data-next id="ob-obstacles-form">
+          <div class="ob-checks">
+            ${DATA.obstacles.map((o) => `
+              <label class="ob-check"><input type="checkbox" name="obstacles" value="${o.id}" ${(d.obstacles || []).includes(o.id) ? "checked" : ""}/> ${o.label}</label>
+            `).join("")}
+          </div>
+          ${this.obNavHTML()}
+        </form>`,
+      diagnosis: () => {
+        const chosen = d.obstacles || [];
+        const tipTitles = new Set();
+        chosen.forEach((id) => (this.OBSTACLE_TIP_MAP[id] || []).forEach((t) => tipTitles.add(t)));
+        const tips = DATA.tips.filter((t) => tipTitles.has(t.title));
+        return `
+          <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+          <h1>Tu punto de partida</h1>
+          <p>Casi siempre el primer paso es el mismo: <strong>registra tus ingresos y gastos durante unos días</strong> para ver con claridad en qué se te va el dinero. A partir de ahí podrás ajustar.</p>
+          ${tips.length ? `
+            <div class="tip-grid">
+              ${tips.map((t) => `<div class="tip-card"><h3>${t.title}</h3><p>${t.body}</p></div>`).join("")}
+            </div>` : ""}
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="ob-back">Atrás</button>
+            <button type="button" class="btn btn-primary" id="ob-continue">Continuar</button>
+          </div>`;
+      },
+      purposes: () => `
+        <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+        <h1>¿Para qué te gustaría usar lo que ahorres?</h1>
+        <form class="form ob-form" data-next id="ob-purposes-form">
+          <div class="ob-checks ob-checks--grid">
+            ${DATA.savingsPurposes.map((p) => `
+              <label class="ob-check"><input type="checkbox" name="savingsPurposes" value="${p.id}" ${(d.savingsPurposes || []).includes(p.id) ? "checked" : ""}/> ${p.icon} ${p.label}</label>
+            `).join("")}
+          </div>
+          <input type="text" name="savingsPurposeOther" value="${d.savingsPurposeOther || ""}" placeholder="Otro (opcional)" />
+          ${this.obNavHTML()}
+        </form>`,
+      summary: () => {
+        const daysInMonth = LOGIC.daysInMonth(LOGIC.todayStr());
+        const suggested = d.monthlyIncome && d.savingsGoalMonthly
+          ? Math.max(0, (d.monthlyIncome - d.savingsGoalMonthly) / daysInMonth)
+          : (d.dailyGoal || 0);
+        return `
+          <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
+          <h1>¡Listo, ${d.userName || ""}! 🎉</h1>
+          <p class="muted-small">Con tus datos, esta sería tu meta de gasto diario sugerida (puedes ajustarla):</p>
+          <form class="form ob-form" data-next>
+            <label>Meta de gasto diario
+              <input type="number" name="dailyGoal" min="0" step="0.01" value="${(d.dailyGoal != null ? d.dailyGoal : suggested).toFixed(2)}" required />
+            </label>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" id="ob-back">Atrás</button>
+              <button type="submit" class="btn btn-primary">Empezar a usar la app</button>
+            </div>
+          </form>`;
+      }
+    };
+    const cancelHeader = this.onboard.editing
+      ? `<button type="button" class="icon-btn ob-close" id="ob-cancel" aria-label="Cancelar edición">✕</button>`
+      : "";
+    view.innerHTML = `<section class="card ob-card">${cancelHeader}${(renderers[step] || renderers.accountMode)()}</section>`;
+    this.wireOnboarding(step);
+  },
+
+  obNavHTML() {
+    return `
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="ob-back">Atrás</button>
+        <button type="submit" class="btn btn-primary">Continuar</button>
+      </div>`;
+  },
+
+  wireOnboarding(step) {
+    const view = document.getElementById("view");
+    const backBtn = view.querySelector("#ob-back");
+    if (backBtn) backBtn.addEventListener("click", () => this.onboard.history.length ? this.onboardBack() : this.cancelOnboarding());
+    const cancelBtn = view.querySelector("#ob-cancel");
+    if (cancelBtn) cancelBtn.addEventListener("click", () => this.cancelOnboarding());
+
+    view.querySelectorAll(".ob-choice[data-value]").forEach((btn) =>
+      btn.addEventListener("click", () => this.onboardNext({ accountMode: btn.dataset.value }))
+    );
+    view.querySelectorAll(".ob-choice[data-bool]").forEach((btn) =>
+      btn.addEventListener("click", () => this.onboardNext({ currentlyMeetingGoal: btn.dataset.bool === "true" }))
+    );
+
+    const continueBtn = view.querySelector("#ob-continue");
+    if (continueBtn) continueBtn.addEventListener("click", () => this.onboardNext({}));
+
+    const form = view.querySelector("form[data-next]");
+    if (form) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const patch = {};
+        if (step === "obstacles") {
+          patch.obstacles = fd.getAll("obstacles");
+        } else if (step === "purposes") {
+          patch.savingsPurposes = fd.getAll("savingsPurposes");
+          patch.savingsPurposeOther = fd.get("savingsPurposeOther") || "";
+        } else {
+          for (const [key, value] of fd.entries()) {
+            const num = parseFloat(value);
+            patch[key] = (key === "age" || key === "monthlyIncome" || key === "savingsGoalMonthly" || key === "dailyGoal") && value !== "" ? num : value;
+          }
+        }
+        this.onboardNext(patch);
+      });
+    }
+  },
+
+  // ================= HOY =================
   renderHoy() {
     const settings = STORE.getSettings();
     const today = LOGIC.todayStr();
@@ -128,6 +415,8 @@ const UI = {
     const over = goal && spent > goal;
     const dayClosed = STORE.getDays()[today];
     const txs = LOGIC.transactionsForDate(today).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+    const planToday = STORE.getPlan(today);
+    const savings = LOGIC.savingsProgressThisMonth();
 
     return `
       <section class="card">
@@ -135,6 +424,18 @@ const UI = {
           <h1>Hoy</h1>
           <span class="muted">${new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</span>
         </div>
+
+        ${settings.userName ? `<p class="muted-small">Hola, ${settings.userName} · ${settings.accountMode === "compartida" ? "cuenta familiar 👨‍👩‍👧" : "cuenta personal 🙋"}</p>` : ""}
+
+        ${planToday ? `
+          <div class="plan-banner">
+            <div>
+              <strong>🌙 Tu plan de anoche para hoy</strong>
+              <p>${planToday}</p>
+            </div>
+            <button class="icon-btn" data-action="edit-plan" title="Editar plan" aria-label="Editar plan">✏️</button>
+          </div>
+        ` : ""}
 
         ${goal ? `
           <div class="goal-block">
@@ -154,6 +455,19 @@ const UI = {
           </div>
         `}
 
+        ${settings.savingsGoalMonthly ? `
+          <div class="goal-block savings-block">
+            <div class="goal-row">
+              <span>🐷 Ahorro de este mes</span>
+              <span><strong>${LOGIC.formatMoney(savings.saved)}</strong> / ${LOGIC.formatMoney(savings.goal)}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill progress-fill--savings" style="width:${savings.pct}%"></div>
+            </div>
+            <p class="muted-small">Meta de ahorro diario: ${LOGIC.formatMoney(LOGIC.dailySavingsTarget())}</p>
+          </div>
+        ` : ""}
+
         <div class="quick-actions">
           <button class="btn btn-expense" data-action="add" data-type="expense" ${dayClosed ? "disabled" : ""}>➖ Añadir gasto</button>
           <button class="btn btn-income" data-action="add" data-type="income" ${dayClosed ? "disabled" : ""}>➕ Añadir ingreso</button>
@@ -165,9 +479,10 @@ const UI = {
           ? `<div class="day-closed-banner ${dayClosed.met ? "is-good" : "is-bad"}">
                ${dayClosed.met ? "✅ Cerraste el día dentro de tu meta." : "📌 Cerraste el día por encima de tu meta."}
              </div>`
-          : goal
-            ? `<button class="btn btn-secondary btn-block" data-action="close-day">🌙 Cerrar mi día de hoy</button>`
-            : ""
+          : `<div class="hoy-close-actions">
+               ${goal ? `<button class="btn btn-secondary btn-block" data-action="close-day">🌙 Cerrar mi día de hoy</button>` : ""}
+               <button class="btn btn-ghost btn-block" data-action="plan-tomorrow">✏️ Planificar mañana</button>
+             </div>`
         }
 
         <h2 class="section-title">Movimientos de hoy</h2>
@@ -213,7 +528,21 @@ const UI = {
     `;
   },
 
-  // ---------- Vista: Movimientos (hoja de cálculo) ----------
+  planFormHTML(forDate, current) {
+    return `
+      <h2>✏️ Planifica el ${forDate}</h2>
+      <p class="muted-small">Escribe algo breve: qué quieres lograr o evitar mañana.</p>
+      <form id="plan-form" class="form">
+        <textarea name="plan" rows="4" placeholder="Ej. Llevar comida de casa y no pedir a domicilio">${current || ""}</textarea>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar plan</button>
+        </div>
+      </form>
+    `;
+  },
+
+  // ================= MOVIMIENTOS =================
   renderMovimientos() {
     const all = STORE.getTransactions().sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : (a.createdAt < b.createdAt ? 1 : -1)));
     const totalIncome = all.filter((t) => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
@@ -284,7 +613,7 @@ const UI = {
     `;
   },
 
-  // ---------- Vista: Cuentas (enlace simulado) ----------
+  // ================= CUENTAS =================
   renderCuentas() {
     const accounts = STORE.getAccounts();
     const connectedIds = new Set(accounts.map((a) => a.bankId));
@@ -293,10 +622,10 @@ const UI = {
       <section class="card">
         <div class="card-head"><h1>Cuentas</h1></div>
         <div class="notice">
-          <strong>Esto es una simulación.</strong> Para capturar de verdad los pagos con tarjeta o móvil en cuanto ocurren
-          hace falta integrar un proveedor de Open Banking (por ejemplo Plaid o Tink) con tu consentimiento explícito y una
-          cuenta de desarrollador. Aquí puedes probar cómo se vería: "conecta" un banco de demostración y simula pagos
-          para ver cómo aparecen automáticamente en Movimientos.
+          <strong>Esto es una simulación.</strong> Por ahora esta app no enlaza cuentas bancarias reales ni en tiempo real:
+          eso requeriría un proveedor de Open Banking (Plaid, Tink...) con tu consentimiento explícito y manejo seguro de
+          datos sensibles que esta app, al no tener servidor propio, no puede garantizar. Aquí puedes probar cómo se vería:
+          "conecta" un banco de demostración y simula pagos para ver cómo aparecerían automáticamente en Movimientos.
         </div>
 
         <h2 class="section-title">Cuentas conectadas</h2>
@@ -331,38 +660,75 @@ const UI = {
     `;
   },
 
-  // ---------- Vista: Metas ----------
+  // ================= METAS (perfil, meta, categorías) =================
   renderMetas() {
     const s = STORE.getSettings();
+    const custom = STORE.getCustomCategories();
+
     return `
       <section class="card">
-        <div class="card-head"><h1>Metas y alertas</h1></div>
+        <div class="card-head"><h1>Metas y perfil</h1></div>
+
+        <div class="profile-summary">
+          <div>
+            <strong>${s.userName || "Sin nombre"}</strong>
+            <div class="muted-small">
+              ${s.age ? s.age + " años · " : ""}${s.occupation || ""}${s.occupation ? " · " : ""}${s.accountMode === "compartida" ? "Cuenta familiar" : "Cuenta personal"}
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" data-action="edit-profile">Editar mi perfil ✏️</button>
+        </div>
+
+        <label class="toggle-switch-row">
+          <span>Modo de cuenta</span>
+          <span class="toggle-switch" id="account-mode-toggle" data-mode="${s.accountMode}">
+            <span class="toggle-opt ${s.accountMode !== "compartida" ? "is-active" : ""}" data-mode="individual">Individual</span>
+            <span class="toggle-opt ${s.accountMode === "compartida" ? "is-active" : ""}" data-mode="compartida">Compartida</span>
+          </span>
+        </label>
+        <p class="muted-small">La cuenta compartida solo cambia cómo se muestra la app; los datos siguen guardados en este dispositivo, no se sincronizan entre personas.</p>
+
         <form id="settings-form" class="form">
-          <label>Tu nombre (para las tarjetas de logro)
-            <input type="text" name="userName" value="${s.userName || ""}" placeholder="Opcional" />
-          </label>
-          <label>Moneda
-            <select name="currency">
-              ${["EUR", "USD", "MXN", "GBP"].map((c) => `<option value="${c}" ${c === s.currency ? "selected" : ""}>${c}</option>`).join("")}
-            </select>
+          <label>Moneda / país
+            <select name="country">${this.countryOptionsHTML(s.country)}</select>
           </label>
           <label>Meta de gasto diario
             <input type="number" name="dailyGoal" min="0" step="0.01" value="${s.dailyGoal || ""}" placeholder="Ej. 25" required />
           </label>
+          <label>Meta de ahorro mensual
+            <input type="number" name="savingsGoalMonthly" min="0" step="0.01" value="${s.savingsGoalMonthly || ""}" placeholder="Ej. 150" />
+          </label>
           <label class="toggle-row">
             <input type="checkbox" name="soundEnabled" ${s.soundEnabled ? "checked" : ""} />
-            Alerta sonora al superar la meta
+            Alerta sonora al superar la meta (mientras la app esté abierta)
           </label>
           <div class="modal-actions">
             <button type="button" class="btn btn-secondary" id="test-sound">🔊 Probar sonido</button>
             <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
         </form>
+
+        <h2 class="section-title">Categorías personalizadas</h2>
+        <p class="muted-small">Las categorías por defecto (incluida "Compra de Productos Atomy") ya están disponibles. Añade las tuyas si te faltan.</p>
+        <div class="custom-cat-list">
+          ${custom.expense.concat(custom.income).map((c) => `
+            <span class="chip">${c.icon} ${c.label} <button class="chip-x" data-action="remove-category" data-type="${custom.expense.includes(c) ? "expense" : "income"}" data-id="${c.id}" aria-label="Eliminar categoría">×</button></span>
+          `).join("") || '<p class="muted-small">Todavía no has añadido categorías propias.</p>'}
+        </div>
+        <form id="category-form" class="sheet-add-row category-add-row">
+          <select name="type">
+            <option value="expense">Gasto</option>
+            <option value="income">Ingreso</option>
+          </select>
+          <input type="text" name="label" placeholder="Nombre de la categoría" required />
+          <input type="text" name="icon" placeholder="Emoji (opcional)" maxlength="2" />
+          <button type="submit" class="btn btn-primary btn-sm">Añadir categoría</button>
+        </form>
       </section>
     `;
   },
 
-  // ---------- Vista: Consejos ----------
+  // ================= CONSEJOS =================
   renderConsejos() {
     return `
       <section class="card">
@@ -393,16 +759,48 @@ const UI = {
     `;
   },
 
-  // ---------- Vista: Logros ----------
-  renderLogros() {
+  // ================= RESUMEN (gráficas + logros) =================
+  resumenPeriod: "day",
+
+  renderResumen() {
+    const period = this.resumenPeriod;
+    const breakdown = LOGIC.periodBreakdown(period, "expense");
     const days = STORE.getDays();
     const dates = Object.keys(days).sort().reverse();
     const streak = LOGIC.currentStreak();
     const best = LOGIC.bestStreak();
+    const periodLabel = { day: "Hoy", week: "Esta semana", month: "Este mes" };
 
     return `
       <section class="card">
-        <div class="card-head"><h1>Logros</h1></div>
+        <div class="card-head"><h1>Resumen</h1></div>
+
+        <div class="period-tabs">
+          ${["day", "week", "month"].map((p) => `
+            <button class="period-tab ${p === period ? "is-active" : ""}" data-period="${p}">${{ day: "Día", week: "Semana", month: "Mes" }[p]}</button>
+          `).join("")}
+        </div>
+
+        <div class="period-total">
+          <span class="muted-small">Gastado · ${periodLabel[period]}</span>
+          <strong>${LOGIC.formatMoney(breakdown.total)}</strong>
+        </div>
+
+        ${breakdown.top ? `<p class="muted-small">📌 Lo que más gastas: <strong>${this.categoryLabel(breakdown.top.category)}</strong> (${LOGIC.formatMoney(breakdown.top.amount)}, ${Math.round(breakdown.top.pct)}%)</p>` : ""}
+
+        ${breakdown.items.length ? `
+          <div class="bar-chart">
+            ${breakdown.items.map((it) => `
+              <div class="bar-row">
+                <span class="bar-label">${this.categoryLabel(it.category)}</span>
+                <div class="bar-track"><div class="bar-fill" style="width:${Math.max(4, it.pct)}%"></div></div>
+                <span class="bar-value">${LOGIC.formatMoney(it.amount)}</span>
+              </div>
+            `).join("")}
+          </div>
+        ` : `<p class="muted">No hay gastos registrados en este periodo.</p>`}
+
+        <h2 class="section-title">Racha de metas cumplidas</h2>
         <div class="streak-row">
           <div class="streak-box"><span class="streak-num">${streak}</span><span class="muted-small">Racha actual</span></div>
           <div class="streak-box"><span class="streak-num">${best}</span><span class="muted-small">Mejor racha</span></div>
@@ -427,7 +825,7 @@ const UI = {
     `;
   },
 
-  // ---------- Cableado de eventos por vista ----------
+  // ================= CABLEADO DE EVENTOS POR VISTA =================
   wire(tab) {
     const view = document.getElementById("view");
 
@@ -467,35 +865,90 @@ const UI = {
       })
     );
 
+    // ---- Planificar mañana / editar plan de hoy ----
+    const planTomorrowBtn = view.querySelector('[data-action="plan-tomorrow"]');
+    if (planTomorrowBtn) {
+      planTomorrowBtn.addEventListener("click", () => {
+        const tomorrow = LOGIC.todayStr(1);
+        UI.openModal(UI.planFormHTML("mañana", STORE.getPlan(tomorrow)));
+        document.getElementById("plan-form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          STORE.setPlan(tomorrow, new FormData(e.target).get("plan"));
+          UI.closeModal();
+          UI.toast("Plan guardado para mañana");
+        });
+      });
+    }
+    const editPlanBtn = view.querySelector('[data-action="edit-plan"]');
+    if (editPlanBtn) {
+      editPlanBtn.addEventListener("click", () => {
+        const today = LOGIC.todayStr();
+        UI.openModal(UI.planFormHTML("hoy", STORE.getPlan(today)));
+        document.getElementById("plan-form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          STORE.setPlan(today, new FormData(e.target).get("plan"));
+          UI.closeModal();
+          UI.render("hoy");
+        });
+      });
+    }
+
     const closeDayBtn = view.querySelector('[data-action="close-day"]');
     if (closeDayBtn) {
       closeDayBtn.addEventListener("click", () => {
         const record = LOGIC.closeDay(LOGIC.todayStr());
         if (!record) return;
+        const tomorrow = LOGIC.todayStr(1);
+        const existingPlan = STORE.getPlan(tomorrow);
+        let resultHTML;
+        let dataURL = null;
+        const text = "¡Hoy cumplí mi meta de gasto diario con Control de Gastos! 💪 Racha de " + LOGIC.currentStreak() + " día(s).";
+
         if (record.met) {
           AUDIO.playSuccess();
           UI.confettiBurst();
           const settings = STORE.getSettings();
-          const dataURL = SHARE.buildCardDataURL({
+          dataURL = SHARE.buildCardDataURL({
             date: record.date, goal: record.goal, spent: record.spent,
             streak: LOGIC.currentStreak(), userName: settings.userName
           });
-          const text = "¡Hoy cumplí mi meta de gasto diario con Control de Gastos! 💪 Racha de " + LOGIC.currentStreak() + " día(s).";
-          UI.openModal(`
+          resultHTML = `
             <h2>🏆 ¡Meta cumplida!</h2>
             <img src="${dataURL}" alt="Tarjeta de logro" class="achievement-preview" />
+            <button type="button" class="btn btn-primary btn-block" id="share-btn">Compartir 📤</button>`;
+        } else {
+          resultHTML = `
+            <h2>📌 Día cerrado</h2>
+            <p>Hoy superaste tu meta. ¡Mañana lo consigues! 💪</p>`;
+        }
+
+        UI.openModal(`
+          ${resultHTML}
+          <hr class="modal-divider" />
+          <h3>🌙 Planifica mañana</h3>
+          <form id="plan-form">
+            <textarea name="plan" rows="3" placeholder="Ej. Llevar comida de casa">${existingPlan}</textarea>
             <div class="modal-actions">
               <button type="button" class="btn btn-ghost" data-close-modal>Cerrar</button>
-              <button type="button" class="btn btn-primary" id="share-btn">Compartir 📤</button>
+              <button type="submit" class="btn btn-primary">Guardar plan</button>
             </div>
-          `);
+          </form>
+        `);
+
+        if (dataURL) {
           document.getElementById("share-btn").addEventListener("click", async () => {
             const result = await SHARE.shareCard(dataURL, text);
             if (result === "downloaded") UI.toast("Imagen descargada, ¡ya puedes compartirla!");
           });
-        } else {
-          UI.toast("Hoy superaste tu meta. ¡Mañana lo consigues! 💪", "warn");
         }
+        document.getElementById("plan-form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          STORE.setPlan(tomorrow, new FormData(e.target).get("plan"));
+          UI.closeModal();
+          UI.toast("Plan guardado para mañana");
+          UI.render("hoy");
+        });
+
         UI.render("hoy");
       });
     }
@@ -551,26 +1004,69 @@ const UI = {
       })
     );
 
-    // ---- Metas ----
+    // ---- Metas: perfil, cuenta, guardado, categorías ----
+    const editProfileBtn = view.querySelector('[data-action="edit-profile"]');
+    if (editProfileBtn) {
+      editProfileBtn.addEventListener("click", () => {
+        const s = STORE.getSettings();
+        UI.startOnboarding(s, true);
+      });
+    }
+    const modeToggle = view.querySelector("#account-mode-toggle");
+    if (modeToggle) {
+      modeToggle.querySelectorAll(".toggle-opt").forEach((opt) =>
+        opt.addEventListener("click", () => {
+          const settings = STORE.getSettings();
+          settings.accountMode = opt.dataset.mode;
+          STORE.saveSettings(settings);
+          UI.render("metas");
+        })
+      );
+    }
     const settingsForm = view.querySelector("#settings-form");
     if (settingsForm) {
       settingsForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const fd = new FormData(e.target);
-        STORE.saveSettings({
-          userName: fd.get("userName") || "",
-          currency: fd.get("currency"),
+        const country = DATA.countries.find((c) => c.code === fd.get("country"));
+        const settings = STORE.getSettings();
+        STORE.saveSettings(Object.assign({}, settings, {
+          country: fd.get("country"),
+          currency: country ? country.currency : settings.currency,
           dailyGoal: parseFloat(fd.get("dailyGoal")) || null,
+          savingsGoalMonthly: parseFloat(fd.get("savingsGoalMonthly")) || null,
           soundEnabled: fd.get("soundEnabled") === "on"
-        });
+        }));
         UI.toast("Metas guardadas");
         UI.render("hoy");
       });
       const testSound = view.querySelector("#test-sound");
       testSound.addEventListener("click", () => AUDIO.playAlert());
     }
+    const categoryForm = view.querySelector("#category-form");
+    if (categoryForm) {
+      categoryForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        STORE.addCustomCategory(fd.get("type"), fd.get("label"), fd.get("icon"));
+        UI.toast("Categoría añadida");
+        UI.render("metas");
+      });
+    }
+    view.querySelectorAll('[data-action="remove-category"]').forEach((btn) =>
+      btn.addEventListener("click", () => {
+        STORE.removeCustomCategory(btn.dataset.type, btn.dataset.id);
+        UI.render("metas");
+      })
+    );
 
-    // ---- Logros ----
+    // ---- Resumen ----
+    view.querySelectorAll(".period-tab").forEach((btn) =>
+      btn.addEventListener("click", () => {
+        UI.resumenPeriod = btn.dataset.period;
+        UI.render("resumen");
+      })
+    );
     view.querySelectorAll('[data-action="share-day"]').forEach((btn) =>
       btn.addEventListener("click", () => {
         const date = btn.dataset.date;

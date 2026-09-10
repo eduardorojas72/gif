@@ -8,7 +8,12 @@
     UI.render(btn.dataset.tab);
   });
 
-  UI.render("hoy");
+  const settings = STORE.getSettings();
+  if (!settings.onboardingDone) {
+    UI.startOnboarding();
+  } else {
+    UI.render("hoy");
+  }
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
