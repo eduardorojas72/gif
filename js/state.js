@@ -14,6 +14,27 @@ function emptySemanaState(n) {
   return { done: false, checks: semana.acciones.map(() => false) };
 }
 
+function diaSemanaHoyId() {
+  const map = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+  return map[new Date().getDay()];
+}
+
+function nuevaActividadAgenda() {
+  return { id: "a" + Math.random().toString(36).slice(2, 9), tipo: "llamada", hora: "", nota: "", hecha: false };
+}
+
+function nuevoZoomAgenda() {
+  return { id: "z" + Math.random().toString(36).slice(2, 9), titulo: "", hora: "", enlace: "" };
+}
+
+function emptyAgendaDia() {
+  return { actividades: [], zooms: [] };
+}
+
+function emptyAgenda() {
+  return DIAS_SEMANA.reduce(function (acc, d) { acc[d.id] = emptyAgendaDia(); return acc; }, {});
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -41,6 +62,7 @@ function defaultState() {
     contactos: [],
     escenarioVida: emptyEscenarioVida(),
     escenarioCompletado: false,
+    agenda: emptyAgenda(),
   };
 }
 
@@ -137,6 +159,14 @@ function hydrateState(parsed) {
     return acc;
   }, {});
   merged.escenarioCompletado = !!parsed.escenarioCompletado;
+
+  merged.agenda = DIAS_SEMANA.reduce(function (acc, d) {
+    const saved = parsed.agenda && parsed.agenda[d.id];
+    const actividades = saved && Array.isArray(saved.actividades) ? saved.actividades.map(function (a) { return Object.assign(nuevaActividadAgenda(), a); }) : [];
+    const zooms = saved && Array.isArray(saved.zooms) ? saved.zooms.map(function (z) { return Object.assign(nuevoZoomAgenda(), z); }) : [];
+    acc[d.id] = { actividades: actividades, zooms: zooms };
+    return acc;
+  }, {});
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =

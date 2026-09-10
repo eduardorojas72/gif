@@ -56,6 +56,8 @@ const ICON_PATHS = {
   plane: '<path d="M3 12.8 20.5 4l-6.3 16.5-2.9-7.3L3 12.8Z"/>',
   coins: '<circle cx="9" cy="14.5" r="5.5"/><path d="M13.2 5.3a5.5 5.5 0 1 1 0 10.4"/><path d="M6.7 14.5h4.6"/>',
   car: '<path d="M5 16.5 6.2 11a2 2 0 0 1 1.9-1.4h7.8a2 2 0 0 1 1.9 1.4l1.2 5.5"/><rect x="3.5" y="16.5" width="17" height="3.5" rx="1"/><circle cx="7.5" cy="18.2" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.5" cy="18.2" r="1.3" fill="currentColor" stroke="none"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/>',
+  video: '<rect x="3" y="6.5" width="13" height="11" rx="1.5"/><path d="M16.5 10.5 21 7.5v9l-4.5-3Z"/>',
 };
 
 function Icon(name, opts) {

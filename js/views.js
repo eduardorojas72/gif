@@ -10,6 +10,7 @@ const MENU_ITEMS = [
   { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
   { id: "lema", label: "El Lema de Atomy", icon: "heart" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
+  { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
   { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
   { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
   { id: "premios", label: "Premios", icon: "gift" },
@@ -916,6 +917,146 @@ function renderContactoModal(ui) {
     '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto">Guardar contacto</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Agenda Semanal ---------------- */
+
+function agendaTipoInfo(tipoId) {
+  return AGENDA_TIPOS.find(function (t) { return t.id === tipoId; }) || AGENDA_TIPOS[0];
+}
+
+function actividadRowHTML(dia, a) {
+  const tipo = agendaTipoInfo(a.tipo);
+  return (
+    '<div class="card" style="padding:12px' + (a.hecha ? ";opacity:.6" : "") + '">' +
+    '<div class="row gap-3" style="align-items:flex-start">' +
+    '<button data-action="toggle-actividad-hecha" data-dia="' + dia + '" data-arg="' + a.id + '" style="flex-shrink:0;margin-top:1px">' +
+    Icon(a.hecha ? "check-circle" : "circle", { size: 20, color: a.hecha ? "var(--success)" : "var(--text-soft)" }) +
+    "</button>" +
+    '<div style="flex:1;min-width:0">' +
+    '<div class="row gap-2">' + Icon(tipo.icon, { size: 13, color: "var(--gold-light)" }) +
+    '<span style="font-weight:700;font-size:13.5px' + (a.hecha ? ";text-decoration:line-through" : "") + '">' + escapeHtml(tipo.label) + "</span>" +
+    (a.hora ? '<span class="muted small">· ' + escapeHtml(a.hora) + "</span>" : "") + "</div>" +
+    (a.nota ? '<div class="muted small" style="margin-top:3px">' + escapeHtml(a.nota) + "</div>" : "") +
+    "</div>" +
+    '<button class="icon-btn" data-action="edit-actividad" data-dia="' + dia + '" data-arg="' + a.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    "</div></div>"
+  );
+}
+
+function zoomRowHTML(dia, z) {
+  return (
+    '<div class="card" style="padding:12px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div class="row gap-2" style="min-width:0">' + Icon("video", { size: 14, color: "var(--gold-light)" }) +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Reunión sin título") + "</div>" +
+    (z.hora ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(z.hora) + "</div>" : "") + "</div></div>" +
+    '<button class="icon-btn" data-action="edit-zoom" data-dia="' + dia + '" data-arg="' + z.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    "</div>" +
+    (z.enlace
+      ? '<div class="row gap-2" style="margin-top:10px">' +
+        '<a class="btn-secondary" style="flex:1;padding:8px;text-align:center" href="' + escapeHtml(z.enlace) + '" target="_blank" rel="noreferrer">' + Icon("video", { size: 14 }) + " Unirme</a>" +
+        '<button class="icon-btn" data-action="copy-zoom-link" data-arg="' + escapeHtml(z.enlace) + '">' + Icon("copy", { size: 14 }) + "</button>" +
+        "</div>"
+      : '<div class="muted small" style="margin-top:8px">Sin enlace guardado todavía — tócala para añadirlo.</div>') +
+    "</div>"
+  );
+}
+
+function renderAgenda(state, ui) {
+  const diaActivo = ui.agendaDia || diaSemanaHoyId();
+  const diaInfo = DIAS_SEMANA.find(function (d) { return d.id === diaActivo; });
+  const diaData = state.agenda[diaActivo] || emptyAgendaDia();
+
+  const tabs = DIAS_SEMANA.map(function (d) {
+    const active = diaActivo === d.id;
+    const esHoy = d.id === diaSemanaHoyId();
+    return (
+      '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-agenda-dia" data-arg="' + d.id + '">' +
+      d.label.slice(0, 3) + (esHoy ? " •" : "") +
+      "</button>"
+    );
+  }).join(" ");
+
+  const actividades = diaData.actividades.slice().sort(function (a, b) { return (a.hora || "99:99").localeCompare(b.hora || "99:99"); });
+  const actividadesHtml = actividades.length
+    ? actividades.map(function (a) { return actividadRowHTML(diaActivo, a); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:16px 0">Sin actividades para ' + escapeHtml(diaInfo.label) + ".</p>";
+
+  const zoomsHtml = diaData.zooms.length
+    ? diaData.zooms.map(function (z) { return zoomRowHTML(diaActivo, z); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:16px 0">Sin reuniones Zoom guardadas para este día.</p>';
+
+  return (
+    sectionHeaderHTML("Agenda Semanal", "Tu rutina de trabajo, día a día — llamadas, visitas, presentaciones, registros y formaciones, más tus Zoom recurrentes.", "calendar") +
+    '<div class="row gap-2" style="flex-wrap:wrap">' + tabs + "</div>" +
+    '<div>' +
+    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Actividades — ' + escapeHtml(diaInfo.label) + "</span>" +
+    '<button class="link-btn small" data-action="add-actividad" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + actividadesHtml + "</div>" +
+    "</div>" +
+    '<div>' +
+    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Zoom recurrentes — ' + escapeHtml(diaInfo.label) + "</span>" +
+    '<button class="link-btn small" data-action="add-zoom" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
+    '<div class="muted small" style="margin-top:2px">Guarda aquí el mismo enlace cada semana — no hace falta volver a buscarlo.</div>' +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + zoomsHtml + "</div>" +
+    "</div>"
+  );
+}
+
+function renderActividadModal(ui) {
+  const d = ui.actividadDraft;
+  if (!d) return "";
+  const editing = !!ui.actividadEditId;
+  const tipoOpts = AGENDA_TIPOS.map(function (t) { return '<option value="' + t.id + '"' + (d.tipo === t.id ? " selected" : "") + ">" + t.label + "</option>"; }).join("");
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-actividad" data-dia="' + d.dia + '" data-arg="' + ui.actividadEditId + '">' +
+      (ui.confirmDeleteActividad === ui.actividadEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar actividad") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-actividad"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar actividad" : "Nueva actividad") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-actividad">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Tipo</label><select data-draft-field="tipo" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + tipoOpts + "</select></div>" +
+    '<div class="field"><label>Hora (opcional)</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="Con quién, dónde, qué necesitas llevar...">' + escapeHtml(d.nota || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-actividad">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-actividad">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+function renderZoomModal(ui) {
+  const d = ui.zoomDraft;
+  if (!d) return "";
+  const editing = !!ui.zoomEditId;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-zoom" data-dia="' + d.dia + '" data-arg="' + ui.zoomEditId + '">' +
+      (ui.confirmDeleteZoom === ui.zoomEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar reunión") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-zoom"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar reunión Zoom" : "Nueva reunión Zoom") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-zoom">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Título</label><input type="text" data-draft-field="titulo" value="' + escapeHtml(d.titulo || "") + '" placeholder="Ej. Formación semanal del equipo"></div>' +
+    '<div class="field"><label>Hora</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Enlace de conexión</label><input type="text" inputmode="url" data-draft-field="enlace" value="' + escapeHtml(d.enlace || "") + '" placeholder="https://zoom.us/j/..."></div>' +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-zoom">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-zoom">Cancelar</button>' +
     "</div></div>"
   );
 }

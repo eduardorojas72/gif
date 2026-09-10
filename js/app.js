@@ -54,6 +54,13 @@ const App = {
     confirmDeleteContacto: null,
     pasosVueltos: {},
     lemaVueltos: {},
+    agendaDia: null,
+    actividadDraft: null,
+    actividadEditId: null,
+    confirmDeleteActividad: null,
+    zoomDraft: null,
+    zoomEditId: null,
+    confirmDeleteZoom: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -152,6 +159,7 @@ const App = {
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
       case "escenario": mainHtml = renderEscenarioVida(state); break;
+      case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "pasos": mainHtml = renderPasos(ui); break;
       case "lema": mainHtml = renderLema(ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
@@ -173,6 +181,8 @@ const App = {
     let modalHtml = "";
     if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
+    else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
+    else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
 
@@ -215,9 +225,10 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
-        // formulario de contacto (App.ui.contactoDraft): tampoco re-renderiza, para no perder el foco
-        setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
+        // formularios con borrador (contacto / actividad de agenda / zoom): tampoco re-renderizan, para no perder el foco
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
+        setPath(draft, el.dataset.draftField, el.value);
       } else if (el.id === "contacto-search") {
         // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
         const q = el.value.trim().toLowerCase();
@@ -250,12 +261,12 @@ const App = {
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
-      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && this.ui.contactoDraft) {
-        setPath(this.ui.contactoDraft, el.dataset.draftField, el.value);
-        if (el.dataset.draftField === "estado" && el.value === "Primer Pedido") {
-          const d = this.ui.contactoDraft;
-          if (!d.notaSeguimiento || !d.notaSeguimiento.trim()) d.notaSeguimiento = PRIMER_PEDIDO_NOTA;
-          if (!d.proximoSeguimiento) d.proximoSeguimiento = addDiasISO(hoyISO(), 3);
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft)) {
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft;
+        setPath(draft, el.dataset.draftField, el.value);
+        if (draft === this.ui.contactoDraft && el.dataset.draftField === "estado" && el.value === "Primer Pedido") {
+          if (!draft.notaSeguimiento || !draft.notaSeguimiento.trim()) draft.notaSeguimiento = PRIMER_PEDIDO_NOTA;
+          if (!draft.proximoSeguimiento) draft.proximoSeguimiento = addDiasISO(hoyISO(), 3);
           this.render();
         }
         return;
@@ -600,6 +611,143 @@ const Actions = {
     }
     App.persist(true);
     App.render();
+  },
+
+  "set-agenda-dia": function (arg) {
+    App.ui.agendaDia = arg;
+    App.render();
+  },
+
+  "add-actividad": function (arg) {
+    App.ui.actividadDraft = Object.assign(nuevaActividadAgenda(), { dia: arg });
+    App.ui.actividadEditId = null;
+    App.render();
+  },
+
+  "edit-actividad": function (arg, el) {
+    const dia = el.dataset.dia;
+    const a = (App.state.agenda[dia].actividades || []).find((x) => x.id === arg);
+    if (!a) return;
+    App.ui.actividadDraft = Object.assign({}, a, { dia: dia });
+    App.ui.actividadEditId = arg;
+    App.ui.confirmDeleteActividad = null;
+    App.render();
+  },
+
+  "cancel-actividad": function () {
+    App.ui.actividadDraft = null;
+    App.ui.actividadEditId = null;
+    App.ui.confirmDeleteActividad = null;
+    App.render();
+  },
+
+  "save-actividad": function () {
+    const d = App.ui.actividadDraft;
+    if (!d) return;
+    const dia = App.state.agenda[d.dia];
+    if (App.ui.actividadEditId) {
+      const idx = dia.actividades.findIndex((x) => x.id === App.ui.actividadEditId);
+      if (idx !== -1) dia.actividades[idx] = Object.assign({}, dia.actividades[idx], d);
+    } else {
+      dia.actividades.push(Object.assign(nuevaActividadAgenda(), d));
+    }
+    App.ui.actividadDraft = null;
+    App.ui.actividadEditId = null;
+    App.persist(true);
+    App.showToast("Actividad guardada");
+    App.render();
+  },
+
+  "delete-actividad": function (arg, el) {
+    if (App.ui.confirmDeleteActividad !== arg) {
+      App.ui.confirmDeleteActividad = arg;
+      App.render();
+      return;
+    }
+    const dia = App.state.agenda[el.dataset.dia];
+    dia.actividades = dia.actividades.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteActividad = null;
+    App.ui.actividadDraft = null;
+    App.ui.actividadEditId = null;
+    App.persist(true);
+    App.showToast("Actividad eliminada");
+    App.render();
+  },
+
+  "toggle-actividad-hecha": function (arg, el) {
+    const dia = App.state.agenda[el.dataset.dia];
+    const a = (dia.actividades || []).find((x) => x.id === arg);
+    if (!a) return;
+    a.hecha = !a.hecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "add-zoom": function (arg) {
+    App.ui.zoomDraft = Object.assign(nuevoZoomAgenda(), { dia: arg });
+    App.ui.zoomEditId = null;
+    App.render();
+  },
+
+  "edit-zoom": function (arg, el) {
+    const dia = el.dataset.dia;
+    const z = (App.state.agenda[dia].zooms || []).find((x) => x.id === arg);
+    if (!z) return;
+    App.ui.zoomDraft = Object.assign({}, z, { dia: dia });
+    App.ui.zoomEditId = arg;
+    App.ui.confirmDeleteZoom = null;
+    App.render();
+  },
+
+  "cancel-zoom": function () {
+    App.ui.zoomDraft = null;
+    App.ui.zoomEditId = null;
+    App.ui.confirmDeleteZoom = null;
+    App.render();
+  },
+
+  "save-zoom": function () {
+    const d = App.ui.zoomDraft;
+    if (!d) return;
+    const dia = App.state.agenda[d.dia];
+    if (App.ui.zoomEditId) {
+      const idx = dia.zooms.findIndex((x) => x.id === App.ui.zoomEditId);
+      if (idx !== -1) dia.zooms[idx] = Object.assign({}, dia.zooms[idx], d);
+    } else {
+      dia.zooms.push(Object.assign(nuevoZoomAgenda(), d));
+    }
+    App.ui.zoomDraft = null;
+    App.ui.zoomEditId = null;
+    App.persist(true);
+    App.showToast("Reunión guardada");
+    App.render();
+  },
+
+  "delete-zoom": function (arg, el) {
+    if (App.ui.confirmDeleteZoom !== arg) {
+      App.ui.confirmDeleteZoom = arg;
+      App.render();
+      return;
+    }
+    const dia = App.state.agenda[el.dataset.dia];
+    dia.zooms = dia.zooms.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteZoom = null;
+    App.ui.zoomDraft = null;
+    App.ui.zoomEditId = null;
+    App.persist(true);
+    App.showToast("Reunión eliminada");
+    App.render();
+  },
+
+  "copy-zoom-link": function (arg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(arg).then(
+        () => App.showToast("Enlace copiado"),
+        () => App.showToast("No se pudo copiar el enlace")
+      );
+    } else {
+      App.showToast("No se pudo copiar el enlace");
+    }
   },
 };
 

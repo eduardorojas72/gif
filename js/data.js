@@ -558,6 +558,24 @@ const SEMANAS = [
   },
 ];
 
+const DIAS_SEMANA = [
+  { id: "lunes", label: "Lunes" },
+  { id: "martes", label: "Martes" },
+  { id: "miercoles", label: "Miércoles" },
+  { id: "jueves", label: "Jueves" },
+  { id: "viernes", label: "Viernes" },
+  { id: "sabado", label: "Sábado" },
+  { id: "domingo", label: "Domingo" },
+];
+
+const AGENDA_TIPOS = [
+  { id: "llamada", label: "Llamada pendiente", icon: "phone-call" },
+  { id: "visita", label: "Visita a nuevo socio", icon: "users" },
+  { id: "presentacion", label: "Presentación de producto", icon: "presentation" },
+  { id: "registro", label: "Registro de nuevo socio", icon: "user-badge" },
+  { id: "formacion", label: "Formación", icon: "book-open" },
+];
+
 const CONTACTO_NIVELES = ["Caliente", "Tibio", "Frío"];
 const CONTACTO_ESTADOS = ["Por contactar", "Contactado", "Presentado", "Primer Pedido", "Seguimiento", "Socio", "Consumidor", "Descartado"];
 
