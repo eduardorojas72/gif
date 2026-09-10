@@ -206,6 +206,7 @@ const App = {
       case "plan90":
         if (ui.activeQuincena) {
           getComprasQuincena(state, ui.activeQuincena);
+          getCatalogoProductos(state, state.pais || "CO");
           mainHtml = renderQuincenaDetalle(state, ui, ui.activeQuincena);
         } else {
           mainHtml = renderPlan90(state);
@@ -308,6 +309,11 @@ const App = {
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
+      if (el.tagName === "INPUT" && el.dataset && el.dataset.field && (el.dataset.field.indexOf("comprasQuincena.") === 0 || el.dataset.field.indexOf("catalogoProductos.") === 0)) {
+        // recalcula los totales de la calculadora de productos al salir del campo (no en cada tecla, para no perder el foco)
+        this.render();
+        return;
+      }
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
         const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
@@ -863,8 +869,17 @@ const Actions = {
     App.render();
   },
 
+  "set-pais-catalogo": function (arg) {
+    if (!PAISES_CATALOGO.some(function (p) { return p.id === arg; })) return;
+    App.state.pais = arg;
+    getCatalogoProductos(App.state, arg);
+    App.persist(true);
+    App.render();
+  },
+
   "toggle-producto-probado": function (arg) {
-    const p = App.state.catalogoProductos[Number(arg)];
+    const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
+    const p = catalogo[Number(arg)];
     if (!p) return;
     p.probado = !p.probado;
     App.persist(true);
@@ -872,13 +887,15 @@ const Actions = {
   },
 
   "add-producto": function () {
-    App.state.catalogoProductos.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
+    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
     App.persist(true);
     App.render();
   },
 
   "delete-producto": function (arg) {
-    App.state.catalogoProductos.splice(Number(arg), 1);
+    const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
+    catalogo.splice(Number(arg), 1);
     App.persist(true);
     App.render();
   },
