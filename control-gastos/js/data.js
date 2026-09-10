@@ -462,6 +462,18 @@ const DATA = {
       body: "Si estás en su programa de fidelidad, una queja formal después de la estancia al departamento central suele traducirse en puntos equivalentes a varias noches gratis."
     },
     {
+      title: "Reclama en el restaurante en el momento, no al terminar",
+      body: "Si el plato está en mal estado o no es lo que pediste, avisa tras el primer bocado, no sigas comiendo: si te terminas el plato pierdes la posibilidad de exigir que lo cambien o lo quiten de la cuenta."
+    },
+    {
+      title: "Pide al encargado la solución que corresponde",
+      body: "Plato en mal estado o equivocado → que lo retiren y lo cambien sin coste, o lo quiten de la cuenta. Retraso grave o mala experiencia → que quiten el postre o el café, un descuento en la factura, o una invitación."
+    },
+    {
+      title: "Vigila los cargos que no aparecían en la carta",
+      body: "Revisa que no te cobren suplementos que no figuraban en el menú (cubierto, pan, servicio de mesa) ni precios distintos a los anunciados en la carta o el escaparate."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },

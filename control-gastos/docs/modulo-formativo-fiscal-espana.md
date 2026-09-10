@@ -267,6 +267,16 @@ Los agentes no confiscan legalmente los objetos (salvo que sean ilegales): impid
 1. Reclamación previa por escrito a la aerolínea (formulario web o atención al cliente) — conservar la referencia.
 2. Si no responde en 1 mes o la rechaza: escalar a la autoridad reguladora — en España, la AESA (Agencia Estatal de Seguridad Aérea), gratuito, con billetes + reclamación previa + justificantes. Su resolución es vinculante para la aerolínea en el ámbito español. (Cada país de la UE tiene su propio organismo nacional equivalente bajo el mismo reglamento 261/2004).
 
+## 10. Hoja de Reclamaciones (España, cualquier comercio u hostelería)
+
+Vía administrativa formal cuando un establecimiento (restaurante, tienda, hotel...) se niega a corregir un error grave, cobra conceptos no anunciados, o el trato es inaceptable.
+
+- **Obligatoriedad:** todo establecimiento comercial y de hostelería en España debe tener Hojas de Reclamaciones oficiales de su Comunidad Autónoma y entregarlas de inmediato a quien las pida.
+- **Formato:** 3 copias autocopiativas — blanca/original para la Administración (Consumo), verde o rosa para el consumidor, amarilla o gris para el establecimiento.
+- **Cómo rellenarla:** datos personales y del establecimiento, hechos expuestos de forma clara y objetiva, y qué se pide en concreto (ej. devolución de un importe exacto). El responsable del local debe firmarla y sellarla — su firma solo certifica la entrega, no que esté de acuerdo con lo expuesto.
+- **Tramitación:** quedarse con la copia blanca y la del consumidor (nunca dejar la blanca en el local); presentar la copia blanca en la OMIC municipal o en la sede electrónica de la Comunidad Autónoma, adjuntando ticket/factura y pruebas.
+- **Si el establecimiento se niega a entregarla:** es una infracción administrativa grave con multas elevadas para el local. En ese caso: no discutir, llamar a la Policía Local (112/092) indicando que el establecimiento se niega a facilitar la Hoja de Reclamaciones obligatoria — la patrulla puede levantar atestado e inspeccionar el local, lo que suele derivar en sanción directa.
+
 ---
 
 *Compilado a partir de mensajes del usuario durante el desarrollo de Hucha (sept. 2026). Revisar y actualizar cifras contra fuente oficial antes de cualquier uso futuro.*
