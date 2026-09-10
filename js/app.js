@@ -200,7 +200,8 @@ const App = {
         const lista = q[el.dataset.linea] || [];
         const persona = lista.find((p) => p.id === el.dataset.id);
         if (persona) {
-          persona[el.dataset.rosterField] = el.dataset.rosterField === "puntos" ? Number(el.value) || 0 : el.value;
+          const isNumeric = el.dataset.rosterField === "puntos" || el.dataset.rosterField === "pvp";
+          persona[el.dataset.rosterField] = isNumeric ? Number(el.value) || 0 : el.value;
           this.persist();
         }
       }
@@ -295,7 +296,7 @@ const Actions = {
   },
 
   "add-persona": function (arg) {
-    App.ui.personaDraft = { linea: arg, id: null, nombre: "", telefono: "", notas: "" };
+    App.ui.personaDraft = { linea: arg, id: null, nombre: "", telefono: "", atomyId: "", contrasena: "", notas: "" };
     App.ui.confirmDeletePersona = null;
     App.render();
   },
@@ -306,7 +307,7 @@ const Actions = {
     const q = getQuincena(App.state, qKey);
     const p = (q[linea] || []).find((x) => x.id === arg);
     if (!p) return;
-    App.ui.personaDraft = { linea: linea, id: p.id, nombre: p.nombre, telefono: p.telefono, notas: p.notas };
+    App.ui.personaDraft = { linea: linea, id: p.id, nombre: p.nombre, telefono: p.telefono, atomyId: p.atomyId, contrasena: p.contrasena, notas: p.notas };
     App.ui.confirmDeletePersona = null;
     App.render();
   },
@@ -327,10 +328,12 @@ const Actions = {
       if (p) {
         p.nombre = d.nombre;
         p.telefono = d.telefono;
+        p.atomyId = d.atomyId;
+        p.contrasena = d.contrasena;
         p.notas = d.notas;
       }
     } else {
-      const nueva = Object.assign(nuevaPersona(), { nombre: d.nombre, telefono: d.telefono, notas: d.notas });
+      const nueva = Object.assign(nuevaPersona(), { nombre: d.nombre, telefono: d.telefono, atomyId: d.atomyId, contrasena: d.contrasena, notas: d.notas });
       q[d.linea] = q[d.linea] || [];
       q[d.linea].push(nueva);
     }

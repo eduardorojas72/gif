@@ -376,6 +376,13 @@ function personaRowHTML(qKey, linea, p) {
     '<div class="row between" style="align-items:flex-start">' +
     '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(p.nombre || "Sin nombre") + "</div>" +
     (p.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(p.telefono) + "</div>" : "") +
+    (p.atomyId || p.contrasena
+      ? '<div class="muted small" style="margin-top:2px">' +
+        (p.atomyId ? "ID " + escapeHtml(p.atomyId) : "") +
+        (p.atomyId && p.contrasena ? " · " : "") +
+        (p.contrasena ? "Contraseña " + escapeHtml(p.contrasena) : "") +
+        "</div>"
+      : "") +
     "</div>" +
     '<div class="row gap-2">' +
     waLink +
@@ -384,9 +391,10 @@ function personaRowHTML(qKey, linea, p) {
     "</div></div>" +
     (p.notas ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(p.notas) + '”</div>' : "") +
     '<div class="rr-inputs">' +
-    '<div class="field"><label>Puntos (PV)</label><input type="number" min="0" step="10000" value="' + (Number(p.puntos) || 0) + '" data-roster-field="puntos" data-qkey="' + qKey + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
-    '<div class="field"><label>Fecha planeada</label><input type="date" value="' + (p.fecha || "") + '" data-roster-field="fecha" data-qkey="' + qKey + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
+    '<div class="field"><label>PVP</label><input type="number" min="0" step="10000" value="' + (Number(p.pvp) || 0) + '" data-roster-field="pvp" data-qkey="' + qKey + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
+    '<div class="field"><label>PVG</label><input type="number" min="0" step="10000" value="' + (Number(p.puntos) || 0) + '" data-roster-field="puntos" data-qkey="' + qKey + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
     "</div>" +
+    '<div class="field" style="margin-top:8px"><label>Fecha planeada</label><input type="date" value="' + (p.fecha || "") + '" data-roster-field="fecha" data-qkey="' + qKey + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
     '<div class="roster-check' + verificadoClass + '" data-action="toggle-verificado" data-qkey="' + qKey + '" data-linea="' + linea + '" data-arg="' + p.id + '">' +
     '<div class="box">' + (p.verificado ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
     '<span class="lbl">' + (p.verificado ? "Verificado — ya pidió sus puntos" : "Marcar como verificado") + "</span>" +
@@ -440,6 +448,11 @@ function renderPersonaModal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
     '<div class="field"><label>Teléfono (opcional)</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Ej. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Contraseña</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Opcional"></div>' +
+    "</div>" +
+    '<p class="muted small" style="line-height:1.4;margin-top:-4px">La contraseña es opcional y solo para que el equipo pueda poner puntos por este socio si lo necesita — nadie está obligado a compartirla.</p>' +
     '<div class="field"><label>Notas</label><textarea rows="2" data-draft-field="notas" placeholder="Observaciones...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
     "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-persona">Guardar</button>' +

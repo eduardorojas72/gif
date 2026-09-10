@@ -79,7 +79,7 @@ function esQuincenaActual(key) {
 /* ---------------- listas Izquierda / Derecha por quincena ---------------- */
 
 function nuevaPersona() {
-  return { id: "p" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", puntos: 0, fecha: null, verificado: false, notas: "" };
+  return { id: "p" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", atomyId: "", contrasena: "", pvp: 0, puntos: 0, fecha: null, verificado: false, notas: "" };
 }
 
 function emptyQuincena() {
