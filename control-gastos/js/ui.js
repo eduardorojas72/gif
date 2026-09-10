@@ -1060,12 +1060,25 @@ const UI = {
     };
   },
 
+  // Reparte el presupuesto total de un viaje entre el promedio diario y un
+  // colchón para imprevistos (10-15% del total), a partir del total y los días.
+  travelBudgetSplit(totalBudget, days) {
+    const total = Math.max(0, Number(totalBudget) || 0);
+    const d = Math.max(1, Number(days) || 1);
+    return {
+      dailyAverage: total / d,
+      bufferLow: total * 0.10,
+      bufferHigh: total * 0.15
+    };
+  },
+
   renderConsejos() {
     const settings = STORE.getSettings();
     const simIncome = settings.monthlyIncome || "";
     const amounts = this.budgetSimAmounts(simIncome);
     const groceryAmounts = this.groceryBudgetSplit("");
     const jarsAmounts = this.sixJarsAmounts(simIncome);
+    const travelAmounts = this.travelBudgetSplit("", 1);
     return `
       <section class="card">
         <div class="card-head"><h1>Consejos para ahorrar</h1></div>
@@ -1179,6 +1192,28 @@ const UI = {
             <li>Ve sumando con la calculadora del móvil según metes cosas al carro; si al llegar al bloque 3 te pasas, deja los opcionales en la estantería.</li>
             <li>Compra primero los congelados y secos: así aseguras la base de tus comidas aunque a fin de mes vayas más justo.</li>
           </ol>
+        </div>
+
+        <h2 class="section-title">🧳 Presupuesto de viaje</h2>
+        <p class="muted-small">Escribe el presupuesto total y los días de tu viaje para ver tu promedio diario y cuánto conviene reservar como colchón para imprevistos.</p>
+        <div class="budget-sim">
+          <label>Presupuesto total del viaje
+            <input type="number" id="travel-budget-total" min="0" step="0.01" placeholder="Ej. 2000" />
+          </label>
+          <label>Días de viaje
+            <input type="number" id="travel-budget-days" min="1" step="1" placeholder="Ej. 10" />
+          </label>
+          <div class="budget-sim-results">
+            <div class="budget-sim-row budget-sim-row--needs">
+              <span>Promedio diario disponible</span>
+              <strong id="travel-daily">${LOGIC.formatMoney(travelAmounts.dailyAverage)}</strong>
+            </div>
+            <div class="budget-sim-row budget-sim-row--savings">
+              <span>10-15% · Colchón para imprevistos</span>
+              <strong id="travel-buffer">${LOGIC.formatMoney(travelAmounts.bufferLow)} - ${LOGIC.formatMoney(travelAmounts.bufferHigh)}</strong>
+            </div>
+          </div>
+          <p class="muted-small" style="margin:2px 0 0">Con el resto: reserva antes los costes fijos (vuelos, alojamiento, seguro de viaje) y reparte lo que quede entre alimentación, movilidad local y ocio para cada día.</p>
         </div>
 
         <h2 class="section-title">🗺️ Ruta hacia el perfil Inversor</h2>
@@ -1671,6 +1706,19 @@ const UI = {
         document.getElementById("grocery-block2").textContent = LOGIC.formatMoney(amounts.block2);
         document.getElementById("grocery-block3").textContent = LOGIC.formatMoney(amounts.block3);
       });
+    }
+
+    // ---- Consejos: presupuesto de viaje ----
+    const travelTotalInput = view.querySelector("#travel-budget-total");
+    const travelDaysInput = view.querySelector("#travel-budget-days");
+    if (travelTotalInput && travelDaysInput) {
+      const updateTravel = () => {
+        const amounts = UI.travelBudgetSplit(travelTotalInput.value, travelDaysInput.value || 1);
+        document.getElementById("travel-daily").textContent = LOGIC.formatMoney(amounts.dailyAverage);
+        document.getElementById("travel-buffer").textContent = LOGIC.formatMoney(amounts.bufferLow) + " - " + LOGIC.formatMoney(amounts.bufferHigh);
+      };
+      travelTotalInput.addEventListener("input", updateTravel);
+      travelDaysInput.addEventListener("input", updateTravel);
     }
 
     // ---- Resumen ----

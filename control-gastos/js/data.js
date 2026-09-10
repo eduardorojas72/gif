@@ -418,6 +418,34 @@ const DATA = {
       body: "Guarda el extracto con el cargo, la confirmación de compra, las pruebas del problema (seguimiento del envío, fotos, capturas de la oferta original) y tus intentos de contacto con la tienda sin respuesta. Con eso, pide a tu banco abrir una disputa (chargeback) por fraude o incumplimiento del comercio; si usaste los datos de la tarjeta en una web sospechosa, bloquéala y pide una nueva de inmediato."
     },
     {
+      title: "Vuela martes, miércoles o sábado para pagar menos",
+      body: "Usa la vista de \"mes completo\" en un comparador de vuelos para ver qué días tienen las tarifas más bajas: suelen ser de martes a jueves y los sábados, un 15-25% más baratos que viernes o domingo."
+    },
+    {
+      title: "Prueba con aeropuertos secundarios",
+      body: "Volar a un aeropuerto cercano al destino final en vez del principal puede salir bastante más barato. Para trayectos largos, comprueba también si dos billetes de ida sueltos cuestan menos que un ida y vuelta."
+    },
+    {
+      title: "Configura alertas de precio antes de reservar",
+      body: "La mayoría de comparadores de vuelos avisan cuando una tarifa baja de su media histórica o va a subir pronto. Esperar el aviso en vez de reservar a ciegas suele ahorrar bastante."
+    },
+    {
+      title: "Cuidado con los extras del billete de avión",
+      body: "Facturar maleta o elegir asiento con antelación puede subir el precio final un 30-40%. Si viajas solo con equipaje de mano, revisa las medidas exactas de la aerolínea para no pagar penalización en la puerta de embarque."
+    },
+    {
+      title: "Llama al hotel después de comparar precios online",
+      body: "Usa los buscadores solo para localizar opciones; luego contacta directamente con el hotel. Muchos mejoran el precio, añaden desayuno gratis o hacen upgrade de habitación al ahorrarse la comisión de la agencia online."
+    },
+    {
+      title: "Reserva con cancelación gratuita y vigila el precio",
+      body: "Si la tarifa de tu habitación baja más adelante, cancelas la reserva inicial sin coste y vuelves a reservar al precio reducido."
+    },
+    {
+      title: "Evita comisiones bancarias y roaming al viajar",
+      body: "Avisa a tu banco antes de salir y usa una tarjeta sin comisión por cambio de divisa o retiro en cajeros extranjeros; revisa si el destino cobra tasa turística por noche en el alojamiento; y compra una eSIM prepago antes de salir para evitar el roaming internacional."
+    },
+    {
       title: "Reutiliza libros de texto y material escolar",
       body: "Antes de comprarlo todo nuevo, infórmate sobre programas públicos o del propio colegio para prestar o reutilizar libros, y consulta con otras familias si venden lo del curso anterior."
     },
