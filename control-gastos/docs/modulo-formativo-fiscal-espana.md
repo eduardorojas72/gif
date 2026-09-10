@@ -187,7 +187,20 @@ Ayuda para calefacción, agua caliente y cocina (gas natural, butano, propano, e
 
 ### Alternativa para gas: Tarifa de Último Recurso (TUR)
 
-Si no se cumplen los requisitos del Bono Social pero se usa gas natural canalizado: la TUR es la tarifa regulada para hogares con consumo <50.000 kWh/año, con precios por kWh inferiores a las tarifas fijas del mercado libre. Se contrata solo con Comercializadoras de Último Recurso (CUR) — las cuatro que operan en España son filiales reguladas de las grandes energéticas (Endesa, Iberdrola, Naturgy, TotalEnergies).
+Si no se cumplen los requisitos del Bono Social pero se usa gas natural canalizado: la TUR es la tarifa regulada para hogares con consumo <50.000 kWh/año, con precios por kWh inferiores a las tarifas fijas del mercado libre. Trámite gratuito, sin visita técnica ni corte de suministro.
+
+- **Solo 4 comercializadoras autorizadas (CUR)** pueden ofrecerla — una filial regulada por cada gran grupo energético (Endesa, Iberdrola, Naturgy, TotalEnergies); no se puede pedir en la comercializadora del mercado libre habitual, hay que entrar en el portal específico de "Último Recurso" de cada una (online, o por teléfono a su línea gratuita).
+- **Datos necesarios:** código CUPS (22 caracteres, empieza por "ES"), dirección, titular, DNI e IBAN.
+- **Tramo asignado automáticamente** según el consumo anual histórico, sin que el usuario deba elegir: TUR 1 (hasta 5.000 kWh/año — agua caliente/cocina de gas, sin calefacción), TUR 2 (5.000-15.000 kWh/año — con calefacción de gas), TUR 3 (15.000-50.000 kWh/año — viviendas grandes o pymes).
+- **Sin permanencia:** se puede cambiar de compañía o volver al mercado libre en cualquier momento sin penalización.
+- **Plazo:** el cambio tarda 1-3 semanas; la compañía anterior emite factura de cierre y la nueva empieza a facturar en TUR desde la activación.
+- **Ojo con servicios extra:** cancelar expresamente cualquier mantenimiento opcional contratado con la compañía anterior para que no lo sigan cobrando tras la baja.
+- **Precios:** las tarifas TUR se actualizan oficialmente cada trimestre (enero, abril, julio, octubre).
+
+**TUR Vecinal / TUR 4 (comunidades de propietarios):** variante para comunidades con calefacción y/o agua caliente central, pensada para calderas comunitarias.
+- Requisitos: consumo anual >50.000 kWh, uso exclusivamente residencial, contadores individuales o repartidores de costes instalados en cada vivienda, e inspección técnica periódica de la instalación en regla.
+- Trámite: aprobación en junta de propietarios → el administrador de fincas/presidente reúne CIF de la comunidad, DNI del responsable, CUPS de la caldera central, certificado de la mantenedora (revisión al día) y certificado de instalación de repartidores → solicitud a una de las 4 CUR por su canal específico para comunidades.
+- Incentivo de eficiencia: el precio regulado cubre el consumo promedio histórico de la comunidad; el excedente sobre esa media tiene un pequeño recargo en el término de energía, para incentivar el ahorro individual por vivienda.
 
 ---
 
