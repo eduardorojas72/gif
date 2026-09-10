@@ -1,0 +1,19 @@
+{
+  "name": "Control de Gastos",
+  "short_name": "Gastos",
+  "description": "Registra ingresos y gastos, ponte una meta diaria y comparte tus logros de ahorro.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0E3B2E",
+  "theme_color": "#0E3B2E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
