@@ -63,6 +63,11 @@ function renderOnboarding(ui) {
     '<p class="muted small" style="margin-top:4px">Así personalizamos tu recorrido.</p>' +
     '<input id="onboarding-name-input" type="text" placeholder="Tu nombre" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    '<input id="onboarding-mentor-input" type="text" placeholder="Nombre de tu mentor o patrocinador (opcional)" ' +
+    'style="margin-top:12px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    '<label style="margin-top:14px;width:100%;max-width:320px;text-align:left;font-size:12px;color:var(--text-soft)">Fecha de inicio de tu Plan de 90 Días (opcional)</label>' +
+    '<input id="onboarding-fecha-input" type="date" ' +
+    'style="margin-top:6px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Empezar ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     "</div>"
   );
@@ -694,7 +699,15 @@ function renderPlan90(state) {
     ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:500">🏔️ ¡Completaste las 6 quincenas! Ve a la pantalla de la Cumbre para celebrar tu logro.</div>'
     : "";
 
+  const diaPlan = state.fechaInicio90
+    ? Math.max(1, Math.round((new Date(hoyISO()) - new Date(state.fechaInicio90)) / 86400000) + 1)
+    : null;
+  const diaPlanBadge = diaPlan
+    ? '<div class="badge gold" style="width:fit-content;margin-bottom:4px">Día ' + diaPlan + " de tu Plan de 90 Días</div>"
+    : "";
+
   return sectionHeaderHTML("Plan de 90 Días", "Tu ruta hacia el rango Sales Master, quincena a quincena.", "mountain-flag") +
+    diaPlanBadge +
     mountainSceneHTML(quincenasMap, cumbreLograda, 170) +
     '<div class="grid-2">' + tiles + "</div>" +
     banner;
@@ -986,8 +999,19 @@ function renderAjustes(state, ui) {
 
   const resetLabel = ui.confirmReset ? "¿Seguro? Toca de nuevo para reiniciar" : "Reiniciar mi progreso";
 
+  const perfilFields =
+    '<div class="card">' +
+    '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Nombre de tu mentor o patrocinador</label>' +
+    '<input type="text" placeholder="Opcional" value="' + escapeHtml(state.mentorNombre || "") + '" data-field="mentorNombre" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none">' +
+    '</div>' +
+    '<div class="card">' +
+    '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Fecha de inicio de tu Plan de 90 Días</label>' +
+    '<input type="date" value="' + escapeHtml(state.fechaInicio90 || "") + '" data-field="fechaInicio90" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none">' +
+    '</div>';
+
   return (
     sectionHeaderHTML("Ajustes", "", "settings") +
+    perfilFields +
     '<div class="card row between">' +
     '<div><div style="font-size:14px;font-weight:600">Modo patrocinador</div><div class="muted small" style="margin-top:2px">Edita los premios de tu equipo</div></div>' +
     '<div class="toggle' + (state.mentorMode ? " on" : "") + '" data-action="toggle-mentor"><div class="knob"></div></div>' +
