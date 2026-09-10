@@ -164,6 +164,45 @@ const DATA = {
     }
   ],
 
+  // Ruta general (4 pasos) hacia el perfil "Acumulador eficiente / inversor":
+  // depender de un solo sueldo es una vulnerabilidad, así que el objetivo es
+  // convertir parte del ingreso de hoy en patrimonio que trabaje mañana.
+  roadmapSteps: [
+    {
+      title: "Aplica el preahorro automático",
+      body: "Págate a ti mismo primero: configura una transferencia automática el mismo día que recibes tu ingreso hacia una cuenta de ahorro separada. Si esperas a ahorrar \"lo que sobre\" a fin de mes, nunca sobrará nada."
+    },
+    {
+      title: "Elimina las deudas de alto interés",
+      body: "Cancela primero las tarjetas de crédito, préstamos personales o financiamientos de consumo. Ninguna inversión convencional te dará más rentabilidad que el interés que te cobra una deuda de consumo."
+    },
+    {
+      title: "Construye tu fondo de emergencia",
+      body: "Llena un fondo de 3 a 6 meses de gastos fijos, protegido de la volatilidad pero accesible de inmediato: tu colchón ante una pérdida de empleo, una reparación o un imprevisto de salud."
+    },
+    {
+      title: "Diversifica e invierte el excedente",
+      body: "Una vez cubiertos los tres pasos anteriores, automatiza aportaciones periódicas a instrumentos diversificados y de bajo coste. La clave no es adivinar el mercado, sino la constancia y el tiempo."
+    }
+  ],
+
+  // Opciones genéricas para poner a trabajar el excedente (sin nombrar entidades
+  // concretas ni cifras de fiscalidad: eso depende del país y cambia con el tiempo).
+  investingOptions: [
+    {
+      title: "Fondos o ETFs indexados",
+      note: "Replican un índice amplio (por ejemplo, uno global de renta variable): diversificas entre miles de compañías con comisiones muy bajas, sin necesidad de elegir qué empresa concreta va a subir."
+    },
+    {
+      title: "Gestores automatizados (\"robo-advisors\")",
+      note: "Plataformas que, tras un breve test de perfil de riesgo, arman y mantienen una cartera diversificada por ti, sin que necesites conocimientos técnicos previos."
+    },
+    {
+      title: "Cuentas remuneradas o fondos monetarios",
+      note: "Riesgo mínimo y disponibilidad casi inmediata: pensados para el fondo de emergencia o dinero que vayas a necesitar en poco tiempo, no para el ahorro a largo plazo."
+    }
+  ],
+
   // Consejos de ahorro originales, inspirados en principios de educación financiera
   // conocidos (regla 50/30/20, automatización del ahorro, aversión a la pérdida, etc.)
   tips: [

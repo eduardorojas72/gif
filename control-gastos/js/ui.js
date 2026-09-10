@@ -1017,6 +1017,41 @@ const UI = {
           </ol>
         </div>
 
+        <h2 class="section-title">🗺️ Ruta hacia el perfil Inversor</h2>
+        <p class="muted-small">En la clase media, depender de un solo sueldo suele ser una trampa de vulnerabilidad: si los ingresos se detienen, todo se tambalea. La meta no es la privación, sino convertir parte del trabajo de hoy en un patrimonio que trabaje mañana.</p>
+        <div class="triple-colchon">
+          <div class="triple-colchon-row"><span>60-70%</span><small>Estilo de vida sin estrés</small></div>
+          <div class="triple-colchon-row"><span>3-6 meses</span><small>Fondo de emergencia blindado</small></div>
+          <div class="triple-colchon-row"><span>15-25%</span><small>Excedente convertido en activos</small></div>
+        </div>
+        <ol class="roadmap-steps">
+          ${DATA.roadmapSteps.map((step, i) => {
+            const n = i + 1;
+            const isCurrent = settings.incomeExpenseProfileKey && LOGIC.roadmapStepFor(settings.incomeExpenseProfileKey) === n;
+            return `
+              <li class="roadmap-step ${isCurrent ? "is-current" : ""}">
+                <div class="roadmap-step-head">
+                  <strong>${n}. ${step.title}</strong>
+                  ${isCurrent ? '<span class="roadmap-step-here">📍 Estás aquí</span>' : ""}
+                </div>
+                <p>${step.body}</p>
+              </li>`;
+          }).join("")}
+        </ol>
+        ${settings.incomeExpenseProfileKey && LOGIC.roadmapStepFor(settings.incomeExpenseProfileKey) === 5 ? `
+          <p class="muted-small">🎉 Según tu diagnóstico, ¡ya estás en el nivel ideal! Sigue automatizando aportaciones y revisa tu situación una vez al año.</p>
+        ` : ""}
+
+        <h2 class="section-title">Opciones sencillas para invertir el excedente</h2>
+        <div class="tip-grid">
+          ${DATA.investingOptions.map((o) => `
+            <div class="tip-card">
+              <h3>${o.title}</h3>
+              <p>${o.note}</p>
+            </div>`).join("")}
+        </div>
+        <p class="muted-small">La fiscalidad y las opciones disponibles cambian según el país: revisa siempre la normativa y las comisiones de tu entidad antes de invertir.</p>
+
         <h2 class="section-title">Para profundizar: libros</h2>
         <ul class="resource-list">
           ${DATA.resources.books.map((b) => `<li><strong>${b.title}</strong>${b.author !== "—" ? " — " + b.author : ""}<br><span class="muted-small">${b.note}</span></li>`).join("")}

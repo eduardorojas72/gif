@@ -488,6 +488,14 @@ const LOGIC = {
     return Object.assign({ ratio }, profile);
   },
 
+  // Paso (1-4) de la ruta hacia "inversor" en el que se encuentra el usuario
+  // según su perfil de ingreso/gasto. null si aún no hay perfil calculado;
+  // 5 significa que ya superó los 4 pasos (inversor o frugal-FIRE).
+  roadmapStepFor(profileKey) {
+    const map = { endeudado: 2, al_dia: 1, ahorrador_pasivo: 4, inversor: 5, frugal_fire: 5 };
+    return map[profileKey] || null;
+  },
+
   // Genera un movimiento de gasto simulado, como si viniera de una tarjeta
   // o pago móvil enlazado. Placeholder de una integración real (Open Banking).
   simulateLinkedExpense(accountId) {
