@@ -1248,13 +1248,26 @@ function actividadRowHTML(dia, a) {
   );
 }
 
+function zoomFechaLabel(fecha) {
+  try {
+    return new Date(fecha + "T00:00:00").toLocaleDateString("es-ES", { weekday: "short", day: "2-digit", month: "short" });
+  } catch (e) {
+    return fecha;
+  }
+}
+
 function zoomRowHTML(dia, z) {
+  const puntual = !!z.fecha;
   return (
     '<div class="card" style="padding:12px">' +
     '<div class="row between" style="align-items:flex-start">' +
     '<div class="row gap-2" style="min-width:0">' + Icon("video", { size: 14, color: "var(--gold-light)" }) +
     '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Reunión sin título") + "</div>" +
-    (z.hora ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(z.hora) + (z.recordar ? " " : "") + (z.recordar ? Icon("bell", { size: 11, color: "var(--gold-light)" }) : "") + "</div>" : "") + "</div></div>" +
+    '<div class="row gap-2" style="margin-top:2px;flex-wrap:wrap">' +
+    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " Solo " + escapeHtml(zoomFechaLabel(z.fecha)) + "</span>" : '<span class="badge dark">Cada semana</span>') +
+    (z.hora ? '<span class="muted small">' + escapeHtml(z.hora) + "</span>" : "") +
+    (z.recordar ? Icon("bell", { size: 11, color: "var(--gold-light)" }) : "") +
+    "</div></div></div>" +
     '<button class="icon-btn" data-action="edit-zoom" data-dia="' + dia + '" data-arg="' + z.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
     "</div>" +
     (z.enlace
@@ -1292,7 +1305,7 @@ function renderAgenda(state, ui) {
     : '<p class="muted small" style="text-align:center;padding:16px 0">Sin reuniones Zoom guardadas para este día.</p>';
 
   return (
-    sectionHeaderHTML("Agenda Semanal", "Tu rutina de trabajo, día a día — llamadas, visitas, presentaciones, registros y formaciones, más tus Zoom recurrentes.", "calendar") +
+    sectionHeaderHTML("Agenda Semanal", "Tu rutina de trabajo, día a día — llamadas, visitas, presentaciones, registros y formaciones, más tus reuniones Zoom.", "calendar") +
     '<div class="row gap-2" style="flex-wrap:wrap">' + tabs + "</div>" +
     '<div>' +
     '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Actividades — ' + escapeHtml(diaInfo.label) + "</span>" +
@@ -1300,9 +1313,9 @@ function renderAgenda(state, ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' + actividadesHtml + "</div>" +
     "</div>" +
     '<div>' +
-    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Zoom recurrentes — ' + escapeHtml(diaInfo.label) + "</span>" +
+    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Zoom — ' + escapeHtml(diaInfo.label) + "</span>" +
     '<button class="link-btn small" data-action="add-zoom" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
-    '<div class="muted small" style="margin-top:2px">Guarda aquí el mismo enlace cada semana — no hace falta volver a buscarlo.</div>' +
+    '<div class="muted small" style="margin-top:2px">Guarda aquí tus Zoom recurrentes (el mismo enlace cada semana) o uno puntual apenas recibas la invitación — por ejemplo, si te avisan hoy de un Zoom para mañana, lo agregas aquí mismo con su fecha, hora y enlace.</div>' +
     '<div class="view-stack gap-sm" style="margin-top:8px">' + zoomsHtml + "</div>" +
     "</div>"
   );
@@ -1375,6 +1388,7 @@ function renderZoomModal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Título</label><input type="text" data-draft-field="titulo" value="' + escapeHtml(d.titulo || "") + '" placeholder="Ej. Formación semanal del equipo"></div>' +
     '<div class="field"><label>Hora</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Fecha (opcional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Déjalo vacío si es tu Zoom de todas las semanas. Ponle fecha si es una reunión puntual — por ejemplo, una que te acaban de invitar para mañana.</p></div>' +
     '<div class="field"><label>Enlace de conexión</label><input type="text" inputmode="url" data-draft-field="enlace" value="' + escapeHtml(d.enlace || "") + '" placeholder="https://zoom.us/j/..."></div>' +
     recordatorioFieldHTML(d, "toggle-zoom-recordar") +
     "</div>" +

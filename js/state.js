@@ -29,7 +29,7 @@ function nuevaActividadAgenda() {
 }
 
 function nuevoZoomAgenda() {
-  return { id: "z" + Math.random().toString(36).slice(2, 9), titulo: "", hora: "", enlace: "", recordar: false, recordarMin: 10, ultimoAviso: null };
+  return { id: "z" + Math.random().toString(36).slice(2, 9), titulo: "", hora: "", enlace: "", fecha: "", recordar: false, recordarMin: 10, ultimoAviso: null };
 }
 
 function emptyAgendaDia() {
