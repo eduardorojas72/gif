@@ -374,9 +374,13 @@ const Actions = {
     const input = document.getElementById("onboarding-name-input");
     const nombre = input ? input.value.trim() : "";
     if (!nombre) return;
+    const mentorInput = document.getElementById("onboarding-mentor-input");
+    const fechaInput = document.getElementById("onboarding-fecha-input");
     const rh = calcularRacha(0, null);
     App.state.nombre = nombre;
     App.state.foto = App.ui.onboardingFoto;
+    App.state.mentorNombre = mentorInput ? mentorInput.value.trim() : "";
+    App.state.fechaInicio90 = fechaInput && fechaInput.value ? fechaInput.value : null;
     App.state.onboarded = true;
     App.state.racha = rh.racha;
     App.state.ultimaFecha = rh.ultimaFecha;

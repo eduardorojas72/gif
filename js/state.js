@@ -105,6 +105,8 @@ function defaultState() {
     onboarded: false,
     nombre: "",
     foto: null,
+    mentorNombre: "",
+    fechaInicio90: null,
     rangoIndex: 0,
     racha: 0,
     ultimaFecha: null,
