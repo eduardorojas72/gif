@@ -194,8 +194,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     padding: 16px 0;
     box-shadow: var(--shadow);
     z-index: 30;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
-  .sidebar-logo { margin-bottom: 12px; }
+  .sidebar-logo { margin-bottom: 12px; flex-shrink: 0; }
   .sidebar-item {
     width: 56px;
     height: 56px;
