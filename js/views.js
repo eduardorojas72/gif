@@ -369,6 +369,24 @@ function renderPlaneador(state, ui) {
 
 /* ---------------- Listas 200+200 ---------------- */
 
+function pedidoResumenTexto(catalogo, compras, paisInfo, totalPV, totalPrecio, appName) {
+  const items = catalogo.filter(function (p) { return (Number(compras[p.id]) || 0) > 0; });
+  const lineas = items.map(function (p) {
+    const cant = Number(compras[p.id]) || 0;
+    return "• " + (p.nombre || "(sin nombre)") + " x" + cant + " (" + ((Number(p.pv) || 0) * cant).toLocaleString(paisInfo.locale) + " PV)";
+  });
+  return (
+    "📦 Mi plan de compra de esta quincena (" + appName + "):\n" +
+    lineas.join("\n") +
+    "\n\nTotal: " + totalPV.toLocaleString(paisInfo.locale) + " PV · " + formatMoneda(totalPrecio, paisInfo) +
+    "\n\n¿Me ayudas a verificarlo?"
+  );
+}
+
+function pedidoWhatsappHref(numero, texto) {
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent(texto);
+}
+
 function formatMoneda(valor, paisInfo) {
   try {
     return Number(valor || 0).toLocaleString(paisInfo.locale, { style: "currency", currency: paisInfo.moneda, maximumFractionDigits: 0 });
@@ -452,6 +470,11 @@ function productosCalculadoraHTML(state, ui, qKey, q) {
     '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">Total a pagar</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + formatMoneda(totalPrecio, paisInfo) + "</div></div>" +
     "</div>" +
     '<div class="muted small" style="margin-top:8px">' + probados + " de " + catalogo.length + " productos probados · " + planeados + " planeados esta quincena</div>" +
+    (planeados > 0
+      ? (state.whatsapp && state.whatsapp.trim()
+          ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, pedidoResumenTexto(catalogo, compras, paisInfo, totalPV, totalPrecio, "Cumbre Master")) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
+          : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu pedido.</p>')
+      : "") +
     (open
       ? '<p class="muted small" style="margin-top:10px;line-height:1.5;font-style:italic">' + escapeHtml(catalogo.length ? CATALOGO_PRODUCTOS_NOTA : CATALOGO_PRODUCTOS_NOTA_VACIO) + "</p>" +
         '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
