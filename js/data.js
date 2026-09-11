@@ -1,4 +1,15 @@
 /* ---------------------------------------------------------------
+   LICENCIA — marca de agua sutil por comprador.
+   Antes de desplegar una copia de esta app para un líder que la haya
+   comprado, cambia el valor de abajo con su nombre (y opcionalmente su
+   rango) y despliega esa copia con un nombre de proyecto propio en Vercel.
+   No es un candado técnico — es una firma visible en la app que deja
+   claro de quién es esa copia si alguna vez circula fuera de su equipo.
+   Déjalo en "" para una copia sin licencia asignada (uso propio, demos).
+--------------------------------------------------------------- */
+const LICENCIA_TITULAR = "";
+
+/* ---------------------------------------------------------------
    CONTENIDO — Cumbre Master: Plan de Compensación (Sales Master → Imperial Master)
    Fuente: documento oficial de distribución de comisiones (Colombia, en COP).
    Los valores en USD son una conversión aproximada de referencia (~4.000 COP = 1 USD),
