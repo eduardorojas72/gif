@@ -52,6 +52,13 @@ const App = {
     confirmDeletePersona: null,
     rangosVueltos: {},
     calculadoraAbierta: false,
+    agendaDia: null,
+    actividadDraft: null,
+    actividadEditId: null,
+    confirmDeleteActividad: null,
+    zoomDraft: null,
+    zoomEditId: null,
+    confirmDeleteZoom: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -73,7 +80,63 @@ const App = {
     applyTheme(st.dark);
     this.bindEvents();
     this.render();
+    this.notifyReminders();
+    this.checkAgendaAlarmas();
+    setInterval(() => this.checkAgendaAlarmas(), 30000);
     registerServiceWorker();
+  },
+
+  checkAgendaAlarmas() {
+    if (!("Notification" in window) || Notification.permission !== "granted" || !this.state.notifOn) return;
+    const now = new Date();
+    const hoy = hoyISO();
+    const dia = this.state.agenda[diaSemanaHoyId()];
+    if (!dia) return;
+
+    const revisar = (item, titulo, cuerpo) => {
+      if (!item.recordar || !item.hora || item.ultimoAviso === hoy) return;
+      const [hh, mm] = item.hora.split(":").map(Number);
+      if (Number.isNaN(hh) || Number.isNaN(mm)) return;
+      const objetivo = new Date(now);
+      objetivo.setHours(hh, mm, 0, 0);
+      objetivo.setMinutes(objetivo.getMinutes() - (Number(item.recordarMin) || 0));
+      const diffMs = now - objetivo;
+      if (diffMs < 0 || diffMs >= 5 * 60000) return;
+      try {
+        new Notification(titulo, { body: cuerpo });
+      } catch (e) {
+        /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+      }
+      item.ultimoAviso = hoy;
+      this.persist(true);
+    };
+
+    (dia.actividades || []).forEach((a) => {
+      const tipo = agendaTipoInfo(a.tipo);
+      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+    });
+    (dia.zooms || []).forEach((z) => {
+      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+    });
+  },
+
+  notifyReminders() {
+    if (!("Notification" in window)) return;
+    if (!this.state.notifOn || Notification.permission !== "granted") return;
+    const hoy = hoyISO();
+    if (this.state.notifUltimoAviso === hoy) return;
+    const reminders = getReminders(this.state);
+    if (!reminders.length) return;
+    this.state.notifUltimoAviso = hoy;
+    this.persist(true);
+    try {
+      const primero = reminders[0];
+      new Notification("Cumbre Master — Recordatorio", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      });
+    } catch (e) {
+      /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+    }
   },
 
   persist(immediate) {
@@ -141,6 +204,7 @@ const App = {
       case "plan": mainHtml = renderPlanCompensacion(ui); break;
       case "planeador": mainHtml = renderPlaneador(state, ui); break;
       case "listas": mainHtml = renderListas(state, ui); break;
+      case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "ajustes": mainHtml = renderAjustes(state, ui); break;
       default: mainHtml = renderHome(state, ui);
@@ -154,6 +218,8 @@ const App = {
     let modalHtml = "";
     if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.personaDraft) modalHtml = renderPersonaModal(ui);
+    else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
+    else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
 
@@ -197,8 +263,9 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && this.ui.personaDraft) {
-        setPath(this.ui.personaDraft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.draftField && (this.ui.personaDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
+        const draft = this.ui.personaDraft || this.ui.actividadDraft || this.ui.zoomDraft;
+        setPath(draft, el.dataset.draftField, el.value);
       } else if (el.dataset && el.dataset.rosterField) {
         const q = getQuincena(this.state, el.dataset.qkey);
         const lista = q[el.dataset.linea] || [];
@@ -217,6 +284,11 @@ const App = {
       if (el.tagName === "INPUT" && el.dataset && el.dataset.field && (el.dataset.field.indexOf("quincenas.") === 0 && el.dataset.field.indexOf(".compras.") !== -1 || el.dataset.field.indexOf("catalogoProductos.") === 0)) {
         // recalcula los totales de la calculadora de productos al salir del campo (no en cada tecla, para no perder el foco)
         this.render();
+        return;
+      }
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.actividadDraft || this.ui.zoomDraft)) {
+        const draft = this.ui.actividadDraft || this.ui.zoomDraft;
+        setPath(draft, el.dataset.draftField, el.value);
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target) {
@@ -465,9 +537,184 @@ const Actions = {
     App.ui.onboardingFoto = null;
     App.ui.quincenaKey = null;
     App.ui.personaDraft = null;
+    App.ui.actividadDraft = null;
+    App.ui.zoomDraft = null;
+    App.ui.agendaDia = null;
     App.ui.view = "welcome";
     App.showToast("Progreso reiniciado");
     App.render();
+  },
+
+  "set-agenda-dia": function (arg) {
+    App.ui.agendaDia = arg;
+    App.render();
+  },
+
+  "add-actividad": function (arg) {
+    App.ui.actividadDraft = Object.assign(nuevaActividadAgenda(), { dia: arg });
+    App.ui.actividadEditId = null;
+    App.render();
+  },
+
+  "edit-actividad": function (arg, el) {
+    const dia = el.dataset.dia;
+    const a = (App.state.agenda[dia].actividades || []).find((x) => x.id === arg);
+    if (!a) return;
+    App.ui.actividadDraft = Object.assign({}, a, { dia: dia });
+    App.ui.actividadEditId = arg;
+    App.ui.confirmDeleteActividad = null;
+    App.render();
+  },
+
+  "cancel-actividad": function () {
+    App.ui.actividadDraft = null;
+    App.ui.actividadEditId = null;
+    App.ui.confirmDeleteActividad = null;
+    App.render();
+  },
+
+  "save-actividad": function () {
+    const d = App.ui.actividadDraft;
+    if (!d) return;
+    const dia = App.state.agenda[d.dia];
+    if (App.ui.actividadEditId) {
+      const idx = dia.actividades.findIndex((x) => x.id === App.ui.actividadEditId);
+      if (idx !== -1) dia.actividades[idx] = Object.assign({}, dia.actividades[idx], d);
+    } else {
+      dia.actividades.push(Object.assign(nuevaActividadAgenda(), d));
+    }
+    App.ui.actividadDraft = null;
+    App.ui.actividadEditId = null;
+    App.persist(true);
+    App.showToast("Actividad guardada");
+    App.render();
+  },
+
+  "delete-actividad": function (arg, el) {
+    if (App.ui.confirmDeleteActividad !== arg) {
+      App.ui.confirmDeleteActividad = arg;
+      App.render();
+      return;
+    }
+    const dia = App.state.agenda[el.dataset.dia];
+    dia.actividades = dia.actividades.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteActividad = null;
+    App.ui.actividadDraft = null;
+    App.ui.actividadEditId = null;
+    App.persist(true);
+    App.showToast("Actividad eliminada");
+    App.render();
+  },
+
+  "toggle-actividad-hecha": function (arg, el) {
+    const dia = App.state.agenda[el.dataset.dia];
+    const a = (dia.actividades || []).find((x) => x.id === arg);
+    if (!a) return;
+    a.hecha = !a.hecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "add-zoom": function (arg) {
+    App.ui.zoomDraft = Object.assign(nuevoZoomAgenda(), { dia: arg });
+    App.ui.zoomEditId = null;
+    App.render();
+  },
+
+  "edit-zoom": function (arg, el) {
+    const dia = el.dataset.dia;
+    const z = (App.state.agenda[dia].zooms || []).find((x) => x.id === arg);
+    if (!z) return;
+    App.ui.zoomDraft = Object.assign({}, z, { dia: dia });
+    App.ui.zoomEditId = arg;
+    App.ui.confirmDeleteZoom = null;
+    App.render();
+  },
+
+  "cancel-zoom": function () {
+    App.ui.zoomDraft = null;
+    App.ui.zoomEditId = null;
+    App.ui.confirmDeleteZoom = null;
+    App.render();
+  },
+
+  "save-zoom": function () {
+    const d = App.ui.zoomDraft;
+    if (!d) return;
+    const dia = App.state.agenda[d.dia];
+    if (App.ui.zoomEditId) {
+      const idx = dia.zooms.findIndex((x) => x.id === App.ui.zoomEditId);
+      if (idx !== -1) dia.zooms[idx] = Object.assign({}, dia.zooms[idx], d);
+    } else {
+      dia.zooms.push(Object.assign(nuevoZoomAgenda(), d));
+    }
+    App.ui.zoomDraft = null;
+    App.ui.zoomEditId = null;
+    App.persist(true);
+    App.showToast("Reunión guardada");
+    App.render();
+  },
+
+  "delete-zoom": function (arg, el) {
+    if (App.ui.confirmDeleteZoom !== arg) {
+      App.ui.confirmDeleteZoom = arg;
+      App.render();
+      return;
+    }
+    const dia = App.state.agenda[el.dataset.dia];
+    dia.zooms = dia.zooms.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteZoom = null;
+    App.ui.zoomDraft = null;
+    App.ui.zoomEditId = null;
+    App.persist(true);
+    App.showToast("Reunión eliminada");
+    App.render();
+  },
+
+  "copy-zoom-link": function (arg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(arg).then(
+        () => App.showToast("Enlace copiado"),
+        () => App.showToast("No se pudo copiar el enlace")
+      );
+    } else {
+      App.showToast("No se pudo copiar el enlace");
+    }
+  },
+
+  "toggle-actividad-recordar": function () {
+    if (!App.ui.actividadDraft) return;
+    App.ui.actividadDraft.recordar = !App.ui.actividadDraft.recordar;
+    if (App.ui.actividadDraft.recordar && !("Notification" in window ? Notification.permission === "granted" : false)) {
+      Actions["toggle-notif"]();
+    }
+    App.render();
+  },
+
+  "toggle-zoom-recordar": function () {
+    if (!App.ui.zoomDraft) return;
+    App.ui.zoomDraft.recordar = !App.ui.zoomDraft.recordar;
+    if (App.ui.zoomDraft.recordar && !("Notification" in window ? Notification.permission === "granted" : false)) {
+      Actions["toggle-notif"]();
+    }
+    App.render();
+  },
+
+  "toggle-notif": function () {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      App.state.notifOn = !App.state.notifOn;
+      App.persist();
+      App.render();
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((perm) => {
+        App.state.notifOn = perm === "granted";
+        App.persist();
+        App.render();
+      });
+    } else {
+      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+    }
   },
 };
 

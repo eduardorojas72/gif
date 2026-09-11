@@ -889,3 +889,26 @@ const META_PV_QUINCENA = 2500000;
 
 const MENSAJE_BIENVENIDA =
   "Ya conquistaste Sales Master — esta es tu siguiente montaña. Aquí vas a entender cómo funciona el plan de compensación completo, y a planear quincena a quincena con tu equipo para aprovechar cada punto y no perder ningún ciclaje.";
+
+/* ---------------------------------------------------------------
+   AGENDA SEMANAL — rutina de trabajo de un líder: llamadas y reuniones
+   con afiliados, formaciones de equipo, reuniones de líderes y Zoom.
+--------------------------------------------------------------- */
+
+const DIAS_SEMANA = [
+  { id: "lunes", label: "Lunes" },
+  { id: "martes", label: "Martes" },
+  { id: "miercoles", label: "Miércoles" },
+  { id: "jueves", label: "Jueves" },
+  { id: "viernes", label: "Viernes" },
+  { id: "sabado", label: "Sábado" },
+  { id: "domingo", label: "Domingo" },
+];
+
+const AGENDA_TIPOS = [
+  { id: "llamada", label: "Llamada a un socio", icon: "phone-call" },
+  { id: "reunion-afiliado", label: "Reunión con un afiliado", icon: "users" },
+  { id: "consultoria", label: "Consultoría / seguimiento", icon: "target" },
+  { id: "formacion", label: "Formación de equipo", icon: "book-open" },
+  { id: "reunion-lideres", label: "Reunión de líderes", icon: "crown" },
+];

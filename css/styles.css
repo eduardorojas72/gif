@@ -390,7 +390,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 /* forms */
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12px; font-weight: 600; color: var(--text); }
-.field input[type="text"], .field input:not([type]), .field textarea {
+.field input[type="text"], .field input[type="date"], .field input[type="time"], .field input:not([type]), .field textarea {
   background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft); color: var(--text);
   border-radius: 12px; padding: 11px 13px; font-size: 14px; outline: none; width: 100%;
   resize: none; transition: border-color .15s ease;

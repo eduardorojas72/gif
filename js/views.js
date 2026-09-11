@@ -8,6 +8,7 @@ const MENU_ITEMS = [
   { id: "plan", label: "Plan de Compensación", icon: "book-open" },
   { id: "planeador", label: "Planeador de Quincena", icon: "target" },
   { id: "listas", label: "Listas 200+200", icon: "users" },
+  { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
   { id: "perfil", label: "Mi Rango", icon: "user-badge" },
   { id: "ajustes", label: "Ajustes", icon: "settings" },
 ];
@@ -561,6 +562,186 @@ function renderPersonaModal(ui) {
   );
 }
 
+/* ---------------- Agenda Semanal ---------------- */
+
+function agendaTipoInfo(tipoId) {
+  return AGENDA_TIPOS.find(function (t) { return t.id === tipoId; }) || AGENDA_TIPOS[0];
+}
+
+function agendaFechaLabel(fecha) {
+  try {
+    return new Date(fecha + "T00:00:00").toLocaleDateString("es-ES", { weekday: "short", day: "2-digit", month: "short" });
+  } catch (e) {
+    return fecha;
+  }
+}
+
+function actividadRowHTML(dia, a) {
+  const tipo = agendaTipoInfo(a.tipo);
+  const puntual = !!a.fecha;
+  return (
+    '<div class="card" style="padding:12px' + (a.hecha ? ";opacity:.6" : "") + '">' +
+    '<div class="row gap-3" style="align-items:flex-start">' +
+    '<button data-action="toggle-actividad-hecha" data-dia="' + dia + '" data-arg="' + a.id + '" style="flex-shrink:0;margin-top:1px">' +
+    Icon(a.hecha ? "check-circle" : "circle", { size: 20, color: a.hecha ? "var(--success)" : "var(--text-soft)" }) +
+    "</button>" +
+    '<div style="flex:1;min-width:0">' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' + Icon(tipo.icon, { size: 13, color: "var(--gold-light)" }) +
+    '<span style="font-weight:700;font-size:13.5px' + (a.hecha ? ";text-decoration:line-through" : "") + '">' + escapeHtml(tipo.label) + "</span>" +
+    (a.hora ? '<span class="muted small">· ' + escapeHtml(a.hora) + "</span>" : "") +
+    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " " + escapeHtml(agendaFechaLabel(a.fecha)) + "</span>" : "") +
+    (a.recordar ? Icon("bell", { size: 12, color: "var(--gold-light)" }) : "") + "</div>" +
+    (a.nota ? '<div class="muted small" style="margin-top:3px">' + escapeHtml(a.nota) + "</div>" : "") +
+    "</div>" +
+    '<button class="icon-btn" data-action="edit-actividad" data-dia="' + dia + '" data-arg="' + a.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    "</div></div>"
+  );
+}
+
+function zoomRowHTML(dia, z) {
+  const puntual = !!z.fecha;
+  return (
+    '<div class="card" style="padding:12px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div class="row gap-2" style="min-width:0">' + Icon("video", { size: 14, color: "var(--gold-light)" }) +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Reunión sin título") + "</div>" +
+    '<div class="row gap-2" style="margin-top:2px;flex-wrap:wrap">' +
+    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " Solo " + escapeHtml(agendaFechaLabel(z.fecha)) + "</span>" : '<span class="badge dark">Cada semana</span>') +
+    (z.hora ? '<span class="muted small">' + escapeHtml(z.hora) + "</span>" : "") +
+    (z.recordar ? Icon("bell", { size: 11, color: "var(--gold-light)" }) : "") +
+    "</div></div></div>" +
+    '<button class="icon-btn" data-action="edit-zoom" data-dia="' + dia + '" data-arg="' + z.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    "</div>" +
+    (z.enlace
+      ? '<div class="row gap-2" style="margin-top:10px">' +
+        '<a class="btn-secondary" style="flex:1;padding:8px;text-align:center" href="' + escapeHtml(z.enlace) + '" target="_blank" rel="noreferrer">' + Icon("video", { size: 14 }) + " Unirme</a>" +
+        '<button class="icon-btn" data-action="copy-zoom-link" data-arg="' + escapeHtml(z.enlace) + '">' + Icon("copy", { size: 14 }) + "</button>" +
+        "</div>"
+      : '<div class="muted small" style="margin-top:8px">Sin enlace guardado todavía — tócala para añadirlo.</div>') +
+    "</div>"
+  );
+}
+
+function renderAgenda(state, ui) {
+  const diaActivo = ui.agendaDia || diaSemanaHoyId();
+  const diaInfo = DIAS_SEMANA.find(function (d) { return d.id === diaActivo; });
+  const diaData = state.agenda[diaActivo] || emptyAgendaDia();
+
+  const tabs = DIAS_SEMANA.map(function (d) {
+    const active = diaActivo === d.id;
+    const esHoy = d.id === diaSemanaHoyId();
+    return (
+      '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-agenda-dia" data-arg="' + d.id + '">' +
+      d.label.slice(0, 3) + (esHoy ? " •" : "") +
+      "</button>"
+    );
+  }).join(" ");
+
+  const actividades = diaData.actividades.slice().sort(function (a, b) { return (a.hora || "99:99").localeCompare(b.hora || "99:99"); });
+  const actividadesHtml = actividades.length
+    ? actividades.map(function (a) { return actividadRowHTML(diaActivo, a); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:16px 0">Sin actividades para ' + escapeHtml(diaInfo.label) + ".</p>";
+
+  const zoomsHtml = diaData.zooms.length
+    ? diaData.zooms.map(function (z) { return zoomRowHTML(diaActivo, z); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:16px 0">Sin reuniones Zoom guardadas para este día.</p>';
+
+  return (
+    sectionHeaderHTML("Agenda Semanal", "Tu rutina de líder, día a día — llamadas, reuniones con afiliados, consultorías, formaciones y reuniones de líderes, más tus Zoom.", "calendar") +
+    '<div class="row gap-2" style="flex-wrap:wrap">' + tabs + "</div>" +
+    '<div>' +
+    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Actividades — ' + escapeHtml(diaInfo.label) + "</span>" +
+    '<button class="link-btn small" data-action="add-actividad" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + actividadesHtml + "</div>" +
+    "</div>" +
+    '<div>' +
+    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Zoom — ' + escapeHtml(diaInfo.label) + "</span>" +
+    '<button class="link-btn small" data-action="add-zoom" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
+    '<div class="muted small" style="margin-top:2px">Guarda aquí tus Zoom recurrentes (el mismo enlace cada semana) o uno puntual apenas recibas la invitación — por ejemplo, si te avisan hoy de un Zoom para mañana, lo agregas aquí mismo con su fecha, hora y enlace.</div>' +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + zoomsHtml + "</div>" +
+    "</div>"
+  );
+}
+
+function recordatorioFieldHTML(d, toggleAction) {
+  const on = !!d.recordar;
+  const minOpts = [0, 10, 30, 60].map(function (m) {
+    const label = m === 0 ? "A esa hora" : m + " min antes";
+    return '<option value="' + m + '"' + (Number(d.recordarMin) === m ? " selected" : "") + ">" + label + "</option>";
+  }).join("");
+  return (
+    '<div class="field">' +
+    '<div class="row gap-2" style="align-items:center">' +
+    '<button class="check-dot' + (on ? " on" : "") + '" data-action="' + toggleAction + '">' + (on ? Icon("check", { size: 13, color: "#1B1338" }) : Icon("bell", { size: 13 })) + "</button>" +
+    '<button class="check-label' + (on ? " on" : "") + '" style="padding:0;flex:1;text-align:left" data-action="' + toggleAction + '">Avisarme con una notificación</button>' +
+    "</div>" +
+    (on
+      ? '<select data-draft-field="recordarMin" style="width:100%;margin-top:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:9px 12px;font-size:13.5px;outline:none">' + minOpts + "</select>" +
+        '<p class="muted small" style="margin-top:4px">Solo avisa mientras tengas Cumbre Master abierto en el navegador o instalado, con las notificaciones activadas en Ajustes.</p>'
+      : "") +
+    "</div>"
+  );
+}
+
+function renderActividadModal(ui) {
+  const d = ui.actividadDraft;
+  if (!d) return "";
+  const editing = !!ui.actividadEditId;
+  const tipoOpts = AGENDA_TIPOS.map(function (t) { return '<option value="' + t.id + '"' + (d.tipo === t.id ? " selected" : "") + ">" + t.label + "</option>"; }).join("");
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-actividad" data-dia="' + d.dia + '" data-arg="' + ui.actividadEditId + '">' +
+      (ui.confirmDeleteActividad === ui.actividadEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar actividad") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-actividad"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar actividad" : "Nueva actividad") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-actividad">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Tipo</label><select data-draft-field="tipo" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + tipoOpts + "</select></div>" +
+    '<div class="field"><label>Hora (opcional)</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Fecha (opcional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Déjalo vacío si se repite todas las semanas ese día. Ponle fecha si es puntual — por ejemplo, una tarea de una sola vez.</p></div>' +
+    '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="Con quién, dónde, qué necesitas llevar...">' + escapeHtml(d.nota || "") + "</textarea></div>" +
+    recordatorioFieldHTML(d, "toggle-actividad-recordar") +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-actividad">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-actividad">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+function renderZoomModal(ui) {
+  const d = ui.zoomDraft;
+  if (!d) return "";
+  const editing = !!ui.zoomEditId;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-zoom" data-dia="' + d.dia + '" data-arg="' + ui.zoomEditId + '">' +
+      (ui.confirmDeleteZoom === ui.zoomEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar reunión") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-zoom"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar reunión Zoom" : "Nueva reunión Zoom") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-zoom">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Título</label><input type="text" data-draft-field="titulo" value="' + escapeHtml(d.titulo || "") + '" placeholder="Ej. Formación semanal del equipo"></div>' +
+    '<div class="field"><label>Hora</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Fecha (opcional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Déjalo vacío si es tu Zoom de todas las semanas. Ponle fecha si es una reunión puntual — por ejemplo, una que te acaban de invitar para mañana.</p></div>' +
+    '<div class="field"><label>Enlace de conexión</label><input type="text" inputmode="url" data-draft-field="enlace" value="' + escapeHtml(d.enlace || "") + '" placeholder="https://zoom.us/j/..."></div>' +
+    recordatorioFieldHTML(d, "toggle-zoom-recordar") +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-zoom">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-zoom">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
 /* ---------------- Mi Rango ---------------- */
 
 function renderPerfil(state) {
@@ -611,11 +792,17 @@ function renderAjustes(state, ui) {
       '<p class="muted small" style="margin-top:6px;line-height:1.5">Esta copia de Cumbre Master está licenciada exclusivamente para <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> y su propio equipo. No está autorizada para compartirse con otros líderes o equipos.</p>' +
       "</div>"
     : "";
+  const notifSupported = "Notification" in window;
+  const notifRow = notifSupported
+    ? '<div class="card row between"><div><div style="font-size:14px;font-weight:600">Notificaciones del navegador</div><div class="muted small" style="margin-top:2px">Avisos de tu Agenda Semanal y del ritmo de PV</div></div><div class="toggle' + (state.notifOn && Notification.permission === "granted" ? " on" : "") + '" data-action="toggle-notif"><div class="knob"></div></div></div>'
+    : "";
+
   return (
     sectionHeaderHTML("Ajustes", "", "settings") +
     licenciaCard +
     '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Tu WhatsApp (para el botón de ayuda)</label>' +
     '<input type="text" inputmode="numeric" placeholder="Ej. 573000000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>' +
+    notifRow +
     '<button class="btn-secondary" style="border-color:var(--warn);color:var(--warn)" data-action="reset-progress">' + Icon("rotate-ccw", { size: 16 }) + " " + resetLabel + "</button>"
   );
 }

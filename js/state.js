@@ -18,7 +18,31 @@ function defaultState() {
     quincenas: {},
     pais: "CO",
     catalogoProductos: { CO: emptyCatalogoProductosPais("CO") },
+    agenda: emptyAgenda(),
+    notifOn: true,
+    notifUltimoAviso: null,
   };
+}
+
+function diaSemanaHoyId() {
+  const map = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+  return map[new Date().getDay()];
+}
+
+function nuevaActividadAgenda() {
+  return { id: "a" + Math.random().toString(36).slice(2, 9), tipo: "llamada", hora: "", fecha: "", nota: "", hecha: false, recordar: false, recordarMin: 10, ultimoAviso: null };
+}
+
+function nuevoZoomAgenda() {
+  return { id: "z" + Math.random().toString(36).slice(2, 9), titulo: "", hora: "", enlace: "", fecha: "", recordar: false, recordarMin: 10, ultimoAviso: null };
+}
+
+function emptyAgendaDia() {
+  return { actividades: [], zooms: [] };
+}
+
+function emptyAgenda() {
+  return DIAS_SEMANA.reduce(function (acc, d) { acc[d.id] = emptyAgendaDia(); return acc; }, {});
 }
 
 function hoyISO() {
@@ -165,6 +189,14 @@ function hydrateState(parsed) {
       reunionHecha: !!saved.reunionHecha,
       compras: saved.compras && typeof saved.compras === "object" ? saved.compras : {},
     };
+    return acc;
+  }, {});
+
+  merged.agenda = DIAS_SEMANA.reduce(function (acc, d) {
+    const saved = parsed.agenda && parsed.agenda[d.id];
+    const actividades = saved && Array.isArray(saved.actividades) ? saved.actividades.map(function (a) { return Object.assign(nuevaActividadAgenda(), a); }) : [];
+    const zooms = saved && Array.isArray(saved.zooms) ? saved.zooms.map(function (z) { return Object.assign(nuevoZoomAgenda(), z); }) : [];
+    acc[d.id] = { actividades: actividades, zooms: zooms };
     return acc;
   }, {});
 
