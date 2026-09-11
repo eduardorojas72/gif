@@ -788,25 +788,41 @@ function contadorAccionHTML(tipo, label, icon, valorHoy) {
   );
 }
 
-function informeSemanalTextoPersonal(semana) {
+function informeSemanalTextoPersonal(semana, idioma) {
+  const t = informeI18n(idioma);
   return (
-    "📊 Mi informe semanal de actividad (Cumbre Master):\n" +
-    "• Llamadas: " + semana.llamadas + "\n" +
-    "• Mensajes de invitación: " + semana.mensajes + "\n" +
-    "• Presentaciones: " + semana.presentaciones + "\n" +
-    "• Reuniones / consultorías: " + semana.reuniones +
-    "\n\n¿Qué te parece? ¿En qué puedo mejorar esta semana?"
+    t.tituloPersonal + "\n" +
+    "• " + t.llamadas + ": " + semana.llamadas + "\n" +
+    "• " + t.mensajes + ": " + semana.mensajes + "\n" +
+    "• " + t.presentaciones + ": " + semana.presentaciones + "\n" +
+    "• " + t.reuniones + ": " + semana.reuniones +
+    "\n\n" + t.cierrePersonal
   );
 }
 
-function informeSemanalTextoEquipo(equipo) {
+function informeSemanalTextoEquipo(equipo, idioma) {
+  const t = informeI18n(idioma);
   return (
-    "👥 Informe semanal de mi equipo (Cumbre Master):\n" +
-    "• Personas en mi red esta quincena: " + equipo.total + "\n" +
-    "• Verificados (ya pidieron sus puntos): " + equipo.verificados + "\n" +
-    "• Pendientes por verificar: " + equipo.pendientes + "\n" +
-    "• PV total planeado: " + equipo.pvPlaneado.toLocaleString("es") + " · PV verificado: " + equipo.pvVerificado.toLocaleString("es") +
-    "\n\nAquí va el resumen de mi equipo — ¿me ayudas a revisarlo?"
+    t.tituloEquipo + "\n" +
+    "• " + t.personasRed + ": " + equipo.total + "\n" +
+    "• " + t.verificados + ": " + equipo.verificados + "\n" +
+    "• " + t.pendientes + ": " + equipo.pendientes + "\n" +
+    "• " + t.pvPlaneado + ": " + equipo.pvPlaneado.toLocaleString("es") + " · " + t.pvVerificado + ": " + equipo.pvVerificado.toLocaleString("es") +
+    "\n\n" + t.cierreEquipo
+  );
+}
+
+function idiomaInformeSelectorHTML(state) {
+  return (
+    '<div class="card" style="margin-top:12px">' +
+    '<div class="row gap-2" style="align-items:center">' + Icon("compass", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:600;font-size:13px">Idioma del mensaje a compartir</span></div>' +
+    '<p class="muted small" style="margin-top:2px">Elige el idioma en el que tu patrocinador recibirá el informe (puede ser distinto al idioma de tu app).</p>' +
+    '<div class="row gap-2" style="flex-wrap:wrap;margin-top:8px">' +
+    IDIOMAS_INFORME.map(function (i) {
+      const active = state.idiomaInforme === i.id;
+      return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-idioma-informe" data-arg="' + i.id + '">' + escapeHtml(i.label) + "</button>";
+    }).join("") +
+    "</div></div>"
   );
 }
 
@@ -826,12 +842,14 @@ function renderInformeSemanal(state, ui) {
     }).join("") +
     "</div></div>";
 
+  const idioma = state.idiomaInforme || "es";
   const totalAcciones = semana.llamadas + semana.mensajes + semana.presentaciones + semana.reuniones;
   const compartirPersonal = totalAcciones > 0
     ? (state.whatsapp && state.whatsapp.trim()
-        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(semana)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
+        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(semana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
         : '<p class="muted small" style="margin-top:10px">Agrega tu WhatsApp en Ajustes para poder compartir tu informe.</p>')
     : '<p class="muted small" style="margin-top:10px">Registra al menos una acción esta semana para poder compartir tu informe.</p>';
+  const idiomaSelector = totalAcciones > 0 && state.whatsapp && state.whatsapp.trim() ? idiomaInformeSelectorHTML(state) : "";
 
   const qKey = quincenaActualKey();
   const q = peekQuincena(state, qKey);
@@ -854,7 +872,7 @@ function renderInformeSemanal(state, ui) {
     '<div class="card" style="padding:10px;text-align:center"><div class="muted small">PV verificado</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.pvVerificado.toLocaleString("es") + "</div></div>" +
     "</div>" +
     (state.whatsapp && state.whatsapp.trim()
-      ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(equipo)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir informe de mi equipo</a>"
+      ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(equipo, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir informe de mi equipo</a>"
       : "") +
     "</div>";
 
@@ -863,6 +881,7 @@ function renderInformeSemanal(state, ui) {
     '<div><div style="font-weight:700;font-size:14px;margin-bottom:8px">Hoy</div>' +
     '<div class="view-stack gap-sm">' + contadores + "</div></div>" +
     resumenSemana +
+    idiomaSelector +
     compartirPersonal +
     equipoHtml
   );

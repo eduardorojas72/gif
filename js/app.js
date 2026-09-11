@@ -479,6 +479,12 @@ const Actions = {
     App.render();
   },
 
+  "set-idioma-informe": function (arg) {
+    App.state.idiomaInforme = arg;
+    App.persist(true);
+    App.render();
+  },
+
   "set-pais-catalogo": function (arg) {
     if (!PAISES_CATALOGO.some(function (p) { return p.id === arg; })) return;
     App.state.pais = arg;

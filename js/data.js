@@ -890,6 +890,40 @@ const META_PV_QUINCENA = 2500000;
 const MENSAJE_BIENVENIDA =
   "Ya conquistaste Sales Master — esta es tu siguiente montaña. Aquí vas a entender cómo funciona el plan de compensación completo, y a planear quincena a quincena con tu equipo para aprovechar cada punto y no perder ningún ciclaje.";
 
+const IDIOMAS_INFORME = [
+  { id: "es", label: "Español" },
+  { id: "en", label: "English" },
+  { id: "fr", label: "Français" },
+  { id: "it", label: "Italiano" },
+  { id: "ro", label: "Română" },
+  { id: "pt", label: "Português" },
+];
+
+const INFORME_I18N = {
+  es: { llamadas: "Llamadas", mensajes: "Mensajes de invitación", presentaciones: "Presentaciones (Show the Plan)", reuniones: "Reuniones / consultorías",
+    tituloPersonal: "📊 Mi informe semanal de actividad (Cumbre Master):", cierrePersonal: "¿Qué te parece? ¿En qué puedo mejorar esta semana?",
+    tituloEquipo: "👥 Informe semanal de mi equipo (Cumbre Master):", personasRed: "Personas en mi red esta quincena", verificados: "Verificados (ya pidieron sus puntos)", pendientes: "Pendientes por verificar", pvPlaneado: "PV total planeado", pvVerificado: "PV verificado", cierreEquipo: "Aquí va el resumen de mi equipo — ¿me ayudas a revisarlo?" },
+  en: { llamadas: "Calls", mensajes: "Invitation messages", presentaciones: "Presentations (Show the Plan)", reuniones: "Meetings / consultations",
+    tituloPersonal: "📊 My weekly activity report (Cumbre Master):", cierrePersonal: "What do you think? How can I improve this week?",
+    tituloEquipo: "👥 My team's weekly report (Cumbre Master):", personasRed: "People in my network this period", verificados: "Verified (already ordered their points)", pendientes: "Pending verification", pvPlaneado: "Total planned PV", pvVerificado: "Verified PV", cierreEquipo: "Here's my team's summary — can you help me review it?" },
+  fr: { llamadas: "Appels", mensajes: "Messages d'invitation", presentaciones: "Présentations (Show the Plan)", reuniones: "Réunions / consultations",
+    tituloPersonal: "📊 Mon rapport d'activité hebdomadaire (Cumbre Master) :", cierrePersonal: "Qu'en penses-tu ? Comment puis-je m'améliorer cette semaine ?",
+    tituloEquipo: "👥 Rapport hebdomadaire de mon équipe (Cumbre Master) :", personasRed: "Personnes dans mon réseau cette période", verificados: "Vérifiés (ont déjà commandé leurs points)", pendientes: "En attente de vérification", pvPlaneado: "PV total prévu", pvVerificado: "PV vérifié", cierreEquipo: "Voici le résumé de mon équipe — peux-tu m'aider à le revoir ?" },
+  it: { llamadas: "Chiamate", mensajes: "Messaggi di invito", presentaciones: "Presentazioni (Show the Plan)", reuniones: "Riunioni / consulenze",
+    tituloPersonal: "📊 Il mio report settimanale di attività (Cumbre Master):", cierrePersonal: "Cosa ne pensi? Come posso migliorare questa settimana?",
+    tituloEquipo: "👥 Report settimanale del mio team (Cumbre Master):", personasRed: "Persone nella mia rete questo periodo", verificados: "Verificati (hanno già ordinato i loro punti)", pendientes: "In attesa di verifica", pvPlaneado: "PV totale pianificato", pvVerificado: "PV verificato", cierreEquipo: "Ecco il riepilogo del mio team — mi aiuti a rivederlo?" },
+  ro: { llamadas: "Apeluri", mensajes: "Mesaje de invitație", presentaciones: "Prezentări (Show the Plan)", reuniones: "Întâlniri / consultații",
+    tituloPersonal: "📊 Raportul meu săptămânal de activitate (Cumbre Master):", cierrePersonal: "Ce părere ai? Cum pot îmbunătăți săptămâna asta?",
+    tituloEquipo: "👥 Raportul săptămânal al echipei mele (Cumbre Master):", personasRed: "Persoane în rețeaua mea în această perioadă", verificados: "Verificați (și-au comandat deja punctele)", pendientes: "În așteptarea verificării", pvPlaneado: "PV total planificat", pvVerificado: "PV verificat", cierreEquipo: "Iată rezumatul echipei mele — mă ajuți să-l revizuim?" },
+  pt: { llamadas: "Chamadas", mensajes: "Mensagens de convite", presentaciones: "Apresentações (Show the Plan)", reuniones: "Reuniões / consultorias",
+    tituloPersonal: "📊 Meu relatório semanal de atividade (Cumbre Master):", cierrePersonal: "O que você acha? Como posso melhorar esta semana?",
+    tituloEquipo: "👥 Relatório semanal da minha equipe (Cumbre Master):", personasRed: "Pessoas na minha rede neste período", verificados: "Verificados (já pediram seus pontos)", pendientes: "Pendentes de verificação", pvPlaneado: "PV total planejado", pvVerificado: "PV verificado", cierreEquipo: "Aqui está o resumo da minha equipe — pode me ajudar a revisar?" },
+};
+
+function informeI18n(idioma) {
+  return INFORME_I18N[idioma] || INFORME_I18N.es;
+}
+
 /* ---------------------------------------------------------------
    AGENDA SEMANAL — rutina de trabajo de un líder: llamadas y reuniones
    con afiliados, formaciones de equipo, reuniones de líderes y Zoom.

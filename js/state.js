@@ -22,6 +22,7 @@ function defaultState() {
     notifOn: true,
     notifUltimoAviso: null,
     registroDiario: {},
+    idiomaInforme: "es",
   };
 }
 
@@ -259,6 +260,8 @@ function hydrateState(parsed) {
         return acc;
       }, {})
     : {};
+
+  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "es";
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoActualIndex =
