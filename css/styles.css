@@ -276,6 +276,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .flip-card { width: 100%; height: 240px; perspective: 1200px; text-align: left; transition: height .5s cubic-bezier(.4,.15,.2,1); }
 .flip-card.is-open { height: 430px; }
 .flip-card.is-open.short { height: 260px; }
+/* pasos con checklist + reflexión necesitan bastante más alto para que quepa todo sin depender solo del scroll */
+.flip-card.paso-checklist.is-open { height: 620px; max-height: 80vh; }
 .flip-inner {
   position: relative; width: 100%; height: 100%;
   transition: transform .5s cubic-bezier(.4,.15,.2,1);
@@ -294,7 +296,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   display: flex; flex-direction: column;
 }
 .flip-front { align-items: center; text-align: center; gap: 6px; }
-.flip-back { transform: rotateY(180deg); text-align: left; overflow-y: auto; border-color: var(--gold); }
+.flip-back {
+  transform: rotateY(180deg); text-align: left; overflow-y: auto; border-color: var(--gold);
+  -webkit-overflow-scrolling: touch; touch-action: pan-y; overscroll-behavior: contain;
+}
 
 .section-header { display: flex; align-items: center; gap: 12px; }
 .section-header h2 { font-size: 18px; font-weight: 700; color: var(--text); }
@@ -390,7 +395,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 /* forms */
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12px; font-weight: 600; color: var(--text); }
-.field input[type="text"], .field input:not([type]), .field textarea {
+.field input[type="text"], .field input[type="date"], .field input[type="time"], .field input:not([type]), .field textarea {
   background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft); color: var(--text);
   border-radius: 12px; padding: 11px 13px; font-size: 14px; outline: none; width: 100%;
   resize: none; transition: border-color .15s ease;

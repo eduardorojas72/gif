@@ -404,10 +404,11 @@ function renderEscenarioVida(state, ui) {
 
 /* ---------------- Los 8 Pasos ---------------- */
 
-function renderPasos(ui) {
+function renderPasos(state, ui) {
   const vueltos = ui.pasosVueltos || {};
   const cards = OCHO_PASOS.map(function (p) {
     const flipped = !!vueltos[p.n];
+    const est = state.pasos[p.n] || { checks: [] };
     const front =
       '<div class="flip-face flip-front">' +
       pasoMedallionHTML(p.icon, 68) +
@@ -416,6 +417,33 @@ function renderPasos(ui) {
       '<div class="muted small" style="line-height:1.45;margin-top:4px;max-width:44ch">' + escapeHtml(p.d) + "</div>" +
       '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para ver la explicación completa</span></div>' +
       "</div>";
+
+    const checklist = (p.actividades || []).length
+      ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Actividades de este paso</div>' +
+        '<div style="margin-top:6px">' +
+        p.actividades.map(function (a, i) {
+          const on = !!est.checks[i];
+          return (
+            '<div class="check-row" style="padding-bottom:2px">' +
+            (i < p.actividades.length - 1 ? '<div class="line' + (on ? " on" : "") + '" style="left:11.5px"></div>' : "") +
+            /* nota: aquí usamos <div>, no <button> — este checklist vive dentro de la tarjeta
+               volteable de un paso, que ya es un <button>; un <button> no puede anidar otro. */
+            '<div class="check-dot' + (on ? " on" : "") + '" style="width:24px;height:24px;font-size:10px;cursor:pointer" data-action="toggle-paso-check" data-paso="' + p.n + '" data-arg="' + i + '">' + (on ? Icon("check", { size: 12, color: "#1B1338" }) : (i + 1)) + "</div>" +
+            '<div class="check-label' + (on ? " on" : "") + '" style="font-size:12.5px;padding:2px 0 16px;cursor:pointer" data-action="toggle-paso-check" data-paso="' + p.n + '" data-arg="' + i + '">' + escapeHtml(a) + "</div>" +
+            "</div>"
+          );
+        }).join("") +
+        "</div>"
+      : "";
+
+    const reflexion = p.reflexion
+      ? '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
+        '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("heart", { size: 13, color: "var(--gold)" }) + " Reflexión para compartir</div>" +
+        '<p style="font-size:13px;line-height:1.55;margin-top:6px;font-style:italic">“' + escapeHtml(p.reflexion) + '”</p>' +
+        '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(p.reflexion) + '">' + Icon("share2", { size: 13 }) + " Compartir</div>" +
+        "</div>"
+      : "";
+
     const back =
       '<div class="flip-face flip-back">' +
       '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Paso " + p.n + " — " + escapeHtml(p.t) + "</div>" +
@@ -427,9 +455,10 @@ function renderPasos(ui) {
       '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(p.explicacion) + "</p>" +
       '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Ejemplos prácticos</div>' +
       '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(p.ejemplo) + "</p>" +
+      checklist + reflexion +
       "</div>";
     return (
-      '<button class="flip-card' + (flipped ? " is-open" : "") + '" data-action="flip-paso" data-arg="' + p.n + '">' +
+      '<button class="flip-card paso-checklist' + (flipped ? " is-open" : "") + '" data-action="flip-paso" data-arg="' + p.n + '">' +
       '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
       "</button>"
     );
@@ -719,20 +748,57 @@ function paisSelectorHTML(state) {
   );
 }
 
-function productoRowHTML(paisId, qn, compras, p, i, paisInfo) {
+function productoRowHTML(paisId, qn, compras, p, i, paisInfo, historico) {
   const cantidad = Number(compras[p.id]) || 0;
+  const pedidoAntes = historico > 0;
+  const searchKey = (p.nombre || "").toLowerCase();
   return (
-    '<div class="card" style="padding:10px 12px">' +
+    '<div class="card producto-row" data-search="' + escapeHtml(searchKey) + '" style="padding:10px 12px">' +
     '<div class="row gap-2" style="align-items:center">' +
     '<input type="text" placeholder="Nombre del producto" value="' + escapeHtml(p.nombre) + '" data-field="catalogoProductos.' + paisId + "." + i + '.nombre" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);font-size:13.5px;padding:4px 2px;outline:none">' +
     '<button class="check-dot' + (p.probado ? " on" : "") + '" style="width:24px;height:24px;flex-shrink:0" data-action="toggle-producto-probado" data-arg="' + i + '" title="Marcar como probado">' + (p.probado ? Icon("check", { size: 11, color: "#fff" }) : "") + "</button>" +
     '<button class="icon-btn" style="flex-shrink:0" data-action="delete-producto" data-arg="' + i + '">' + Icon("x", { size: 14 }) + "</button>" +
     "</div>" +
+    (pedidoAntes
+      ? '<div class="badge gold" style="margin-top:6px;width:fit-content">' + Icon("check-circle", { size: 10 }) + " Ya lo has pedido antes (" + historico + (historico === 1 ? " unidad en total)" : " unidades en total)") + "</div>"
+      : "") +
     '<div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">' +
     '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">PV</label><input type="number" min="0" value="' + (Number(p.pv) || 0) + '" data-field="catalogoProductos.' + paisId + "." + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
     '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">Precio (' + paisInfo.moneda + ")</label><input type=\"number\" min=\"0\" value=\"" + (Number(p.precio) || 0) + '" data-field="catalogoProductos.' + paisId + "." + i + '.precio" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
     '<div style="flex:1;min-width:90px"><label class="muted small" style="display:block">Esta quincena</label><input type="number" min="0" value="' + cantidad + '" data-field="comprasQuincena.' + qn + "." + p.id + '" style="width:100%;background:var(--bg);border:1px solid var(--gold-deep);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
     "</div></div>"
+  );
+}
+
+function historialComprasHTML(state, ui, catalogo) {
+  const pedidos = catalogo.filter(function (p) { return totalHistoricoProducto(state, p.id) > 0; });
+  const abierto = !!ui.historialAbierto;
+  return (
+    '<div class="card" style="margin-top:10px">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-historial-compras">' +
+    '<div class="row gap-2">' + Icon("book-open", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Historial de compras</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    '<div class="muted small" style="margin-top:4px">' + pedidos.length + " de " + catalogo.length + " productos que ya conoces · " + (catalogo.length - pedidos.length) + " por descubrir" + "</div>" +
+    (abierto
+      ? (pedidos.length
+          ? '<div class="view-stack gap-sm" style="margin-top:10px">' +
+            pedidos
+              .slice()
+              .sort(function (a, b) { return (a.nombre || "").localeCompare(b.nombre || ""); })
+              .map(function (p) {
+                const n = totalHistoricoProducto(state, p.id);
+                return (
+                  '<div class="row between" style="padding:6px 0;border-top:1px solid var(--border-soft)">' +
+                  '<span class="small">' + escapeHtml(p.nombre || "(sin nombre)") + "</span>" +
+                  '<span class="badge soft">' + n + (n === 1 ? " unidad" : " unidades") + "</span>" +
+                  "</div>"
+                );
+              }).join("") +
+            "</div>"
+          : '<p class="muted small" style="margin-top:8px">Todavía no has pedido ningún producto en ninguna quincena — cuando lo hagas, aparecerá aquí.</p>')
+      : "") +
+    "</div>"
   );
 }
 
@@ -761,7 +827,7 @@ function productosCalculadoraHTML(state, ui, qn) {
       const itemsHtml = catalogo
         .map(function (p, i) { return { p: p, i: i }; })
         .filter(function (o) { return o.p.categoria === cat; })
-        .map(function (o) { return productoRowHTML(paisId, qn, compras, o.p, o.i, paisInfo); })
+        .map(function (o) { return productoRowHTML(paisId, qn, compras, o.p, o.i, paisInfo, totalHistoricoProducto(state, o.p.id)); })
         .join("");
       return '<div style="font-weight:700;font-size:11.5px;color:var(--gold-light);text-transform:uppercase;letter-spacing:.05em;margin-top:14px">' + escapeHtml(cat) + "</div>" + itemsHtml;
     }).join("");
@@ -783,6 +849,12 @@ function productosCalculadoraHTML(state, ui, qn) {
     '<div class="muted small" style="margin-top:8px">' + probados + " de " + catalogo.length + " productos probados · " + planeados + " planeados esta quincena</div>" +
     (open
       ? '<p class="muted small" style="margin-top:10px;line-height:1.5;font-style:italic">' + escapeHtml(catalogo.length ? CATALOGO_PRODUCTOS_NOTA : CATALOGO_PRODUCTOS_NOTA_VACIO) + "</p>" +
+        historialComprasHTML(state, ui, catalogo) +
+        '<div class="field" style="margin-top:10px">' +
+        '<div class="row gap-2" style="align-items:center;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);border-radius:12px;padding:9px 12px">' +
+        Icon("search", { size: 15, color: "var(--text-soft)" }) +
+        '<input id="calculadora-search" type="text" placeholder="Buscar un producto por nombre..." style="flex:1;background:transparent;border:none;color:var(--text);font-size:13.5px;outline:none">' +
+        "</div></div>" +
         '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
         '<button class="btn-secondary" style="margin-top:12px" data-action="add-producto">+ Añadir producto</button>'
       : "") +
@@ -1110,6 +1182,32 @@ function renderContactoModal(ui) {
     '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto">Guardar contacto</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+function renderAgenda6Modal(ui) {
+  const d = ui.agenda6Draft;
+  if (!d) return "";
+  const filas = Array.from({ length: 6 }, function (_, i) {
+    const diaInfo = DIAS.find(function (x) { return x.id === i + 1; });
+    const hora = (d.dias[i] && d.dias[i].hora) || "";
+    return (
+      '<div class="field">' +
+      '<label>Día ' + (i + 1) + " — " + escapeHtml(diaInfo.titulo) + "</label>" +
+      '<input type="time" data-agenda6-hora="' + i + '" value="' + escapeHtml(hora) + '">' +
+      "</div>"
+    );
+  }).join("");
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-agenda6"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row gap-2">' + Icon("footprints", { size: 18, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:15px">¡' + escapeHtml(d.contactoNombre) + " es un nuevo socio!</span></div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programa aquí las 6 reuniones del Plan de 6 Días con ' + escapeHtml(d.contactoNombre) + " — quedarán guardadas en tu Agenda Semanal, en el día que le corresponda a cada una. Deja en blanco la hora del día que aún no vayas a agendar.</p>" +
+    '<div class="view-stack gap-sm" style="margin-top:10px">' + filas + "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Crear agenda de 6 días</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-agenda6">Ahora no</button>' +
     "</div></div>"
   );
 }

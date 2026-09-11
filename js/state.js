@@ -14,6 +14,11 @@ function emptySemanaState(n) {
   return { done: false, checks: semana.acciones.map(() => false) };
 }
 
+function emptyPasoState(n) {
+  const paso = OCHO_PASOS.find((p) => p.n === n);
+  return { checks: (paso.actividades || []).map(() => false) };
+}
+
 function diaSemanaHoyId() {
   const map = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
   return map[new Date().getDay()];
@@ -80,6 +85,14 @@ function getComprasQuincena(state, qn) {
   return state.comprasQuincena[qn];
 }
 
+/* Suma cuántas unidades de un producto se han pedido en TODAS las quincenas registradas
+   (histórico completo, no solo la actual) — para saber qué productos ya conoce el socio. */
+function totalHistoricoProducto(state, productoId) {
+  return Object.keys(state.comprasQuincena || {}).reduce(function (acc, qn) {
+    return acc + (Number(state.comprasQuincena[qn][productoId]) || 0);
+  }, 0);
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -104,6 +117,7 @@ function defaultState() {
     notifUltimoAviso: null,
     dias: DIAS.reduce((acc, d) => ({ ...acc, [d.id]: emptyDayState(d.id) }), {}),
     semanas: SEMANAS.reduce((acc, s) => ({ ...acc, [s.n]: emptySemanaState(s.n) }), {}),
+    pasos: OCHO_PASOS.reduce((acc, p) => ({ ...acc, [p.n]: emptyPasoState(p.n) }), {}),
     contactos: [],
     escenarioVida: emptyEscenarioVida(),
     escenarioCompletado: false,
@@ -183,6 +197,17 @@ function hydrateState(parsed) {
         ? saved.checks
         : vacio.checks;
     acc[s.n] = Object.assign({}, vacio, saved || {}, { checks });
+    return acc;
+  }, {});
+
+  merged.pasos = OCHO_PASOS.reduce((acc, p) => {
+    const saved = parsed.pasos && parsed.pasos[p.n];
+    const vacio = emptyPasoState(p.n);
+    const checks =
+      saved && Array.isArray(saved.checks) && saved.checks.length === (p.actividades || []).length
+        ? saved.checks
+        : vacio.checks;
+    acc[p.n] = { checks: checks };
     return acc;
   }, {});
 

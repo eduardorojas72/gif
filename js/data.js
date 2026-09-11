@@ -8,48 +8,93 @@ const OCHO_PASOS = [
     accion: "Escribir el Escenario de Vida", objetivo: "Claridad de visión y propósito",
     explicacion: "Una vida balanceada en Atomy se divide en cuatro pilares: Vivir bien (necesidades físicas y económicas), Amar (relaciones y familia), Aprender (intelecto y crecimiento) y Contribuir (ayuda social y espiritualidad). Las metas deben ser realistas pero ambiciosas, escritas con claridad y acompañadas de fechas límite.",
     ejemplo: "No basta con decir “quiero una casa”. Debes definir: “Viviré en una casa de 200 m² en la zona norte de [lugar], con 4 habitaciones, de color blanco y acabados en madera, para el [fecha]”. Otro ejemplo es establecer un monto exacto de apoyo para tus padres, como enviarles una cantidad específica de dinero cada mes junto con suplementos de la empresa.",
+    actividades: [
+      "Escribe al menos una meta concreta (con cifra, lugar y fecha) en cada uno de los 4 pilares.",
+      "Completa tu Escenario de Vida en esta app con el mayor detalle posible.",
+      "Relee tus metas cada mañana durante esta semana, antes de empezar a trabajar.",
+    ],
   },
   {
     n: 2, t: "Tener determinación inquebrantable", d: "Autonomía frente a terceros, pensamiento positivo y disposición a pagar el precio del esfuerzo.", icon: "flame",
     accion: "Decisión de pagar el precio", objetivo: "Resiliencia ante obstáculos",
     explicacion: "La determinación implica tres aspectos: una actitud proactiva (ser el dueño del negocio), pensamientos positivos (enfocarse en la solución) y la disposición a “pagar el precio”. Nada de valor se consigue sin esfuerzo inicial. La “ley del despegue” indica que un cohete gasta la mayor parte de su combustible al inicio para romper la gravedad; lo mismo ocurre en el negocio.",
     ejemplo: "Si un familiar cercano rechaza tu propuesta, tu determinación debe permitirte seguir adelante sin que eso afecte tu estado de ánimo. Implica también sacrificar horas de entretenimiento para asistir a los “One Day Seminar” o a la Academia del Éxito, entendiendo que ese tiempo es una inversión para tu libertad futura.",
+    actividades: [
+      "Identifica un obstáculo o rechazo reciente y escribe cómo vas a responder sin que afecte tu ánimo.",
+      "Asiste al próximo One Day Seminar o Academia del Éxito disponible.",
+      "Define qué estás dispuesto a sacrificar temporalmente (tiempo de ocio, por ejemplo) para invertir en tu negocio.",
+    ],
   },
   {
     n: 3, t: "Hacer una lista de contactos", d: "Construye una lista activa de mínimo 250 personas, sin juzgar su potencial inicial.", icon: "clipboard-list",
     accion: "Anotar a todos sin juzgar", objetivo: "Identificar el capital humano",
     explicacion: "El error común es “prejuzgar”. La Ley de la Mente Propia dice que nosotros solo debemos informar; la decisión de si les interesa o no es de ellos. Tu lista debe incluir a todas las personas que conoces, pues todos utilizan productos de aseo personal o cosméticos. No busques solo “vendedores”, busca consumidores.",
     ejemplo: "Toma tu teléfono móvil y anota a todos: familiares, excompañeros de escuela, vecinos y amigos del gimnasio. Si conoces a alguien que crees que “no tiene dinero”, anótalo igual; quizás necesite la oportunidad de negocio. Si conoces a alguien “muy rico”, anótalo; quizás quiera mejorar su salud con productos de calidad absoluta.",
+    actividades: [
+      "Anota al menos 50 nombres nuevos en tu lista, sin filtrar a nadie por adelantado.",
+      "Revisa tu teléfono y tus redes sociales para no dejar a nadie fuera.",
+      "Recuerda: no buscas solo vendedores, buscas consumidores — todos usan productos de aseo o cosméticos.",
+    ],
   },
   {
     n: 4, t: "Hacer llamadas e invitaciones", d: "Enfocadas en agendar citas y generar curiosidad sincera, no en presentar por teléfono.", icon: "phone-call",
     accion: "Llamadas diarias constantes", objetivo: "Agendar citas y presentaciones",
     explicacion: "La invitación no es la presentación del negocio. Es el proceso de generar curiosidad y asegurar una cita. El Presidente Park sugiere que la constancia es vital: si hablas con 10 personas al día, tu negocio crecerá inevitablemente. La brevedad es tu mejor aliada en este punto.",
     ejemplo: "Una llamada efectiva podría sonar así: “Hola, encontré una línea de productos coreanos de altísima calidad que estoy usando y me han encantado, ¿podemos vernos 15 minutos el [día] para que los pruebes?”. Evita dar demasiada información por teléfono para no saturar al invitado.",
+    actividades: [
+      "Haz al menos 10 llamadas o mensajes de invitación hoy.",
+      "Practica tu guión de invitación para que dure menos de 30 segundos.",
+      "Agenda al menos 2 citas o presentaciones para esta semana.",
+    ],
   },
   {
     n: 5, t: "Explicar el negocio (Show the Business)", d: "Compañía, Productos, Plan de Compensación y Visión Global.", icon: "presentation",
     accion: "Show the Plan (STP)", objetivo: "Mostrar la oportunidad Atomy",
     explicacion: "La presentación debe cubrir cuatro puntos: La Empresa (respaldo de KAERI y Kolmar BNH), Los Productos (el concepto “Masstige”: Masa + Prestigio, y Calidad Absoluta, Precio Absoluto), Plan de Compensación (sistema binario, sin cuotas de inscripción ni compras obligatorias) y Filosofía y Sistema (centrado en el éxito del consumidor y el sistema de educación gratuito).",
     ejemplo: "Realizar una demostración de la pasta dental y el cepillo de dientes durante la charla. Mostrar cómo el precio por gramo de los productos Atomy es más bajo que el de las marcas de supermercado, resaltando el ahorro para el hogar mientras se obtiene una calidad superior.",
+    actividades: [
+      "Prepara tu Show the Plan cubriendo Empresa, Productos, Plan de Compensación y Filosofía.",
+      "Haz una demostración física de un producto (por ejemplo la pasta dental) durante tu próxima presentación.",
+      "Cierra cada presentación invitando a probar productos o a agendar una segunda cita.",
+    ],
   },
   {
     n: 6, t: "Seguimiento (Regla de las 48 Horas)", d: "Contacta al prospecto dentro de las primeras 48 horas tras la presentación.", icon: "clock",
     accion: "Contacto en 48 horas", objetivo: "Retención y servicio al cliente",
-    explicacion: "Se debe aplicar la Regla de las 48 Horas. Contactar a la persona dentro de los dos días posteriores a la charla o a la entrega de un producto. Es el momento de resolver dudas, manejar objeciones y guiar al nuevo miembro en sus primeros pasos.",
-    ejemplo: "Llamar a alguien que compró el sistema de cuidado de la piel y preguntarle: “¿Cómo sentiste la textura de la crema nutritiva anoche?”. Si la persona dice que no ha tenido tiempo de usarla, recuérdale los beneficios y agenda una nueva llamada corta para el día siguiente.",
+    explicacion: "Se debe aplicar la Regla de las 48 Horas. Contactar a la persona dentro de los dos días posteriores a la charla o a la entrega de un producto. Es el momento de resolver dudas, manejar objeciones y guiar al nuevo miembro en sus primeros pasos. El seguimiento no termina en la primera compra: a un nuevo socio también hay que acompañarlo en sus primeras semanas, porque muchas veces su entorno más cercano — familia y amigos — le va a sembrar dudas sin mala intención.",
+    ejemplo: "Llamar a alguien que compró el sistema de cuidado de la piel y preguntarle: “¿Cómo sentiste la textura de la crema nutritiva anoche?”. Si la persona dice que no ha tenido tiempo de usarla, recuérdale los beneficios y agenda una nueva llamada corta para el día siguiente. Si un nuevo socio te cuenta que su familia o sus amigos le están desanimando, ese es el momento de sentarte con él (en persona o por llamada) y compartirle una reflexión honesta.",
+    actividades: [
+      "Contacta a la persona dentro de las primeras 48 horas tras la charla o la entrega del producto.",
+      "Pregunta específicamente por su experiencia con el producto (textura, sabor, resultado) y resuelve sus dudas.",
+      "Si es un nuevo socio, pregúntale cómo está reaccionando su entorno cercano — y si hace falta, comparte con él la reflexión de este paso.",
+      "Agenda la próxima llamada o reunión corta antes de colgar, nunca la dejes abierta.",
+    ],
+    reflexion: "Estas personas opinan así porque te quieren y quieren lo mejor para ti — pero lo hacen desde el desconocimiento, y muchas veces porque las experiencias que han visto de otras redes de mercadeo han sido malas. En Atomy no hay inversión inicial: no compras inventario, no pagas una cuota de entrada, no firmas nada que te comprometa. Entonces, siendo honestos, ¿qué vas a perder en realidad por intentarlo? Creo que te mereces darte una oportunidad a ti mismo y a Atomy, y comprobar con tus propios resultados que sí se puede lograr algo grande con constancia y esfuerzo.",
   },
   {
-    n: 7, t: "Consultoría y asesoramiento", d: "Reúnete con tu línea ascendente y descendente para analizar bloqueos y reajustar.", icon: "users",
-    accion: "Diagnóstico con el Sponsor", objetivo: "Corrección de estrategia",
-    explicacion: "Se debe realizar un diagnóstico basado en datos. Si un socio no está creciendo, se debe analizar cuál de los pasos anteriores está fallando. El asesoramiento debe ser constructivo, enfocado en metas y nunca basado en la crítica personal.",
-    ejemplo: "Si un socio dice “no conozco a nadie”, el sponsor debe sentarse con él para revisar su lista de contactos y ayudarle a expandirla. Si el socio tiene mucha gente pero nadie compra, el sponsor debe revisar cómo se está haciendo la “Explicación del Negocio” para ajustar el mensaje.",
+    n: 7, t: "Consultar y Asesorar", d: "Es una vía de doble sentido: el Patrocinador busca a sus socios, y los socios buscan a su Patrocinador.", icon: "users",
+    accion: "Consultoría bidireccional", objetivo: "Corrección de estrategia",
+    explicacion: "Se debe realizar un diagnóstico basado en datos. Si un socio no está creciendo, se debe analizar cuál de los pasos anteriores está fallando. El asesoramiento debe ser constructivo, enfocado en metas y nunca basado en la crítica personal. Y esta consultoría es bidireccional: no es solo responsabilidad del Patrocinador estar pendiente de sus socios — cada socio también debe buscar activamente a su Patrocinador cuando tenga dudas, se sienta estancado o necesite ajustar su estrategia. Un negocio no crece si solo una de las dos partes se comunica.",
+    ejemplo: "Si un socio dice “no conozco a nadie”, el patrocinador debe sentarse con él para revisar su lista de contactos y ayudarle a expandirla. Si el socio tiene mucha gente pero nadie compra, el patrocinador debe revisar cómo se está haciendo la “Explicación del Negocio” para ajustar el mensaje. Y del otro lado: si un socio lleva dos semanas sin resultados y no ha hablado con su patrocinador, ese silencio es la primera señal de alerta — la iniciativa de pedir ayuda también es suya.",
+    actividades: [
+      "Como Patrocinador: reúnete periódicamente con cada socio de tu línea para revisar en qué paso está atascado.",
+      "Como socio: busca activamente a tu Patrocinador cuando tengas dudas — no esperes a que él pregunte primero.",
+      "Diagnostica con datos: revisa la lista de contactos, las llamadas hechas y las presentaciones realizadas antes de dar o pedir consejo.",
+      "Cierra cada consultoría con un compromiso concreto y una fecha para la siguiente.",
+    ],
+    reflexion: "¿Cuándo fue la última vez que hablé con mi patrocinador y con mis socios?",
   },
   {
     n: 8, t: "Duplicación", d: "Sé un modelo íntegro: consumidor fiel, conectado al sistema de eventos, sirviendo con humildad.", icon: "repeat",
     accion: "Ser el ejemplo a seguir", objetivo: "Crecimiento exponencial",
-    explicacion: "Duplicar no es simplemente “copiar” la personalidad de un líder. Es convertirte en un modelo a seguir (el original) que otros puedan replicar con facilidad. Si tú sigues el sistema, tus socios harán lo mismo. Para que un negocio sea escalable, el proceso debe ser sencillo y estándar.",
+    explicacion: "Duplicar no es simplemente “copiar” la personalidad de un líder. Es convertirte en un modelo a seguir (el original) que otros puedan replicar con facilidad. Si tú sigues el sistema, tus socios harán lo mismo. Para que un negocio sea escalable, el proceso debe ser sencillo y estándar. La verdadera duplicación se consigue cuando eres capaz de transmitir a tus socios todo el conocimiento que tienes de la compañía y las estrategias exactas que usas para alcanzar el éxito — no solo instrucciones sueltas, sino el sistema completo. Por eso esta aplicación es tan valiosa: te da una manera práctica y ordenada de lograrlo, paso a paso, con cada socio de tu equipo.",
     ejemplo: "Si quieres que tu equipo asista a los seminarios, tú debes ser el primero en llegar y el último en irte. Si quieres que consuman los productos, tú debes ser un consumidor leal de toda la línea Atomy. Tu comportamiento es el molde del cual saldrán las futuras copias de tu organización.",
+    actividades: [
+      "Sé el primero en llegar y el último en irte en cada evento — que tu equipo vea tu ejemplo, no solo tus palabras.",
+      "Consume tú mismo toda la línea de productos Atomy que recomiendas.",
+      "Enseña a cada socio nuevo a usar esta app para replicar el sistema completo: metas, contactos, seguimiento y productos.",
+      "Comparte con tus socios no solo qué hacer, sino por qué funciona — transmite el conocimiento completo, no instrucciones sueltas.",
+    ],
   },
 ];
 
@@ -638,6 +683,7 @@ const AGENDA_TIPOS = [
   { id: "registro", label: "Registro de nuevo socio", icon: "user-badge" },
   { id: "formacion", label: "Formación", icon: "book-open" },
   { id: "video-rrss", label: "Videos de producto (RRSS)", icon: "video" },
+  { id: "plan6", label: "Reunión del Plan 6 Días", icon: "footprints" },
 ];
 
 const BUCKET_LIST_EJEMPLOS = [

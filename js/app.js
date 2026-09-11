@@ -64,6 +64,9 @@ const App = {
     zoomEditId: null,
     confirmDeleteZoom: null,
     calculadoraAbierta: false,
+    agenda6Draft: null,
+    calculadoraBusqueda: "",
+    historialAbierto: false,
   },
   saveTimer: null,
   toastTimer: null,
@@ -199,7 +202,7 @@ const App = {
       case "home": mainHtml = renderHome(state); break;
       case "escenario": mainHtml = renderEscenarioVida(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
-      case "pasos": mainHtml = renderPasos(ui); break;
+      case "pasos": mainHtml = renderPasos(state, ui); break;
       case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
@@ -228,6 +231,7 @@ const App = {
     let modalHtml = "";
     if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
+    else if (ui.agenda6Draft) modalHtml = renderAgenda6Modal(ui);
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
     else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
     else if (ui.carteleraOpen) modalHtml = renderCarteleraModal();
@@ -284,6 +288,17 @@ const App = {
           const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
           row.classList.toggle("hidden", !match);
         });
+      } else if (el.id === "calculadora-search") {
+        // filtro de búsqueda de productos: se aplica directo al DOM, sin pasar por render()
+        const q = el.value.trim().toLowerCase();
+        document.querySelectorAll(".producto-row").forEach((row) => {
+          const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
+          row.classList.toggle("hidden", !match);
+        });
+      } else if (el.dataset && el.dataset.agenda6Hora != null && this.ui.agenda6Draft) {
+        const i = Number(el.dataset.agenda6Hora);
+        this.ui.agenda6Draft.dias[i] = this.ui.agenda6Draft.dias[i] || { hora: "" };
+        this.ui.agenda6Draft.dias[i].hora = el.value;
       }
     });
 
@@ -630,16 +645,25 @@ const Actions = {
   "save-contacto": function () {
     const d = App.ui.contactoDraft;
     if (!d || !d.nombre || !d.nombre.trim()) return;
+    let estadoAnterior = null;
     if (App.ui.contactoEditId) {
       const idx = App.state.contactos.findIndex((x) => x.id === App.ui.contactoEditId);
-      if (idx !== -1) App.state.contactos[idx] = Object.assign({}, App.state.contactos[idx], d);
+      if (idx !== -1) {
+        estadoAnterior = App.state.contactos[idx].estado;
+        App.state.contactos[idx] = Object.assign({}, App.state.contactos[idx], d);
+      }
     } else {
       App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO() }, d));
     }
+    const nombreRegistrado = d.nombre.trim();
+    const quedoComoSocio = d.estado === "Socio" && estadoAnterior !== "Socio";
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
     App.showToast("Contacto guardado");
+    if (quedoComoSocio) {
+      App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: 6 }, () => ({ hora: "" })) };
+    }
     App.render();
   },
 
@@ -679,9 +703,64 @@ const Actions = {
     App.render();
   },
 
+  "cancel-agenda6": function () {
+    App.ui.agenda6Draft = null;
+    App.render();
+  },
+
+  "save-agenda6": function () {
+    const d = App.ui.agenda6Draft;
+    if (!d) return;
+    const mapDow = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+    for (let i = 0; i < 6; i++) {
+      const fecha = new Date(Date.now() + i * 86400000);
+      const weekdayId = mapDow[fecha.getDay()];
+      const diaInfo = DIAS.find((x) => x.id === i + 1);
+      if (!App.state.agenda[weekdayId]) App.state.agenda[weekdayId] = emptyAgendaDia();
+      const hora = (d.dias[i] && d.dias[i].hora) || "";
+      App.state.agenda[weekdayId].actividades.push(
+        Object.assign(nuevaActividadAgenda(), {
+          tipo: "plan6",
+          hora: hora,
+          nota: "Día " + (i + 1) + " — " + diaInfo.titulo + " — con " + d.contactoNombre,
+          recordar: !!hora,
+          recordarMin: 10,
+        })
+      );
+    }
+    App.ui.agenda6Draft = null;
+    App.persist(true);
+    App.showToast("Agenda del Plan de 6 Días creada con " + d.contactoNombre);
+    App.render();
+  },
+
   "flip-paso": function (arg) {
     App.ui.pasosVueltos[arg] = !App.ui.pasosVueltos[arg];
     App.render();
+  },
+
+  "toggle-paso-check": function (arg, el) {
+    const n = Number(el.dataset.paso);
+    const i = Number(arg);
+    const est = App.state.pasos[n];
+    if (!est) return;
+    est.checks[i] = !est.checks[i];
+    App.persist(true);
+    App.render();
+  },
+
+  "share-paso-reflexion": function (arg) {
+    const texto = String(arg || "");
+    if (navigator.share) {
+      navigator.share({ title: "Cumbre 90", text: texto }).catch(() => {});
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(
+        () => App.showToast("Reflexión copiada — ¡pégala donde quieras!"),
+        () => App.showToast("No se pudo copiar el texto")
+      );
+    } else {
+      App.showToast("No se pudo copiar el texto");
+    }
   },
 
   "flip-lema": function (arg) {
@@ -866,6 +945,11 @@ const Actions = {
 
   "toggle-calculadora-productos": function () {
     App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
+    App.render();
+  },
+
+  "toggle-historial-compras": function () {
+    App.ui.historialAbierto = !App.ui.historialAbierto;
     App.render();
   },
 
