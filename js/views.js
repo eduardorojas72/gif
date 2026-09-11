@@ -9,6 +9,7 @@ const MENU_ITEMS = [
   { id: "planeador", label: "Planeador de Quincena", icon: "target" },
   { id: "listas", label: "Listas 200+200", icon: "users" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
+  { id: "informe", label: "Informe Semanal", icon: "trending-up" },
   { id: "perfil", label: "Mi Rango", icon: "user-badge" },
   { id: "ajustes", label: "Ajustes", icon: "settings" },
 ];
@@ -762,6 +763,108 @@ function renderZoomModal(ui) {
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-zoom">Cancelar</button>' +
     "</div></div>"
+  );
+}
+
+/* ---------------- Informe Semanal ---------------- */
+
+const REGISTRO_TIPOS = [
+  { id: "llamadas", label: "Llamadas", icon: "phone-call" },
+  { id: "mensajes", label: "Mensajes de invitación", icon: "message-circle" },
+  { id: "presentaciones", label: "Presentaciones (Show the Plan)", icon: "book-open" },
+  { id: "reuniones", label: "Reuniones / consultorías", icon: "users" },
+];
+
+function contadorAccionHTML(tipo, label, icon, valorHoy) {
+  return (
+    '<div class="card" style="padding:12px">' +
+    '<div class="row between" style="align-items:center">' +
+    '<div class="row gap-2">' + Icon(icon, { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:600;font-size:13.5px">' + escapeHtml(label) + "</span></div>" +
+    '<div class="row gap-2" style="align-items:center">' +
+    '<button class="icon-btn" style="font-size:18px;font-weight:700;width:32px;height:32px;background:rgba(255,255,255,0.04);border-radius:8px" data-action="decrementar-registro" data-arg="' + tipo + '">−</button>' +
+    '<span style="min-width:22px;text-align:center;font-weight:700;font-size:16px">' + valorHoy + "</span>" +
+    '<button class="icon-btn" style="font-size:18px;font-weight:700;width:32px;height:32px;background:rgba(255,255,255,0.04);border-radius:8px" data-action="incrementar-registro" data-arg="' + tipo + '">+</button>' +
+    "</div></div></div>"
+  );
+}
+
+function informeSemanalTextoPersonal(semana) {
+  return (
+    "📊 Mi informe semanal de actividad (Cumbre Master):\n" +
+    "• Llamadas: " + semana.llamadas + "\n" +
+    "• Mensajes de invitación: " + semana.mensajes + "\n" +
+    "• Presentaciones: " + semana.presentaciones + "\n" +
+    "• Reuniones / consultorías: " + semana.reuniones +
+    "\n\n¿Qué te parece? ¿En qué puedo mejorar esta semana?"
+  );
+}
+
+function informeSemanalTextoEquipo(equipo) {
+  return (
+    "👥 Informe semanal de mi equipo (Cumbre Master):\n" +
+    "• Personas en mi red esta quincena: " + equipo.total + "\n" +
+    "• Verificados (ya pidieron sus puntos): " + equipo.verificados + "\n" +
+    "• Pendientes por verificar: " + equipo.pendientes + "\n" +
+    "• PV total planeado: " + equipo.pvPlaneado.toLocaleString("es") + " · PV verificado: " + equipo.pvVerificado.toLocaleString("es") +
+    "\n\nAquí va el resumen de mi equipo — ¿me ayudas a revisarlo?"
+  );
+}
+
+function renderInformeSemanal(state, ui) {
+  const hoy = hoyISO();
+  const hoyReg = getRegistroDia(state, hoy);
+  const semana = sumarRegistroSemana(state);
+
+  const contadores = REGISTRO_TIPOS.map(function (t) { return contadorAccionHTML(t.id, t.label, t.icon, hoyReg[t.id] || 0); }).join("");
+
+  const resumenSemana =
+    '<div class="card">' +
+    '<div style="font-weight:700;font-size:14px">Esta semana (últimos 7 días)</div>' +
+    '<div class="grid-2" style="margin-top:10px;gap:10px">' +
+    REGISTRO_TIPOS.map(function (t) {
+      return '<div class="card" style="padding:10px;text-align:center"><div class="muted small">' + escapeHtml(t.label) + '</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + (semana[t.id] || 0) + "</div></div>";
+    }).join("") +
+    "</div></div>";
+
+  const totalAcciones = semana.llamadas + semana.mensajes + semana.presentaciones + semana.reuniones;
+  const compartirPersonal = totalAcciones > 0
+    ? (state.whatsapp && state.whatsapp.trim()
+        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(semana)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
+        : '<p class="muted small" style="margin-top:10px">Agrega tu WhatsApp en Ajustes para poder compartir tu informe.</p>')
+    : '<p class="muted small" style="margin-top:10px">Registra al menos una acción esta semana para poder compartir tu informe.</p>';
+
+  const qKey = quincenaActualKey();
+  const q = peekQuincena(state, qKey);
+  const personas = (q.izquierda || []).concat(q.derecha || []);
+  const equipo = {
+    total: personas.length,
+    verificados: personas.filter(function (p) { return p.verificado; }).length,
+    pendientes: personas.filter(function (p) { return !p.verificado; }).length,
+    pvPlaneado: sumaLinea(q, "izquierda", false) + sumaLinea(q, "derecha", false),
+    pvVerificado: sumaLinea(q, "izquierda", true) + sumaLinea(q, "derecha", true),
+  };
+  const equipoHtml =
+    '<div class="card" style="margin-top:16px;border-color:var(--gold)">' +
+    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Informe de mis socios</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">El estado de tu red esta quincena — para asesorarlos, y para compartir con tu propio patrocinador.</p>' +
+    '<div class="grid-2" style="margin-top:10px;gap:10px">' +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Personas en mi red</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.total + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Verificados</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.verificados + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Pendientes por verificar</div><div style="font-size:18px;font-weight:700;color:' + (equipo.pendientes > 0 ? "var(--warn)" : "var(--gold-light)") + '">' + equipo.pendientes + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">PV verificado</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.pvVerificado.toLocaleString("es") + "</div></div>" +
+    "</div>" +
+    (state.whatsapp && state.whatsapp.trim()
+      ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(equipo)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir informe de mi equipo</a>"
+      : "") +
+    "</div>";
+
+  return (
+    sectionHeaderHTML("Informe Semanal", "Registra tus acciones día a día, y comparte tu progreso con tu propio patrocinador — así te ayuda a crecer.", "trending-up") +
+    '<div><div style="font-weight:700;font-size:14px;margin-bottom:8px">Hoy</div>' +
+    '<div class="view-stack gap-sm">' + contadores + "</div></div>" +
+    resumenSemana +
+    compartirPersonal +
+    equipoHtml
   );
 }
 

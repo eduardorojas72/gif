@@ -205,6 +205,7 @@ const App = {
       case "planeador": mainHtml = renderPlaneador(state, ui); break;
       case "listas": mainHtml = renderListas(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
+      case "informe": mainHtml = renderInformeSemanal(state, ui); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "ajustes": mainHtml = renderAjustes(state, ui); break;
       default: mainHtml = renderHome(state, ui);
@@ -463,6 +464,21 @@ const Actions = {
     App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
     App.render();
   },
+
+  "incrementar-registro": function (arg) {
+    const dia = getRegistroDia(App.state, hoyISO());
+    dia[arg] = (Number(dia[arg]) || 0) + 1;
+    App.persist(true);
+    App.render();
+  },
+
+  "decrementar-registro": function (arg) {
+    const dia = getRegistroDia(App.state, hoyISO());
+    dia[arg] = Math.max(0, (Number(dia[arg]) || 0) - 1);
+    App.persist(true);
+    App.render();
+  },
+
   "set-pais-catalogo": function (arg) {
     if (!PAISES_CATALOGO.some(function (p) { return p.id === arg; })) return;
     App.state.pais = arg;

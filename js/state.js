@@ -21,7 +21,42 @@ function defaultState() {
     agenda: emptyAgenda(),
     notifOn: true,
     notifUltimoAviso: null,
+    registroDiario: {},
   };
+}
+
+/* ---------------- Informe Semanal — registro diario de acciones ---------------- */
+
+function emptyRegistroDia() {
+  return { llamadas: 0, mensajes: 0, presentaciones: 0, reuniones: 0 };
+}
+
+function getRegistroDia(state, fechaISO) {
+  if (!state.registroDiario[fechaISO]) state.registroDiario[fechaISO] = emptyRegistroDia();
+  return state.registroDiario[fechaISO];
+}
+
+/* Últimos 7 días (incluye hoy), del más antiguo al más reciente. */
+function ultimos7Dias() {
+  const out = [];
+  for (let i = 6; i >= 0; i--) {
+    out.push(new Date(Date.now() - i * 86400000).toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+function sumarRegistroSemana(state) {
+  const dias = ultimos7Dias();
+  const total = emptyRegistroDia();
+  dias.forEach(function (f) {
+    const d = state.registroDiario[f];
+    if (!d) return;
+    total.llamadas += Number(d.llamadas) || 0;
+    total.mensajes += Number(d.mensajes) || 0;
+    total.presentaciones += Number(d.presentaciones) || 0;
+    total.reuniones += Number(d.reuniones) || 0;
+  });
+  return total;
 }
 
 function diaSemanaHoyId() {
@@ -217,6 +252,13 @@ function hydrateState(parsed) {
   if (!merged.catalogoProductos[merged.pais]) {
     merged.catalogoProductos[merged.pais] = emptyCatalogoProductosPais(merged.pais);
   }
+
+  merged.registroDiario = parsed.registroDiario && typeof parsed.registroDiario === "object"
+    ? Object.keys(parsed.registroDiario).reduce(function (acc, f) {
+        acc[f] = Object.assign(emptyRegistroDia(), parsed.registroDiario[f]);
+        return acc;
+      }, {})
+    : {};
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoActualIndex =
