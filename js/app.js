@@ -202,6 +202,7 @@ const App = {
       case "home": mainHtml = renderHome(state); break;
       case "escenario": mainHtml = renderEscenarioVida(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
+      case "informe": mainHtml = renderInformeSemanal(state, ui); break;
       case "pasos": mainHtml = renderPasos(state, ui); break;
       case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
@@ -945,6 +946,20 @@ const Actions = {
 
   "toggle-calculadora-productos": function () {
     App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
+    App.render();
+  },
+
+  "incrementar-registro": function (arg) {
+    const dia = getRegistroDia(App.state, hoyISO());
+    dia[arg] = (Number(dia[arg]) || 0) + 1;
+    App.persist(true);
+    App.render();
+  },
+
+  "decrementar-registro": function (arg) {
+    const dia = getRegistroDia(App.state, hoyISO());
+    dia[arg] = Math.max(0, (Number(dia[arg]) || 0) - 1);
+    App.persist(true);
     App.render();
   },
 
