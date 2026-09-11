@@ -1,4 +1,15 @@
 /* ---------------------------------------------------------------
+   LICENCIA — marca de agua sutil por comprador.
+   Antes de desplegar una copia de esta app para un líder que la haya
+   comprado, cambia el valor de abajo con su nombre (y opcionalmente su
+   rango) y despliega esa copia con un nombre de proyecto propio en Vercel.
+   No es un candado técnico — es una firma visible en la app que deja
+   claro de quién es esa copia si alguna vez circula fuera de su equipo.
+   Déjalo en "" para una copia sin licencia asignada (uso propio, demos).
+--------------------------------------------------------------- */
+const LICENCIA_TITULAR = "";
+
+/* ---------------------------------------------------------------
    CONTENIDO — 8 Pasos, Plan de 6 Días, Plan de 90 Días
 --------------------------------------------------------------- */
 

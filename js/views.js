@@ -45,6 +45,7 @@ function renderWelcome() {
     '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Los 8 Pasos al Éxito</p>' +
     '<p class="muted" style="margin-top:22px;max-width:300px;font-size:15px;line-height:1.6">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
     '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Comenzar mi recorrido ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copia con licencia exclusiva para ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"
   );
 }
@@ -119,6 +120,7 @@ function renderMenuSheet(ui) {
     '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">CUMBRE 90</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
     '<div class="menu-list">' + items + "</div>" +
+    (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licencia exclusiva: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
     "</div></div>"
   );
 }
@@ -1058,8 +1060,16 @@ function renderAjustes(state, ui) {
 
   const resetLabel = ui.confirmReset ? "¿Seguro? Toca de nuevo para reiniciar" : "Reiniciar mi progreso";
 
+  const licenciaCard = LICENCIA_TITULAR
+    ? '<div class="card">' +
+      '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Licencia de esta copia</span></div>' +
+      '<p class="muted small" style="margin-top:6px;line-height:1.5">Esta copia de Cumbre 90 está licenciada exclusivamente para <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> y su propio equipo. No está autorizada para compartirse con otros líderes o equipos.</p>' +
+      "</div>"
+    : "";
+
   return (
     sectionHeaderHTML("Ajustes", "", "settings") +
+    licenciaCard +
     '<div class="card row between">' +
     '<div><div style="font-size:14px;font-weight:600">Modo patrocinador</div><div class="muted small" style="margin-top:2px">Edita los premios de tu equipo</div></div>' +
     '<div class="toggle' + (state.mentorMode ? " on" : "") + '" data-action="toggle-mentor"><div class="knob"></div></div>' +
