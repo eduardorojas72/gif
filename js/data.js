@@ -1587,3 +1587,54 @@ const RANGOS = [
 
 const MENSAJE_BIENVENIDA =
   "Bienvenido a este recorrido al éxito. Está diseñado para que disfrutes del recorrido, compartas tus progresos y consultes tus dudas o dificultades que puedas encontrar. ¡Adelante!";
+
+/* ---------------------------------------------------------------
+   IDIOMA DEL INFORME SEMANAL — el socio puede usar la app en un idioma
+   y elegir enviar su informe en otro, según el idioma de su patrocinador.
+--------------------------------------------------------------- */
+
+const IDIOMAS_INFORME = [
+  { id: "es", label: "Español" },
+  { id: "en", label: "English" },
+  { id: "fr", label: "Français" },
+  { id: "it", label: "Italiano" },
+  { id: "ro", label: "Română" },
+  { id: "pt", label: "Português" },
+];
+
+const INFORME_I18N = {
+  es: {
+    llamadas: "Llamadas", mensajes: "Mensajes de invitación", presentaciones: "Presentaciones (Show the Plan)", reuniones: "Reuniones / seguimientos",
+    tituloPersonal: "📊 Mi informe semanal de actividad (Cumbre 90):", nuevosRegistros: "Nuevos registros en mi lista", cierrePersonal: "¿Qué te parece? ¿En qué puedo mejorar esta semana?",
+    tituloEquipo: "👥 Informe semanal de mi equipo (Cumbre 90):", sociosActivos: "Socios activos", nuevosSocios: "Nuevos socios esta semana", seguimientosSemana: "Seguimientos programados esta semana", seguimientosVencidos: "Seguimientos vencidos", cierreEquipo: "Aquí va el resumen de mi equipo — ¿me ayudas a revisarlo?",
+  },
+  en: {
+    llamadas: "Calls", mensajes: "Invitation messages", presentaciones: "Presentations (Show the Plan)", reuniones: "Meetings / follow-ups",
+    tituloPersonal: "📊 My weekly activity report (Cumbre 90):", nuevosRegistros: "New contacts added this week", cierrePersonal: "What do you think? How can I improve this week?",
+    tituloEquipo: "👥 My team's weekly report (Cumbre 90):", sociosActivos: "Active team members", nuevosSocios: "New team members this week", seguimientosSemana: "Follow-ups scheduled this week", seguimientosVencidos: "Overdue follow-ups", cierreEquipo: "Here's my team's summary — can you help me review it?",
+  },
+  fr: {
+    llamadas: "Appels", mensajes: "Messages d'invitation", presentaciones: "Présentations (Show the Plan)", reuniones: "Réunions / suivis",
+    tituloPersonal: "📊 Mon rapport d'activité hebdomadaire (Cumbre 90) :", nuevosRegistros: "Nouveaux contacts cette semaine", cierrePersonal: "Qu'en penses-tu ? Comment puis-je m'améliorer cette semaine ?",
+    tituloEquipo: "👥 Rapport hebdomadaire de mon équipe (Cumbre 90) :", sociosActivos: "Membres actifs de l'équipe", nuevosSocios: "Nouveaux membres cette semaine", seguimientosSemana: "Suivis programmés cette semaine", seguimientosVencidos: "Suivis en retard", cierreEquipo: "Voici le résumé de mon équipe — peux-tu m'aider à le revoir ?",
+  },
+  it: {
+    llamadas: "Chiamate", mensajes: "Messaggi di invito", presentaciones: "Presentazioni (Show the Plan)", reuniones: "Riunioni / follow-up",
+    tituloPersonal: "📊 Il mio report settimanale di attività (Cumbre 90):", nuevosRegistros: "Nuovi contatti questa settimana", cierrePersonal: "Cosa ne pensi? Come posso migliorare questa settimana?",
+    tituloEquipo: "👥 Report settimanale del mio team (Cumbre 90):", sociosActivos: "Membri attivi del team", nuevosSocios: "Nuovi membri questa settimana", seguimientosSemana: "Follow-up programmati questa settimana", seguimientosVencidos: "Follow-up scaduti", cierreEquipo: "Ecco il riepilogo del mio team — mi aiuti a rivederlo?",
+  },
+  ro: {
+    llamadas: "Apeluri", mensajes: "Mesaje de invitație", presentaciones: "Prezentări (Show the Plan)", reuniones: "Întâlniri / urmăriri",
+    tituloPersonal: "📊 Raportul meu săptămânal de activitate (Cumbre 90):", nuevosRegistros: "Contacte noi în această săptămână", cierrePersonal: "Ce părere ai? Cum pot îmbunătăți săptămâna asta?",
+    tituloEquipo: "👥 Raportul săptămânal al echipei mele (Cumbre 90):", sociosActivos: "Membri activi ai echipei", nuevosSocios: "Membri noi în această săptămână", seguimientosSemana: "Urmăriri programate săptămâna asta", seguimientosVencidos: "Urmăriri restante", cierreEquipo: "Iată rezumatul echipei mele — mă ajuți să-l revizuim?",
+  },
+  pt: {
+    llamadas: "Chamadas", mensajes: "Mensagens de convite", presentaciones: "Apresentações (Show the Plan)", reuniones: "Reuniões / acompanhamentos",
+    tituloPersonal: "📊 Meu relatório semanal de atividade (Cumbre 90):", nuevosRegistros: "Novos contatos esta semana", cierrePersonal: "O que você acha? Como posso melhorar esta semana?",
+    tituloEquipo: "👥 Relatório semanal da minha equipe (Cumbre 90):", sociosActivos: "Membros ativos da equipe", nuevosSocios: "Novos membros esta semana", seguimientosSemana: "Acompanhamentos agendados esta semana", seguimientosVencidos: "Acompanhamentos atrasados", cierreEquipo: "Aqui está o resumo da minha equipe — pode me ajudar a revisar?",
+  },
+};
+
+function informeI18n(idioma) {
+  return INFORME_I18N[idioma] || INFORME_I18N.es;
+}

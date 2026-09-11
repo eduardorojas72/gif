@@ -1367,27 +1367,43 @@ function contadorAccionHTML(tipo, label, icon, valorHoy) {
   );
 }
 
-function informeSemanalTextoPersonal(state, semana) {
+function informeSemanalTextoPersonal(state, semana, idioma) {
+  const t = informeI18n(idioma);
   const nuevosRegistros = state.contactos.filter(function (c) { return ultimos7Dias().indexOf(c.creado) !== -1; }).length;
   return (
-    "📊 Mi informe semanal de actividad (Cumbre 90):\n" +
-    "• Llamadas: " + semana.llamadas + "\n" +
-    "• Mensajes de invitación: " + semana.mensajes + "\n" +
-    "• Presentaciones: " + semana.presentaciones + "\n" +
-    "• Reuniones / seguimientos: " + semana.reuniones + "\n" +
-    "• Nuevos registros en mi lista: " + nuevosRegistros +
-    "\n\n¿Qué te parece? ¿En qué puedo mejorar esta semana?"
+    t.tituloPersonal + "\n" +
+    "• " + t.llamadas + ": " + semana.llamadas + "\n" +
+    "• " + t.mensajes + ": " + semana.mensajes + "\n" +
+    "• " + t.presentaciones + ": " + semana.presentaciones + "\n" +
+    "• " + t.reuniones + ": " + semana.reuniones + "\n" +
+    "• " + t.nuevosRegistros + ": " + nuevosRegistros +
+    "\n\n" + t.cierrePersonal
   );
 }
 
-function informeSemanalTextoEquipo(state, equipo) {
+function informeSemanalTextoEquipo(state, equipo, idioma) {
+  const t = informeI18n(idioma);
   return (
-    "👥 Informe semanal de mi equipo (Cumbre 90):\n" +
-    "• Socios activos: " + equipo.totalSocios + "\n" +
-    "• Nuevos socios esta semana: " + equipo.nuevosSocios + "\n" +
-    "• Seguimientos programados esta semana: " + equipo.seguimientosSemana + "\n" +
-    "• Seguimientos vencidos: " + equipo.seguimientosVencidos +
-    "\n\nAquí va el resumen de mi equipo — ¿me ayudas a revisarlo?"
+    t.tituloEquipo + "\n" +
+    "• " + t.sociosActivos + ": " + equipo.totalSocios + "\n" +
+    "• " + t.nuevosSocios + ": " + equipo.nuevosSocios + "\n" +
+    "• " + t.seguimientosSemana + ": " + equipo.seguimientosSemana + "\n" +
+    "• " + t.seguimientosVencidos + ": " + equipo.seguimientosVencidos +
+    "\n\n" + t.cierreEquipo
+  );
+}
+
+function idiomaInformeSelectorHTML(state) {
+  return (
+    '<div class="card" style="margin-top:12px">' +
+    '<div class="row gap-2" style="align-items:center">' + Icon("compass", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:600;font-size:13px">Idioma del mensaje a compartir</span></div>' +
+    '<p class="muted small" style="margin-top:2px">Elige el idioma en el que tu patrocinador recibirá el informe (puede ser distinto al idioma de tu app).</p>' +
+    '<div class="row gap-2" style="flex-wrap:wrap;margin-top:8px">' +
+    IDIOMAS_INFORME.map(function (i) {
+      const active = state.idiomaInforme === i.id;
+      return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-idioma-informe" data-arg="' + i.id + '">' + escapeHtml(i.label) + "</button>";
+    }).join("") +
+    "</div></div>"
   );
 }
 
@@ -1410,11 +1426,14 @@ function renderInformeSemanal(state, ui) {
     '<div class="muted small" style="margin-top:10px">' + nuevosRegistros + " nuevos registros en tu lista esta semana</div>" +
     "</div>";
 
-  const compartirPersonal = (semana.llamadas + semana.mensajes + semana.presentaciones + semana.reuniones + nuevosRegistros) > 0
+  const idioma = state.idiomaInforme || "es";
+  const hayActividad = (semana.llamadas + semana.mensajes + semana.presentaciones + semana.reuniones + nuevosRegistros) > 0;
+  const compartirPersonal = hayActividad
     ? (state.whatsapp && state.whatsapp.trim()
-        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(state, semana)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
+        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(state, semana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
         : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu informe.</p>')
     : '<p class="muted small" style="margin-top:10px">Registra al menos una acción esta semana para poder compartir tu informe.</p>';
+  const idiomaSelector = hayActividad && state.whatsapp && state.whatsapp.trim() ? idiomaInformeSelectorHTML(state) : "";
 
   let equipoHtml = "";
   if (state.mentorMode) {
@@ -1437,7 +1456,7 @@ function renderInformeSemanal(state, ui) {
       '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Seguimientos vencidos</div><div style="font-size:18px;font-weight:700;color:' + (equipo.seguimientosVencidos > 0 ? "var(--warn)" : "var(--gold-light)") + '">' + equipo.seguimientosVencidos + "</div></div>" +
       "</div>" +
       (state.whatsapp && state.whatsapp.trim()
-        ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(state, equipo)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir informe de mi equipo</a>"
+        ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(state, equipo, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir informe de mi equipo</a>"
         : "") +
       "</div>";
   }
@@ -1447,6 +1466,7 @@ function renderInformeSemanal(state, ui) {
     '<div><div style="font-weight:700;font-size:14px;margin-bottom:8px">Hoy</div>' +
     '<div class="view-stack gap-sm">' + contadores + "</div></div>" +
     resumenSemana +
+    idiomaSelector +
     compartirPersonal +
     equipoHtml
   );

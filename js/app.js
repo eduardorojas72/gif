@@ -963,6 +963,12 @@ const Actions = {
     App.render();
   },
 
+  "set-idioma-informe": function (arg) {
+    App.state.idiomaInforme = arg;
+    App.persist(true);
+    App.render();
+  },
+
   "toggle-historial-compras": function () {
     App.ui.historialAbierto = !App.ui.historialAbierto;
     App.render();

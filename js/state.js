@@ -162,6 +162,7 @@ function defaultState() {
     catalogoProductos: { CO: emptyCatalogoProductosPais("CO") },
     comprasQuincena: {},
     registroDiario: {},
+    idiomaInforme: "es",
   };
 }
 
@@ -317,6 +318,8 @@ function hydrateState(parsed) {
         return acc;
       }, {})
     : {};
+
+  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "es";
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =
