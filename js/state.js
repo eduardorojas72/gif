@@ -303,6 +303,19 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+/* Igual que escapeHtml, pero además convierte en enlace tocable cualquier
+   dominio/URL mencionado en el texto (p.ej. "ch.atomy.com/eu"). Solo se usa
+   sobre contenido propio y curado de la app (explicaciones, notas), nunca
+   sobre texto que el socio escriba — ese sigue pasando por escapeHtml solo. */
+function linkifyText(str) {
+  const escaped = escapeHtml(str);
+  const urlPattern = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)+(?:com|net|org|us|io|app|co|info|es|mx|br|ca|eu)(?:\/[^\s<]*)?)/gi;
+  return escaped.replace(urlPattern, function (match) {
+    const href = /^https?:\/\//i.test(match) ? match : "https://" + match;
+    return '<a href="' + href + '" target="_blank" rel="noreferrer" style="color:var(--gold-light);text-decoration:underline">' + match + "</a>";
+  });
+}
+
 const Storage = {
   load() {
     try {

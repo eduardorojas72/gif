@@ -441,7 +441,7 @@ function renderPasos(state, ui) {
     const reflexion = p.reflexion
       ? '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
         '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("heart", { size: 13, color: "var(--gold)" }) + " Reflexión para compartir</div>" +
-        '<p style="font-size:13px;line-height:1.55;margin-top:6px;font-style:italic">“' + escapeHtml(p.reflexion) + '”</p>' +
+        '<p style="font-size:13px;line-height:1.55;margin-top:6px;font-style:italic">“' + linkifyText(p.reflexion) + '”</p>' +
         '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(p.reflexion) + '">' + Icon("share2", { size: 13 }) + " Compartir</div>" +
         "</div>"
       : "";
@@ -454,9 +454,9 @@ function renderPasos(state, ui) {
       '<span class="badge gold">' + Icon("sparkles", { size: 11 }) + " " + escapeHtml(p.objetivo) + "</span>" +
       "</div>" +
       '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Explicación detallada</div>' +
-      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(p.explicacion) + "</p>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + linkifyText(p.explicacion) + "</p>" +
       '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Ejemplos prácticos</div>' +
-      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(p.ejemplo) + "</p>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + linkifyText(p.ejemplo) + "</p>" +
       checklist + reflexion +
       "</div>";
     return (
@@ -619,7 +619,7 @@ function renderDiaDetalle(state, diaId) {
   const est = state.dias[diaId];
   const allChecked = est.checks.every(Boolean);
 
-  const nota = dia.nota ? '<div class="card" style="background:var(--accent-soft);border:none;font-size:14px;line-height:1.55">' + escapeHtml(dia.nota) + "</div>" : "";
+  const nota = dia.nota ? '<div class="card" style="background:var(--accent-soft);border:none;font-size:14px;line-height:1.55">' + linkifyText(dia.nota) + "</div>" : "";
 
   const contenido = (dia.contenido || []).length
     ? '<div class="view-stack gap-sm">' +
@@ -627,7 +627,7 @@ function renderDiaDetalle(state, diaId) {
         return (
           '<div class="card">' +
           '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>" +
-          sec.body.map(function (p) { return '<p class="muted small" style="line-height:1.55;margin-top:6px">' + escapeHtml(p) + "</p>"; }).join("") +
+          sec.body.map(function (p) { return '<p class="muted small" style="line-height:1.55;margin-top:6px">' + linkifyText(p) + "</p>"; }).join("") +
           "</div>"
         );
       }).join("") +
