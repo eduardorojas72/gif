@@ -25,7 +25,7 @@ function diaSemanaHoyId() {
 }
 
 function nuevaActividadAgenda() {
-  return { id: "a" + Math.random().toString(36).slice(2, 9), tipo: "llamada", hora: "", nota: "", hecha: false, recordar: false, recordarMin: 10, ultimoAviso: null };
+  return { id: "a" + Math.random().toString(36).slice(2, 9), tipo: "llamada", hora: "", fecha: "", nota: "", hecha: false, recordar: false, recordarMin: 10, ultimoAviso: null };
 }
 
 function nuevoZoomAgenda() {

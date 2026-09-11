@@ -1230,6 +1230,7 @@ function agendaTipoInfo(tipoId) {
 
 function actividadRowHTML(dia, a) {
   const tipo = agendaTipoInfo(a.tipo);
+  const puntual = !!a.fecha;
   return (
     '<div class="card" style="padding:12px' + (a.hecha ? ";opacity:.6" : "") + '">' +
     '<div class="row gap-3" style="align-items:flex-start">' +
@@ -1237,9 +1238,10 @@ function actividadRowHTML(dia, a) {
     Icon(a.hecha ? "check-circle" : "circle", { size: 20, color: a.hecha ? "var(--success)" : "var(--text-soft)" }) +
     "</button>" +
     '<div style="flex:1;min-width:0">' +
-    '<div class="row gap-2">' + Icon(tipo.icon, { size: 13, color: "var(--gold-light)" }) +
+    '<div class="row gap-2" style="flex-wrap:wrap">' + Icon(tipo.icon, { size: 13, color: "var(--gold-light)" }) +
     '<span style="font-weight:700;font-size:13.5px' + (a.hecha ? ";text-decoration:line-through" : "") + '">' + escapeHtml(tipo.label) + "</span>" +
     (a.hora ? '<span class="muted small">· ' + escapeHtml(a.hora) + "</span>" : "") +
+    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " " + escapeHtml(agendaFechaLabel(a.fecha)) + "</span>" : "") +
     (a.recordar ? Icon("bell", { size: 12, color: "var(--gold-light)" }) : "") + "</div>" +
     (a.nota ? '<div class="muted small" style="margin-top:3px">' + escapeHtml(a.nota) + "</div>" : "") +
     "</div>" +
@@ -1248,7 +1250,7 @@ function actividadRowHTML(dia, a) {
   );
 }
 
-function zoomFechaLabel(fecha) {
+function agendaFechaLabel(fecha) {
   try {
     return new Date(fecha + "T00:00:00").toLocaleDateString("es-ES", { weekday: "short", day: "2-digit", month: "short" });
   } catch (e) {
@@ -1264,7 +1266,7 @@ function zoomRowHTML(dia, z) {
     '<div class="row gap-2" style="min-width:0">' + Icon("video", { size: 14, color: "var(--gold-light)" }) +
     '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Reunión sin título") + "</div>" +
     '<div class="row gap-2" style="margin-top:2px;flex-wrap:wrap">' +
-    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " Solo " + escapeHtml(zoomFechaLabel(z.fecha)) + "</span>" : '<span class="badge dark">Cada semana</span>') +
+    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " Solo " + escapeHtml(agendaFechaLabel(z.fecha)) + "</span>" : '<span class="badge dark">Cada semana</span>') +
     (z.hora ? '<span class="muted small">' + escapeHtml(z.hora) + "</span>" : "") +
     (z.recordar ? Icon("bell", { size: 11, color: "var(--gold-light)" }) : "") +
     "</div></div></div>" +
@@ -1360,6 +1362,7 @@ function renderActividadModal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Tipo</label><select data-draft-field="tipo" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + tipoOpts + "</select></div>" +
     '<div class="field"><label>Hora (opcional)</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Fecha (opcional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Déjalo vacío si se repite todas las semanas ese día. Ponle fecha si es puntual — por ejemplo, una tarea de una sola vez.</p></div>' +
     '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="Con quién, dónde, qué necesitas llevar...">' + escapeHtml(d.nota || "") + "</textarea></div>" +
     recordatorioFieldHTML(d, "toggle-actividad-recordar") +
     "</div>" +
