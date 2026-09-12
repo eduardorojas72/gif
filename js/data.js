@@ -143,24 +143,26 @@ const CRITERIOS_GENERALES = [
   "La Comisión de Maestría se paga dos veces al mes: el día 15, y también el día 7 después del cierre mensual.",
 ];
 
+/* Los montos oficiales siempre están en pesos colombianos (COP) y antes de
+   impuestos — cada etiqueta se convierte a la moneda del país activo con
+   formatMonedaAprox() al momento de renderizar (ver NOTA_MONEDA_APROX). */
 const NOTAS_VALORES = [
-  "Viaje para Sharon Rose Master y Star Master: equivale a aprox. $3.817.000 COP (≈ $954 USD) por persona.",
-  "Viaje para Royal Master, Crown Master e Imperial Master: equivale a aprox. $15.286.000 COP (≈ $3.822 USD) por persona.",
-  "Alquiler del automóvil de Royal Master: equivale a aprox. $3.817.000 COP (≈ $954 USD) mensuales.",
-  "Automóvil de lujo de Crown Master: equivale a aprox. $244.288.000 COP (≈ $61.072 USD).",
-  "Automóvil de lujo de Imperial Master: equivale a aprox. $297.726.000 COP (≈ $74.432 USD).",
-  "Oficina en renta (Imperial Master): equivale a aprox. $9.542.500 COP (≈ $2.386 USD) mensuales.",
-  "Asistente personal (Imperial Master): equivale a aprox. $5.725.500 COP (≈ $1.431 USD) mensuales.",
-  "Chofer (Imperial Master): equivale a aprox. $7.634.000 COP (≈ $1.909 USD) mensuales.",
-  "Todos los valores en dólares son una conversión aproximada de referencia (~4.000 COP por USD) y varían según la TRM real. Los montos oficiales siempre están en pesos colombianos y antes de impuestos.",
+  { etiqueta: "Viaje para Sharon Rose Master y Star Master", cop: 3817000, sufijo: "por persona" },
+  { etiqueta: "Viaje para Royal Master, Crown Master e Imperial Master", cop: 15286000, sufijo: "por persona" },
+  { etiqueta: "Alquiler del automóvil de Royal Master", cop: 3817000, sufijo: "mensuales" },
+  { etiqueta: "Automóvil de lujo de Crown Master", cop: 244288000, sufijo: "" },
+  { etiqueta: "Automóvil de lujo de Imperial Master", cop: 297726000, sufijo: "" },
+  { etiqueta: "Oficina en renta (Imperial Master)", cop: 9542500, sufijo: "mensuales" },
+  { etiqueta: "Asistente personal (Imperial Master)", cop: 5725500, sufijo: "mensuales" },
+  { etiqueta: "Chofer (Imperial Master)", cop: 7634000, sufijo: "mensuales" },
 ];
 
 const CLUBES_EXITO = [
-  { nombre: "AutoSales Master", requisito: "Recalificar como Sales Master 12 veces en un año (una vez por quincena, en promedio).", nota: "Equivale a un ingreso aproximado de $8 a $12 millones COP mensuales." },
-  { nombre: "Club de Líderes", requisito: "Haber logrado un ingreso anual de $350.000.000 COP.", nota: "" },
-  { nombre: "Club de Líderes Royal", requisito: "Haber logrado un ingreso anual de $700.000.000 COP.", nota: "" },
-  { nombre: "Club de Líderes Crown", requisito: "Haber logrado un ingreso anual de $1.500.000.000 COP.", nota: "" },
-  { nombre: "Club de Líderes Imperial", requisito: "Llegar a ser Imperial Master.", nota: "" },
+  { nombre: "AutoSales Master", requisito: "Recalificar como Sales Master 12 veces en un año (una vez por quincena, en promedio).", ingresoCopMin: 8000000, ingresoCopMax: 12000000, ingresoSufijo: "mensuales" },
+  { nombre: "Club de Líderes", ingresoAnualCop: 350000000 },
+  { nombre: "Club de Líderes Royal", ingresoAnualCop: 700000000 },
+  { nombre: "Club de Líderes Crown", ingresoAnualCop: 1500000000 },
+  { nombre: "Club de Líderes Imperial", requisito: "Llegar a ser Imperial Master." },
 ];
 
 const PAISES_CATALOGO = [

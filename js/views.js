@@ -294,13 +294,20 @@ function renderPlanCompensacion(ui, state) {
   }).join("");
 
   const criterios = "<ul style=\"margin:0;padding-left:18px\">" + CRITERIOS_GENERALES.map(function (c) { return '<li class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(c) + "</li>"; }).join("") + "</ul>";
-  const notas = NOTAS_VALORES.map(function (n) { return '<p class="muted small" style="line-height:1.5;margin-top:6px">' + escapeHtml(n) + "</p>"; }).join("");
+  const notas = NOTAS_VALORES.map(function (n) {
+    const texto = escapeHtml(n.etiqueta) + ": equivale a " + escapeHtml(formatMonedaAprox(n.cop, paisInfo)) + (n.sufijo ? " " + escapeHtml(n.sufijo) : "") + ".";
+    return '<p class="muted small" style="line-height:1.5;margin-top:6px">' + texto + "</p>";
+  }).join("") + '<p class="muted small" style="line-height:1.5;margin-top:6px">' + escapeHtml(NOTA_MONEDA_APROX) + "</p>";
   const clubes = CLUBES_EXITO.map(function (c) {
+    const requisito = c.requisito || ("Haber logrado un ingreso anual de " + formatMonedaAprox(c.ingresoAnualCop, paisInfo) + ".");
+    const nota = c.ingresoCopMin
+      ? "Equivale a un ingreso " + formatMonedaRangoAprox(c.ingresoCopMin, c.ingresoCopMax, paisInfo) + " " + c.ingresoSufijo + "."
+      : "";
     return (
       '<div class="row gap-3" style="padding:9px 0;border-top:1px solid var(--border-soft)">' +
       Icon("award", { size: 16, color: "var(--gold-light)" }) +
       '<div style="flex:1"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(c.nombre) + "</div>" +
-      '<div class="muted small" style="margin-top:2px;line-height:1.4">' + escapeHtml(c.requisito) + (c.nota ? " " + escapeHtml(c.nota) : "") + "</div></div>" +
+      '<div class="muted small" style="margin-top:2px;line-height:1.4">' + escapeHtml(requisito) + (nota ? " " + escapeHtml(nota) : "") + "</div></div>" +
       "</div>"
     );
   }).join("");
@@ -410,6 +417,14 @@ function formatMoneda(valor, paisInfo) {
 function formatMonedaAprox(montoCOP, paisInfo) {
   const valor = convertirDesdeCOP(montoCOP, paisInfo.moneda);
   return "aprox. " + formatMoneda(valor, paisInfo);
+}
+
+/* Igual que formatMonedaAprox pero para un rango (ej. "aprox. $X a $Y") — el
+   prefijo "aprox." aparece una sola vez, no repetido en cada extremo. */
+function formatMonedaRangoAprox(copMin, copMax, paisInfo) {
+  const min = formatMoneda(convertirDesdeCOP(copMin, paisInfo.moneda), paisInfo);
+  const max = formatMoneda(convertirDesdeCOP(copMax, paisInfo.moneda), paisInfo);
+  return "aprox. " + min + " a " + max;
 }
 
 function paisSelectorHTML(state) {
