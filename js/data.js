@@ -120,12 +120,12 @@ const CLUBES_EXITO = [
 ];
 
 const PAISES_CATALOGO = [
-  { id: "CO", label: "Colombia", moneda: "COP", simbolo: "$", locale: "es-CO" },
-  { id: "EU", label: "Europa", moneda: "EUR", simbolo: "€", locale: "es-ES" },
-  { id: "MX", label: "México", moneda: "MXN", simbolo: "$", locale: "es-MX" },
-  { id: "BR", label: "Brasil", moneda: "BRL", simbolo: "R$", locale: "pt-BR" },
-  { id: "CA", label: "Canadá", moneda: "CAD", simbolo: "$", locale: "en-CA" },
-  { id: "US", label: "Estados Unidos", moneda: "USD", simbolo: "$", locale: "en-US" },
+  { id: "CO", label: "Colombia", moneda: "COP", simbolo: "$", locale: "es-CO", codigo: "+57" },
+  { id: "EU", label: "Europa", moneda: "EUR", simbolo: "€", locale: "es-ES", codigo: "+34" },
+  { id: "MX", label: "México", moneda: "MXN", simbolo: "$", locale: "es-MX", codigo: "+52" },
+  { id: "BR", label: "Brasil", moneda: "BRL", simbolo: "R$", locale: "pt-BR", codigo: "+55" },
+  { id: "CA", label: "Canadá", moneda: "CAD", simbolo: "$", locale: "en-CA", codigo: "+1" },
+  { id: "US", label: "Estados Unidos", moneda: "USD", simbolo: "$", locale: "en-US", codigo: "+1" },
 ];
 
 const CATALOGO_PRODUCTOS_POR_PAIS = {

@@ -390,7 +390,7 @@ const Actions = {
   },
 
   "add-persona": function (arg) {
-    App.ui.personaDraft = { linea: arg, id: null, nombre: "", telefono: "", atomyId: "", contrasena: "", notas: "" };
+    App.ui.personaDraft = { linea: arg, id: null, nombre: "", telefono: "", pais: App.state.pais || "CO", atomyId: "", contrasena: "", notas: "" };
     App.ui.confirmDeletePersona = null;
     App.render();
   },
@@ -401,7 +401,7 @@ const Actions = {
     const q = getQuincena(App.state, qKey);
     const p = (q[linea] || []).find((x) => x.id === arg);
     if (!p) return;
-    App.ui.personaDraft = { linea: linea, id: p.id, nombre: p.nombre, telefono: p.telefono, atomyId: p.atomyId, contrasena: p.contrasena, notas: p.notas };
+    App.ui.personaDraft = { linea: linea, id: p.id, nombre: p.nombre, telefono: p.telefono, pais: p.pais || "CO", atomyId: p.atomyId, contrasena: p.contrasena, notas: p.notas };
     App.ui.confirmDeletePersona = null;
     App.render();
   },
@@ -409,6 +409,12 @@ const Actions = {
   "cancel-persona": function () {
     App.ui.personaDraft = null;
     App.ui.confirmDeletePersona = null;
+    App.render();
+  },
+
+  "set-persona-draft-pais": function (arg) {
+    if (!App.ui.personaDraft) return;
+    App.ui.personaDraft.pais = arg;
     App.render();
   },
 
@@ -422,12 +428,13 @@ const Actions = {
       if (p) {
         p.nombre = d.nombre;
         p.telefono = d.telefono;
+        p.pais = d.pais;
         p.atomyId = d.atomyId;
         p.contrasena = d.contrasena;
         p.notas = d.notas;
       }
     } else {
-      const nueva = Object.assign(nuevaPersona(), { nombre: d.nombre, telefono: d.telefono, atomyId: d.atomyId, contrasena: d.contrasena, notas: d.notas });
+      const nueva = Object.assign(nuevaPersona(), { nombre: d.nombre, telefono: d.telefono, pais: d.pais, atomyId: d.atomyId, contrasena: d.contrasena, notas: d.notas });
       q[d.linea] = q[d.linea] || [];
       q[d.linea].push(nueva);
     }

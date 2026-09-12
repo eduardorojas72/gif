@@ -497,7 +497,7 @@ function personaRowHTML(qKey, linea, p) {
     '<div class="card roster-row" style="padding:13px">' +
     '<div class="row between" style="align-items:flex-start">' +
     '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(p.nombre || "Sin nombre") + "</div>" +
-    (p.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(p.telefono) + "</div>" : "") +
+    (p.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(p.telefono) + (p.pais ? " · " + escapeHtml(paisCatalogoInfo(p.pais).label) : "") + "</div>" : "") +
     (p.atomyId || p.contrasena
       ? '<div class="muted small" style="margin-top:2px">' +
         (p.atomyId ? "ID " + escapeHtml(p.atomyId) : "") +
@@ -566,6 +566,14 @@ function renderPersonaModal(ui) {
       (ui.confirmDeletePersona === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar persona") +
       "</button>"
     : "";
+  const paisInfo = paisCatalogoInfo(d.pais);
+  const paisChips =
+    '<div class="row gap-2" style="flex-wrap:wrap;margin-top:6px">' +
+    PAISES_CATALOGO.map(function (p) {
+      const active = (d.pais || "CO") === p.id;
+      return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-persona-draft-pais" data-arg="' + p.id + '">' + escapeHtml(p.label) + "</button>";
+    }).join("") +
+    "</div>";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-persona"></div>' +
@@ -574,7 +582,8 @@ function renderPersonaModal(ui) {
     '<button class="icon-btn" data-action="cancel-persona">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
-    '<div class="field"><label>Teléfono (opcional)</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>País</label>' + paisChips + "</div>" +
+    '<div class="field"><label>Teléfono (opcional)</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="' + escapeHtml(paisInfo.codigo) + ' 300 000 0000"></div>' +
     '<div class="row gap-2">' +
     '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Ej. 93248238"></div>' +
     '<div class="field" style="flex:1"><label>Contraseña</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Opcional"></div>' +
