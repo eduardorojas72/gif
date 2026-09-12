@@ -303,6 +303,22 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   -webkit-overflow-scrolling: touch; touch-action: pan-y; overscroll-behavior: contain;
 }
 
+/* En móvil, el volteo 3D con scroll interno confunde el gesto de arrastre
+   (el navegador no distingue si el toque debe desplazar la tarjeta o la
+   página), y el contenido queda "atascado" a medio camino sin poder llegar
+   a las Actividades. Para tacto/puntero impreciso, se desactiva el volteo
+   3D por completo: la cara trasera se muestra en flujo normal (alto
+   automático), y es la página la que se desplaza — un solo scroll, sin
+   conflictos. */
+@media (hover: none), (pointer: coarse) {
+  .flip-card { height: auto !important; max-height: none !important; perspective: none; }
+  .flip-inner { transform: none !important; transition: none; }
+  .flip-face { position: static; overflow: visible; backface-visibility: visible; }
+  .flip-inner:not(.flipped) .flip-back { display: none; }
+  .flip-inner.flipped .flip-front { display: none; }
+  .flip-back { transform: none; overflow-y: visible; -webkit-overflow-scrolling: auto; touch-action: auto; }
+}
+
 .section-header { display: flex; align-items: center; gap: 12px; }
 .section-header h2 { font-size: 18px; font-weight: 700; color: var(--text); }
 .section-header p { font-size: 13px; color: var(--text-soft); margin-top: 2px; }
