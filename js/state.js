@@ -154,7 +154,7 @@ function emptyEscenarioVida() {
 /* ---------------- Informe Semanal — registro diario de acciones ---------------- */
 
 function emptyRegistroDia() {
-  return { llamadas: 0, mensajes: 0, presentaciones: 0, reuniones: 0 };
+  return { llamadas: 0, mensajes: 0, pedidos: 0 };
 }
 
 function getRegistroDia(state, fechaISO) {
@@ -171,18 +171,139 @@ function ultimos7Dias() {
   return out;
 }
 
-function sumarRegistroSemana(state) {
-  const dias = ultimos7Dias();
+/* Suma los contadores manuales (llamadas/mensajes/pedidos) del registro diario
+   para cualquier lista de fechas ISO (semana, quincena, etc.). */
+function sumarRegistroPeriodo(state, dias) {
   const total = emptyRegistroDia();
   dias.forEach(function (f) {
     const d = state.registroDiario[f];
     if (!d) return;
     total.llamadas += Number(d.llamadas) || 0;
     total.mensajes += Number(d.mensajes) || 0;
-    total.presentaciones += Number(d.presentaciones) || 0;
-    total.reuniones += Number(d.reuniones) || 0;
+    total.pedidos += Number(d.pedidos) || 0;
   });
   return total;
+}
+
+function sumarRegistroSemana(state) {
+  return sumarRegistroPeriodo(state, ultimos7Dias());
+}
+
+/* Estadísticas derivadas de la Lista de 250 (no son contadores manuales):
+   cuentan contactos cuyo ESTADO cambió dentro del período dado (según
+   estadoFecha), y los seguimientos verificados/hechos dentro del período.
+   Se usan tanto para "Esta semana" como para el resumen por quincena. */
+function calcularDerivadosPeriodo(state, dias) {
+  const contactos = state.contactos || [];
+  const out = { contactados: 0, presentaciones: 0, registros: 0, seguimientosRealizados: 0 };
+  contactos.forEach(function (c) {
+    if (c.estadoFecha && dias.indexOf(c.estadoFecha) !== -1) {
+      if (c.estado === "Contactado") out.contactados++;
+      else if (c.estado === "Presentación") out.presentaciones++;
+      else if (c.estado === "Socio" || c.estado === "Consumidor") out.registros++;
+    }
+    (c.seguimientosRealizados || []).forEach(function (f) {
+      if (dias.indexOf(f) !== -1) out.seguimientosRealizados++;
+    });
+  });
+  return out;
+}
+
+/* ---------------- Quincena de CALENDARIO (1–15 y 16–fin de mes) ----------------
+   Distinta de las 6 "quincenas" del Plan 90 Días (QUINCENAS/SEMANAS/derivarQuincenas,
+   que son etapas del programa, no fechas). Esta usa fechas de calendario reales,
+   porque registroDiario y los campos estadoFecha/seguimientosRealizados de los
+   contactos son todos fechas reales. Prefijo "cal" para no chocar con lo anterior.
+   Trabaja siempre sobre las cadenas ISO "YYYY-MM-DD" (el mismo formato que produce
+   hoyISO()), en vez de reconstruir objetos Date locales, para no desalinearse del
+   resto de la app (que ya guarda fechas en UTC vía toISOString()). */
+
+const calMesesEs = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+function calQuincenaKeyFromISO(iso) {
+  const year = iso.slice(0, 4);
+  const month = iso.slice(5, 7);
+  const day = Number(iso.slice(8, 10));
+  const half = day <= 15 ? 1 : 2;
+  return year + "-" + month + "-" + half;
+}
+
+function calQuincenaActualKey() {
+  return calQuincenaKeyFromISO(hoyISO());
+}
+
+function calParseQuincenaKey(key) {
+  const parts = key.split("-");
+  return { year: Number(parts[0]), month: Number(parts[1]), half: Number(parts[2]) };
+}
+
+function calDiasEnMes(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+function calQuincenaBoundsISO(key) {
+  const { year, month, half } = calParseQuincenaKey(key);
+  const mm = String(month).padStart(2, "0");
+  const startDay = half === 1 ? "01" : "16";
+  const endDay = half === 1 ? "15" : String(calDiasEnMes(year, month)).padStart(2, "0");
+  return { startISO: year + "-" + mm + "-" + startDay, endISO: year + "-" + mm + "-" + endDay };
+}
+
+/* Lista de fechas ISO (una por día) dentro de la quincena, para sumar registros. */
+function calFechasEnQuincena(key) {
+  const { startISO, endISO } = calQuincenaBoundsISO(key);
+  const out = [];
+  let d = new Date(startISO + "T00:00:00Z");
+  const end = new Date(endISO + "T00:00:00Z");
+  while (d <= end) {
+    out.push(d.toISOString().slice(0, 10));
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return out;
+}
+
+function calQuincenaLabel(key) {
+  const { year, month, half } = calParseQuincenaKey(key);
+  return (half === 1 ? "1–15" : "16–fin") + " de " + calMesesEs[month - 1] + " " + year;
+}
+
+function calQuincenaLabelCorta(key) {
+  const { month, half } = calParseQuincenaKey(key);
+  return (half === 1 ? "1-15" : "16+") + " " + calMesesEs[month - 1].slice(0, 3);
+}
+
+function calQuincenaAdyacente(key, delta) {
+  const { year, month, half } = calParseQuincenaKey(key);
+  let h = half + delta, m = month, y = year;
+  while (h > 2) { h -= 2; m += 1; if (m > 12) { m = 1; y += 1; } }
+  while (h < 1) { h += 2; m -= 1; if (m < 1) { m = 12; y -= 1; } }
+  return y + "-" + String(m).padStart(2, "0") + "-" + h;
+}
+
+/* Datos agregados (contadores manuales + estadísticas derivadas) de una quincena. */
+function datosQuincena(state, key) {
+  const dias = calFechasEnQuincena(key);
+  const reg = sumarRegistroPeriodo(state, dias);
+  const der = calcularDerivadosPeriodo(state, dias);
+  return {
+    llamadas: reg.llamadas, mensajes: reg.mensajes, pedidos: reg.pedidos,
+    contactados: der.contactados, presentaciones: der.presentaciones,
+    registros: der.registros, seguimientosRealizados: der.seguimientosRealizados,
+  };
+}
+
+/* Todas las quincenas de calendario (claves) que tienen al menos un dato guardado
+   — en registroDiario, o en estadoFecha/seguimientosRealizados de algún contacto —
+   ordenadas de la más antigua a la más reciente (el formato de clave ordena bien
+   como texto: año-mes con cero a la izquierda, y mitad 1 o 2). */
+function quincenasConActividad(state) {
+  const set = {};
+  Object.keys(state.registroDiario || {}).forEach(function (f) { set[calQuincenaKeyFromISO(f)] = true; });
+  (state.contactos || []).forEach(function (c) {
+    if (c.estadoFecha) set[calQuincenaKeyFromISO(c.estadoFecha)] = true;
+    (c.seguimientosRealizados || []).forEach(function (f) { set[calQuincenaKeyFromISO(f)] = true; });
+  });
+  return Object.keys(set).sort();
 }
 
 function defaultState() {
@@ -303,12 +424,23 @@ function hydrateState(parsed) {
   }, {});
 
   merged.contactos = Array.isArray(parsed.contactos)
-    ? parsed.contactos.map((c) =>
-        Object.assign(
-          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO() },
+    ? parsed.contactos.map((c) => {
+        const mc = Object.assign(
+          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO(), seguimientosRealizados: [] },
           c
-        )
-      )
+        );
+        // Migración: la lista de estados pasó de 8 a 6 valores. "Presentado" se
+        // renombra a "Presentación"; "Primer Pedido" y "Seguimiento" (que tenían
+        // automatismos que ya no existen) caen de forma conservadora en "Contactado",
+        // ya que como mínimo esas personas fueron contactadas.
+        if (mc.estado === "Presentado") mc.estado = "Presentación";
+        else if (mc.estado === "Primer Pedido" || mc.estado === "Seguimiento") mc.estado = "Contactado";
+        // estadoFecha: cuándo cambió por última vez el estado. Si no existe (contactos
+        // guardados antes de este campo), se usa la fecha de creación como mejor estimado.
+        if (!mc.estadoFecha) mc.estadoFecha = mc.creado;
+        if (!Array.isArray(mc.seguimientosRealizados)) mc.seguimientosRealizados = [];
+        return mc;
+      })
     : [];
 
   merged.premios =
@@ -382,7 +514,11 @@ function hydrateState(parsed) {
 
   merged.registroDiario = parsed.registroDiario && typeof parsed.registroDiario === "object"
     ? Object.keys(parsed.registroDiario).reduce(function (acc, f) {
-        acc[f] = Object.assign(emptyRegistroDia(), parsed.registroDiario[f]);
+        // Object.assign copiaría también los campos antiguos "presentaciones"/"reuniones"
+        // (de antes de que esos dos manuales se reemplazaran por "pedidos"): se limitan
+        // explícitamente las claves al shape actual para dejar el estado guardado limpio.
+        const saved = parsed.registroDiario[f] || {};
+        acc[f] = { llamadas: Number(saved.llamadas) || 0, mensajes: Number(saved.mensajes) || 0, pedidos: Number(saved.pedidos) || 0 };
         return acc;
       }, {})
     : {};

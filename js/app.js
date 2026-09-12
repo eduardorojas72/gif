@@ -76,6 +76,9 @@ const App = {
     confirmDeleteSOS: null,
     contactoEventoDraft: null,
     confirmDeleteContactoEvento: null,
+    quincenaResumenAbierto: false,
+    quincenaVista: null,
+    quincenaMetricaTab: "llamadas",
   },
   saveTimer: null,
   toastTimer: null,
@@ -358,11 +361,6 @@ const App = {
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
         const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
-        if (draft === this.ui.contactoDraft && el.dataset.draftField === "estado" && el.value === "Primer Pedido") {
-          if (!draft.notaSeguimiento || !draft.notaSeguimiento.trim()) draft.notaSeguimiento = PRIMER_PEDIDO_NOTA;
-          if (!draft.proximoSeguimiento) draft.proximoSeguimiento = addDiasISO(hoyISO(), 3);
-          this.render();
-        }
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target) {
@@ -676,10 +674,14 @@ const Actions = {
       const idx = App.state.contactos.findIndex((x) => x.id === App.ui.contactoEditId);
       if (idx !== -1) {
         estadoAnterior = App.state.contactos[idx].estado;
-        App.state.contactos[idx] = Object.assign({}, App.state.contactos[idx], d);
+        const actualizado = Object.assign({}, App.state.contactos[idx], d);
+        // Solo se toca estadoFecha si el estado realmente cambió al guardar — así
+        // editar otro campo (p.ej. una nota) no reinicia la fecha del estado.
+        if (estadoAnterior !== d.estado) actualizado.estadoFecha = hoyISO();
+        App.state.contactos[idx] = actualizado;
       }
     } else {
-      App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO() }, d));
+      App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [] }, d));
     }
     const nombreRegistrado = d.nombre.trim();
     const quedoComoSocio = d.estado === "Socio" && estadoAnterior !== "Socio";
@@ -715,6 +717,17 @@ const Actions = {
     c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
     App.persist(true);
     App.showToast("Seguimiento programado");
+    App.render();
+  },
+
+  "marcar-seguimiento-hecho": function (arg) {
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c) return;
+    if (!Array.isArray(c.seguimientosRealizados)) c.seguimientosRealizados = [];
+    c.seguimientosRealizados.push(hoyISO());
+    c.proximoSeguimiento = null;
+    App.persist(true);
+    App.showToast("Seguimiento marcado como hecho");
     App.render();
   },
 
@@ -1247,6 +1260,23 @@ const Actions = {
   "set-idioma-informe": function (arg) {
     App.state.idiomaInforme = arg;
     App.persist(true);
+    App.render();
+  },
+
+  "toggle-quincena-resumen": function () {
+    App.ui.quincenaResumenAbierto = !App.ui.quincenaResumenAbierto;
+    if (App.ui.quincenaResumenAbierto && !App.ui.quincenaVista) App.ui.quincenaVista = calQuincenaActualKey();
+    App.render();
+  },
+
+  "quincena-nav": function (arg) {
+    const actual = App.ui.quincenaVista || calQuincenaActualKey();
+    App.ui.quincenaVista = calQuincenaAdyacente(actual, Number(arg));
+    App.render();
+  },
+
+  "set-quincena-metrica": function (arg) {
+    App.ui.quincenaMetricaTab = arg;
     App.render();
   },
 

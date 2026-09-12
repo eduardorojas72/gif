@@ -162,10 +162,14 @@ function renderBellPanel(state) {
         const waBtn = r.telefono
           ? '<a class="icon-btn" style="flex-shrink:0" href="' + waHrefPersonal(r.telefono) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
           : "";
+        const hechoBtn = r.contactoId
+          ? '<div class="icon-btn" style="flex-shrink:0;cursor:pointer" data-action="marcar-seguimiento-hecho" data-arg="' + r.contactoId + '" title="Marcar seguimiento hecho">' + Icon("check-circle", { size: 14, color: "var(--success)" }) + "</div>"
+          : "";
         return (
           '<div class="row gap-2" style="align-items:flex-start;text-align:left;padding:10px 0;border-top:1px solid var(--border)">' +
           Icon("bell", { size: 15, color: "var(--accent)" }) +
           '<span class="small" style="color:var(--text);flex:1">' + escapeHtml(r.text) + "</span>" +
+          hechoBtn +
           waBtn +
           "</div>"
         );
@@ -1271,10 +1275,15 @@ function renderContactos(state, ui) {
           contactoNivelBadge(c.nivel) +
           "</div>" +
           '<div class="row between" style="margin-top:10px;align-items:center">' +
-          '<span class="small" style="font-weight:600' + (c.estado === "Primer Pedido" ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
+          '<span class="small" style="font-weight:600' + ((c.estado === "Socio" || c.estado === "Consumidor") ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
           '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
           "</div>" +
           (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(c.notaSeguimiento) + '”</div>' : "") +
+          (c.proximoSeguimiento
+            ? '<div class="row gap-2" style="margin-top:6px;align-items:center;cursor:pointer" data-action="marcar-seguimiento-hecho" data-arg="' + c.id + '">' +
+              Icon("check-circle", { size: 13, color: "var(--success)" }) +
+              '<span class="small" style="color:var(--success);font-weight:600">Marcar seguimiento hecho</span></div>'
+            : "") +
           '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="3">+3 días</button>' +
           '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="7">+1 sem</button>' +
@@ -1707,8 +1716,29 @@ function renderAgenda(state, ui) {
 const REGISTRO_TIPOS = [
   { id: "llamadas", label: "Llamadas", icon: "phone-call" },
   { id: "mensajes", label: "Mensajes de invitación", icon: "message-circle" },
-  { id: "presentaciones", label: "Presentaciones (Show the Plan)", icon: "presentation" },
-  { id: "reuniones", label: "Reuniones / seguimientos", icon: "users" },
+  { id: "pedidos", label: "Pedidos", icon: "package" },
+];
+
+/* Estadísticas derivadas de la Lista de 250 (no son contadores manuales: se
+   calculan al vuelo a partir de state.contactos, según estadoFecha/seguimientos). */
+const REGISTRO_DERIVADOS = [
+  { id: "contactados", label: "Contactados", icon: "phone-call" },
+  { id: "presentaciones", label: "Presentaciones", icon: "presentation" },
+  { id: "registros", label: "Nuevos registros (Socio/Consumidor)", icon: "user-badge" },
+  { id: "seguimientosRealizados", label: "Seguimientos hechos", icon: "check-circle" },
+];
+
+/* Los 7 indicadores del resumen por quincena: 3 manuales + 4 derivados, en un
+   único orden para el gráfico y el selector de métrica comparativo. Cada uno
+   con un color distinto tomado de la paleta ya definida en :root (css/styles.css). */
+const QUINCENA_METRICAS = [
+  { id: "llamadas", label: "Llamadas", corta: "Llam", color: "var(--gold)" },
+  { id: "mensajes", label: "Mensajes", corta: "Msjs", color: "var(--gold-light)" },
+  { id: "pedidos", label: "Pedidos", corta: "Ped", color: "var(--gold-deep)" },
+  { id: "contactados", label: "Contactados", corta: "Cont", color: "var(--accent)" },
+  { id: "presentaciones", label: "Presentaciones", corta: "Pres", color: "var(--success)" },
+  { id: "registros", label: "Registros", corta: "Reg", color: "var(--warn)" },
+  { id: "seguimientosRealizados", label: "Seguimientos hechos", corta: "Seg", color: "var(--text-soft)" },
 ];
 
 function contadorAccionHTML(tipo, label, icon, valorHoy) {
@@ -1724,16 +1754,17 @@ function contadorAccionHTML(tipo, label, icon, valorHoy) {
   );
 }
 
-function informeSemanalTextoPersonal(state, semana, idioma) {
+function informeSemanalTextoPersonal(state, semana, derivados, idioma) {
   const t = informeI18n(idioma);
-  const nuevosRegistros = state.contactos.filter(function (c) { return ultimos7Dias().indexOf(c.creado) !== -1; }).length;
   return (
     t.tituloPersonal + "\n" +
     "• " + t.llamadas + ": " + semana.llamadas + "\n" +
     "• " + t.mensajes + ": " + semana.mensajes + "\n" +
-    "• " + t.presentaciones + ": " + semana.presentaciones + "\n" +
-    "• " + t.reuniones + ": " + semana.reuniones + "\n" +
-    "• " + t.nuevosRegistros + ": " + nuevosRegistros +
+    "• " + t.pedidos + ": " + semana.pedidos + "\n" +
+    "• " + t.contactados + ": " + derivados.contactados + "\n" +
+    "• " + t.presentaciones + ": " + derivados.presentaciones + "\n" +
+    "• " + t.reuniones + ": " + derivados.seguimientosRealizados + "\n" +
+    "• " + t.nuevosRegistros + ": " + derivados.registros +
     "\n\n" + t.cierrePersonal
   );
 }
@@ -1768,7 +1799,7 @@ function renderInformeSemanal(state, ui) {
   const hoy = hoyISO();
   const hoyReg = getRegistroDia(state, hoy);
   const semana = sumarRegistroSemana(state);
-  const nuevosRegistros = state.contactos.filter(function (c) { return ultimos7Dias().indexOf(c.creado) !== -1; }).length;
+  const derivadosSemana = calcularDerivadosPeriodo(state, ultimos7Dias());
 
   const contadores = REGISTRO_TIPOS.map(function (t) { return contadorAccionHTML(t.id, t.label, t.icon, hoyReg[t.id] || 0); }).join("");
 
@@ -1779,15 +1810,23 @@ function renderInformeSemanal(state, ui) {
     REGISTRO_TIPOS.map(function (t) {
       return '<div class="card" style="padding:10px;text-align:center"><div class="muted small">' + escapeHtml(t.label) + '</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + (semana[t.id] || 0) + "</div></div>";
     }).join("") +
-    "</div>" +
-    '<div class="muted small" style="margin-top:10px">' + nuevosRegistros + " nuevos registros en tu lista esta semana</div>" +
-    "</div>";
+    "</div></div>";
+
+  const resumenListaHtml =
+    '<div class="card" style="margin-top:12px">' +
+    '<div class="row gap-2" style="align-items:center">' + Icon("users", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Esta semana — tu Lista de 250</span></div>' +
+    '<p class="muted small" style="margin-top:2px">Solo cuenta lo que realmente avanzó de estado esta semana — no cualquier contacto nuevo.</p>' +
+    '<div class="grid-2" style="margin-top:10px;gap:10px">' +
+    REGISTRO_DERIVADOS.map(function (t) {
+      return '<div class="card" style="padding:10px;text-align:center"><div class="muted small">' + escapeHtml(t.label) + '</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + (derivadosSemana[t.id] || 0) + "</div></div>";
+    }).join("") +
+    "</div></div>";
 
   const idioma = state.idiomaInforme || "es";
-  const hayActividad = (semana.llamadas + semana.mensajes + semana.presentaciones + semana.reuniones + nuevosRegistros) > 0;
+  const hayActividad = (semana.llamadas + semana.mensajes + semana.pedidos + derivadosSemana.contactados + derivadosSemana.presentaciones + derivadosSemana.registros + derivadosSemana.seguimientosRealizados) > 0;
   const compartirPersonal = hayActividad
     ? (state.whatsapp && state.whatsapp.trim()
-        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(state, semana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
+        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(state, semana, derivadosSemana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
         : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu informe.</p>')
     : '<p class="muted small" style="margin-top:10px">Registra al menos una acción esta semana para poder compartir tu informe.</p>';
   const idiomaSelector = hayActividad && state.whatsapp && state.whatsapp.trim() ? idiomaInformeSelectorHTML(state) : "";
@@ -1798,7 +1837,10 @@ function renderInformeSemanal(state, ui) {
     const semanaIds = ultimos7Dias();
     const equipo = {
       totalSocios: socios.length,
-      nuevosSocios: socios.filter(function (c) { return semanaIds.indexOf(c.creado) !== -1; }).length,
+      // "Nuevos esta semana" se basa en estadoFecha (cuándo llegó a Socio), no en la
+      // fecha de creación del contacto — igual que registrosSemana del informe personal,
+      // así alguien contactado hace meses que recién ahora se hizo socio sí cuenta.
+      nuevosSocios: socios.filter(function (c) { return c.estadoFecha && semanaIds.indexOf(c.estadoFecha) !== -1; }).length,
       seguimientosSemana: socios.filter(function (c) { return c.proximoSeguimiento && c.proximoSeguimiento >= hoy && c.proximoSeguimiento <= addDiasISO(hoy, 6); }).length,
       seguimientosVencidos: socios.filter(function (c) { return c.proximoSeguimiento && c.proximoSeguimiento < hoy; }).length,
     };
@@ -1823,10 +1865,104 @@ function renderInformeSemanal(state, ui) {
     '<div><div style="font-weight:700;font-size:14px;margin-bottom:8px">Hoy</div>' +
     '<div class="view-stack gap-sm">' + contadores + "</div></div>" +
     resumenSemana +
+    resumenListaHtml +
+    renderResumenQuincenaHTML(state, ui) +
     idiomaSelector +
     compartirPersonal +
     equipoHtml
   );
+}
+
+/* ---------------- Resumen por quincena (calendario) — gráficos SVG ---------------- */
+
+function svgBarChart(items, opts) {
+  opts = opts || {};
+  const W = opts.width || 320;
+  const H = opts.height || 190;
+  const padTop = 22, padBottom = 32, padSide = 6;
+  const chartW = W - padSide * 2;
+  const chartH = H - padTop - padBottom;
+  const max = Math.max(1, ...items.map(function (i) { return Number(i.value) || 0; }));
+  const n = Math.max(items.length, 1);
+  const gap = n > 1 ? 8 : 0;
+  const barW = Math.max(10, (chartW - gap * (n - 1)) / n);
+  let bars = "";
+  items.forEach(function (it, i) {
+    const x = padSide + i * (barW + gap);
+    const val = Number(it.value) || 0;
+    const h = max > 0 ? (val / max) * chartH : 0;
+    const y = padTop + (chartH - h);
+    const color = it.color || "var(--gold)";
+    bars +=
+      '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + Math.max(h, 1).toFixed(1) + '" rx="4" fill="' + color + '"/>' +
+      '<text x="' + (x + barW / 2).toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">' + val + "</text>" +
+      '<text x="' + (x + barW / 2).toFixed(1) + '" y="' + (H - 10).toFixed(1) + '" text-anchor="middle" font-size="9.5" fill="var(--text-soft)">' + escapeHtml(it.label) + "</text>";
+  });
+  const baseY = padTop + chartH;
+  return (
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" preserveAspectRatio="xMidYMid meet" style="display:block;max-width:100%">' +
+    '<line x1="' + padSide + '" y1="' + baseY + '" x2="' + (W - padSide) + '" y2="' + baseY + '" stroke="var(--border)" stroke-width="1"/>' +
+    bars +
+    "</svg>"
+  );
+}
+
+function quincenaNavHTML(key) {
+  return (
+    '<div class="row between" style="align-items:center;margin-top:10px">' +
+    '<div class="icon-btn" style="cursor:pointer" data-action="quincena-nav" data-arg="-1">' + Icon("chevron-left", { size: 16 }) + "</div>" +
+    '<span style="font-weight:600;font-size:13px">' + escapeHtml(calQuincenaLabel(key)) + (key === calQuincenaActualKey() ? ' <span class="muted small">(actual)</span>' : "") + "</span>" +
+    '<div class="icon-btn" style="cursor:pointer" data-action="quincena-nav" data-arg="1">' + Icon("chevron-right", { size: 16 }) + "</div>" +
+    "</div>"
+  );
+}
+
+function renderResumenQuincenaHTML(state, ui) {
+  const abierto = !!ui.quincenaResumenAbierto;
+  const header =
+    '<div class="card" style="margin-top:12px">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-quincena-resumen">' +
+    '<div class="row gap-2">' + Icon("trending-up", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Resumen por quincena</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    '<p class="muted small" style="margin-top:4px">Tus llamadas, mensajes, pedidos, contactos y seguimientos, agrupados por quincena de calendario (1–15 y 16–fin de cada mes).</p>';
+
+  if (!abierto) return header + "</div>";
+
+  const key = ui.quincenaVista || calQuincenaActualKey();
+  const datos = datosQuincena(state, key);
+  const items = QUINCENA_METRICAS.map(function (m) { return { label: m.corta, value: datos[m.id] || 0, color: m.color }; });
+
+  const actual =
+    '<div style="margin-top:12px">' +
+    quincenaNavHTML(key) +
+    '<div style="margin-top:8px">' + svgBarChart(items) + "</div>" +
+    "</div>";
+
+  const claves = quincenasConActividad(state);
+  let comparativo;
+  if (claves.length < 2) {
+    comparativo =
+      '<p class="muted small" style="margin-top:14px;text-align:center;padding:10px 0">Vuelve cuando tengas al menos 2 quincenas de actividad para ver tu progreso comparado.</p>';
+  } else {
+    const metricaId = ui.quincenaMetricaTab || "llamadas";
+    const metricaChips = QUINCENA_METRICAS.map(function (m) {
+      const active = metricaId === m.id;
+      return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="set-quincena-metrica" data-arg="' + m.id + '">' + escapeHtml(m.label) + "</button>";
+    }).join("");
+    const metrica = QUINCENA_METRICAS.find(function (m) { return m.id === metricaId; }) || QUINCENA_METRICAS[0];
+    const compItems = claves.map(function (k) {
+      return { label: calQuincenaLabelCorta(k), value: datosQuincena(state, k)[metrica.id] || 0, color: metrica.color };
+    });
+    comparativo =
+      '<div style="margin-top:16px;border-top:1px solid var(--border-soft);padding-top:12px">' +
+      '<div style="font-weight:700;font-size:13px">Progreso comparado</div>' +
+      '<div class="row gap-2" style="flex-wrap:wrap;margin-top:8px">' + metricaChips + "</div>" +
+      '<div style="margin-top:10px">' + svgBarChart(compItems, { width: Math.max(320, claves.length * 46) }) + "</div>" +
+      "</div>";
+  }
+
+  return header + actual + comparativo + "</div>";
 }
 
 function recordatorioFieldHTML(d, toggleAction) {
