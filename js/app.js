@@ -44,6 +44,7 @@ const App = {
     menuOpen: false,
     activeDay: null,
     activeQuincena: null,
+    enfoqueQuincena: null,
     bellOpen: false,
     logro: null,
     confirmReset: false,
@@ -230,6 +231,10 @@ const App = {
         } else {
           mainHtml = renderPlan90(state);
         }
+        break;
+      case "enfoque":
+        if (!ui.enfoqueQuincena) ui.enfoqueQuincena = quincenaEnfoquePorDefecto(state);
+        mainHtml = renderReunionEnfoquePage(state, ui);
         break;
       case "premios": mainHtml = renderPremios(state); break;
       case "perfil": mainHtml = renderPerfil(state); break;
@@ -992,14 +997,20 @@ const Actions = {
     App.render();
   },
 
-  "add-persona-enfoque": function (arg) {
-    App.ui.personaEnfoqueDraft = { linea: arg, id: null, nombre: "", telefono: "", atomyId: "", contrasena: "", notas: "" };
+  "set-enfoque-quincena": function (arg) {
+    App.ui.enfoqueQuincena = Number(arg);
+    App.render();
+  },
+
+  "add-persona-enfoque": function (arg, el) {
+    const qn = (el && el.dataset.qn) || App.ui.enfoqueQuincena || App.ui.activeQuincena;
+    App.ui.personaEnfoqueDraft = { qn: qn, linea: arg, id: null, nombre: "", telefono: "", atomyId: "", contrasena: "", notas: "" };
     App.ui.confirmDeletePersonaEnfoque = null;
     App.render();
   },
 
   "edit-persona-enfoque": function (arg, el) {
-    const qn = el.dataset.qn || App.ui.activeQuincena;
+    const qn = el.dataset.qn || App.ui.enfoqueQuincena || App.ui.activeQuincena;
     const linea = el.dataset.linea;
     const lista = getListaEnfoque(App.state, qn);
     const p = (lista[linea] || []).find((x) => x.id === arg);
@@ -1018,7 +1029,7 @@ const Actions = {
   "save-persona-enfoque": function () {
     const d = App.ui.personaEnfoqueDraft;
     if (!d || !d.nombre || !d.nombre.trim()) return;
-    const qn = d.qn || App.ui.activeQuincena;
+    const qn = d.qn || App.ui.enfoqueQuincena || App.ui.activeQuincena;
     const lista = getListaEnfoque(App.state, qn);
     if (d.id) {
       const p = (lista[d.linea] || []).find((x) => x.id === d.id);
@@ -1046,7 +1057,7 @@ const Actions = {
       App.render();
       return;
     }
-    const qn = (App.ui.personaEnfoqueDraft && App.ui.personaEnfoqueDraft.qn) || App.ui.activeQuincena;
+    const qn = el.dataset.qn || (App.ui.personaEnfoqueDraft && App.ui.personaEnfoqueDraft.qn) || App.ui.enfoqueQuincena || App.ui.activeQuincena;
     const linea = el.dataset.linea;
     const lista = getListaEnfoque(App.state, qn);
     lista[linea] = (lista[linea] || []).filter((x) => x.id !== arg);

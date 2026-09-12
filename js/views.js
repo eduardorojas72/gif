@@ -17,6 +17,7 @@ const MENU_ITEMS = [
   { id: "informe", label: "Informe Semanal", icon: "trending-up" },
   { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
   { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
+  { id: "enfoque", label: "Reunión de Enfoque", icon: "target" },
   { id: "premios", label: "Premios", icon: "gift" },
   { id: "logros", label: "Logros", icon: "award" },
   { id: "ajustes", label: "Ajustes", icon: "settings" },
@@ -867,8 +868,8 @@ function personaEnfoqueRowHTML(qn, linea, p) {
     "</div>" +
     '<div class="row gap-2">' +
     waLink +
-    '<button class="icon-btn" data-action="edit-persona-enfoque" data-linea="' + linea + '" data-arg="' + p.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
-    '<button class="icon-btn" data-action="delete-persona-enfoque" data-linea="' + linea + '" data-arg="' + p.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    '<button class="icon-btn" data-action="edit-persona-enfoque" data-qn="' + qn + '" data-linea="' + linea + '" data-arg="' + p.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    '<button class="icon-btn" data-action="delete-persona-enfoque" data-qn="' + qn + '" data-linea="' + linea + '" data-arg="' + p.id + '">' + Icon("x", { size: 14 }) + "</button>" +
     "</div></div>" +
     (p.notas ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(p.notas) + '”</div>' : "") +
     '<div class="rr-inputs">' +
@@ -911,9 +912,50 @@ function renderReunionEnfoqueHTML(state, ui, qn) {
     "</div>" +
     '<div class="field" style="margin-top:10px"><label>Puntos ya confirmados fuera de la lista (consumo personal u otros)</label>' +
     '<input type="number" min="0" step="10000" value="' + (linea === "izquierda" ? lista.otrosIzquierda : lista.otrosDerecha) + '" data-field="listasEnfoque.' + qn + "." + (linea === "izquierda" ? "otrosIzquierda" : "otrosDerecha") + '"></div>' +
-    '<button class="btn-primary" style="margin-top:10px" data-action="add-persona-enfoque" data-arg="' + linea + '">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar persona</button>" +
+    '<button class="btn-primary" style="margin-top:10px" data-action="add-persona-enfoque" data-qn="' + qn + '" data-arg="' + linea + '">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar persona</button>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
     "</div>"
+  );
+}
+
+/* Quincena "en curso" del programa (la primera de las 6 aún no completada);
+   si ya se completaron las 6, se muestra la última. Es el valor por defecto
+   con el que se abre la página de Reunión de Enfoque cuando aún no se ha
+   elegido ninguna quincena en esta sesión. */
+function quincenaEnfoquePorDefecto(state) {
+  const quincenasMap = derivarQuincenas(state);
+  const enCurso = QUINCENAS.find(function (q) { return !quincenasMap[q.n]; });
+  return enCurso ? enCurso.n : QUINCENAS[QUINCENAS.length - 1].n;
+}
+
+function enfoqueQuincenaNavHTML(state, qn) {
+  const quincenasMap = derivarQuincenas(state);
+  const chips = QUINCENAS.map(function (q) {
+    const active = q.n === qn;
+    const done = quincenasMap[q.n];
+    return (
+      '<button class="badge ' + (active ? "gold" : (done ? "soft" : "dark")) + '" style="cursor:pointer" data-action="set-enfoque-quincena" data-arg="' + q.n + '">' +
+      "Q" + q.n + (done ? " " + Icon("check-circle", { size: 10 }) : "") +
+      "</button>"
+    );
+  }).join("");
+  const q = QUINCENAS.find(function (x) { return x.n === qn; });
+  return (
+    '<div class="row gap-2" style="flex-wrap:wrap">' + chips + "</div>" +
+    '<div style="margin-top:12px">' +
+    '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Quincena ' + q.n + " · Semanas " + q.semanas + "</div>" +
+    '<h2 style="font-size:18px;font-weight:700;margin-top:2px">' + escapeHtml(q.nombre) + "</h2>" +
+    '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(q.foco) + "</p>" +
+    "</div>"
+  );
+}
+
+function renderReunionEnfoquePage(state, ui) {
+  const qn = ui.enfoqueQuincena || quincenaEnfoquePorDefecto(state);
+  return (
+    sectionHeaderHTML("Reunión de Enfoque", "Planea con tu equipo cuántos puntos pedirá cada persona, por línea, quincena a quincena.", "target") +
+    enfoqueQuincenaNavHTML(state, qn) +
+    renderReunionEnfoqueHTML(state, ui, qn)
   );
 }
 
@@ -1055,7 +1097,6 @@ function renderQuincenaDetalle(state, ui, qn) {
     "</div>" +
     semanasHtml +
     (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "") +
-    renderReunionEnfoqueHTML(state, ui, qn) +
     productosCalculadoraHTML(state, ui, qn)
   );
 }
