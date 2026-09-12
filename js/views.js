@@ -7,7 +7,7 @@ const MENU_ITEMS = [
   { id: "home", label: "Inicio", icon: "home" },
   { id: "plan", label: "Plan de Compensación", icon: "book-open" },
   { id: "planeador", label: "Planeador de Quincena", icon: "target" },
-  { id: "listas", label: "Listas 200+200", icon: "users" },
+  { id: "listas", label: "Reunión de Enfoque", icon: "users" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
   { id: "informe", label: "Informe Semanal", icon: "trending-up" },
   { id: "perfil", label: "Mi Rango", icon: "user-badge" },
@@ -234,7 +234,7 @@ function renderHome(state, ui) {
       : '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-weight:600">🏆 ¡Ya alcanzaste Imperial Master, el rango más alto del plan!</div>') +
 
     '<button class="nav-card card card-hover" data-action="goto" data-arg="planeador">' + medallionHTML("target", 44) + '<div class="nc-body"><div class="nc-title">Planeador de Quincena</div><div class="nc-desc">Cuánto falta y a qué ritmo</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="listas">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Listas 200+200</div><div class="nc-desc">Planea con tu equipo, línea por línea</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="listas">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Reunión de Enfoque</div><div class="nc-desc">Planea con tu equipo, línea por línea</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="plan">' + medallionHTML("book-open", 44) + '<div class="nc-body"><div class="nc-title">Plan de Compensación</div><div class="nc-desc">Cómo funciona, explicado simple</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>"
   );
 }
@@ -364,11 +364,11 @@ function renderPlaneador(state, ui) {
     quincenaNavHTML(qKey) +
     alerta +
     '<div class="resumen-linea">' + bloqueCalc("Izquierda", faltIzq, ritmoIzq) + bloqueCalc("Derecha", faltDer, ritmoDer) + "</div>" +
-    '<button class="btn-secondary" data-action="goto" data-arg="listas">' + Icon("users", { size: 15 }) + " Ir a las Listas 200+200</button>"
+    '<button class="btn-secondary" data-action="goto" data-arg="listas">' + Icon("users", { size: 15 }) + " Ir a Reunión de Enfoque</button>"
   );
 }
 
-/* ---------------- Listas 200+200 ---------------- */
+/* ---------------- Reunión de Enfoque (listas Izquierda/Derecha) ---------------- */
 
 function pedidoResumenTexto(catalogo, compras, paisInfo, totalPV, totalPrecio, appName) {
   const items = catalogo.filter(function (p) { return (Number(compras[p.id]) || 0) > 0; });
@@ -535,7 +535,7 @@ function renderListas(state, ui) {
     : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no has agregado a nadie en esta línea. Toca “+ Agregar persona” en tu reunión de planeación.</p>';
 
   return (
-    sectionHeaderHTML("Listas 200+200", "Planea con tu equipo cuántos puntos pedirá cada persona, y en qué fecha de la quincena.", "users") +
+    sectionHeaderHTML("Reunión de Enfoque", "Planea con tu equipo cuántos puntos pedirá cada persona, y en qué fecha de la quincena.", "users") +
     quincenaNavHTML(qKey) +
     '<div class="roster-check' + (q.reunionHecha ? " on" : "") + '" data-action="toggle-reunion-enfoque" data-qkey="' + qKey + '">' +
     '<div class="box">' + (q.reunionHecha ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
