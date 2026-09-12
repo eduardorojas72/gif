@@ -26,7 +26,32 @@ function defaultState() {
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
     contactosEventos: [],
+    metasRango: {},
   };
+}
+
+/* ---------------- Metas de rango (fecha objetivo por rango de Maestría) ---------------- */
+
+function emptyMetaRango() {
+  return { fecha: null };
+}
+
+/* Lee (y crea si falta) la meta de un rango — se usa dentro de las vistas
+   antes de dibujar el campo de fecha, para que setPath() encuentre el objeto. */
+function getMetaRango(state, idx) {
+  const key = String(idx);
+  if (!state.metasRango[key]) state.metasRango[key] = emptyMetaRango();
+  return state.metasRango[key];
+}
+
+/* Días enteros que faltan hasta una fecha ISO (yyyy-mm-dd). Negativo si ya pasó. */
+function diasHasta(fechaISO) {
+  if (!fechaISO) return null;
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const meta = new Date(fechaISO + "T00:00:00");
+  if (isNaN(meta.getTime())) return null;
+  return Math.round((meta - hoy) / 86400000);
 }
 
 /* ---------------- Informe Semanal — registro diario de acciones ---------------- */
@@ -307,6 +332,16 @@ function hydrateState(parsed) {
   merged.contactosEventos = Array.isArray(parsed.contactosEventos)
     ? parsed.contactosEventos.map(function (c) { return Object.assign(nuevoContactoEvento(), c); })
     : [];
+
+  const metasGuardadas = parsed.metasRango && typeof parsed.metasRango === "object" ? parsed.metasRango : {};
+  merged.metasRango = Object.keys(metasGuardadas).reduce(function (acc, key) {
+    const idx = Number(key);
+    if (Number.isInteger(idx) && idx >= 0 && idx < RANGOS_MASTER.length) {
+      const saved = metasGuardadas[key] || {};
+      acc[key] = { fecha: typeof saved.fecha === "string" && saved.fecha ? saved.fecha : null };
+    }
+    return acc;
+  }, {});
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoActualIndex =

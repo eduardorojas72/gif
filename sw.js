@@ -11,6 +11,7 @@ const CORE_ASSETS = [
   "./manifest.webmanifest",
   "./css/styles.css",
   "./js/icons.js",
+  "./js/fonts.js",
   "./js/data.js",
   "./js/state.js",
   "./js/mountain.js",

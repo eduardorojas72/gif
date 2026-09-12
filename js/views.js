@@ -244,8 +244,9 @@ function renderHome(state, ui) {
 
 /* ---------------- Plan de Compensación (teoría) ---------------- */
 
-function renderPlanCompensacion(ui) {
+function renderPlanCompensacion(ui, state) {
   const vueltos = ui.rangosVueltos || {};
+  const paisInfo = paisCatalogoInfo((state && state.pais) || "CO");
 
   const partes = DISTRIBUCION.partes.map(function (p) {
     return (
@@ -278,6 +279,9 @@ function renderPlanCompensacion(ui) {
       '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Comisión de Maestría</div>' +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.comisionMaestria) + "</p>" +
       '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Bono al ascender</div>' +
+      (r.montos || []).map(function (m) {
+        return '<p style="font-size:13px;font-weight:700;line-height:1.5;margin-top:4px;color:var(--gold-light)">' + escapeHtml(m.etiqueta) + ": " + escapeHtml(formatMonedaAprox(m.cop, paisInfo)) + "</p>";
+      }).join("") +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.promocion) + "</p>" +
       '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Para ascender</div>' +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.criterio) + "</p>" +
@@ -314,6 +318,7 @@ function renderPlanCompensacion(ui) {
     '<p class="muted small" style="margin-top:10px;line-height:1.5">' + escapeHtml(COMISION_GENERAL_NOTA) + "</p>" +
     "</div>" +
     '<div style="font-size:14px;font-weight:700;margin-top:4px">Camino de Maestría — de Sales Master a Imperial Master</div>' +
+    '<div class="muted small" style="margin-top:2px">Toca una tarjeta para ver su bono aproximado en tu moneda (' + escapeHtml(paisInfo.label) + "). " + escapeHtml(NOTA_MONEDA_APROX) + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">Reglas generales de ascenso</div>' + criterios + "</div>" +
     '<div class="card"><div class="row gap-2" style="font-weight:700;font-size:14px">' + Icon("trophy", { size: 15, color: "var(--gold)" }) + " Clubes del Éxito</div>" +
@@ -397,6 +402,14 @@ function formatMoneda(valor, paisInfo) {
   } catch (e) {
     return paisInfo.simbolo + Number(valor || 0).toLocaleString();
   }
+}
+
+/* Convierte un monto oficial en COP (RANGOS_MASTER.montos) a la moneda del
+   país activo y lo formatea con el prefijo "aprox." — ver TASAS_COP_POR_MONEDA
+   en data.js para el porqué de la conversión aproximada. */
+function formatMonedaAprox(montoCOP, paisInfo) {
+  const valor = convertirDesdeCOP(montoCOP, paisInfo.moneda);
+  return "aprox. " + formatMoneda(valor, paisInfo);
 }
 
 function paisSelectorHTML(state) {
@@ -1135,7 +1148,7 @@ function renderContactoEventoModal(ui) {
 
 /* ---------------- Mi Rango ---------------- */
 
-function renderPerfil(state) {
+function renderPerfil(state, ui) {
   const rango = RANGOS_MASTER[state.rangoActualIndex];
   const botones = RANGOS_MASTER.map(function (r, i) {
     const estado = i < state.rangoActualIndex ? "pasado" : i === state.rangoActualIndex ? "actual" : "pendiente";
@@ -1169,7 +1182,92 @@ function renderPerfil(state) {
     '<div class="muted small" style="margin-bottom:12px">Toca el siguiente rango cuando lo alcances.</div>' +
     '<div class="grid-3">' + botones + "</div>" +
     "</div>" +
+    detalleRangoHTML(state, ui) +
     actividad
+  );
+}
+
+/* ---------------- Mi Rango: detalle, meta y tarjeta de reconocimiento ---------------- */
+
+function detalleRangoHTML(state, ui) {
+  const detalleIndex = ui.rangoDetalleIndex != null ? ui.rangoDetalleIndex : state.rangoActualIndex;
+  const detalle = RANGOS_MASTER[detalleIndex] || RANGOS_MASTER[0];
+  const paisInfo = paisCatalogoInfo(state.pais || "CO");
+  const meta = getMetaRango(state, detalleIndex);
+  const dias = meta.fecha ? diasHasta(meta.fecha) : null;
+  const abierto = !!ui.detalleRangoAbierto;
+
+  if (!abierto) {
+    return (
+      '<button class="card row between" style="width:100%;text-align:left" data-action="toggle-detalle-rango">' +
+      '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detalle, meta y tarjeta de reconocimiento</span></div>' +
+      Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+      "</button>"
+    );
+  }
+
+  const chipsDetalle = RANGOS_MASTER.map(function (r, i) {
+    const active = i === detalleIndex;
+    return '<div class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="seleccionar-detalle-rango" data-arg="' + i + '">' + escapeHtml(r.nombre) + "</div>";
+  }).join("");
+
+  const montosHtml = detalle.montos.map(function (m) {
+    return (
+      '<div class="row between" style="padding:7px 0;border-top:1px solid var(--border-soft)">' +
+      '<span class="small">' + escapeHtml(m.etiqueta) + "</span>" +
+      '<span style="font-weight:700;color:var(--gold-light);font-size:14px">' + escapeHtml(formatMonedaAprox(m.cop, paisInfo)) + "</span>" +
+      "</div>"
+    );
+  }).join("");
+
+  let metaTexto = "";
+  if (meta.fecha && dias != null) {
+    if (dias > 0) metaTexto = "Faltan " + dias + (dias === 1 ? " día" : " días") + " para tu meta de alcanzar " + detalle.nombre + ".";
+    else if (dias === 0) metaTexto = "¡Tu meta para alcanzar " + detalle.nombre + " es hoy!";
+    else metaTexto = "Tu meta para alcanzar " + detalle.nombre + " venció hace " + Math.abs(dias) + (Math.abs(dias) === 1 ? " día" : " días") + " — actualízala si quieres seguir usándola como recordatorio.";
+  }
+
+  const fotoInner = state.foto ? '<img src="' + escapeHtml(state.foto) + '" alt="Tu foto"/>' : Icon("camera", { size: 26 });
+
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-detalle-rango">' +
+    '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detalle, meta y tarjeta de reconocimiento</span></div>' +
+    '<span style="display:inline-flex;transform:rotate(90deg)">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+
+    '<div class="muted small" style="margin-top:10px">Elige el rango que quieres ver:</div>' +
+    '<div class="row gap-2" style="flex-wrap:wrap;margin-top:6px">' + chipsDetalle + "</div>" +
+
+    '<div style="text-align:center;margin-top:16px">' + medallionHTML(detalle.icon, 60) +
+    '<div style="font-size:16px;font-weight:700;margin-top:8px">' + escapeHtml(detalle.nombre) + "</div>" +
+    '<div class="muted small">Rango ' + (detalleIndex + 1) + " de " + RANGOS_MASTER.length + "</div></div>" +
+
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Para alcanzar este rango</div>' +
+    '<p class="small" style="line-height:1.5;margin-top:4px">' + escapeHtml(detalle.prerrequisito) + "</p>" +
+    '<p class="muted small" style="line-height:1.5;margin-top:4px">' + escapeHtml(detalle.criterio) + "</p>" +
+
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Lo que ganas al alcanzarlo</div>' +
+    '<div class="muted small" style="margin-top:2px">En ' + escapeHtml(paisInfo.label) + " · " + escapeHtml(NOTA_MONEDA_APROX) + "</div>" +
+    montosHtml +
+    paisSelectorHTML(state) +
+
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Tu meta para este rango</div>' +
+    '<div class="field" style="margin-top:6px"><label>Fecha en la que quieres alcanzarlo</label>' +
+    '<input type="date" value="' + escapeHtml(meta.fecha || "") + '" data-field="metasRango.' + detalleIndex + '.fecha"></div>' +
+    (metaTexto ? '<p class="small" style="margin-top:8px;font-weight:600;color:' + (dias != null && dias < 0 ? "var(--warn)" : "var(--gold-light)") + '">' + escapeHtml(metaTexto) + "</p>" : "") +
+    (meta.fecha ? '<button class="link-btn small" style="margin-top:6px" data-action="limpiar-meta-rango" data-arg="' + detalleIndex + '">Quitar esta meta</button>' : "") +
+
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:18px">Tarjeta de reconocimiento</div>' +
+    '<div class="muted small" style="margin-top:2px">Sube tu foto y descarga tu tarjeta de ' + escapeHtml(detalle.nombre) + " para compartirla.</div>" +
+    '<div style="display:flex;flex-direction:column;align-items:center;margin-top:12px">' +
+    '<button class="photo-picker" data-action="trigger-file" data-arg="rango-foto-input">' + fotoInner + "</button>" +
+    '<input id="rango-foto-input" type="file" accept="image/*" class="hidden" data-target="foto">' +
+    '<span class="link-btn small" style="margin-top:6px">' + (state.foto ? "Cambiar foto" : "Añadir foto") + "</span>" +
+    "</div>" +
+    '<div style="max-width:280px;margin:14px auto 0">' + rangoCardHTML(state.nombre, state.foto, detalleIndex) + "</div>" +
+    '<button class="btn-secondary" style="margin-top:14px" data-action="descargar-tarjeta-rango" data-arg="' + detalleIndex + '">' + Icon("download", { size: 15 }) + " Descargar tarjeta</button>" +
+    "</div>"
   );
 }
 

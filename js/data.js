@@ -47,6 +47,7 @@ const RANGOS_MASTER = [
     comisionMaestria: "10% del total de PV de la compañía, repartido en partes iguales entre todos los Sales Master.",
     promocion: "Bono de $1.500.000 COP (≈ $375 USD) la primera vez que alcanzas el rango, transferido directamente a tu cuenta.",
     criterio: "Sin restricciones para ascender — solo debes cumplir el prerrequisito de esta quincena.",
+    montos: [{ etiqueta: "Bono al alcanzar el rango", cop: 1500000 }],
   },
   {
     n: 1, nombre: "Diamond Master", icon: "gem",
@@ -54,6 +55,10 @@ const RANGOS_MASTER = [
     comisionMaestria: "5% del total de PV, repartido entre Diamond Master y las maestrías superiores.",
     promocion: "Bono de $1.500.000 COP (≈ $375 USD) la primera vez, más un bono de ascenso de aproximadamente $3.000.000 COP (≈ $750 USD).",
     criterio: "Sin restricciones para ascender.",
+    montos: [
+      { etiqueta: "Bono al alcanzar el rango", cop: 1500000 },
+      { etiqueta: "Bono de ascenso", cop: 3000000 },
+    ],
   },
   {
     n: 2, nombre: "Sharon Rose Master", icon: "sparkles",
@@ -61,6 +66,7 @@ const RANGOS_MASTER = [
     comisionMaestria: "2% del total de PV, repartido entre Sharon Rose Master y las maestrías superiores.",
     promocion: "Aproximadamente $7.600.000 COP (≈ $1.900 USD) transferidos a tu cuenta, más un viaje para 2 personas.",
     criterio: "Sin restricciones para ascender.",
+    montos: [{ etiqueta: "Bono al alcanzar el rango", cop: 7600000 }],
   },
   {
     n: 3, nombre: "Star Master", icon: "star",
@@ -68,6 +74,7 @@ const RANGOS_MASTER = [
     comisionMaestria: "1,2% del total de PV, repartido entre Star Master y las maestrías superiores.",
     promocion: "Aproximadamente $38.000.000 COP (≈ $9.500 USD) transferidos a tu cuenta, más un viaje para 4 personas.",
     criterio: "Debes haber calificado como Sharon Rose Master 3 veces antes de poder ascender a Star Master.",
+    montos: [{ etiqueta: "Bono al alcanzar el rango", cop: 38000000 }],
   },
   {
     n: 4, nombre: "Royal Master", icon: "crown",
@@ -75,6 +82,10 @@ const RANGOS_MASTER = [
     comisionMaestria: "1% del total de PV, repartido entre Royal Master y las maestrías superiores.",
     promocion: "Aproximadamente $190.000.000 COP (≈ $47.500 USD) transferidos a tu cuenta, un viaje para 4 personas, una tarjeta débito de aproximadamente $7.600.000 COP (≈ $1.900 USD) y el alquiler de un automóvil.",
     criterio: "Debes haber calificado como Star Master 3 veces antes de poder ascender a Royal Master.",
+    montos: [
+      { etiqueta: "Bono al alcanzar el rango", cop: 190000000 },
+      { etiqueta: "Tarjeta débito", cop: 7600000 },
+    ],
   },
   {
     n: 5, nombre: "Crown Master", icon: "award",
@@ -82,6 +93,10 @@ const RANGOS_MASTER = [
     comisionMaestria: "0,5% del total de PV, repartido entre Crown Master e Imperial Master.",
     promocion: "Aproximadamente $1.150.000.000 COP (≈ $287.500 USD) transferidos a tu cuenta, un viaje para 4 personas, una tarjeta débito de aproximadamente $19.000.000 COP (≈ $4.750 USD) y un automóvil de lujo propio.",
     criterio: "Debes haber calificado como Royal Master 3 veces antes de poder ascender a Crown Master.",
+    montos: [
+      { etiqueta: "Bono al alcanzar el rango", cop: 1150000000 },
+      { etiqueta: "Tarjeta débito", cop: 19000000 },
+    ],
   },
   {
     n: 6, nombre: "Imperial Master", icon: "trophy",
@@ -89,8 +104,37 @@ const RANGOS_MASTER = [
     comisionMaestria: "0,3% del total de PV, repartido entre los Imperial Master.",
     promocion: "Aproximadamente $3.800.000.000 COP (≈ $950.000 USD) transferidos a tu cuenta, un viaje para 4 personas, una tarjeta débito de aproximadamente $38.000.000 COP (≈ $9.500 USD), un automóvil de lujo propio con chofer, y una oficina con asistente personal.",
     criterio: "Debes haber calificado como Crown Master 3 veces antes de poder ascender a Imperial Master — el rango más alto del plan.",
+    montos: [
+      { etiqueta: "Bono al alcanzar el rango", cop: 3800000000 },
+      { etiqueta: "Tarjeta débito", cop: 38000000 },
+    ],
   },
 ];
+
+/* ---------------------------------------------------------------
+   CONVERSIÓN DE MONEDA POR PAÍS (para "Mi Rango")
+   Todos los montos oficiales de RANGOS_MASTER están en COP. Estas tasas
+   son aproximadas ~2024, solo para referencia visual en pantalla — no son
+   datos financieros exactos ni se actualizan con el mercado. La comisión
+   real siempre se calcula y liquida con base en el valor del Won coreano
+   (KRW) del momento, así que el monto que ve cada líder en su moneda local
+   varía según la tasa de cambio real de cada fecha.
+--------------------------------------------------------------- */
+const TASAS_COP_POR_MONEDA = {
+  COP: 1,
+  USD: 4000,
+  EUR: 4300,
+  MXN: 230,
+  BRL: 720,
+  CAD: 2900,
+};
+
+function convertirDesdeCOP(montoCOP, monedaDestino) {
+  const tasa = TASAS_COP_POR_MONEDA[monedaDestino] || TASAS_COP_POR_MONEDA.COP;
+  return Number(montoCOP || 0) / tasa;
+}
+
+const NOTA_MONEDA_APROX = "Los montos de arriba son un estimado (aprox.) convertido a tu moneda local — la comisión real siempre se calcula y se paga con base en el valor del Won coreano (KRW) del momento, y varía según la tasa de cambio de cada fecha.";
 
 const CRITERIOS_GENERALES = [
   "Una vez alcanzas un rango de Maestría, lo conservas de forma permanente: no hay condiciones para mantenerlo.",

@@ -52,6 +52,8 @@ const App = {
     confirmDeletePersona: null,
     rangosVueltos: {},
     calculadoraAbierta: false,
+    rangoDetalleIndex: null,
+    detalleRangoAbierto: false,
     agendaDia: null,
     actividadDraft: null,
     actividadEditId: null,
@@ -207,7 +209,7 @@ const App = {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state, ui); break;
-      case "plan": mainHtml = renderPlanCompensacion(ui); break;
+      case "plan": mainHtml = renderPlanCompensacion(ui, state); break;
       case "planeador": mainHtml = renderPlaneador(state, ui); break;
       case "listas": mainHtml = renderListas(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
@@ -215,7 +217,7 @@ const App = {
       case "arbol": mainHtml = renderArbolGenealogico(state, ui); break;
       case "sos": mainHtml = renderLlamadasSOS(state, ui); break;
       case "eventos": mainHtml = renderContactosEventos(state, ui); break;
-      case "perfil": mainHtml = renderPerfil(state); break;
+      case "perfil": mainHtml = renderPerfil(state, ui); break;
       case "ajustes": mainHtml = renderAjustes(state, ui); break;
       default: mainHtml = renderHome(state, ui);
     }
@@ -294,6 +296,11 @@ const App = {
     // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
     root.addEventListener("change", (e) => {
       const el = e.target;
+      if (el.tagName === "INPUT" && el.type === "date" && el.dataset && el.dataset.field && el.dataset.field.indexOf("metasRango.") === 0) {
+        // recalcula la cuenta regresiva de la meta al elegir la fecha
+        this.render();
+        return;
+      }
       if (el.tagName === "INPUT" && el.dataset && el.dataset.field && (el.dataset.field.indexOf("quincenas.") === 0 && el.dataset.field.indexOf(".compras.") !== -1 || el.dataset.field.indexOf("catalogoProductos.") === 0)) {
         // recalcula los totales de la calculadora de productos al salir del campo (no en cada tecla, para no perder el foco)
         this.render();
@@ -699,6 +706,32 @@ const Actions = {
     catalogo.splice(Number(arg), 1);
     App.persist(true);
     App.render();
+  },
+
+  "toggle-detalle-rango": function () {
+    App.ui.detalleRangoAbierto = !App.ui.detalleRangoAbierto;
+    if (App.ui.detalleRangoAbierto && App.ui.rangoDetalleIndex == null) {
+      App.ui.rangoDetalleIndex = App.state.rangoActualIndex;
+    }
+    App.render();
+  },
+
+  "seleccionar-detalle-rango": function (arg) {
+    const i = Number(arg);
+    if (!RANGOS_MASTER[i]) return;
+    App.ui.rangoDetalleIndex = i;
+    App.render();
+  },
+
+  "limpiar-meta-rango": function (arg) {
+    const meta = getMetaRango(App.state, Number(arg));
+    meta.fecha = null;
+    App.persist(true);
+    App.render();
+  },
+
+  "descargar-tarjeta-rango": function (arg) {
+    downloadRangoCard(App.state, Number(arg));
   },
 
   "set-rango-master": function (arg) {
