@@ -225,8 +225,6 @@ const App = {
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
       case "plan90":
         if (ui.activeQuincena) {
-          getComprasQuincena(state, ui.activeQuincena);
-          getCatalogoProductos(state, state.pais || "CO");
           mainHtml = renderQuincenaDetalle(state, ui, ui.activeQuincena);
         } else {
           mainHtml = renderPlan90(state);
@@ -234,6 +232,8 @@ const App = {
         break;
       case "enfoque":
         if (!ui.enfoqueQuincena) ui.enfoqueQuincena = quincenaEnfoquePorDefecto(state);
+        getComprasQuincena(state, ui.enfoqueQuincena);
+        getCatalogoProductos(state, state.pais || "CO");
         mainHtml = renderReunionEnfoquePage(state, ui);
         break;
       case "premios": mainHtml = renderPremios(state); break;

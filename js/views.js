@@ -955,7 +955,8 @@ function renderReunionEnfoquePage(state, ui) {
   return (
     sectionHeaderHTML("Reunión de Enfoque", "Planea con tu equipo cuántos puntos pedirá cada persona, por línea, quincena a quincena.", "target") +
     enfoqueQuincenaNavHTML(state, qn) +
-    renderReunionEnfoqueHTML(state, ui, qn)
+    renderReunionEnfoqueHTML(state, ui, qn) +
+    productosCalculadoraHTML(state, ui, qn)
   );
 }
 
@@ -1097,7 +1098,7 @@ function renderQuincenaDetalle(state, ui, qn) {
     "</div>" +
     semanasHtml +
     (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "") +
-    productosCalculadoraHTML(state, ui, qn)
+    '<button class="btn-secondary" data-action="goto" data-arg="enfoque">' + Icon("target", { size: 15 }) + " Ir a Reunión de Enfoque</button>"
   );
 }
 
