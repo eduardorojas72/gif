@@ -384,6 +384,8 @@ h1, h2, h3 {
 .ob-card { gap: 16px; position: relative; }
 .ob-mascot { width: 96px; height: 96px; align-self: center; }
 .ob-close { position: absolute; top: 4px; right: 4px; font-size: 18px; }
+.lang-switcher { display: flex; justify-content: flex-end; margin: -4px 0 4px; }
+.lang-switcher select { font-size: 12.5px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border, #ddd); background: var(--card-bg, #fff); color: inherit; }
 .ob-progress { color: var(--text-soft); font-size: 12px; margin: 0; letter-spacing: 0.02em; text-transform: uppercase; }
 .ob-form { gap: 14px; }
 .ob-form input, .ob-form select, .ob-form textarea {

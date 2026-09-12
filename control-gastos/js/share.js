@@ -293,7 +293,7 @@ const SHARE = {
     // Chip de racha arriba a la derecha
     if (streak > 0) {
       ctx.font = "600 28px Inter, system-ui, sans-serif";
-      const chipLabel = tier.emoji + " " + tier.label + " · " + streak + "d";
+      const chipLabel = tier.emoji + " " + LOGIC.localized(tier.label) + " · " + streak + "d";
       const chipW = ctx.measureText(chipLabel).width + 48;
       const chipX = W - 64 - chipW;
       const chipGrad = ctx.createLinearGradient(chipX, 0, chipX + chipW, 0);
@@ -352,7 +352,7 @@ const SHARE = {
       ctx.fillStyle = "#FFFFFF";
       const bandText = tier.key === "start"
         ? "🔥 " + streak + " días seguidos sin pasarme"
-        : tier.emoji + " " + streak + " días en el " + tier.label.toLowerCase();
+        : tier.emoji + " " + streak + " días en el " + LOGIC.localized(tier.label).toLowerCase();
       ctx.fillText(bandText, W / 2, bandY + 55);
       taglineY = 1140;
     }
@@ -376,7 +376,7 @@ const SHARE = {
     const daysInTier = LOGIC.daysInCurrentTier(streak || 0);
     const headlineLines = tier.key === "start"
       ? [daysInTier + (daysInTier === 1 ? " día" : " días"), "sin pasarme"]
-      : [daysInTier + (daysInTier === 1 ? " día" : " días"), "en el nivel " + tier.label.replace("Nivel ", "")];
+      : [daysInTier + (daysInTier === 1 ? " día" : " días"), "en el nivel " + LOGIC.localized(tier.label).replace("Nivel ", "").replace("Level ", "").replace("Niveau ", "").replace("Livello ", "").replace("Nível ", "")];
     return this.buildCelebrationCardDataURL({
       headlineLines,
       caption: "Racha de " + streak + " día" + (streak === 1 ? "" : "s"),

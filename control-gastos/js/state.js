@@ -465,14 +465,14 @@ const LOGIC = {
   // Niveles de racha (piedras preciosas). Cuanto más se sube, más raro el
   // color; a partir de Diamante se queda ahí, pero los días siguen contando.
   STREAK_TIERS: [
-    { min: 0, key: "start", label: "Racha empezando", emoji: "🔥", from: "#8FD9B6", to: "#3FA983", text: "#0E3B2E" },
-    { min: 3, key: "bronce", label: "Nivel Bronce", emoji: "🥉", from: "#E3A667", to: "#B06B2E", text: "#3A1F05" },
-    { min: 7, key: "plata", label: "Nivel Plata", emoji: "🥈", from: "#E7ECE9", to: "#AEBDB5", text: "#1C2A23" },
-    { min: 14, key: "oro", label: "Nivel Oro", emoji: "🥇", from: "#F2C94C", to: "#C98B12", text: "#3A2A05" },
-    { min: 30, key: "esmeralda", label: "Nivel Esmeralda", emoji: "💎", from: "#3FD68C", to: "#0E8F52", text: "#053622" },
-    { min: 60, key: "rubi", label: "Nivel Rubí", emoji: "💎", from: "#FF6B7A", to: "#C81E3A", text: "#3A0510" },
-    { min: 120, key: "topacio", label: "Nivel Topacio", emoji: "💎", from: "#FFD873", to: "#E0932B", text: "#3A2205" },
-    { min: 240, key: "diamante", label: "Nivel Diamante", emoji: "💎", from: "#BEE9FF", to: "#4FA8D8", text: "#052436" }
+    { min: 0, key: "start", label: { es: "Racha empezando", en: "Streak starting", fr: "Série qui commence", it: "Serie in avvio", pt: "Sequência começando" }, emoji: "🔥", from: "#8FD9B6", to: "#3FA983", text: "#0E3B2E" },
+    { min: 3, key: "bronce", label: { es: "Nivel Bronce", en: "Bronze Level", fr: "Niveau Bronze", it: "Livello Bronzo", pt: "Nível Bronze" }, emoji: "🥉", from: "#E3A667", to: "#B06B2E", text: "#3A1F05" },
+    { min: 7, key: "plata", label: { es: "Nivel Plata", en: "Silver Level", fr: "Niveau Argent", it: "Livello Argento", pt: "Nível Prata" }, emoji: "🥈", from: "#E7ECE9", to: "#AEBDB5", text: "#1C2A23" },
+    { min: 14, key: "oro", label: { es: "Nivel Oro", en: "Gold Level", fr: "Niveau Or", it: "Livello Oro", pt: "Nível Ouro" }, emoji: "🥇", from: "#F2C94C", to: "#C98B12", text: "#3A2A05" },
+    { min: 30, key: "esmeralda", label: { es: "Nivel Esmeralda", en: "Emerald Level", fr: "Niveau Émeraude", it: "Livello Smeraldo", pt: "Nível Esmeralda" }, emoji: "💎", from: "#3FD68C", to: "#0E8F52", text: "#053622" },
+    { min: 60, key: "rubi", label: { es: "Nivel Rubí", en: "Ruby Level", fr: "Niveau Rubis", it: "Livello Rubino", pt: "Nível Rubi" }, emoji: "💎", from: "#FF6B7A", to: "#C81E3A", text: "#3A0510" },
+    { min: 120, key: "topacio", label: { es: "Nivel Topacio", en: "Topaz Level", fr: "Niveau Topaze", it: "Livello Topazio", pt: "Nível Topázio" }, emoji: "💎", from: "#FFD873", to: "#E0932B", text: "#3A2205" },
+    { min: 240, key: "diamante", label: { es: "Nivel Diamante", en: "Diamond Level", fr: "Niveau Diamant", it: "Livello Diamante", pt: "Nível Diamante" }, emoji: "💎", from: "#BEE9FF", to: "#4FA8D8", text: "#052436" }
   ],
   streakTier(streak) {
     const tiers = this.STREAK_TIERS;
@@ -664,18 +664,18 @@ const LOGIC = {
   // o pago móvil enlazado. Placeholder de una integración real (Open Banking).
   simulateLinkedExpense(accountId) {
     const merchants = [
-      { category: "alimentacion", label: "Supermercado", range: [8, 45] },
-      { category: "transporte", label: "Transporte público", range: [1.5, 12] },
-      { category: "ocio", label: "Cafetería", range: [2, 9] },
-      { category: "compras", label: "Tienda online", range: [10, 60] },
-      { category: "suscripciones", label: "Servicio de streaming", range: [6, 15] }
+      { category: "alimentacion", label: { es: "Supermercado", en: "Supermarket", fr: "Supermarché", it: "Supermercato", pt: "Supermercado" }, range: [8, 45] },
+      { category: "transporte", label: { es: "Transporte público", en: "Public transport", fr: "Transport en commun", it: "Trasporto pubblico", pt: "Transporte público" }, range: [1.5, 12] },
+      { category: "ocio", label: { es: "Cafetería", en: "Coffee shop", fr: "Café", it: "Bar", pt: "Cafeteria" }, range: [2, 9] },
+      { category: "compras", label: { es: "Tienda online", en: "Online store", fr: "Boutique en ligne", it: "Negozio online", pt: "Loja online" }, range: [10, 60] },
+      { category: "suscripciones", label: { es: "Servicio de streaming", en: "Streaming service", fr: "Service de streaming", it: "Servizio di streaming", pt: "Serviço de streaming" }, range: [6, 15] }
     ];
     const m = merchants[Math.floor(Math.random() * merchants.length)];
     const amount = +(Math.random() * (m.range[1] - m.range[0]) + m.range[0]).toFixed(2);
     return STORE.addTransaction({
       type: "expense",
       category: m.category,
-      description: m.label,
+      description: this.localized(m.label),
       amount,
       date: this.todayStr(),
       method: "movil",

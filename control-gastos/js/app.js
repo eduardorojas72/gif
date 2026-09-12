@@ -1,4 +1,5 @@
 (function init() {
+  UI.applyStaticChrome();
   // Cierra automáticamente cualquier día pasado que quedara sin evaluar.
   LOGIC.closePastDaysIfNeeded();
   const newlyAchievedGoals = LOGIC.checkGoalsAchieved();
