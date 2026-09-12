@@ -823,6 +823,125 @@ function historialComprasHTML(state, ui, catalogo) {
   );
 }
 
+/* ---------------- Reunión de Enfoque (listas Izquierda/Derecha) ---------------- */
+
+function resumenLineasEnfoqueHTML(lista) {
+  const planIzq = sumaLineaEnfoque(lista, "izquierda", false), verIzq = sumaLineaEnfoque(lista, "izquierda", true);
+  const planDer = sumaLineaEnfoque(lista, "derecha", false), verDer = sumaLineaEnfoque(lista, "derecha", true);
+  function bloque(nombre, plan, ver) {
+    return (
+      '<div class="card">' +
+      '<div class="rl-label">' + nombre + "</div>" +
+      '<div class="rl-value">' + ver.toLocaleString("es") + ' <span class="muted small" style="font-weight:400">puntos verificados</span></div>' +
+      '<div class="rl-sub">Planificado sin verificar: ' + plan.toLocaleString("es") + " puntos</div>" +
+      "</div>"
+    );
+  }
+  return '<div class="resumen-linea">' + bloque("Izquierda", planIzq, verIzq) + bloque("Derecha", planDer, verDer) + "</div>";
+}
+
+function personaEnfoqueRowHTML(qn, linea, p) {
+  const verificadoClass = p.verificado ? " on" : "";
+  const waLink = p.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(p.telefono, p.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+    : "";
+  return (
+    '<div class="card roster-row" style="padding:13px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(p.nombre || "Sin nombre") + "</div>" +
+    (p.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(p.telefono) + "</div>" : "") +
+    (p.atomyId || p.contrasena
+      ? '<div class="muted small" style="margin-top:2px">' +
+        (p.atomyId ? "ID " + escapeHtml(p.atomyId) : "") +
+        (p.atomyId && p.contrasena ? " · " : "") +
+        (p.contrasena ? "Contraseña " + escapeHtml(p.contrasena) : "") +
+        "</div>"
+      : "") +
+    "</div>" +
+    '<div class="row gap-2">' +
+    waLink +
+    '<button class="icon-btn" data-action="edit-persona-enfoque" data-linea="' + linea + '" data-arg="' + p.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    '<button class="icon-btn" data-action="delete-persona-enfoque" data-linea="' + linea + '" data-arg="' + p.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div></div>" +
+    (p.notas ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(p.notas) + '”</div>' : "") +
+    '<div class="rr-inputs">' +
+    '<div class="field"><label>PVP</label><input type="number" min="0" step="10000" value="' + (Number(p.pvp) || 0) + '" data-roster-field="pvp" data-qn="' + qn + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
+    '<div class="field"><label>PVG</label><input type="number" min="0" step="10000" value="' + (Number(p.puntos) || 0) + '" data-roster-field="puntos" data-qn="' + qn + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
+    "</div>" +
+    '<div class="field" style="margin-top:8px"><label>Fecha planeada</label><input type="date" value="' + (p.fecha || "") + '" data-roster-field="fecha" data-qn="' + qn + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
+    '<div class="roster-check' + verificadoClass + '" data-action="toggle-verificado-enfoque" data-qn="' + qn + '" data-linea="' + linea + '" data-arg="' + p.id + '">' +
+    '<div class="box">' + (p.verificado ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
+    '<span class="lbl">' + (p.verificado ? "Verificado — ya pidió sus puntos" : "Marcar como verificado") + "</span>" +
+    "</div>" +
+    "</div>"
+  );
+}
+
+function renderReunionEnfoqueHTML(state, ui, qn) {
+  const lista = getListaEnfoque(state, qn);
+  const linea = ui.lineaActivaEnfoque || "izquierda";
+  const filas = (lista[linea] || []).slice().sort(function (a, b) { return (a.fecha || "9999-99-99").localeCompare(b.fecha || "9999-99-99"); });
+  const rows = filas.length
+    ? filas.map(function (p) { return personaEnfoqueRowHTML(qn, linea, p); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no has agregado a nadie en esta línea.</p>';
+
+  return (
+    '<div class="card" style="margin-top:16px;border-color:var(--gold)">' +
+    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Reunión de Enfoque</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">' +
+    (qn >= 5
+      ? "Ya vas llegando a Sales Master — desde aquí empieza a controlar cuántos puntos va a pedir cada persona de tu equipo, por línea, para no perder tu ciclaje."
+      : "Registra aquí a las personas de tu equipo por línea izquierda/derecha — te va a servir cada vez más a partir de la quincena 5 y 6, cuando empieces a controlar el ciclaje camino a Sales Master.") +
+    "</p>" +
+    '<div class="roster-check' + (lista.reunionHecha ? " on" : "") + '" data-action="toggle-reunion-enfoque" data-qn="' + qn + '">' +
+    '<div class="box">' + (lista.reunionHecha ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
+    '<span class="lbl">' + (lista.reunionHecha ? "Reunión de enfoque hecha esta quincena" : "Marcar: hice mi reunión de enfoque a mis socios") + "</span>" +
+    "</div>" +
+    resumenLineasEnfoqueHTML(lista) +
+    '<div class="tabs" style="margin-top:10px">' +
+    '<button class="tab-btn' + (linea === "izquierda" ? " active" : "") + '" data-action="set-linea-enfoque" data-arg="izquierda">Izquierda (' + (lista.izquierda || []).length + ")</button>" +
+    '<button class="tab-btn' + (linea === "derecha" ? " active" : "") + '" data-action="set-linea-enfoque" data-arg="derecha">Derecha (' + (lista.derecha || []).length + ")</button>" +
+    "</div>" +
+    '<div class="field" style="margin-top:10px"><label>Puntos ya confirmados fuera de la lista (consumo personal u otros)</label>' +
+    '<input type="number" min="0" step="10000" value="' + (linea === "izquierda" ? lista.otrosIzquierda : lista.otrosDerecha) + '" data-field="listasEnfoque.' + qn + "." + (linea === "izquierda" ? "otrosIzquierda" : "otrosDerecha") + '"></div>' +
+    '<button class="btn-primary" style="margin-top:10px" data-action="add-persona-enfoque" data-arg="' + linea + '">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar persona</button>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
+    "</div>"
+  );
+}
+
+function renderPersonaEnfoqueModal(ui) {
+  const d = ui.personaEnfoqueDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-persona-enfoque" data-linea="' + d.linea + '" data-arg="' + d.id + '">' +
+      (ui.confirmDeletePersonaEnfoque === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar persona") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-persona-enfoque"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar persona" : "Nueva persona — línea " + (d.linea === "izquierda" ? "Izquierda" : "Derecha")) + "</span>" +
+    '<button class="icon-btn" data-action="cancel-persona-enfoque">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="field"><label>Teléfono (opcional)</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Ej. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Contraseña</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Opcional"></div>' +
+    "</div>" +
+    '<p class="muted small" style="line-height:1.4;margin-top:-4px">La contraseña es opcional y solo para que puedas poner puntos por esta persona si lo necesita — nadie está obligado a compartirla.</p>' +
+    '<div class="field"><label>Notas</label><textarea rows="2" data-draft-field="notas" placeholder="Observaciones...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-persona-enfoque">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-persona-enfoque">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
 function productosCalculadoraHTML(state, ui, qn) {
   const paisId = state.pais || "CO";
   const paisInfo = paisCatalogoInfo(paisId);
@@ -929,6 +1048,7 @@ function renderQuincenaDetalle(state, ui, qn) {
     "</div>" +
     semanasHtml +
     (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "") +
+    renderReunionEnfoqueHTML(state, ui, qn) +
     productosCalculadoraHTML(state, ui, qn)
   );
 }

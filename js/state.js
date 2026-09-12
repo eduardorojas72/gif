@@ -93,6 +93,35 @@ function totalHistoricoProducto(state, productoId) {
   }, 0);
 }
 
+/* ---------------- Reunión de Enfoque — lista Izquierda/Derecha por quincena del Plan 90 Días ---------------- */
+
+function nuevaPersonaEnfoque() {
+  return { id: "p" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", atomyId: "", contrasena: "", pvp: 0, puntos: 0, fecha: null, verificado: false, notas: "" };
+}
+
+function emptyListaEnfoque() {
+  return { izquierda: [], derecha: [], otrosIzquierda: 0, otrosDerecha: 0, reunionHecha: false };
+}
+
+function getListaEnfoque(state, qn) {
+  if (!state.listasEnfoque[qn]) state.listasEnfoque[qn] = emptyListaEnfoque();
+  return state.listasEnfoque[qn];
+}
+
+/* Lectura sin mutar el estado (para usar dentro de las vistas). */
+function peekListaEnfoque(state, qn) {
+  return state.listasEnfoque[qn] || emptyListaEnfoque();
+}
+
+function sumaLineaEnfoque(lista, linea, soloVerificado) {
+  const arr = lista[linea] || [];
+  const base = Number(linea === "izquierda" ? lista.otrosIzquierda : lista.otrosDerecha) || 0;
+  return arr.reduce(function (acc, p) {
+    if (soloVerificado && !p.verificado) return acc;
+    return acc + (Number(p.puntos) || 0);
+  }, base);
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -161,6 +190,7 @@ function defaultState() {
     pais: "CO",
     catalogoProductos: { CO: emptyCatalogoProductosPais("CO") },
     comprasQuincena: {},
+    listasEnfoque: {},
     registroDiario: {},
     idiomaInforme: "es",
   };
@@ -311,6 +341,19 @@ function hydrateState(parsed) {
   }
 
   merged.comprasQuincena = parsed.comprasQuincena && typeof parsed.comprasQuincena === "object" ? parsed.comprasQuincena : {};
+
+  const listasGuardadas = parsed.listasEnfoque && typeof parsed.listasEnfoque === "object" ? parsed.listasEnfoque : {};
+  merged.listasEnfoque = Object.keys(listasGuardadas).reduce(function (acc, qn) {
+    const saved = listasGuardadas[qn] || {};
+    const izquierda = Array.isArray(saved.izquierda) ? saved.izquierda.map(function (p) { return Object.assign(nuevaPersonaEnfoque(), p); }) : [];
+    const derecha = Array.isArray(saved.derecha) ? saved.derecha.map(function (p) { return Object.assign(nuevaPersonaEnfoque(), p); }) : [];
+    acc[qn] = {
+      izquierda: izquierda, derecha: derecha,
+      otrosIzquierda: Number(saved.otrosIzquierda) || 0, otrosDerecha: Number(saved.otrosDerecha) || 0,
+      reunionHecha: !!saved.reunionHecha,
+    };
+    return acc;
+  }, {});
 
   merged.registroDiario = parsed.registroDiario && typeof parsed.registroDiario === "object"
     ? Object.keys(parsed.registroDiario).reduce(function (acc, f) {

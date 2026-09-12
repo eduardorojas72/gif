@@ -67,6 +67,9 @@ const App = {
     agenda6Draft: null,
     calculadoraBusqueda: "",
     historialAbierto: false,
+    lineaActivaEnfoque: "izquierda",
+    personaEnfoqueDraft: null,
+    confirmDeletePersonaEnfoque: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -235,6 +238,7 @@ const App = {
     else if (ui.agenda6Draft) modalHtml = renderAgenda6Modal(ui);
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
     else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
+    else if (ui.personaEnfoqueDraft) modalHtml = renderPersonaEnfoqueModal(ui);
     else if (ui.carteleraOpen) modalHtml = renderCarteleraModal();
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
@@ -278,10 +282,19 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
-        // formularios con borrador (contacto / actividad de agenda / zoom): tampoco re-renderizan, para no perder el foco
-        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
+      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft)) {
+        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque): tampoco re-renderizan, para no perder el foco
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft;
         setPath(draft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.rosterField) {
+        const lista = getListaEnfoque(this.state, el.dataset.qn);
+        const arr = lista[el.dataset.linea] || [];
+        const persona = arr.find((p) => p.id === el.dataset.id);
+        if (persona) {
+          const isNumeric = el.dataset.rosterField === "puntos" || el.dataset.rosterField === "pvp";
+          persona[el.dataset.rosterField] = isNumeric ? Number(el.value) || 0 : el.value;
+          this.persist();
+        }
       } else if (el.id === "contacto-search") {
         // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
         const q = el.value.trim().toLowerCase();
@@ -946,6 +959,93 @@ const Actions = {
 
   "toggle-calculadora-productos": function () {
     App.ui.calculadoraAbierta = !App.ui.calculadoraAbierta;
+    App.render();
+  },
+
+  "set-linea-enfoque": function (arg) {
+    App.ui.lineaActivaEnfoque = arg;
+    App.render();
+  },
+
+  "add-persona-enfoque": function (arg) {
+    App.ui.personaEnfoqueDraft = { linea: arg, id: null, nombre: "", telefono: "", atomyId: "", contrasena: "", notas: "" };
+    App.ui.confirmDeletePersonaEnfoque = null;
+    App.render();
+  },
+
+  "edit-persona-enfoque": function (arg, el) {
+    const qn = el.dataset.qn || App.ui.activeQuincena;
+    const linea = el.dataset.linea;
+    const lista = getListaEnfoque(App.state, qn);
+    const p = (lista[linea] || []).find((x) => x.id === arg);
+    if (!p) return;
+    App.ui.personaEnfoqueDraft = { qn: qn, linea: linea, id: p.id, nombre: p.nombre, telefono: p.telefono, atomyId: p.atomyId, contrasena: p.contrasena, notas: p.notas };
+    App.ui.confirmDeletePersonaEnfoque = null;
+    App.render();
+  },
+
+  "cancel-persona-enfoque": function () {
+    App.ui.personaEnfoqueDraft = null;
+    App.ui.confirmDeletePersonaEnfoque = null;
+    App.render();
+  },
+
+  "save-persona-enfoque": function () {
+    const d = App.ui.personaEnfoqueDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    const qn = d.qn || App.ui.activeQuincena;
+    const lista = getListaEnfoque(App.state, qn);
+    if (d.id) {
+      const p = (lista[d.linea] || []).find((x) => x.id === d.id);
+      if (p) {
+        p.nombre = d.nombre;
+        p.telefono = d.telefono;
+        p.atomyId = d.atomyId;
+        p.contrasena = d.contrasena;
+        p.notas = d.notas;
+      }
+    } else {
+      const nueva = Object.assign(nuevaPersonaEnfoque(), { nombre: d.nombre, telefono: d.telefono, atomyId: d.atomyId, contrasena: d.contrasena, notas: d.notas });
+      lista[d.linea] = lista[d.linea] || [];
+      lista[d.linea].push(nueva);
+    }
+    App.ui.personaEnfoqueDraft = null;
+    App.persist(true);
+    App.showToast("Persona guardada");
+    App.render();
+  },
+
+  "delete-persona-enfoque": function (arg, el) {
+    if (App.ui.confirmDeletePersonaEnfoque !== arg) {
+      App.ui.confirmDeletePersonaEnfoque = arg;
+      App.render();
+      return;
+    }
+    const qn = (App.ui.personaEnfoqueDraft && App.ui.personaEnfoqueDraft.qn) || App.ui.activeQuincena;
+    const linea = el.dataset.linea;
+    const lista = getListaEnfoque(App.state, qn);
+    lista[linea] = (lista[linea] || []).filter((x) => x.id !== arg);
+    App.ui.confirmDeletePersonaEnfoque = null;
+    App.ui.personaEnfoqueDraft = null;
+    App.persist(true);
+    App.showToast("Persona eliminada");
+    App.render();
+  },
+
+  "toggle-verificado-enfoque": function (arg, el) {
+    const lista = getListaEnfoque(App.state, el.dataset.qn);
+    const linea = el.dataset.linea;
+    const p = (lista[linea] || []).find((x) => x.id === arg);
+    if (!p) return;
+    p.verificado = !p.verificado;
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-reunion-enfoque": function (arg, el) {
+    const lista = getListaEnfoque(App.state, el.dataset.qn);
+    lista.reunionHecha = !lista.reunionHecha;
+    App.persist(true);
     App.render();
   },
 
