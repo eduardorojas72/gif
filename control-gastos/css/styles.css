@@ -163,6 +163,7 @@ h1, h2, h3 {
 .text-income { color: var(--income); }
 .text-expense { color: var(--expense); }
 .text-danger { color: var(--danger); }
+.text-saving { color: var(--gold); }
 
 /* Botones */
 .btn {
@@ -179,6 +180,7 @@ h1, h2, h3 {
 .btn-ghost { background: transparent; color: var(--text-soft); }
 .btn-expense { background: rgba(192, 57, 43, 0.12); color: var(--expense); }
 .btn-income { background: rgba(27, 138, 90, 0.12); color: var(--income); }
+.btn-saving { background: rgba(201, 139, 18, 0.14); color: var(--gold); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 12px; font-size: 13px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -458,6 +460,21 @@ h1, h2, h3 {
 .risk-badge--inversor .risk-badge-level { color: var(--accent); }
 .risk-badge--frugal_fire { border-left-color: var(--income); background: rgba(27, 138, 90, 0.08); }
 .risk-badge--frugal_fire .risk-badge-level { color: var(--income); }
+
+/* ---------- Aviso de saldo (números rojos / positivo) ---------- */
+.balance-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 700;
+}
+.balance-banner-label { font-size: 13.5px; font-weight: 600; }
+.balance-banner strong { font-family: "Space Grotesk", sans-serif; font-size: 17px; }
+.balance-banner--negative { background: rgba(192, 57, 43, 0.12); color: var(--danger); }
+.balance-banner--positive { background: rgba(27, 138, 90, 0.12); color: var(--income); }
 
 /* ---------- Plan de mañana ---------- */
 .plan-banner {

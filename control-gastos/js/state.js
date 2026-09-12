@@ -13,6 +13,7 @@ const STORE = {
 
   defaultSettings: {
     currency: "EUR",
+    language: "es", // "es" | "en" | "fr" | "it" | "pt"
     country: null,
     dailyGoal: null,
     soundEnabled: true,
@@ -215,6 +216,20 @@ const LOGIC = {
     return (n < 0 ? "-" : "") + symbol + Math.abs(n).toFixed(2);
   },
 
+  // Idioma activo de la app (con reserva a español si no hay uno guardado
+  // o el guardado no está soportado).
+  SUPPORTED_LANGS: ["es", "en", "fr", "it", "pt"],
+  lang() {
+    const l = STORE.getSettings().language;
+    return this.SUPPORTED_LANGS.includes(l) ? l : "es";
+  },
+  // Devuelve el contenido de `field` (un objeto {es,en,fr,it,pt}) en el
+  // idioma activo, con reserva a español si falta esa traducción.
+  localized(field) {
+    const lang = this.lang();
+    return (field && (field[lang] || field.es)) || field;
+  },
+
   transactionsForDate(date) {
     return STORE.getTransactions().filter((t) => t.date === date);
   },
@@ -225,8 +240,42 @@ const LOGIC = {
       .reduce((sum, t) => sum + Number(t.amount || 0), 0);
   },
 
+  // Gasto "variable" de un día: excluye los gastos marcados como fijos o
+  // excepcionales (alquiler, cuotas, seguros...), que no deben contar para
+  // la meta de gasto diario ni romper la racha.
+  variableSpentForDate(date) {
+    return this.transactionsForDate(date)
+      .filter((t) => t.type === "expense" && !t.excludeFromDailyGoal)
+      .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+  },
+
+  // Suma de los "ahorros" registrados manualmente ese día (descuentos,
+  // ofertas aprovechadas...). Amplían el margen de gasto disponible ese día.
+  savingsLoggedForDate(date) {
+    return this.transactionsForDate(date)
+      .filter((t) => t.type === "saving")
+      .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+  },
+
+  // Meta de gasto diario "efectiva" para un día: la meta base más cualquier
+  // ahorro registrado ese mismo día, para poder "salvar la racha".
+  effectiveGoalForDate(date) {
+    const base = STORE.getSettings().dailyGoal;
+    if (!base) return null;
+    return base + this.savingsLoggedForDate(date);
+  },
+
+  // Categorías del diagnóstico inicial que son gastos fijos mensuales
+  // (se pagan una vez, no se reparten día a día): se excluyen al calcular
+  // la meta de gasto diario sugerida, que es para el gasto variable.
+  FIXED_SNAPSHOT_CATEGORIES: ["alquiler", "coche", "servicios", "seguros", "deudasTarjetas", "deudasPrestamos"],
+  fixedMonthlyFromSnapshot(expensesSnapshot) {
+    const snap = expensesSnapshot || {};
+    return this.FIXED_SNAPSHOT_CATEGORIES.reduce((sum, key) => sum + (Number(snap[key]) || 0), 0);
+  },
+
   spentToday() {
-    return this.totalForDate(this.todayStr(), "expense");
+    return this.variableSpentForDate(this.todayStr());
   },
 
   // Días distintos en los que hay al menos un movimiento, ordenados descendente.
@@ -273,7 +322,7 @@ const LOGIC = {
     });
     const today = this.todayStr();
     if (!days[today] && settings.dailyGoal) {
-      saved += (settings.dailyGoal - this.spentToday());
+      saved += (this.effectiveGoalForDate(today) - this.spentToday());
     }
     return {
       saved,
@@ -293,7 +342,7 @@ const LOGIC = {
     });
     const today = this.todayStr();
     if (!days[today] && settings.dailyGoal) {
-      saved += (settings.dailyGoal - this.spentToday());
+      saved += (this.effectiveGoalForDate(today) - this.spentToday());
     }
     saved = Math.max(0, saved);
     return {
@@ -357,12 +406,14 @@ const LOGIC = {
     if (days[date]) return days[date];
     if (!settings.dailyGoal) return null;
 
-    const spent = this.totalForDate(date, "expense");
+    const spent = this.variableSpentForDate(date);
+    const goal = this.effectiveGoalForDate(date);
     const record = {
       date,
-      goal: settings.dailyGoal,
+      goal,
+      baseGoal: settings.dailyGoal,
       spent,
-      met: spent <= settings.dailyGoal,
+      met: spent <= goal,
       closedAt: new Date().toISOString()
     };
     days[date] = record;
@@ -477,6 +528,7 @@ const LOGIC = {
     const expenses = d.expensesSnapshot || {};
     const totalExpenses = Object.values(expenses).reduce((sum, v) => sum + (Number(v) || 0), 0);
     const ratio = income ? totalExpenses / income : 0;
+    const balance = income - totalExpenses;
 
     let key;
     if (ratio > 1.02) key = "endeudado";
@@ -485,7 +537,7 @@ const LOGIC = {
     else key = d.savingsBehavior === "invierte" ? "inversor" : "ahorrador_pasivo";
 
     const profile = DATA.incomeExpenseProfiles.find((p) => p.key === key) || DATA.incomeExpenseProfiles[1];
-    return Object.assign({ ratio }, profile);
+    return Object.assign({ ratio, balance }, profile);
   },
 
   // Paso (1-4) de la ruta hacia "inversor" en el que se encuentra el usuario

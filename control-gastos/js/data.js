@@ -1,31 +1,141 @@
 // Contenido estático: categorías, consejos y recursos recomendados.
 const DATA = {
-  expenseCategories: [
-    { id: "alimentacion", label: "Alimentación", icon: "🍽️" },
-    { id: "transporte", label: "Transporte", icon: "🚌" },
-    { id: "vivienda", label: "Vivienda", icon: "🏠" },
-    { id: "ocio", label: "Ocio", icon: "🎬" },
-    { id: "salud", label: "Salud", icon: "💊" },
-    { id: "compras", label: "Compras", icon: "🛍️" },
-    { id: "suscripciones", label: "Suscripciones", icon: "🔁" },
-    { id: "educacion", label: "Educación", icon: "📚" },
-    { id: "atomy", label: "Compra de Productos Atomy", icon: "📦" },
-    { id: "otros", label: "Otros", icon: "✨" }
-  ],
-  incomeCategories: [
-    { id: "salario", label: "Salario", icon: "💼" },
-    { id: "freelance", label: "Freelance", icon: "🧑‍💻" },
-    { id: "ventas", label: "Ventas", icon: "🏷️" },
-    { id: "regalos", label: "Regalos", icon: "🎁" },
-    { id: "otros_ing", label: "Otros", icon: "✨" }
-  ],
-  paymentMethods: [
-    { id: "efectivo", label: "Efectivo" },
-    { id: "debito", label: "Tarjeta débito" },
-    { id: "credito", label: "Tarjeta crédito" },
-    { id: "movil", label: "Pago móvil" },
-    { id: "transferencia", label: "Transferencia" }
-  ],
+  expenseCategories: {
+    es: [
+      { id: "alimentacion", label: "Alimentación", icon: "🍽️" },
+      { id: "transporte", label: "Transporte", icon: "🚌" },
+      { id: "vivienda", label: "Vivienda", icon: "🏠" },
+      { id: "ocio", label: "Ocio", icon: "🎬" },
+      { id: "salud", label: "Salud", icon: "💊" },
+      { id: "compras", label: "Compras", icon: "🛍️" },
+      { id: "suscripciones", label: "Suscripciones", icon: "🔁" },
+      { id: "educacion", label: "Educación", icon: "📚" },
+      { id: "atomy", label: "Compra de Productos Atomy", icon: "📦" },
+      { id: "otros", label: "Otros", icon: "✨" }
+    ],
+    en: [
+      { id: "alimentacion", label: "Food", icon: "🍽️" },
+      { id: "transporte", label: "Transport", icon: "🚌" },
+      { id: "vivienda", label: "Housing", icon: "🏠" },
+      { id: "ocio", label: "Leisure", icon: "🎬" },
+      { id: "salud", label: "Health", icon: "💊" },
+      { id: "compras", label: "Shopping", icon: "🛍️" },
+      { id: "suscripciones", label: "Subscriptions", icon: "🔁" },
+      { id: "educacion", label: "Education", icon: "📚" },
+      { id: "atomy", label: "Atomy Product Purchase", icon: "📦" },
+      { id: "otros", label: "Other", icon: "✨" }
+    ],
+    fr: [
+      { id: "alimentacion", label: "Alimentation", icon: "🍽️" },
+      { id: "transporte", label: "Transport", icon: "🚌" },
+      { id: "vivienda", label: "Logement", icon: "🏠" },
+      { id: "ocio", label: "Loisirs", icon: "🎬" },
+      { id: "salud", label: "Santé", icon: "💊" },
+      { id: "compras", label: "Achats", icon: "🛍️" },
+      { id: "suscripciones", label: "Abonnements", icon: "🔁" },
+      { id: "educacion", label: "Éducation", icon: "📚" },
+      { id: "atomy", label: "Achat de produits Atomy", icon: "📦" },
+      { id: "otros", label: "Autres", icon: "✨" }
+    ],
+    it: [
+      { id: "alimentacion", label: "Alimentazione", icon: "🍽️" },
+      { id: "transporte", label: "Trasporti", icon: "🚌" },
+      { id: "vivienda", label: "Casa", icon: "🏠" },
+      { id: "ocio", label: "Tempo libero", icon: "🎬" },
+      { id: "salud", label: "Salute", icon: "💊" },
+      { id: "compras", label: "Shopping", icon: "🛍️" },
+      { id: "suscripciones", label: "Abbonamenti", icon: "🔁" },
+      { id: "educacion", label: "Istruzione", icon: "📚" },
+      { id: "atomy", label: "Acquisto prodotti Atomy", icon: "📦" },
+      { id: "otros", label: "Altro", icon: "✨" }
+    ],
+    pt: [
+      { id: "alimentacion", label: "Alimentação", icon: "🍽️" },
+      { id: "transporte", label: "Transporte", icon: "🚌" },
+      { id: "vivienda", label: "Habitação", icon: "🏠" },
+      { id: "ocio", label: "Lazer", icon: "🎬" },
+      { id: "salud", label: "Saúde", icon: "💊" },
+      { id: "compras", label: "Compras", icon: "🛍️" },
+      { id: "suscripciones", label: "Assinaturas", icon: "🔁" },
+      { id: "educacion", label: "Educação", icon: "📚" },
+      { id: "atomy", label: "Compra de Produtos Atomy", icon: "📦" },
+      { id: "otros", label: "Outros", icon: "✨" }
+    ]
+  },
+  incomeCategories: {
+    es: [
+      { id: "salario", label: "Salario", icon: "💼" },
+      { id: "freelance", label: "Freelance", icon: "🧑‍💻" },
+      { id: "ventas", label: "Ventas", icon: "🏷️" },
+      { id: "regalos", label: "Regalos", icon: "🎁" },
+      { id: "otros_ing", label: "Otros", icon: "✨" }
+    ],
+    en: [
+      { id: "salario", label: "Salary", icon: "💼" },
+      { id: "freelance", label: "Freelance", icon: "🧑‍💻" },
+      { id: "ventas", label: "Sales", icon: "🏷️" },
+      { id: "regalos", label: "Gifts", icon: "🎁" },
+      { id: "otros_ing", label: "Other", icon: "✨" }
+    ],
+    fr: [
+      { id: "salario", label: "Salaire", icon: "💼" },
+      { id: "freelance", label: "Freelance", icon: "🧑‍💻" },
+      { id: "ventas", label: "Ventes", icon: "🏷️" },
+      { id: "regalos", label: "Cadeaux", icon: "🎁" },
+      { id: "otros_ing", label: "Autres", icon: "✨" }
+    ],
+    it: [
+      { id: "salario", label: "Stipendio", icon: "💼" },
+      { id: "freelance", label: "Freelance", icon: "🧑‍💻" },
+      { id: "ventas", label: "Vendite", icon: "🏷️" },
+      { id: "regalos", label: "Regali", icon: "🎁" },
+      { id: "otros_ing", label: "Altro", icon: "✨" }
+    ],
+    pt: [
+      { id: "salario", label: "Salário", icon: "💼" },
+      { id: "freelance", label: "Freelance", icon: "🧑‍💻" },
+      { id: "ventas", label: "Vendas", icon: "🏷️" },
+      { id: "regalos", label: "Presentes", icon: "🎁" },
+      { id: "otros_ing", label: "Outros", icon: "✨" }
+    ]
+  },
+  paymentMethods: {
+    es: [
+      { id: "efectivo", label: "Efectivo" },
+      { id: "debito", label: "Tarjeta débito" },
+      { id: "credito", label: "Tarjeta crédito" },
+      { id: "movil", label: "Pago móvil" },
+      { id: "transferencia", label: "Transferencia" }
+    ],
+    en: [
+      { id: "efectivo", label: "Cash" },
+      { id: "debito", label: "Debit card" },
+      { id: "credito", label: "Credit card" },
+      { id: "movil", label: "Mobile payment" },
+      { id: "transferencia", label: "Bank transfer" }
+    ],
+    fr: [
+      { id: "efectivo", label: "Espèces" },
+      { id: "debito", label: "Carte de débit" },
+      { id: "credito", label: "Carte de crédit" },
+      { id: "movil", label: "Paiement mobile" },
+      { id: "transferencia", label: "Virement" }
+    ],
+    it: [
+      { id: "efectivo", label: "Contanti" },
+      { id: "debito", label: "Carta di debito" },
+      { id: "credito", label: "Carta di credito" },
+      { id: "movil", label: "Pagamento mobile" },
+      { id: "transferencia", label: "Bonifico" }
+    ],
+    pt: [
+      { id: "efectivo", label: "Dinheiro" },
+      { id: "debito", label: "Cartão de débito" },
+      { id: "credito", label: "Cartão de crédito" },
+      { id: "movil", label: "Pagamento móvel" },
+      { id: "transferencia", label: "Transferência" }
+    ]
+  },
 
   // Palabras clave (sin acentos, en minúscula) para sugerir una categoría al
   // importar movimientos desde un CSV bancario, a partir del texto del

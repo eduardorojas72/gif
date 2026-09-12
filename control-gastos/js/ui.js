@@ -5,7 +5,7 @@ const UI = {
 
   // ---------- Categorías (por defecto + personalizadas) ----------
   baseCategoriesFor(type) {
-    return type === "income" ? DATA.incomeCategories : DATA.expenseCategories;
+    return type === "income" ? LOGIC.localized(DATA.incomeCategories) : LOGIC.localized(DATA.expenseCategories);
   },
   categoriesFor(type) {
     const custom = STORE.getCustomCategories()[type === "income" ? "income" : "expense"] || [];
@@ -17,7 +17,7 @@ const UI = {
     return found ? found.icon + " " + found.label : id;
   },
   methodLabel(id) {
-    const m = DATA.paymentMethods.find((x) => x.id === id);
+    const m = LOGIC.localized(DATA.paymentMethods).find((x) => x.id === id);
     return m ? m.label : id;
   },
   categoryOptionsHTML(type, selected) {
@@ -26,7 +26,7 @@ const UI = {
       .join("");
   },
   methodOptionsHTML(selected) {
-    return DATA.paymentMethods
+    return LOGIC.localized(DATA.paymentMethods)
       .map((m) => `<option value="${m.id}" ${m.id === selected ? "selected" : ""}>${m.label}</option>`)
       .join("");
   },
@@ -34,6 +34,19 @@ const UI = {
     return DATA.countries
       .map((c) => `<option value="${c.code}" ${c.code === selected ? "selected" : ""}>${c.name} (${c.currency})</option>`)
       .join("");
+  },
+
+  // Aviso del saldo mensual (ingreso - gasto): en rojo si es negativo
+  // ("números rojos"), en verde si es positivo.
+  balanceBannerHTML(balance) {
+    const n = Number(balance) || 0;
+    const negative = n < 0;
+    const sign = negative ? "-" : "+";
+    return `
+      <div class="balance-banner ${negative ? "balance-banner--negative" : "balance-banner--positive"}">
+        <span class="balance-banner-label">${negative ? "⚠️ Estás en números rojos" : "✅ Balance mensual positivo"}</span>
+        <strong>${sign}${LOGIC.formatMoney(Math.abs(n))}</strong>
+      </div>`;
   },
 
   // ---------- Utilidades de UI: toast, modal, confeti ----------
@@ -123,15 +136,16 @@ const UI = {
     const settings = STORE.getSettings();
     if (!settings.dailyGoal) return;
     const spent = LOGIC.spentToday();
+    const goal = LOGIC.effectiveGoalForDate(LOGIC.todayStr());
     const pill = document.getElementById("status-pill");
-    if (spent > settings.dailyGoal) {
+    if (spent > goal) {
       pill.hidden = false;
       pill.textContent = "⚠️ Meta diaria superada";
       pill.className = "status-pill status-pill--over";
       if (settings.soundEnabled) AUDIO.playAlert();
     } else {
       pill.hidden = false;
-      const pct = Math.round((spent / settings.dailyGoal) * 100);
+      const pct = Math.round((spent / goal) * 100);
       pill.textContent = "🟢 " + pct + "% de tu meta diaria";
       pill.className = "status-pill status-pill--ok";
     }
@@ -513,6 +527,7 @@ const UI = {
             <span class="risk-badge-level">Riesgo: ${profile.risk}</span>
             <p>${profile.description}</p>
           </div>
+          ${this.balanceBannerHTML(profile.balance)}
           <div class="modal-actions">
             <button type="button" class="btn btn-ghost" id="ob-back">Atrás</button>
             <button type="button" class="btn btn-primary" id="ob-continue">Continuar</button>
@@ -520,13 +535,14 @@ const UI = {
       },
       summary: () => {
         const daysInMonth = LOGIC.daysInMonth(LOGIC.todayStr());
+        const fixedMonthly = LOGIC.fixedMonthlyFromSnapshot(d.expensesSnapshot);
         const suggested = d.monthlyIncome && d.savingsGoalMonthly
-          ? Math.max(0, (d.monthlyIncome - d.savingsGoalMonthly) / daysInMonth)
+          ? Math.max(0, (d.monthlyIncome - d.savingsGoalMonthly - fixedMonthly) / daysInMonth)
           : (d.dailyGoal || 0);
         return `
           <p class="ob-progress">Paso ${num} de ${this.TOTAL_STEPS}</p>
           <h1>¡Listo, ${d.userName || ""}! 🎉</h1>
-          <p class="muted-small">Con tus datos, esta sería tu meta de gasto diario sugerida (puedes ajustarla):</p>
+          <p class="muted-small">Con tus datos, esta sería tu meta de gasto diario sugerida para tus gastos variables (puedes ajustarla). Ya hemos descontado tus gastos fijos (alquiler, cuotas, seguros...): esos no se reparten día a día, se registran aparte marcados como "gasto fijo".</p>
           <form class="form ob-form" data-next>
             <label>Meta de gasto diario
               <input type="number" name="dailyGoal" min="0" step="0.01" value="${(d.dailyGoal != null ? d.dailyGoal : suggested).toFixed(2)}" required />
@@ -612,9 +628,12 @@ const UI = {
   renderHoy() {
     const settings = STORE.getSettings();
     const today = LOGIC.todayStr();
-    const spent = LOGIC.totalForDate(today, "expense");
+    const spent = LOGIC.variableSpentForDate(today);
+    const totalSpentToday = LOGIC.totalForDate(today, "expense");
+    const fixedSpentToday = totalSpentToday - spent;
+    const savingsToday = LOGIC.savingsLoggedForDate(today);
     const income = LOGIC.totalForDate(today, "income");
-    const goal = settings.dailyGoal;
+    const goal = settings.dailyGoal ? LOGIC.effectiveGoalForDate(today) : null;
     const pct = goal ? Math.min(100, Math.round((spent / goal) * 100)) : 0;
     const over = goal && spent > goal;
     const dayClosed = STORE.getDays()[today];
@@ -657,12 +676,13 @@ const UI = {
           <div class="goal-block">
             <div class="goal-row">
               <span>Gastado: <strong class="${over ? "text-danger" : ""}">${LOGIC.formatMoney(spent)}</strong></span>
-              <span>Meta: <strong>${LOGIC.formatMoney(goal)}</strong></span>
+              <span>Meta: <strong>${LOGIC.formatMoney(goal)}</strong>${savingsToday > 0 ? ` <span class="muted-small">(${LOGIC.formatMoney(settings.dailyGoal)} + ${LOGIC.formatMoney(savingsToday)} ahorrado)</span>` : ""}</span>
             </div>
             <div class="progress-track">
               <div class="progress-fill ${over ? "progress-fill--over" : ""}" style="width:${pct}%"></div>
             </div>
             ${over ? `<p class="alert-text">⚠️ Has superado tu meta diaria por ${LOGIC.formatMoney(spent - goal)}.</p>` : `<p class="muted-small">Te quedan ${LOGIC.formatMoney(goal - spent)} para hoy.</p>`}
+            ${fixedSpentToday > 0 ? `<p class="muted-small">🏠 Gasto fijo registrado hoy: ${LOGIC.formatMoney(fixedSpentToday)} (no cuenta para esta meta).</p>` : ""}
           </div>
         ` : `
           <div class="empty-hint">
@@ -688,6 +708,7 @@ const UI = {
           <button class="btn btn-expense" data-action="add" data-type="expense" ${dayClosed ? "disabled" : ""}>➖ Añadir gasto</button>
           <button class="btn btn-income" data-action="add" data-type="income" ${dayClosed ? "disabled" : ""}>➕ Añadir ingreso</button>
         </div>
+        <button class="btn btn-saving btn-block" data-action="add-saving" ${dayClosed ? "disabled" : ""}>🌟 Registrar ahorro</button>
 
         ${income ? `<p class="muted-small">Ingresos de hoy: <strong>${LOGIC.formatMoney(income)}</strong></p>` : ""}
 
@@ -708,12 +729,15 @@ const UI = {
   },
 
   txItemHTML(t) {
-    const sign = t.type === "income" ? "+" : "−";
+    const sign = t.type === "expense" ? "−" : "+";
+    const amountClass = t.type === "expense" ? "text-expense" : (t.type === "saving" ? "text-saving" : "text-income");
+    const catLabel = t.type === "saving" ? "🌟 Ahorro" : this.categoryLabel(t.category);
+    const fixedTag = t.excludeFromDailyGoal ? ' <em class="tag-linked">fijo</em>' : "";
     return `
       <li class="tx-item" data-id="${t.id}">
-        <span class="tx-cat">${this.categoryLabel(t.category)}</span>
-        <span class="tx-desc">${t.description || ""}${t.source === "linked" ? ' <em class="tag-linked">enlazado</em>' : ""}</span>
-        <span class="tx-amount ${t.type === "income" ? "text-income" : "text-expense"}">${sign} ${LOGIC.formatMoney(t.amount)}</span>
+        <span class="tx-cat">${catLabel}</span>
+        <span class="tx-desc">${t.description || ""}${t.source === "linked" ? ' <em class="tag-linked">enlazado</em>' : ""}${fixedTag}</span>
+        <span class="tx-amount ${amountClass}">${sign} ${LOGIC.formatMoney(t.amount)}</span>
         <button class="icon-btn" data-action="delete-tx" data-id="${t.id}" title="Eliminar" aria-label="Eliminar movimiento">🗑️</button>
       </li>`;
   },
@@ -734,8 +758,31 @@ const UI = {
         </label>
         ${type === "expense" ? `<label>Método de pago
           <select name="method">${this.methodOptionsHTML("efectivo")}</select>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" name="excludeFromDailyGoal" />
+          Es un gasto fijo o excepcional (alquiler, cuota, seguro...) — no cuenta para mi meta diaria
         </label>` : ""}
         <input type="hidden" name="type" value="${type}" />
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    `;
+  },
+
+  savingFormHTML() {
+    return `
+      <h2>🌟 Registrar ahorro</h2>
+      <p class="muted-small">Anota cuando ahorras de verdad: un descuento, una oferta, un precio más bajo del esperado... Se suma a tu margen de hoy y a tu ahorro del mes.</p>
+      <form id="saving-form" class="form">
+        <label>¿En qué ahorraste?
+          <input type="text" name="description" placeholder="Ej. Descuento en la fruta, vuelo en oferta..." required />
+        </label>
+        <label>¿Cuánto ahorraste?
+          <input type="number" name="amount" min="0" step="0.01" required placeholder="0.00" />
+        </label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button>
           <button type="submit" class="btn btn-primary">Guardar</button>
@@ -763,6 +810,8 @@ const UI = {
     const all = STORE.getTransactions().sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : (a.createdAt < b.createdAt ? 1 : -1)));
     const totalIncome = all.filter((t) => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
     const totalExpense = all.filter((t) => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
+    const totalSaving = all.filter((t) => t.type === "saving").reduce((s, t) => s + Number(t.amount), 0);
+    const typeLabel = { income: "Ingreso", expense: "Gasto", saving: "Ahorro" };
 
     return `
       <section class="card">
@@ -795,12 +844,12 @@ const UI = {
               ${all.map((t) => `
                 <tr data-id="${t.id}">
                   <td>${t.date}</td>
-                  <td>${t.type === "income" ? "Ingreso" : "Gasto"}</td>
-                  <td>${this.categoryLabel(t.category)}</td>
-                  <td>${t.description || ""}</td>
+                  <td>${typeLabel[t.type] || t.type}</td>
+                  <td>${t.type === "saving" ? "🌟 Ahorro" : this.categoryLabel(t.category)}</td>
+                  <td>${t.description || ""}${t.excludeFromDailyGoal ? ' <em class="tag-linked">fijo</em>' : ""}</td>
                   <td>${t.method ? this.methodLabel(t.method) : "—"}</td>
                   <td>${t.source === "linked" ? "🔗 Enlazado" : t.source === "imported" ? "📄 Importado" : "✍️ Manual"}</td>
-                  <td class="${t.type === "income" ? "text-income" : "text-expense"}">${t.type === "income" ? "+" : "−"} ${LOGIC.formatMoney(t.amount)}</td>
+                  <td class="${t.type === "expense" ? "text-expense" : (t.type === "saving" ? "text-saving" : "text-income")}">${t.type === "expense" ? "−" : "+"} ${LOGIC.formatMoney(t.amount)}</td>
                   <td><button class="icon-btn" data-action="delete-tx" data-id="${t.id}" aria-label="Eliminar">🗑️</button></td>
                 </tr>
               `).join("")}
@@ -816,6 +865,12 @@ const UI = {
                 <td class="text-expense">− ${LOGIC.formatMoney(totalExpense)}</td>
                 <td></td>
               </tr>
+              ${totalSaving ? `
+              <tr>
+                <td colspan="6">🌟 Ahorros registrados (no en el balance)</td>
+                <td class="text-saving">+ ${LOGIC.formatMoney(totalSaving)}</td>
+                <td></td>
+              </tr>` : ""}
               <tr class="totals-balance">
                 <td colspan="6">Balance</td>
                 <td>${LOGIC.formatMoney(totalIncome - totalExpense)}</td>
@@ -916,15 +971,15 @@ const UI = {
         })() : ""}
 
         ${s.incomeExpenseProfileKey ? (() => {
-          const profile = DATA.incomeExpenseProfiles.find((p) => p.key === s.incomeExpenseProfileKey);
-          if (!profile) return "";
+          const profile = LOGIC.computeIncomeExpenseProfile(s);
           return `
             <div class="risk-badge risk-badge--${profile.key}">
               <span class="risk-badge-label">Perfil de ingreso y gasto</span>
               <strong>${profile.label}</strong>
               <span class="risk-badge-level">Riesgo: ${profile.risk}</span>
               <p>${profile.description}</p>
-            </div>`;
+            </div>
+            ${this.balanceBannerHTML(profile.balance)}`;
         })() : ""}
 
         <label class="toggle-switch-row">
@@ -1377,6 +1432,7 @@ const UI = {
             description: fd.get("description"),
             amount: parseFloat(fd.get("amount")) || 0,
             method: fd.get("method") || null,
+            excludeFromDailyGoal: fd.get("excludeFromDailyGoal") === "on",
             date: LOGIC.todayStr(),
             source: "manual"
           };
@@ -1384,9 +1440,32 @@ const UI = {
           UI.closeModal();
           UI.toast(tx.type === "income" ? "Ingreso añadido" : "Gasto añadido");
           UI.render("hoy");
+          UI.checkBudgetAlert();
         });
       })
     );
+
+    const addSavingBtn = view.querySelector('[data-action="add-saving"]');
+    if (addSavingBtn) {
+      addSavingBtn.addEventListener("click", () => {
+        UI.openModal(UI.savingFormHTML());
+        document.getElementById("saving-form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          STORE.addTransaction({
+            type: "saving",
+            category: null,
+            description: fd.get("description"),
+            amount: parseFloat(fd.get("amount")) || 0,
+            date: LOGIC.todayStr(),
+            source: "manual"
+          });
+          UI.closeModal();
+          UI.toast("🌟 Ahorro registrado");
+          UI.render("hoy");
+        });
+      });
+    }
 
     view.querySelectorAll('[data-action="delete-tx"]').forEach((btn) =>
       btn.addEventListener("click", () => {
