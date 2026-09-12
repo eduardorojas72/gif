@@ -852,7 +852,7 @@ function renderInformeSemanal(state, ui) {
         ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(semana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
         : '<p class="muted small" style="margin-top:10px">Agrega tu WhatsApp en Ajustes para poder compartir tu informe.</p>')
     : '<p class="muted small" style="margin-top:10px">Registra al menos una acción esta semana para poder compartir tu informe.</p>';
-  const idiomaSelector = totalAcciones > 0 && state.whatsapp && state.whatsapp.trim() ? idiomaInformeSelectorHTML(state) : "";
+  const idiomaSelector = totalAcciones > 0 ? idiomaInformeSelectorHTML(state) : "";
 
   const qKey = quincenaActualKey();
   const q = peekQuincena(state, qKey);
