@@ -122,6 +122,28 @@ function sumaLineaEnfoque(lista, linea, soloVerificado) {
   }, base);
 }
 
+/* ---------------- Mi Árbol Genealógico, Llamadas S.O.S. y Lista de Contactos (eventos) ---------------- */
+
+function nuevaPersonaAscendente() {
+  return { id: "a" + Math.random().toString(36).slice(2, 9), nombre: "", rango: "", pais: "", telefono: "", horarioNoMolestar: "" };
+}
+
+function emptyArbolGenealogico() {
+  return {
+    yo: { atomyId: "", contrasena: "" },
+    patrocinador: { nombre: "", atomyId: "", rango: "", pais: "", telefono: "", zoomId: "", zoomContrasena: "", horarioNoLlamar: "" },
+    ascendentes: [],
+  };
+}
+
+function nuevaLlamadaSOS() {
+  return { id: "s" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", nota: "" };
+}
+
+function nuevoContactoEvento() {
+  return { id: "e" + Math.random().toString(36).slice(2, 9), nombre: "", pais: "", telefono: "", observaciones: "" };
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -193,6 +215,9 @@ function defaultState() {
     listasEnfoque: {},
     registroDiario: {},
     idiomaInforme: "es",
+    arbolGenealogico: emptyArbolGenealogico(),
+    llamadasSOS: [],
+    contactosEventos: [],
   };
 }
 
@@ -363,6 +388,26 @@ function hydrateState(parsed) {
     : {};
 
   merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "es";
+
+  const arbolGuardado = parsed.arbolGenealogico && typeof parsed.arbolGenealogico === "object" ? parsed.arbolGenealogico : {};
+  merged.arbolGenealogico = {
+    yo: Object.assign({ atomyId: "", contrasena: "" }, arbolGuardado.yo || {}),
+    patrocinador: Object.assign(
+      { nombre: "", atomyId: "", rango: "", pais: "", telefono: "", zoomId: "", zoomContrasena: "", horarioNoLlamar: "" },
+      arbolGuardado.patrocinador || {}
+    ),
+    ascendentes: Array.isArray(arbolGuardado.ascendentes)
+      ? arbolGuardado.ascendentes.map(function (a) { return Object.assign(nuevaPersonaAscendente(), a); })
+      : [],
+  };
+
+  merged.llamadasSOS = Array.isArray(parsed.llamadasSOS)
+    ? parsed.llamadasSOS.map(function (s) { return Object.assign(nuevaLlamadaSOS(), s); })
+    : [];
+
+  merged.contactosEventos = Array.isArray(parsed.contactosEventos)
+    ? parsed.contactosEventos.map(function (c) { return Object.assign(nuevoContactoEvento(), c); })
+    : [];
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =

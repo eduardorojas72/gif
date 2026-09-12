@@ -70,6 +70,12 @@ const App = {
     lineaActivaEnfoque: "izquierda",
     personaEnfoqueDraft: null,
     confirmDeletePersonaEnfoque: null,
+    ascendenteDraft: null,
+    confirmDeleteAscendente: null,
+    sosDraft: null,
+    confirmDeleteSOS: null,
+    contactoEventoDraft: null,
+    confirmDeleteContactoEvento: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -209,6 +215,9 @@ const App = {
       case "pasos": mainHtml = renderPasos(state, ui); break;
       case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
+      case "arbol": mainHtml = renderArbolGenealogico(state, ui); break;
+      case "sos": mainHtml = renderLlamadasSOS(state, ui); break;
+      case "eventos": mainHtml = renderContactosEventos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
       case "plan90":
         if (ui.activeQuincena) {
@@ -239,6 +248,9 @@ const App = {
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
     else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
     else if (ui.personaEnfoqueDraft) modalHtml = renderPersonaEnfoqueModal(ui);
+    else if (ui.ascendenteDraft) modalHtml = renderAscendenteModal(ui);
+    else if (ui.sosDraft) modalHtml = renderSOSModal(ui);
+    else if (ui.contactoEventoDraft) modalHtml = renderContactoEventoModal(ui);
     else if (ui.carteleraOpen) modalHtml = renderCarteleraModal();
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
     document.getElementById("modal-slot").innerHTML = modalHtml;
@@ -282,9 +294,9 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft)) {
-        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque): tampoco re-renderizan, para no perder el foco
-        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft;
+      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft)) {
+        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque / ascendente / S.O.S. / contacto de evento): tampoco re-renderizan, para no perder el foco
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft;
         setPath(draft, el.dataset.draftField, el.value);
       } else if (el.dataset && el.dataset.rosterField) {
         const lista = getListaEnfoque(this.state, el.dataset.qn);
@@ -1029,6 +1041,175 @@ const Actions = {
     App.ui.personaEnfoqueDraft = null;
     App.persist(true);
     App.showToast("Persona eliminada");
+    App.render();
+  },
+
+  /* -------- Mi Árbol Genealógico — línea ascendente -------- */
+
+  "add-ascendente": function () {
+    App.ui.ascendenteDraft = { id: null, nombre: "", rango: "", pais: "", telefono: "", horarioNoMolestar: "" };
+    App.ui.confirmDeleteAscendente = null;
+    App.render();
+  },
+
+  "edit-ascendente": function (arg) {
+    const a = (App.state.arbolGenealogico.ascendentes || []).find((x) => x.id === arg);
+    if (!a) return;
+    App.ui.ascendenteDraft = Object.assign({}, a);
+    App.ui.confirmDeleteAscendente = null;
+    App.render();
+  },
+
+  "cancel-ascendente": function () {
+    App.ui.ascendenteDraft = null;
+    App.ui.confirmDeleteAscendente = null;
+    App.render();
+  },
+
+  "save-ascendente": function () {
+    const d = App.ui.ascendenteDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    const lista = App.state.arbolGenealogico.ascendentes;
+    if (d.id) {
+      const a = lista.find((x) => x.id === d.id);
+      if (a) {
+        a.nombre = d.nombre;
+        a.rango = d.rango;
+        a.pais = d.pais;
+        a.telefono = d.telefono;
+        a.horarioNoMolestar = d.horarioNoMolestar;
+      }
+    } else {
+      lista.push(Object.assign(nuevaPersonaAscendente(), { nombre: d.nombre, rango: d.rango, pais: d.pais, telefono: d.telefono, horarioNoMolestar: d.horarioNoMolestar }));
+    }
+    App.ui.ascendenteDraft = null;
+    App.persist(true);
+    App.showToast("Persona guardada");
+    App.render();
+  },
+
+  "delete-ascendente": function (arg) {
+    if (App.ui.confirmDeleteAscendente !== arg) {
+      App.ui.confirmDeleteAscendente = arg;
+      App.render();
+      return;
+    }
+    App.state.arbolGenealogico.ascendentes = App.state.arbolGenealogico.ascendentes.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteAscendente = null;
+    App.ui.ascendenteDraft = null;
+    App.persist(true);
+    App.showToast("Persona eliminada");
+    App.render();
+  },
+
+  /* -------- Llamadas S.O.S. -------- */
+
+  "add-sos": function () {
+    App.ui.sosDraft = { id: null, nombre: "", telefono: "", nota: "" };
+    App.ui.confirmDeleteSOS = null;
+    App.render();
+  },
+
+  "edit-sos": function (arg) {
+    const s = (App.state.llamadasSOS || []).find((x) => x.id === arg);
+    if (!s) return;
+    App.ui.sosDraft = Object.assign({}, s);
+    App.ui.confirmDeleteSOS = null;
+    App.render();
+  },
+
+  "cancel-sos": function () {
+    App.ui.sosDraft = null;
+    App.ui.confirmDeleteSOS = null;
+    App.render();
+  },
+
+  "save-sos": function () {
+    const d = App.ui.sosDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    if (d.id) {
+      const s = App.state.llamadasSOS.find((x) => x.id === d.id);
+      if (s) {
+        s.nombre = d.nombre;
+        s.telefono = d.telefono;
+        s.nota = d.nota;
+      }
+    } else {
+      App.state.llamadasSOS.push(Object.assign(nuevaLlamadaSOS(), { nombre: d.nombre, telefono: d.telefono, nota: d.nota }));
+    }
+    App.ui.sosDraft = null;
+    App.persist(true);
+    App.showToast("Contacto guardado");
+    App.render();
+  },
+
+  "delete-sos": function (arg) {
+    if (App.ui.confirmDeleteSOS !== arg) {
+      App.ui.confirmDeleteSOS = arg;
+      App.render();
+      return;
+    }
+    App.state.llamadasSOS = App.state.llamadasSOS.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteSOS = null;
+    App.ui.sosDraft = null;
+    App.persist(true);
+    App.showToast("Contacto eliminado");
+    App.render();
+  },
+
+  /* -------- Lista de Contactos (eventos en vivo) -------- */
+
+  "add-contacto-evento": function () {
+    App.ui.contactoEventoDraft = { id: null, nombre: "", pais: "", telefono: "", observaciones: "" };
+    App.ui.confirmDeleteContactoEvento = null;
+    App.render();
+  },
+
+  "edit-contacto-evento": function (arg) {
+    const c = (App.state.contactosEventos || []).find((x) => x.id === arg);
+    if (!c) return;
+    App.ui.contactoEventoDraft = Object.assign({}, c);
+    App.ui.confirmDeleteContactoEvento = null;
+    App.render();
+  },
+
+  "cancel-contacto-evento": function () {
+    App.ui.contactoEventoDraft = null;
+    App.ui.confirmDeleteContactoEvento = null;
+    App.render();
+  },
+
+  "save-contacto-evento": function () {
+    const d = App.ui.contactoEventoDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    if (d.id) {
+      const c = App.state.contactosEventos.find((x) => x.id === d.id);
+      if (c) {
+        c.nombre = d.nombre;
+        c.pais = d.pais;
+        c.telefono = d.telefono;
+        c.observaciones = d.observaciones;
+      }
+    } else {
+      App.state.contactosEventos.push(Object.assign(nuevoContactoEvento(), { nombre: d.nombre, pais: d.pais, telefono: d.telefono, observaciones: d.observaciones }));
+    }
+    App.ui.contactoEventoDraft = null;
+    App.persist(true);
+    App.showToast("Contacto guardado");
+    App.render();
+  },
+
+  "delete-contacto-evento": function (arg) {
+    if (App.ui.confirmDeleteContactoEvento !== arg) {
+      App.ui.confirmDeleteContactoEvento = arg;
+      App.render();
+      return;
+    }
+    App.state.contactosEventos = App.state.contactosEventos.filter((x) => x.id !== arg);
+    App.ui.confirmDeleteContactoEvento = null;
+    App.ui.contactoEventoDraft = null;
+    App.persist(true);
+    App.showToast("Contacto eliminado");
     App.render();
   },
 

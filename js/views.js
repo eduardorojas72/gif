@@ -10,6 +10,9 @@ const MENU_ITEMS = [
   { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
   { id: "lema", label: "El Lema de Atomy", icon: "heart" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
+  { id: "arbol", label: "Mi Árbol Genealógico", icon: "crown" },
+  { id: "sos", label: "Llamadas S.O.S.", icon: "bell" },
+  { id: "eventos", label: "Lista de Contactos", icon: "users" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
   { id: "informe", label: "Informe Semanal", icon: "trending-up" },
   { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
@@ -1360,6 +1363,240 @@ function renderAgenda6Modal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:10px">' + filas + "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Crear agenda de 6 días</button>' +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-agenda6">Ahora no</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Mi Árbol Genealógico ---------------- */
+
+function ascendenteRowHTML(a) {
+  const waLink = a.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(a.telefono, a.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+    : "";
+  const subLinea = [a.rango, a.pais].filter(function (v) { return v; }).join(" · ");
+  return (
+    '<div class="card roster-row" style="padding:13px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(a.nombre || "Sin nombre") + "</div>" +
+    (subLinea ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(subLinea) + "</div>" : "") +
+    (a.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(a.telefono) + "</div>" : "") +
+    "</div>" +
+    '<div class="row gap-2">' +
+    waLink +
+    '<button class="icon-btn" data-action="edit-ascendente" data-arg="' + a.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    '<button class="icon-btn" data-action="delete-ascendente" data-arg="' + a.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div></div>" +
+    (a.horarioNoMolestar ? '<div class="muted small" style="margin-top:6px;font-style:italic">No molestar: ' + escapeHtml(a.horarioNoMolestar) + "</div>" : "") +
+    "</div>"
+  );
+}
+
+function renderArbolGenealogico(state, ui) {
+  const arbol = state.arbolGenealogico;
+  const yo = arbol.yo;
+  const p = arbol.patrocinador;
+  const waPatrocinador = p.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(p.telefono, p.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
+    : "";
+  const ascendentes = arbol.ascendentes || [];
+  const rows = ascendentes.length
+    ? ascendentes.map(function (a) { return ascendenteRowHTML(a); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:20px 0">Aún no has agregado a nadie de tu línea ascendente.</p>';
+
+  return (
+    sectionHeaderHTML("Mi Árbol Genealógico", "Tu ID, tu patrocinador y tu línea ascendente, siempre a la mano.", "crown") +
+
+    '<div class="card">' +
+    '<div class="row gap-2">' + Icon("user-badge", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Yo</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Así tus propios socios pueden consultar tu ID y contraseña sin tener que preguntarte cada vez.</p>' +
+    '<div class="view-stack gap-sm" style="margin-top:10px">' +
+    '<div class="field"><label>ID Atomy</label><input type="text" data-field="arbolGenealogico.yo.atomyId" value="' + escapeHtml(yo.atomyId) + '" placeholder="Ej. 93248238"></div>' +
+    '<div class="field"><label>Contraseña</label><input type="text" data-field="arbolGenealogico.yo.contrasena" value="' + escapeHtml(yo.contrasena) + '" placeholder="Tu contraseña de Atomy"></div>' +
+    "</div></div>" +
+
+    '<div class="card">' +
+    '<div class="row between"><div class="row gap-2">' + Icon("crown", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Patrocinador</span></div>' + waPatrocinador + "</div>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Sus datos de contacto y de Zoom — para pedirle ayuda o inscribirte a formaciones de la compañía, que suelen pedir el ID de tu patrocinador.</p>' +
+    '<div class="view-stack gap-sm" style="margin-top:10px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-field="arbolGenealogico.patrocinador.nombre" value="' + escapeHtml(p.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-field="arbolGenealogico.patrocinador.atomyId" value="' + escapeHtml(p.atomyId) + '" placeholder="Ej. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Rango</label><input type="text" data-field="arbolGenealogico.patrocinador.rango" value="' + escapeHtml(p.rango) + '" placeholder="Ej. Sales Master"></div>' +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>País</label><input type="text" data-field="arbolGenealogico.patrocinador.pais" value="' + escapeHtml(p.pais) + '" placeholder="Ej. Colombia"></div>' +
+    '<div class="field" style="flex:1"><label>Teléfono</label><input type="text" inputmode="tel" data-field="arbolGenealogico.patrocinador.telefono" value="' + escapeHtml(p.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID de Zoom</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomId" value="' + escapeHtml(p.zoomId) + '" placeholder="Opcional"></div>' +
+    '<div class="field" style="flex:1"><label>Contraseña de Zoom</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomContrasena" value="' + escapeHtml(p.zoomContrasena) + '" placeholder="Opcional"></div>' +
+    "</div>" +
+    '<div class="field"><label>Horario en que no se debe llamar</label><input type="text" data-field="arbolGenealogico.patrocinador.horarioNoLlamar" value="' + escapeHtml(p.horarioNoLlamar) + '" placeholder="Ej. Después de las 8pm, ni domingos"></div>' +
+    "</div></div>" +
+
+    '<div class="card">' +
+    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Línea ascendente</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Las personas por encima de tu patrocinador directo — útil si necesitas su apoyo, o su ID para alguna formación.</p>' +
+    '<button class="btn-primary" style="margin-top:10px" data-action="add-ascendente">' + Icon("crown", { size: 16, color: "#fff" }) + " Agregar otro nivel arriba en la línea</button>" +
+    '<div class="view-stack gap-sm" style="margin-top:10px">' + rows + "</div>" +
+    "</div>"
+  );
+}
+
+function renderAscendenteModal(ui) {
+  const d = ui.ascendenteDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-ascendente" data-arg="' + d.id + '">' +
+      (ui.confirmDeleteAscendente === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar persona") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-ascendente"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar persona" : "Nueva persona de la línea ascendente") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-ascendente">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Rango</label><input type="text" data-draft-field="rango" value="' + escapeHtml(d.rango) + '" placeholder="Ej. Sales Master"></div>' +
+    '<div class="field" style="flex:1"><label>País</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="Ej. Colombia"></div>' +
+    "</div>" +
+    '<div class="field"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Horario en que no se debe molestar</label><input type="text" data-draft-field="horarioNoMolestar" value="' + escapeHtml(d.horarioNoMolestar) + '" placeholder="Ej. Después de las 9pm"></div>' +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-ascendente">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-ascendente">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Llamadas S.O.S. ---------------- */
+
+function sosRowHTML(s) {
+  const waLink = s.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(s.telefono, s.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+    : "";
+  return (
+    '<div class="card roster-row" style="padding:13px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(s.nombre || "Sin nombre") + "</div>" +
+    (s.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(s.telefono) + "</div>" : "") +
+    "</div>" +
+    '<div class="row gap-2">' +
+    waLink +
+    '<button class="icon-btn" data-action="edit-sos" data-arg="' + s.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    '<button class="icon-btn" data-action="delete-sos" data-arg="' + s.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div></div>" +
+    (s.nota ? '<div class="muted small" style="margin-top:6px;font-style:italic">“' + escapeHtml(s.nota) + '”</div>' : "") +
+    "</div>"
+  );
+}
+
+function renderLlamadasSOS(state, ui) {
+  const lista = state.llamadasSOS || [];
+  const rows = lista.length
+    ? lista.map(function (s) { return sosRowHTML(s); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos S.O.S. guardados.</p>';
+  return (
+    sectionHeaderHTML("Llamadas S.O.S.", "Personas a las que puedes llamar en busca de apoyo, aunque no sean de tu propia línea.", "bell") +
+    '<div class="card"><p class="small" style="line-height:1.6">A veces la ayuda que necesitas no viene de tu genealogía directa — puede ser un mentor de otro equipo, un capacitador de la compañía, o alguien de confianza experto en algún tema. Guarda aquí a quién llamar en esos momentos.</p></div>' +
+    '<button class="btn-primary" data-action="add-sos">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar contacto</button>" +
+    '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function renderSOSModal(ui) {
+  const d = ui.sosDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-sos" data-arg="' + d.id + '">' +
+      (ui.confirmDeleteSOS === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar contacto") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-sos"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar contacto" : "Nuevo contacto S.O.S.") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-sos">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="field"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="¿Por qué acudir a esta persona?">' + escapeHtml(d.nota || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-sos">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-sos">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Lista de Contactos (eventos en vivo) ---------------- */
+
+function contactoEventoRowHTML(c) {
+  const waLink = c.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+    : "";
+  return (
+    '<div class="card" style="padding:13px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "Sin nombre") +
+    (c.pais ? ' <span class="badge soft" style="margin-left:4px">' + escapeHtml(c.pais) + "</span>" : "") + "</div>" +
+    (c.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono) + "</div>" : "") +
+    "</div>" +
+    '<div class="row gap-2">' +
+    waLink +
+    '<button class="icon-btn" data-action="edit-contacto-evento" data-arg="' + c.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
+    '<button class="icon-btn" data-action="delete-contacto-evento" data-arg="' + c.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div></div>" +
+    (c.observaciones ? '<div class="muted small" style="margin-top:6px">' + escapeHtml(c.observaciones) + "</div>" : "") +
+    "</div>"
+  );
+}
+
+function renderContactosEventos(state, ui) {
+  const lista = state.contactosEventos || [];
+  const rows = lista.length
+    ? lista.map(function (c) { return contactoEventoRowHTML(c); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos de eventos guardados.</p>';
+  return (
+    sectionHeaderHTML("Lista de Contactos", "Personas que conociste en seminarios, convenciones u otros eventos en vivo — no siempre son prospectos todavía.", "users") +
+    '<button class="btn-primary" data-action="add-contacto-evento">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar contacto</button>" +
+    '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function renderContactoEventoModal(ui) {
+  const d = ui.contactoEventoDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-contacto-evento" data-arg="' + d.id + '">' +
+      (ui.confirmDeleteContactoEvento === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar contacto") +
+      "</button>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-contacto-evento"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar contacto" : "Nuevo contacto") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-contacto-evento">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>País</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="Ej. Colombia"></div>' +
+    '<div class="field" style="flex:1"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    "</div>" +
+    '<div class="field"><label>Observaciones</label><textarea rows="2" data-draft-field="observaciones" placeholder="Dónde lo conociste, intereses...">' + escapeHtml(d.observaciones || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto-evento">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto-evento">Cancelar</button>' +
     "</div></div>"
   );
 }
