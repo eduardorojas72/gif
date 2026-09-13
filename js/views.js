@@ -537,7 +537,9 @@ function renderPasos(state, ui) {
       '<div class="flip-face flip-back">' +
       '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Paso " + p.n + " — " + escapeHtml(p.t) + "</div>" +
       '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
-      '<span class="badge soft">' + Icon("target", { size: 11 }) + " " + escapeHtml(p.accion) + "</span>" +
+      (p.n === 1
+        ? '<div class="badge soft" style="cursor:pointer" data-action="goto-escenario">' + Icon("target", { size: 11 }) + " " + escapeHtml(p.accion) + " " + Icon("chevron-right", { size: 11 }) + "</div>"
+        : '<span class="badge soft">' + Icon("target", { size: 11 }) + " " + escapeHtml(p.accion) + "</span>") +
       '<span class="badge gold">' + Icon("sparkles", { size: 11 }) + " " + escapeHtml(p.objetivo) + "</span>" +
       "</div>" +
       '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Explicación detallada</div>' +
