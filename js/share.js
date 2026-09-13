@@ -39,7 +39,7 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
   };
   img.onerror = function () {
     URL.revokeObjectURL(url);
-    App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+    App.showToast("Nu s-a putut genera imaginea. Încearcă din nou.");
   };
   img.src = url;
 }
@@ -62,7 +62,7 @@ function svgToPngShare(svgMarkup, width, height, filename, shareText) {
     URL.revokeObjectURL(url);
     canvas.toBlob(function (blob) {
       if (!blob) {
-        App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+        App.showToast("Nu s-a putut genera imaginea. Încearcă din nou.");
         return;
       }
       const file = new File([blob], filename, { type: "image/png" });
@@ -70,17 +70,17 @@ function svgToPngShare(svgMarkup, width, height, filename, shareText) {
         navigator.share({ files: [file], title: "Cumbre 90", text: shareText }).catch(function (err) {
           if (err && err.name === "AbortError") return;
           downloadBlob(blob, filename);
-          App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+          App.showToast("Nu s-a putut deschide panoul de partajare — imaginea a fost descărcată.");
         });
         return;
       }
       downloadBlob(blob, filename);
-      App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+      App.showToast("Imaginea a fost descărcată — poți s-o atașezi oriunde vrei să o distribui.");
     }, "image/png");
   };
   img.onerror = function () {
     URL.revokeObjectURL(url);
-    App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+    App.showToast("Nu s-a putut genera imaginea. Încearcă din nou.");
   };
   img.src = url;
 }
@@ -100,13 +100,13 @@ function safeXml(str) {
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png", "¡Este es mi progreso en mi camino hacia Sales Master con Atomy! 🚀");
+  svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "partener") + ".png", "Acesta este progresul meu pe drumul spre Sales Master cu Atomy! 🚀");
 }
 
 function downloadCertificado(state) {
   const t = themeColors();
-  const fecha = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
-  const nombre = safeXml(state.nombre || "Socio Atomy");
+  const fecha = new Date().toLocaleDateString("ro-RO", { day: "2-digit", month: "long", year: "numeric" });
+  const nombre = safeXml(state.nombre || "Partener Atomy");
   const codigo = state.codigoCumbre || "C90-000000";
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620">' +
@@ -114,14 +114,14 @@ function downloadCertificado(state) {
     '<rect x="24" y="24" width="852" height="572" rx="18" fill="none" stroke="' + t.gold + '" stroke-width="3"/>' +
     '<rect x="40" y="40" width="820" height="540" rx="12" fill="none" stroke="' + t.accent + '" stroke-width="1"/>' +
     '<text x="450" y="140" text-anchor="middle" font-family="Georgia, serif" font-size="20" letter-spacing="6" fill="' + t.accent + '">CUMBRE 90</text>' +
-    '<text x="450" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="' + t.text + '">Certificado de Cumbre</text>' +
-    '<text x="450" y="300" text-anchor="middle" font-family="Arial" font-size="16" fill="' + t.textSoft + '">Se otorga a</text>' +
+    '<text x="450" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="' + t.text + '">Certificat de Culme</text>' +
+    '<text x="450" y="300" text-anchor="middle" font-family="Arial" font-size="16" fill="' + t.textSoft + '">Se acordă lui</text>' +
     '<text x="450" y="350" text-anchor="middle" font-family="Georgia, serif" font-size="34" fill="' + t.gold + '">' + nombre + "</text>" +
-    '<text x="450" y="400" text-anchor="middle" font-family="Arial" font-size="15" fill="' + t.textSoft + '">por completar el Plan de 90 Días y alcanzar el rango de Sales Master</text>' +
+    '<text x="450" y="400" text-anchor="middle" font-family="Arial" font-size="15" fill="' + t.textSoft + '">pentru completarea Planului de 90 de Zile și atingerea rangului de Sales Master</text>' +
     '<text x="450" y="470" text-anchor="middle" font-family="Arial" font-size="13" fill="' + t.textSoft + '">' + fecha + "</text>" +
-    '<text x="450" y="560" text-anchor="middle" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Código: ' + codigo + "</text>" +
+    '<text x="450" y="560" text-anchor="middle" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Cod: ' + codigo + "</text>" +
     "</svg>";
-  svgToPngDownload(svg, 900, 620, "Certificado-Cumbre90-" + slugFile(state.nombre || "socio") + ".png");
+  svgToPngDownload(svg, 900, 620, "Certificado-Cumbre90-" + slugFile(state.nombre || "partener") + ".png");
 }
 
 function downloadDiaCard(state, diaId) {
@@ -142,7 +142,7 @@ function downloadDiaCard(state, diaId) {
         y += 70;
         return block;
       }).join("")
-    : '<text x="60" y="' + y + '" font-family="Arial" font-size="15" fill="' + t.textSoft + '">Aún no has completado los campos de esta etapa.</text>';
+    : '<text x="60" y="' + y + '" font-family="Arial" font-size="15" fill="' + t.textSoft + '">Încă nu ai completat câmpurile acestei etape.</text>';
 
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
@@ -153,10 +153,10 @@ function downloadDiaCard(state, diaId) {
     '<text x="60" y="170" font-family="Arial" font-size="15" fill="' + t.accent + '">' + safeXml(dia.titulo) + "</text>" +
     '<line x1="60" y1="200" x2="' + (width - 60) + '" y2="200" stroke="' + t.border + '" stroke-width="1"/>' +
     lines +
-    '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Recorrido hacia el éxito con Atomy · ' + safeXml(state.nombre || "") + "</text>" +
+    '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Drumul spre succes cu Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "¡Avanzando en mi Plan de 6 Días con Atomy! 🚀");
+  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "Avansez în Planul meu de 6 Zile cu Atomy! 🚀");
 }
 
 function wrapText(str, max) {

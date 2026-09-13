@@ -205,7 +205,7 @@ function mountainSceneHTML(quincenas, cumbreLograda, height) {
     '<line x1="' + peak.x + '" y1="' + peak.y + '" x2="' + peak.x + '" y2="' + (peak.y - 22) + '" stroke="' + flagColor + '" stroke-width="2" stroke-opacity="' + (cumbreLograda ? 1 : 0.5) + '"/>' +
     '<path d="M' + peak.x + ',' + (peak.y - 22) + ' L' + (peak.x + 14) + ',' + (peak.y - 17) + ' L' + peak.x + ',' + (peak.y - 12) + ' Z" fill="' + flagFill + '"/>' +
     "</svg>" +
-    '<div class="mountain-caption">' + doneCount + " de 6 quincenas conquistadas</div>" +
+    '<div class="mountain-caption">' + doneCount + " din 6 quincene cucerite</div>" +
     "</div>"
   );
 }
@@ -303,7 +303,7 @@ function heroMountainHTML(overlayHtml) {
     '<div class="hm-layer hm-sharp">' + mountainHeroSVGMarkup("a") + "</div>" +
     '<div class="hm-glow"></div>' +
     '<div class="hm-vignette"></div>' +
-    '<div class="hm-hint">' + Icon("sparkles", { size: 11, color: "rgba(255,255,255,.85)" }) + " Mueve el cursor para revelar la cima</div>" +
+    '<div class="hm-hint">' + Icon("sparkles", { size: 11, color: "rgba(255,255,255,.85)" }) + " Mișcă cursorul pentru a dezvălui vârful</div>" +
     (overlayHtml || "") +
     "</div>"
   );
@@ -381,7 +381,7 @@ function fontFaceDefsSVG() {
 }
 
 function nameFontSize(nombre) {
-  const len = (nombre || "Tu nombre").length;
+  const len = (nombre || "Numele tău").length;
   if (len <= 13) return 78;
   if (len <= 18) return 64;
   if (len <= 24) return 52;
@@ -475,13 +475,13 @@ function wingedMedallionSVG(cx, cy, scale) {
 function cardFooterSVG(cx, y) {
   return (
     '<line x1="' + (cx - 60) + '" y1="' + (y - 26) + '" x2="' + (cx + 60) + '" y2="' + (y - 26) + '" stroke="' + CARD_GOLD + '" stroke-width="1" opacity="0.45"/>' +
-    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Recorrido hacia el éxito con Atomy</text>'
+    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Drumul spre succes cu Atomy</text>'
   );
 }
 
 function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
   const W = 800, H = 1000, cx = 400;
-  const name = nombre || "Tu nombre";
+  const name = nombre || "Numele tău";
   const nameSize = nameFontSize(name);
   const defs =
     "<defs>" +

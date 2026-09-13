@@ -198,9 +198,9 @@ function calcularDerivadosPeriodo(state, dias) {
   const out = { contactados: 0, presentaciones: 0, registros: 0, seguimientosRealizados: 0 };
   contactos.forEach(function (c) {
     if (c.estadoFecha && dias.indexOf(c.estadoFecha) !== -1) {
-      if (c.estado === "Contactado") out.contactados++;
-      else if (c.estado === "Presentación") out.presentaciones++;
-      else if (c.estado === "Socio" || c.estado === "Consumidor") out.registros++;
+      if (c.estado === "Contactat") out.contactados++;
+      else if (c.estado === "Prezentare") out.presentaciones++;
+      else if (c.estado === "Partener" || c.estado === "Consumator") out.registros++;
     }
     (c.seguimientosRealizados || []).forEach(function (f) {
       if (dias.indexOf(f) !== -1) out.seguimientosRealizados++;
@@ -218,7 +218,7 @@ function calcularDerivadosPeriodo(state, dias) {
    hoyISO()), en vez de reconstruir objetos Date locales, para no desalinearse del
    resto de la app (que ya guarda fechas en UTC vía toISOString()). */
 
-const calMesesEs = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const calMesesEs = ["ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
 
 function calQuincenaKeyFromISO(iso) {
   const year = iso.slice(0, 4);
@@ -264,7 +264,7 @@ function calFechasEnQuincena(key) {
 
 function calQuincenaLabel(key) {
   const { year, month, half } = calParseQuincenaKey(key);
-  return (half === 1 ? "1–15" : "16–fin") + " de " + calMesesEs[month - 1] + " " + year;
+  return (half === 1 ? "1–15" : "16–sfârșit") + " " + calMesesEs[month - 1] + " " + year;
 }
 
 function calQuincenaLabelCorta(key) {
@@ -335,7 +335,7 @@ function defaultState() {
     comprasQuincena: {},
     listasEnfoque: {},
     registroDiario: {},
-    idiomaInforme: "es",
+    idiomaInforme: "ro",
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
     contactosEventos: [],
@@ -431,15 +431,15 @@ function hydrateState(parsed) {
   merged.contactos = Array.isArray(parsed.contactos)
     ? parsed.contactos.map((c) => {
         const mc = Object.assign(
-          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO(), seguimientosRealizados: [] },
+          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Călduț", estado: "De contactat", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO(), seguimientosRealizados: [] },
           c
         );
-        // Migración: la lista de estados pasó de 8 a 6 valores. "Presentado" se
-        // renombra a "Presentación"; "Primer Pedido" y "Seguimiento" (que tenían
-        // automatismos que ya no existen) caen de forma conservadora en "Contactado",
-        // ya que como mínimo esas personas fueron contactadas.
-        if (mc.estado === "Presentado") mc.estado = "Presentación";
-        else if (mc.estado === "Primer Pedido" || mc.estado === "Seguimiento") mc.estado = "Contactado";
+        // Migrare: lista de stări a trecut de la 8 la 6 valori. "Presentado" se
+        // redenumește în "Prezentare"; "Primer Pedido" și "Seguimiento" (care aveau
+        // automatisme care nu mai există) cad, în mod conservator, în "Contactat",
+        // pentru că cel puțin acele persoane au fost contactate.
+        if (mc.estado === "Presentado") mc.estado = "Prezentare";
+        else if (mc.estado === "Primer Pedido" || mc.estado === "Seguimiento") mc.estado = "Contactat";
         // estadoFecha: cuándo cambió por última vez el estado. Si no existe (contactos
         // guardados antes de este campo), se usa la fecha de creación como mejor estimado.
         if (!mc.estadoFecha) mc.estadoFecha = mc.creado;
@@ -528,7 +528,7 @@ function hydrateState(parsed) {
       }, {})
     : {};
 
-  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "es";
+  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "ro";
 
   const arbolGuardado = parsed.arbolGenealogico && typeof parsed.arbolGenealogico === "object" ? parsed.arbolGenealogico : {};
   merged.arbolGenealogico = {
