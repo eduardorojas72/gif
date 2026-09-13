@@ -437,6 +437,13 @@ const Actions = {
     App.render();
   },
 
+  "salir-app": function () {
+    App.ui.menuOpen = false;
+    App.render();
+    window.close();
+    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+  },
+
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
   "close-menu": function () { App.ui.menuOpen = false; App.render(); },
 

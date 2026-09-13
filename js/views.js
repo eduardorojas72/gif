@@ -99,10 +99,11 @@ function renderSidebar(ui) {
       Icon(it.icon, { size: 20 }) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
+  const salir = '<button class="sidebar-item" style="color:var(--warn)" data-action="salir-app">' + Icon("log-out", { size: 20 }) + "<span>Salir</span></button>";
   return (
     '<div class="sidebar">' +
     '<div class="sidebar-logo">' + Icon("gem", { size: 22, color: "var(--gold)" }) + "</div>" +
-    items +
+    items + salir +
     '<div class="sidebar-spacer"></div>' +
     "</div>"
   );
@@ -117,6 +118,7 @@ function renderMenuSheet(ui) {
       medallionHTML(it.icon, 34) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
+  const salir = '<button class="menu-item" style="color:var(--warn)" data-action="salir-app">' + medallionHTML("log-out", 34) + "<span>Salir</span></button>";
   return (
     '<div class="menu-overlay">' +
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
@@ -124,7 +126,7 @@ function renderMenuSheet(ui) {
     '<div class="menu-handle"></div>' +
     '<div class="menu-head"><div class="row gap-2">' + Icon("gem", { size: 18, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">CUMBRE MASTER</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
-    '<div class="menu-list">' + items + "</div>" +
+    '<div class="menu-list">' + items + salir + "</div>" +
     (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licencia exclusiva: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
     "</div></div>"
   );

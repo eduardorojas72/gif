@@ -59,6 +59,7 @@ const ICON_PATHS = {
   star: '<path d="M12 3l2.9 6.3 6.6.6-5 4.6 1.5 6.5L12 17.8 5.9 21l1.5-6.5-5-4.6 6.6-.6Z"/>',
   trophy: '<path d="M8 4h8v4a4 4 0 0 1-8 0Z"/><path d="M8 5H5a2 2 0 0 0 0 4h1.5"/><path d="M16 5h3a2 2 0 0 1 0 4h-1.5"/><path d="M10 12v3"/><path d="M14 12v3"/><path d="M7 19h10"/><path d="M9 19c0-2 1-2.5 3-2.5s3 .5 3 2.5"/>',
   scale: '<path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7 2.5 13a2.5 2.5 0 0 0 5 0Z"/><path d="M19 7l-2.5 6a2.5 2.5 0 0 0 5 0Z"/>',
+  "log-out": '<path d="M9 21H5.5A1.5 1.5 0 0 1 4 19.5v-15A1.5 1.5 0 0 1 5.5 3H9"/><path d="M16 17l5-5-5-5"/><line x1="21" y1="12" x2="9" y2="12"/>',
 };
 
 function Icon(name, opts) {
