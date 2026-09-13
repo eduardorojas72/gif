@@ -376,6 +376,31 @@ const App = {
         setPath(draft, el.dataset.draftField, el.value);
         return;
       }
+      if (el.type === "file" && el.dataset && el.dataset.target === "__importBackup") {
+        const file = el.files && el.files[0];
+        el.value = "";
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          let parsed;
+          try {
+            parsed = JSON.parse(reader.result);
+          } catch (e) {
+            this.showToast("Ese archivo no es un respaldo válido de Cumbre 90.");
+            return;
+          }
+          if (!window.confirm("Esto reemplazará todos tus datos actuales (Lista de 250, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
+          this.state = hydrateState(parsed);
+          this.state.racha = rh.racha;
+          this.state.ultimaFecha = rh.ultimaFecha;
+          this.persist(true);
+          this.render();
+          this.showToast("Datos restaurados correctamente ✨");
+        };
+        reader.readAsText(file);
+        return;
+      }
       if (el.type === "file" && el.dataset && el.dataset.target) {
         const file = el.files && el.files[0];
         if (!file) return;
@@ -666,6 +691,13 @@ const Actions = {
     } else {
       App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
     }
+  },
+
+  "descargar-respaldo": function () {
+    const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
+    const fecha = hoyISO();
+    downloadBlob(blob, "Cumbre90-Respaldo-" + slugFile(App.state.nombre || "socio") + "-" + fecha + ".json");
+    App.showToast("Copia de seguridad descargada");
   },
 
   "reset-progress": function () {
