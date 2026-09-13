@@ -44,11 +44,11 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
   img.src = url;
 }
 
-/* Como svgToPngDownload, pero intenta primero abrir el panel nativo de
-   "Compartir" del dispositivo (WhatsApp, Instagram, etc.) cuando el
-   navegador lo soporta con archivos adjuntos; si no, cae en la descarga
-   normal — así el botón "Compartir" comparte de verdad en vez de solo
-   guardar la imagen en silencio. */
+/* Genera el PNG y abre el modal propio de "Compartir" (WhatsApp, Instagram,
+   Facebook, TikTok, LinkedIn, YouTube), en vez de saltar directo al panel
+   nativo del sistema operativo — así el socio ve siempre las mismas redes,
+   sin que se cuelen apps de escritorio (Correo, Outlook, Paint...) que el
+   picker nativo del SO añade según lo que tenga instalado. */
 function svgToPngShare(svgMarkup, width, height, filename, shareText) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -65,17 +65,8 @@ function svgToPngShare(svgMarkup, width, height, filename, shareText) {
         App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
         return;
       }
-      const file = new File([blob], filename, { type: "image/png" });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: "Cumbre 90", text: shareText }).catch(function (err) {
-          if (err && err.name === "AbortError") return;
-          downloadBlob(blob, filename);
-          App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
-        });
-        return;
-      }
-      downloadBlob(blob, filename);
-      App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+      App.ui.compartirImagenDraft = { blob: blob, filename: filename, shareText: shareText || "" };
+      App.render();
     }, "image/png");
   };
   img.onerror = function () {

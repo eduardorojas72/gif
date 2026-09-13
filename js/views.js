@@ -131,10 +131,11 @@ function renderSidebar(ui) {
       Icon(it.icon, { size: 20 }) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
+  const salir = '<button class="sidebar-item" style="color:var(--warn)" data-action="salir-app">' + Icon("log-out", { size: 20 }) + "<span>Salir</span></button>";
   return (
     '<div class="sidebar">' +
     '<div class="sidebar-logo">' + mountainMarkHTML(26, true) + "</div>" +
-    items +
+    items + salir +
     '<div class="sidebar-spacer"></div>' +
     "</div>"
   );
@@ -149,6 +150,7 @@ function renderMenuSheet(ui) {
       medallionHTML(it.icon, 34) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
+  const salir = '<button class="menu-item" style="color:var(--warn)" data-action="salir-app">' + medallionHTML("log-out", 34) + "<span>Salir</span></button>";
   return (
     '<div class="menu-overlay">' +
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
@@ -156,7 +158,7 @@ function renderMenuSheet(ui) {
     '<div class="menu-handle"></div>' +
     '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">CUMBRE 90</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
-    '<div class="menu-list">' + items + "</div>" +
+    '<div class="menu-list">' + items + salir + "</div>" +
     (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licencia exclusiva: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
     "</div></div>"
   );
@@ -569,6 +571,7 @@ function renderPasos(state, ui) {
         ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(p.guion.titulo) + "</div>" +
           p.guion.lineas.map(function (l) { return '<p style="font-size:13px;line-height:1.55;margin-top:6px">' + linkifyText(l) + "</p>"; }).join("")
         : "") +
+      (p.n === 1 ? '<div style="margin-top:14px">' + smartOkrCardHTML() + "</div>" : "") +
       checklist + duplicaChecklist + reflexion +
       "</div>";
     return (
@@ -685,6 +688,75 @@ function lemaFocoHTML(state) {
   );
 }
 
+/* Contenido de SMART/OKR — vive como fuente única en el pilar 2 de El Lema
+   de Atomy, pero se reutiliza (con su propio botón de Compartir) en Etapa 5
+   del Plan 6 Días y en el Paso 1 de Los 8 Pasos, donde el socio realmente
+   define sus objetivos. */
+function smartOkrShareText() {
+  const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
+  return "Cómo crear objetivos claros:\n\n" + marcos.map(function (m) {
+    return m.nombre + ": " + m.explicacion + " Ejemplo: " + m.ejemplo;
+  }).join("\n\n");
+}
+
+function smartOkrCardHTML() {
+  const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
+  const marcosHtml = marcos.map(function (m) {
+    return (
+      '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:12px">' + escapeHtml(m.nombre) + "</div>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
+      '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
+    );
+  }).join("");
+  return (
+    '<div class="card">' +
+    '<div style="font-weight:700;font-size:14px;color:var(--gold-light)">Cómo crear tus objetivos</div>' +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Dos formas sencillas de convertir una intención vaga en un objetivo real.</p>' +
+    marcosHtml +
+    '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Compartir</div>" +
+    "</div>"
+  );
+}
+
+/* Modal propio de "Compartir" para las tarjetas-imagen (Mi Perfil, tarjeta
+   del día): en vez de saltar directo al panel nativo del sistema operativo
+   (que en escritorio muestra apps como Correo/Outlook/Paint, no redes
+   sociales), se ofrecen siempre las mismas 6 redes. Instagram, TikTok y
+   YouTube no tienen forma de recibir un archivo adjunto desde la web sin
+   backend propio, así que esos botones descargan la imagen y abren la app/
+   web para que se adjunte a mano — se avisa con un toast, nunca en silencio. */
+function renderCompartirImagenModal(ui) {
+  const d = ui.compartirImagenDraft;
+  if (!d) return "";
+  const plataformas = [
+    { id: "whatsapp", label: "WhatsApp", color: "#25D366" },
+    { id: "instagram", label: "Instagram", color: "#E1306C" },
+    { id: "tiktok", label: "TikTok", color: "var(--text)" },
+    { id: "facebook", label: "Facebook", color: "#1877F2" },
+    { id: "linkedin", label: "LinkedIn", color: "#0A66C2" },
+    { id: "youtube", label: "YouTube", color: "#FF0000" },
+  ];
+  const botones = plataformas.map(function (p) {
+    return (
+      '<button class="share-platform-btn" data-action="compartir-imagen-plataforma" data-arg="' + p.id + '">' +
+      '<span class="share-platform-icon" style="color:' + p.color + '">' + Icon(p.id, { size: 22, color: p.color }) + "</span>" +
+      "<span>" + p.label + "</span></button>"
+    );
+  }).join("");
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cerrar-compartir-imagen"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Compartir</span>' +
+    '<button class="icon-btn" data-action="cerrar-compartir-imagen">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Elige dónde compartir tu imagen.</p>' +
+    '<div class="share-platform-grid" style="margin-top:10px">' + botones + "</div>" +
+    '<button class="btn-secondary" style="margin-top:14px" data-action="compartir-imagen-descargar">' + Icon("download", { size: 15 }) + " Solo descargar la imagen</button>" +
+    '<button class="link-btn small" style="margin-top:10px" data-action="compartir-imagen-mas-opciones">Más opciones para compartir</button>' +
+    "</div></div>"
+  );
+}
+
 function renderCarteleraModal() {
   const pilaresList = LEMA_ATOMY.pilares.map(function (p) {
     return '<div style="font-size:16.5px;font-weight:700;margin-top:10px">¡' + escapeHtml(p.t) + "!</div>";
@@ -726,7 +798,8 @@ function renderLema(state, ui) {
             '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
             '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
           );
-        }).join("")
+        }).join("") +
+        '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Compartir</div>"
       : "";
     const back =
       '<div class="flip-face flip-back">' +
@@ -802,6 +875,7 @@ function renderDiaDetalle(state, ui, diaId) {
   const allChecked = est.checks.every(Boolean);
 
   const nota = dia.nota ? '<div class="card" style="background:var(--accent-soft);border:none;font-size:14px;line-height:1.55">' + linkifyText(dia.nota) + "</div>" : "";
+  const smartOkr = diaId === 5 ? smartOkrCardHTML() : "";
 
   const escenarioAbierto = !!ui.escenarioAbierto;
   const contenido = (dia.contenido || []).length
@@ -886,7 +960,7 @@ function renderDiaDetalle(state, ui, diaId) {
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(dia.titulo) + "</p>" +
     '<p class="muted" style="font-size:13.5px;margin-top:6px;font-style:italic">' + escapeHtml(dia.objetivo) + "</p>" +
     "</div>" +
-    nota + contenido + campos +
+    nota + contenido + smartOkr + campos +
     '<div class="card">' +
     '<div class="row gap-2" style="font-weight:600;font-size:14px;margin-bottom:12px">' + Icon("sparkles", { size: 15, color: "var(--gold)" }) + " Pregunta rápida de repaso</div>" +
     '<div style="font-size:14px;margin-bottom:12px">' + escapeHtml(dia.quiz.pregunta) + "</div>" +

@@ -18,20 +18,24 @@ function shareTextForLogro(titulo) {
   return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
 }
 
+/* Instagram, TikTok y YouTube no tienen una URL pública para prellenar un
+   texto (a diferencia de WhatsApp/Facebook/LinkedIn) — por eso para esas
+   plataformas el botón copia el mensaje al portapapeles y abre la web/app,
+   en vez de fingir un intent que esas redes no ofrecen. YouTube no está
+   entre las opciones porque no admite publicar un texto suelto como éste. */
 function shareLogroLinksHTML(titulo) {
   const text = shareTextForLogro(titulo);
-  const url = typeof window !== "undefined" && window.location ? window.location.href : "";
-  const enc = encodeURIComponent(text + (url ? " " + url : ""));
-  const waUrl = "https://wa.me/?text=" + enc;
-  const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
-  const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const encText = encodeURIComponent(text);
+  const waUrl = "https://wa.me/?text=" + encText;
+  const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent("https://atomy.com") + "&quote=" + encText;
+  const liUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent("https://atomy.com");
   return (
     '<div class="share-chip-row">' +
-    nativeBtn +
-    '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
-    '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
-    '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
+    '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("whatsapp", { size: 15, color: "#25D366" }) + "<span>WhatsApp</span></a>" +
+    '<button class="share-chip" data-action="share-logro-plataforma" data-arg="instagram|' + escapeHtml(titulo) + '">' + Icon("instagram", { size: 15 }) + "<span>Instagram</span></button>" +
+    '<button class="share-chip" data-action="share-logro-plataforma" data-arg="tiktok|' + escapeHtml(titulo) + '">' + Icon("tiktok", { size: 15 }) + "<span>TikTok</span></button>" +
+    '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("facebook", { size: 15, color: "#1877F2" }) + "<span>Facebook</span></a>" +
+    '<a class="share-chip" href="' + liUrl + '" target="_blank" rel="noreferrer">' + Icon("linkedin", { size: 15, color: "#0A66C2" }) + "<span>LinkedIn</span></a>" +
     '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
     "</div>"
   );
@@ -85,6 +89,7 @@ const App = {
     tourPaso: 0,
     patrocinadorFabDraft: null,
     confirmDeleteDistribuidor: null,
+    compartirImagenDraft: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -258,6 +263,7 @@ const App = {
 
     let modalHtml = "";
     if (ui.tourAbierto) modalHtml = renderTourModal(ui);
+    else if (ui.compartirImagenDraft) modalHtml = renderCompartirImagenModal(ui);
     else if (ui.patrocinadorFabDraft) modalHtml = renderPatrocinadorFabModal(ui);
     else if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
@@ -547,6 +553,13 @@ const Actions = {
     App.render();
   },
 
+  "salir-app": function () {
+    App.ui.menuOpen = false;
+    App.render();
+    window.close();
+    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+  },
+
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
   "close-menu": function () { App.ui.menuOpen = false; App.render(); },
 
@@ -677,6 +690,62 @@ const Actions = {
   "download-recog-card": function () { downloadRecogCard(App.state); },
   "download-cert": function () { downloadCertificado(App.state); },
 
+  /* -------- Modal "Compartir" para tarjetas-imagen (WhatsApp/Instagram/TikTok/Facebook/LinkedIn/YouTube) -------- */
+
+  "cerrar-compartir-imagen": function () {
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
+  "compartir-imagen-descargar": function () {
+    const d = App.ui.compartirImagenDraft;
+    if (!d) return;
+    downloadBlob(d.blob, d.filename);
+    App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
+  "compartir-imagen-mas-opciones": function () {
+    const d = App.ui.compartirImagenDraft;
+    if (!d) return;
+    const file = new File([d.blob], d.filename, { type: "image/png" });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: "Cumbre 90", text: d.shareText }).catch(function (err) {
+        if (err && err.name === "AbortError") return;
+        downloadBlob(d.blob, d.filename);
+        App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+      });
+    } else {
+      downloadBlob(d.blob, d.filename);
+      App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+    }
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
+  /* Instagram, TikTok y YouTube no aceptan recibir un archivo adjunto desde
+     una página web sin servidor propio — se descarga la imagen y se abre la
+     app/web para que el socio la adjunte a mano, avisando siempre con un toast. */
+  "compartir-imagen-plataforma": function (arg) {
+    const d = App.ui.compartirImagenDraft;
+    if (!d) return;
+    downloadBlob(d.blob, d.filename);
+    const urls = {
+      whatsapp: "https://wa.me/?text=" + encodeURIComponent(d.shareText || ""),
+      facebook: "https://www.facebook.com/",
+      instagram: "https://www.instagram.com/",
+      tiktok: "https://www.tiktok.com/upload",
+      linkedin: "https://www.linkedin.com/feed/?shareActive=true",
+      youtube: "https://studio.youtube.com/",
+    };
+    const labels = { whatsapp: "WhatsApp", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", linkedin: "LinkedIn", youtube: "YouTube" };
+    if (urls[arg]) window.open(urls[arg], "_blank");
+    App.showToast("Se descargó la imagen — ábrela en " + (labels[arg] || arg) + " y adjúntala ahí.");
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
   "toggle-mentor": function () {
     App.state.mentorMode = !App.state.mentorMode;
     App.persist();
@@ -776,13 +845,21 @@ const Actions = {
     App.render();
   },
 
-  "share-logro-native": function (arg) {
-    const text = shareTextForLogro(arg);
-    if (navigator.share) {
-      navigator.share({ title: "Cumbre 90", text: text, url: window.location.href }).catch(() => {});
+  "share-logro-plataforma": function (arg) {
+    const parts = String(arg || "").split("|");
+    const platform = parts[0];
+    const titulo = parts.slice(1).join("|");
+    const text = shareTextForLogro(titulo);
+    const abrir = { instagram: "https://www.instagram.com/", tiktok: "https://www.tiktok.com/upload" };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        () => App.showToast("Texto copiado — pégalo en tu historia o publicación."),
+        () => App.showToast("No se pudo copiar el texto.")
+      );
     } else {
-      Actions["share-logro-copy"](arg);
+      App.showToast("No se pudo copiar el texto.");
     }
+    if (abrir[platform]) window.open(abrir[platform], "_blank");
   },
 
   "share-logro-copy": function (arg) {
