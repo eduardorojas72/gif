@@ -46,6 +46,17 @@ const OCHO_PASOS = [
       "Revisa tu teléfono y tus redes sociales para no dejar a nadie fuera.",
       "Recuerda: no buscas solo vendedores, buscas consumidores — todos usan productos de aseo o cosméticos.",
     ],
+    guion: {
+      titulo: "Consejos para crear tu Lista de Contactos",
+      lineas: [
+        "Vaciado inicial sin filtros: anota a todas las personas que conozcas, sin prejuzgar quién dirá que sí o que no. Familiares, excompañeros de trabajo o estudio, vecinos, proveedores de servicios (mecánico, contador, médico) y los contactos de tu agenda telefónica cuentan.",
+        "Divide tu lista en 3 mercados: Caliente (familiares y amigos íntimos — pídeles su opinión o apoyo para practicar tu presentación), Tibio (conocidos con los que interactúas poco — retoma primero la relación antes de presentar el proyecto) y Frío (personas que aún no conoces — se alimenta con redes sociales, eventos o el día a día).",
+        "Prioriza a quién contactar primero según su perfil: actitud positiva y abierta a aprender, credibilidad o influencia en su entorno, necesidad o deseo real de cambio (ingresos extra, más tiempo libre) y capacidad de adquirir el producto o iniciar el proyecto.",
+        "Regla de los 2 diarios: agrega al menos dos personas nuevas a tu Lista de 250 cada día, de forma natural, ya sea online u offline.",
+        "En redes sociales, no vendas directo: haz preguntas abiertas en tus publicaciones o historias, ofrece un recurso gratuito (una mini-guía, una plantilla) a cambio de que te escriban al privado, y desde ahí invita a pasar la conversación a WhatsApp — así conviertes una interacción en un contacto real de tu lista.",
+        "Anota siempre la fecha de tu última interacción y el acuerdo alcanzado (ej. “Llamar el jueves”, “Enviada información inicial”) para no perder el hilo con nadie.",
+      ],
+    },
   },
   {
     n: 4, t: "Hacer llamadas e invitaciones", d: "Enfocadas en agendar citas y generar curiosidad sincera, no en presentar por teléfono.", icon: "phone-call",
@@ -57,6 +68,15 @@ const OCHO_PASOS = [
       "Practica tu guión de invitación para que dure menos de 30 segundos.",
       "Agenda al menos 2 citas o presentaciones para esta semana.",
     ],
+    guion: {
+      titulo: "Guion para romper el hielo y agendar la cita",
+      lineas: [
+        "Romper el hielo: “¡Hola [Nombre]! ¿Cómo estás? Hace tiempo que no hablamos, quería saludarte.”",
+        "Generar curiosidad sin presión: “Encontré algo que me tiene muy emocionado/a y en lo que confío mucho, me encantaría contarte de qué se trata.”",
+        "Proponer la cita concreta: “¿Tienes 15 minutos esta semana? ¿Te queda mejor martes o jueves, en la tarde o en la noche?”",
+        "Cerrar sin insistir: “Perfecto, quedamos así. ¡Nos vemos pronto!” — y si dice que no, agradece igual y sigue adelante sin desanimarte.",
+      ],
+    },
   },
   {
     n: 5, t: "Explicar el negocio (Show the Business)", d: "Compañía, Productos, Plan de Compensación y Visión Global.", icon: "presentation",
@@ -68,6 +88,16 @@ const OCHO_PASOS = [
       "Haz una demostración física de un producto (por ejemplo la pasta dental) durante tu próxima presentación.",
       "Cierra cada presentación invitando a probar productos o a agendar una segunda cita.",
     ],
+    guion: {
+      titulo: "Preguntas guía para una presentación sencilla",
+      lineas: [
+        "Antes de mostrar nada, pregunta: “¿Qué es lo que más valoras hoy: tener más tiempo libre, un ingreso extra, o cuidar mejor tu salud?”",
+        "Ubica dónde está hoy: “¿Cómo te sientes con tu situación actual de tiempo y dinero?”",
+        "Descubre su proyección: “Si nada cambiara, ¿dónde te ves en 1 o 2 años?”",
+        "Encuentra el dolor a resolver: “¿Qué te gustaría lograr que hoy sientes que no puedes?”",
+        "Conecta su respuesta con Atomy: escucha primero, y solo después de entender lo que busca, muestra cómo la Compañía, los Productos o el Plan de Compensación responden justo a eso.",
+      ],
+    },
   },
   {
     n: 6, t: "Seguimiento (Regla de las 48 Horas)", d: "Contacta al prospecto dentro de las primeras 48 horas tras la presentación.", icon: "clock",
@@ -80,6 +110,16 @@ const OCHO_PASOS = [
       "Si es un nuevo socio, pregúntale cómo está reaccionando su entorno cercano — y si hace falta, comparte con él la reflexión de este paso.",
       "Agenda la próxima llamada o reunión corta antes de colgar, nunca la dejes abierta.",
     ],
+    guion: {
+      titulo: "Guion de seguimiento — breve y en forma de diálogo",
+      lineas: [
+        "Para consumidores: “Hola [Nombre], ¿ya probaste [producto]? ¿Qué te pareció?” — escucha su respuesta antes de decir nada más, y resuelve cualquier duda puntual.",
+        "Si aún no lo ha probado: “Sin problema, ¿qué día te queda bien para que lo intentes y me cuentas?” — agenda la próxima llamada ahí mismo.",
+        "Para nuevos socios: “¿Cómo te has sentido esta semana con el negocio? ¿Ha habido algo que te haya generado dudas?”",
+        "Si su entorno lo está desanimando: “Es normal que te digan eso — muchos no conocen cómo funciona Atomy. ¿Qué fue exactamente lo que te comentaron?” y desde ahí construyan la respuesta juntos, en diálogo, no en un discurso.",
+        "Cierra siempre con la próxima acción concreta: “Hablamos el [día] para ver cómo vas” — nunca dejes la conversación abierta sin fecha.",
+      ],
+    },
     reflexion: "Estas personas opinan así porque te quieren y quieren lo mejor para ti — pero lo hacen desde el desconocimiento, y muchas veces porque las experiencias que han visto de otras redes de mercadeo han sido malas. En Atomy no hay inversión inicial: no compras inventario, no pagas una cuota de entrada, no firmas nada que te comprometa. Entonces, siendo honestos, ¿qué vas a perder en realidad por intentarlo? Creo que te mereces darte una oportunidad a ti mismo y a Atomy, y comprobar con tus propios resultados que sí se puede lograr algo grande con constancia y esfuerzo.",
   },
   {

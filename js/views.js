@@ -546,6 +546,10 @@ function renderPasos(state, ui) {
       '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + linkifyText(p.explicacion) + "</p>" +
       '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Ejemplos prácticos</div>' +
       '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + linkifyText(p.ejemplo) + "</p>" +
+      (p.guion
+        ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(p.guion.titulo) + "</div>" +
+          p.guion.lineas.map(function (l) { return '<p style="font-size:13px;line-height:1.55;margin-top:6px">' + linkifyText(l) + "</p>"; }).join("")
+        : "") +
       checklist + reflexion +
       "</div>";
     return (
