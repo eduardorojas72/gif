@@ -946,6 +946,33 @@ function resumenLineasEnfoqueHTML(lista) {
   return '<div class="resumen-linea">' + bloque("Izquierda", planIzq, verIzq) + bloque("Derecha", planDer, verDer) + "</div>";
 }
 
+function resumenEnfoqueTexto(state, qn) {
+  const q = QUINCENAS.find(function (x) { return x.n === qn; });
+  const lista = peekListaEnfoque(state, qn);
+  function lineaTexto(nombre, linea) {
+    const arr = (lista[linea] || []).slice().sort(function (a, b) { return (a.fecha || "9999-99-99").localeCompare(b.fecha || "9999-99-99"); });
+    const plan = sumaLineaEnfoque(lista, linea, false);
+    const ver = sumaLineaEnfoque(lista, linea, true);
+    const otros = Number(linea === "izquierda" ? lista.otrosIzquierda : lista.otrosDerecha) || 0;
+    const personasTxt = arr.length
+      ? arr.map(function (p) { return "• " + (p.nombre || "(sin nombre)") + ": " + (Number(p.puntos) || 0).toLocaleString("es") + " puntos" + (p.verificado ? " ✅ verificado" : " (sin verificar)"); }).join("\n")
+      : "  (sin personas registradas)";
+    return (
+      "*Línea " + nombre + "*\n" +
+      personasTxt +
+      (otros ? "\n• Fuera de la lista (consumo/otros): " + otros.toLocaleString("es") + " puntos" : "") +
+      "\nVerificado: " + ver.toLocaleString("es") + " puntos · Planificado sin verificar: " + plan.toLocaleString("es") + " puntos"
+    );
+  }
+  return (
+    "🎯 Reunión de Enfoque — Quincena " + qn + (q ? " (" + q.nombre + ")" : "") + ":\n\n" +
+    lineaTexto("Izquierda", "izquierda") + "\n\n" +
+    lineaTexto("Derecha", "derecha") +
+    "\n\n" + (lista.reunionHecha ? "✅ Ya hice mi reunión de enfoque con mis socios." : "⏳ Aún no he hecho mi reunión de enfoque con mis socios.") +
+    "\n\n¿Me ayudas a revisarlo para planear mi quincena?"
+  );
+}
+
 function personaEnfoqueRowHTML(qn, linea, p) {
   const verificadoClass = p.verificado ? " on" : "";
   const waLink = p.telefono
@@ -1004,6 +1031,9 @@ function renderReunionEnfoqueHTML(state, ui, qn) {
     '<span class="lbl">' + (lista.reunionHecha ? "Reunión de enfoque hecha esta quincena" : "Marcar: hice mi reunión de enfoque a mis socios") + "</span>" +
     "</div>" +
     resumenLineasEnfoqueHTML(lista) +
+    (state.whatsapp && state.whatsapp.trim()
+      ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, resumenEnfoqueTexto(state, qn)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
+      : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu Reunión de Enfoque.</p>') +
     '<div class="tabs" style="margin-top:10px">' +
     '<button class="tab-btn' + (linea === "izquierda" ? " active" : "") + '" data-action="set-linea-enfoque" data-arg="izquierda">Izquierda (' + (lista.izquierda || []).length + ")</button>" +
     '<button class="tab-btn' + (linea === "derecha" ? " active" : "") + '" data-action="set-linea-enfoque" data-arg="derecha">Derecha (' + (lista.derecha || []).length + ")</button>" +
