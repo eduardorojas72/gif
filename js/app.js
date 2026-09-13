@@ -782,6 +782,10 @@ const Actions = {
     downloadRangoCard(App.state, Number(arg));
   },
 
+  "compartir-historia-rango": function (arg) {
+    downloadRangoHistoria(App.state, Number(arg));
+  },
+
   "set-rango-master": function (arg) {
     const i = Number(arg);
     const avanza = i > App.state.rangoActualIndex;

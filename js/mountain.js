@@ -332,7 +332,23 @@ function slugFileCumbre(str) {
     .replace(/\s+/g, "-");
 }
 
-function svgToPngDownloadCumbre(svgMarkup, width, height, filename) {
+function downloadBlobCumbre(blob, filename) {
+  const dlUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = dlUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(dlUrl);
+}
+
+/* Genera el PNG y, si el dispositivo lo soporta (Web Share API con
+   archivos — la mayoría de móviles), abre directo el panel nativo de
+   "Compartir" (WhatsApp, Instagram, etc.) en vez de solo descargar la
+   imagen en silencio. Si no hay soporte (la mayoría de escritorio), cae
+   en la descarga normal con un aviso claro. */
+function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
   const img = new Image();
@@ -348,14 +364,17 @@ function svgToPngDownloadCumbre(svgMarkup, width, height, filename) {
         if (typeof App !== "undefined") App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
         return;
       }
-      const dlUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = dlUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(dlUrl);
+      const file = new File([blob], filename, { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: "Cumbre Master", text: shareText }).catch(function (err) {
+          if (err && err.name === "AbortError") return;
+          downloadBlobCumbre(blob, filename);
+          if (typeof App !== "undefined") App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+        });
+        return;
+      }
+      downloadBlobCumbre(blob, filename);
+      if (typeof App !== "undefined") App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
     }, "image/png");
   };
   img.onerror = function () {
@@ -368,7 +387,74 @@ function svgToPngDownloadCumbre(svgMarkup, width, height, filename) {
 function downloadRangoCard(state, rangoIndex) {
   const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
   const svg = rangoCardSVGMarkup(state.nombre, state.foto, rangoIndex);
-  svgToPngDownloadCumbre(svg, 800, 1000, "Cumbre-Master-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png");
+  svgToPngShareCumbre(svg, 800, 1000, "Cumbre-Master-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png", "¡Mi rango en Atomy: " + rango.nombre + "! 🚀");
+}
+
+/* ---------------------------------------------------------------
+   HISTORIA (formato vertical 1080x1920) — la misma tarjeta de
+   reconocimiento, enmarcada dentro de un lienzo festivo pensado para
+   Instagram/Facebook/WhatsApp Stories. Una vez compartida vía el panel
+   nativo, cada red social ofrece su propio editor (música, stickers,
+   texto) sobre esta imagen — no reinventamos un editor de audio/video
+   aquí, solo entregamos una imagen con el formato y el ánimo correctos
+   para que ese editor externo se pueda usar de una vez.
+--------------------------------------------------------------- */
+
+function rangoHistoriaSVGMarkup(nombre, foto, rangoIndex) {
+  const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
+  const W = 1080, H = 1920, cx = W / 2;
+  const cardW = 940, cardH = Math.round((cardW * 1000) / 800);
+  const cardX = (W - cardW) / 2;
+  const cardY = 340;
+  const cardBottom = cardY + cardH;
+  const cardSvg = rangoCardSVGMarkup(nombre, foto, rangoIndex).replace(
+    'width="100%" height="100%"',
+    'x="' + cardX + '" y="' + cardY + '" width="' + cardW + '" height="' + cardH + '"'
+  );
+
+  const defs =
+    "<defs>" +
+    '<linearGradient id="historiaBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#050510"/><stop offset="45%" stop-color="' + CARD_BG + '"/><stop offset="100%" stop-color="#1B1338"/></linearGradient>' +
+    '<radialGradient id="historiaGlow" cx="50%" cy="15%" r="55%"><stop offset="0%" stop-color="' + CARD_GOLD_LIGHT + '" stop-opacity="0.4"/><stop offset="100%" stop-color="' + CARD_GOLD_LIGHT + '" stop-opacity="0"/></radialGradient>' +
+    "</defs>";
+
+  const topDecor = cardBokehSVG(cx, 130, 460, 130, 11, 31, [CARD_GOLD, CARD_GOLD_LIGHT, CARD_ACCENT]);
+  const bottomDecorCy = cardBottom + (H - cardBottom) * 0.42;
+  const bottomDecor = cardBokehSVG(cx, bottomDecorCy, 500, 150, 13, 53, [CARD_GOLD, "#FFF3D6", CARD_ACCENT]);
+
+  const headline =
+    '<text x="' + cx + '" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" letter-spacing="6" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE MASTER</text>' +
+    '<text x="' + cx + '" y="212" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="54" fill="' + CARD_CREAM + '">¡Nuevo rango alcanzado!</text>' +
+    '<text x="' + cx + '" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(rango.nombre) + "</text>";
+
+  const captionY1 = cardBottom + 150;
+  const captionY2 = captionY1 + 46;
+  const caption =
+    '<text x="' + cx + '" y="' + captionY1 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="rgba(245,239,225,0.9)">Comparte tu logro y cuéntales cómo lo lograste 🎉</text>' +
+    '<text x="' + cx + '" y="' + captionY2 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="3.5" fill="rgba(232,185,78,0.8)">RECORRIDO HACIA EL ÉXITO CON ATOMY</text>';
+
+  return (
+    '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+    defs +
+    '<rect width="' + W + '" height="' + H + '" fill="url(#historiaBg)"/>' +
+    '<rect width="' + W + '" height="' + H + '" fill="url(#historiaGlow)"/>' +
+    topDecor +
+    headline +
+    cardSvg +
+    bottomDecor +
+    caption +
+    "</svg>"
+  );
+}
+
+function downloadRangoHistoria(state, rangoIndex) {
+  const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
+  const svg = rangoHistoriaSVGMarkup(state.nombre, state.foto, rangoIndex);
+  svgToPngShareCumbre(
+    svg, 1080, 1920,
+    "Cumbre-Master-Historia-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png",
+    "¡Nuevo rango alcanzado: " + rango.nombre + "! 🎉 Mi camino con Atomy sigue creciendo."
+  );
 }
 
 function gemCornersHTML() {

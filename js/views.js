@@ -1348,7 +1348,11 @@ function detalleRangoHTML(state, ui) {
     '<span class="link-btn small" style="margin-top:6px">' + (state.foto ? "Cambiar foto" : "Añadir foto") + "</span>" +
     "</div>" +
     '<div style="max-width:280px;margin:14px auto 0">' + rangoCardHTML(state.nombre, state.foto, detalleIndex) + "</div>" +
-    '<button class="btn-secondary" style="margin-top:14px" data-action="descargar-tarjeta-rango" data-arg="' + detalleIndex + '">' + Icon("download", { size: 15 }) + " Descargar tarjeta</button>" +
+    '<div class="row gap-2" style="margin-top:14px">' +
+    '<button class="btn-secondary" style="flex:1" data-action="descargar-tarjeta-rango" data-arg="' + detalleIndex + '">' + Icon("share2", { size: 15 }) + " Compartir tarjeta</button>" +
+    '<button class="btn-primary" style="flex:1;color:#fff" data-action="compartir-historia-rango" data-arg="' + detalleIndex + '">' + Icon("sparkles", { size: 15, color: "#fff" }) + " Compartir como historia</button>" +
+    "</div>" +
+    '<p class="muted small" style="margin-top:8px;line-height:1.5">"Compartir como historia" genera una imagen vertical festiva, lista para Instagram/Facebook/WhatsApp Stories — una vez ahí, esas apps te dejan agregarle música, stickers o texto antes de publicar.</p>' +
     "</div>"
   );
 }
