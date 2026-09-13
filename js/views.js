@@ -28,7 +28,7 @@ function saludoHora() {
 
 function renderWelcome() {
   return (
-    '<div class="center-screen">' +
+    '<div class="center-screen cover-screen">' +
     Icon("gem", { size: 64, color: "var(--gold)" }) +
     '<h1 style="margin-top:22px;font-size:28px;font-weight:700;letter-spacing:-.02em">Cumbre Master</h1>' +
     '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">De Sales Master a Imperial Master</p>' +
