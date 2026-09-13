@@ -902,6 +902,16 @@ const Actions = {
     App.render();
   },
 
+  "toggle-paso-duplica-check": function (arg, el) {
+    const n = Number(el.dataset.paso);
+    const i = Number(arg);
+    const est = App.state.pasos[n];
+    if (!est) return;
+    est.duplicaChecks[i] = !est.duplicaChecks[i];
+    App.persist(true);
+    App.render();
+  },
+
   "share-paso-reflexion": function (arg) {
     const texto = String(arg || "");
     if (navigator.share) {

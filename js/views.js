@@ -525,6 +525,23 @@ function renderPasos(state, ui) {
         "</div>"
       : "";
 
+    const duplicaChecklist = (p.duplicaChecklist || []).length
+      ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Aprendo y Duplico</div>' +
+        '<p class="muted small" style="margin-top:2px;line-height:1.5">Marca cada tarea cuando ya sepas hacerla — y cuando ya se la hayas enseñado a tu equipo.</p>' +
+        '<div style="margin-top:6px">' +
+        p.duplicaChecklist.map(function (a, i) {
+          const on = !!est.duplicaChecks[i];
+          return (
+            '<div class="check-row" style="padding-bottom:2px">' +
+            (i < p.duplicaChecklist.length - 1 ? '<div class="line' + (on ? " on" : "") + '" style="left:11.5px"></div>' : "") +
+            '<div class="check-dot' + (on ? " on" : "") + '" style="width:24px;height:24px;font-size:10px;cursor:pointer" data-action="toggle-paso-duplica-check" data-paso="' + p.n + '" data-arg="' + i + '">' + (on ? Icon("check", { size: 12, color: "#1B1338" }) : (i + 1)) + "</div>" +
+            '<div class="check-label' + (on ? " on" : "") + '" style="font-size:12.5px;padding:2px 0 16px;cursor:pointer" data-action="toggle-paso-duplica-check" data-paso="' + p.n + '" data-arg="' + i + '">' + escapeHtml(a) + "</div>" +
+            "</div>"
+          );
+        }).join("") +
+        "</div>"
+      : "";
+
     const reflexion = p.reflexion
       ? '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
         '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("heart", { size: 13, color: "var(--gold)" }) + " Reflexión para compartir</div>" +
@@ -550,7 +567,7 @@ function renderPasos(state, ui) {
         ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(p.guion.titulo) + "</div>" +
           p.guion.lineas.map(function (l) { return '<p style="font-size:13px;line-height:1.55;margin-top:6px">' + linkifyText(l) + "</p>"; }).join("")
         : "") +
-      checklist + reflexion +
+      checklist + duplicaChecklist + reflexion +
       "</div>";
     return (
       '<button class="flip-card paso-checklist' + (flipped ? " is-open" : "") + '" data-action="flip-paso" data-arg="' + p.n + '">' +

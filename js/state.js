@@ -16,7 +16,7 @@ function emptySemanaState(n) {
 
 function emptyPasoState(n) {
   const paso = OCHO_PASOS.find((p) => p.n === n);
-  return { checks: (paso.actividades || []).map(() => false) };
+  return { checks: (paso.actividades || []).map(() => false), duplicaChecks: (paso.duplicaChecklist || []).map(() => false) };
 }
 
 function diaSemanaHoyId() {
@@ -420,7 +420,11 @@ function hydrateState(parsed) {
       saved && Array.isArray(saved.checks) && saved.checks.length === (p.actividades || []).length
         ? saved.checks
         : vacio.checks;
-    acc[p.n] = { checks: checks };
+    const duplicaChecks =
+      saved && Array.isArray(saved.duplicaChecks) && saved.duplicaChecks.length === (p.duplicaChecklist || []).length
+        ? saved.duplicaChecks
+        : vacio.duplicaChecks;
+    acc[p.n] = { checks: checks, duplicaChecks: duplicaChecks };
     return acc;
   }, {});
 
