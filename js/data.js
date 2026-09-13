@@ -1649,11 +1649,10 @@ const CATALOGO_PRODUCTOS_NOTA_VACIO = "Aún no tenemos cargado el catálogo de e
 const CONTACTO_NIVELES = ["Caliente", "Tibio", "Frío"];
 const CONTACTO_ESTADOS = ["Por contactar", "Contactado", "Presentación", "Socio", "Consumidor", "Descartado"];
 
-const PREMIOS_DEFECTO = [
-  { hito: "Alcanzar 300.000 PVP", premio: "Set de 4 Pasos de regalo", imagen: null },
-  { hito: "2 ciclos de 300.000 PVG en una quincena", premio: "Crema nutritiva de oro", imagen: null },
-  { hito: "Sales Master en 45 días", premio: "Set FAME", imagen: null },
-];
+/* Vacío a propósito: los premios los define el patrocinador para su
+   equipo, no la app — no tiene sentido mostrar ejemplos como si fueran
+   promesas reales antes de que él los configure. */
+const PREMIOS_DEFECTO = [];
 
 const RANGOS = [
   { nombre: "Consumidor Consciente", meta: "Tu punto de partida", pv: "0 PVP", tier: 1 },

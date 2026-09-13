@@ -90,6 +90,7 @@ const App = {
     patrocinadorFabDraft: null,
     confirmDeleteDistribuidor: null,
     compartirImagenDraft: null,
+    confirmDeletePremio: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -248,7 +249,7 @@ const App = {
         getCatalogoProductos(state, state.pais || "CO");
         mainHtml = renderReunionEnfoquePage(state, ui);
         break;
-      case "premios": mainHtml = renderPremios(state); break;
+      case "premios": mainHtml = renderPremios(state, ui); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "logros": mainHtml = renderLogros(state); break;
       case "cumbre": mainHtml = renderCumbre(state); break;
@@ -258,6 +259,7 @@ const App = {
     const container = document.getElementById("view-container");
     container.className = "view-container" + (isAuth ? " view-stack" : "");
     container.innerHTML = mainHtml;
+    document.getElementById("app-bg").classList.toggle("bg-logros", ui.view === "logros");
 
     document.getElementById("menu-slot").innerHTML = renderMenuSheet(ui);
 
@@ -749,6 +751,25 @@ const Actions = {
   "toggle-mentor": function () {
     App.state.mentorMode = !App.state.mentorMode;
     App.persist();
+    App.render();
+  },
+
+  "add-premio": function () {
+    App.state.premios.push(nuevoPremio());
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-premio": function (arg) {
+    const i = Number(arg);
+    if (App.ui.confirmDeletePremio !== i) {
+      App.ui.confirmDeletePremio = i;
+      App.render();
+      return;
+    }
+    App.state.premios.splice(i, 1);
+    App.ui.confirmDeletePremio = null;
+    App.persist(true);
     App.render();
   },
 

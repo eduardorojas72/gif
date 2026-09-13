@@ -59,6 +59,10 @@ function emptyBucketList() {
   return Array.from({ length: 100 }, function () { return nuevoBucketItem(); });
 }
 
+function nuevoPremio() {
+  return { hito: "", premio: "", imagen: null };
+}
+
 function nuevoProductoCatalogo(seed) {
   seed = seed || {};
   return {

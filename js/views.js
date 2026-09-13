@@ -60,7 +60,7 @@ function mountainMarkHTML(size, lit) {
 
 function renderWelcome() {
   return (
-    '<div class="center-screen">' +
+    '<div class="center-screen cover-screen">' +
     mountainMarkHTML(64, true) +
     '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
     '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Los 8 Pasos al Éxito</p>' +
@@ -1356,6 +1356,7 @@ function renderQuincenaDetalle(state, ui, qn) {
   const q = QUINCENAS.find(function (x) { return x.n === qn; });
   const semanas = SEMANAS.filter(function (s) { return s.q === qn; });
   const qDone = semanas.every(function (s) { return state.semanas[s.n] && state.semanas[s.n].done; });
+  const doneCount = Object.values(derivarQuincenas(state)).filter(Boolean).length;
 
   const semanasHtml = semanas.map(function (s) {
     const est = state.semanas[s.n];
@@ -1391,6 +1392,7 @@ function renderQuincenaDetalle(state, ui, qn) {
     '<h2 style="font-size:18px;font-weight:700;margin-top:2px">' + escapeHtml(q.nombre) + "</h2>" +
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(q.foco) + "</p>" +
     "</div>" +
+    quincenaAscensoHTML(doneCount) +
     semanasHtml +
     (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ ¡Quincena completada!</div>' : "") +
     '<button class="btn-secondary" data-action="goto" data-arg="enfoque">' + Icon("target", { size: 15 }) + " Ir a Reunión de Enfoque</button>"
@@ -1399,9 +1401,19 @@ function renderQuincenaDetalle(state, ui, qn) {
 
 /* ---------------- Premios del patrocinador ---------------- */
 
-function renderPremios(state) {
+function renderPremios(state, ui) {
   const quincenasMap = derivarQuincenas(state);
   const desc = "Personalízalos como quieras — cámbialos cuando te convenga, incluso mes a mes.";
+  const addBtn = '<button class="btn-secondary" style="margin-top:12px" data-action="add-premio">+ Agregar premio</button>';
+
+  if (!state.premios.length) {
+    return sectionHeaderHTML("Premios de tu patrocinador", desc, "gift") +
+      '<div class="card" style="text-align:center">' +
+      Icon("gift", { size: 30, color: "var(--text-soft)" }) +
+      '<p class="muted small" style="margin-top:10px;line-height:1.5">Tu patrocinador/a aún no ha configurado premios aquí. En cuanto te confirme uno, agrégalo con el botón de abajo.</p>' +
+      "</div>" + addBtn;
+  }
+
   const tiles = state.premios.map(function (p, i) {
     const desbloqueado = !!quincenasMap[i + 1];
     const media = p.imagen ? '<img src="' + p.imagen + '" alt="' + escapeHtml(p.premio) + '"/>' : Icon("gift", { size: 30, color: "#fff" });
@@ -1409,6 +1421,10 @@ function renderPremios(state) {
       '<label class="icon-btn" style="position:absolute;bottom:8px;right:8px;width:28px;height:28px;border-radius:999px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer">' +
       Icon("image-plus", { size: 14, color: "#fff" }) +
       '<input type="file" accept="image/*" class="hidden" data-target="premios.' + i + '.imagen"></label>';
+    const deleteBtn =
+      '<div class="icon-btn" style="position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:999px;background:rgba(0,0,0,0.35);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer" data-action="delete-premio" data-arg="' + i + '">' +
+      (ui.confirmDeletePremio === i ? Icon("check", { size: 12, color: "var(--warn)" }) : Icon("x", { size: 12 })) +
+      "</div>";
     const body =
       '<div class="field-inline" style="display:flex;flex-direction:column;gap:6px">' +
       '<input type="text" placeholder="Hito" value="' + escapeHtml(p.hito) + '" data-field="premios.' + i + '.hito">' +
@@ -1420,7 +1436,7 @@ function renderPremios(state) {
       '<div class="tile-media" style="background:' + (p.imagen ? "transparent" : "radial-gradient(circle at 30% 20%, var(--accent-soft), var(--accent))") + '">' +
       media +
       '<div class="badge ' + (desbloqueado ? "gold" : "dark") + '" style="position:absolute;top:8px;right:8px">' + (desbloqueado ? "Completado" : "Por conseguir") + "</div>" +
-      uploadBtn +
+      uploadBtn + deleteBtn +
       "</div>" +
       '<div class="tile-body">' + body + "</div>" +
       "</div>"
@@ -1429,6 +1445,7 @@ function renderPremios(state) {
 
   return sectionHeaderHTML("Premios de tu patrocinador", desc, "gift") +
     '<div class="grid-2">' + tiles + "</div>" +
+    addBtn +
     '<p class="muted small" style="line-height:1.5">Los logros se marcan por ti mismo en la app. Tu patrocinador verificará el hito (por ejemplo, con una captura de pantalla que le envíes por WhatsApp) antes de entregar el premio.</p>';
 }
 
