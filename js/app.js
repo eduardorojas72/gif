@@ -83,6 +83,7 @@ const App = {
     quincenaMetricaTab: "llamadas",
     tourAbierto: false,
     tourPaso: 0,
+    patrocinadorFabDraft: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -207,7 +208,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<a class="fab-whatsapp" href="' + waHref(state.whatsapp) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</a>" +
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
           ? '<button class="fab-tour" data-action="iniciar-tour" title="Ver recorrido explicativo">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
           : "")
@@ -256,6 +257,7 @@ const App = {
 
     let modalHtml = "";
     if (ui.tourAbierto) modalHtml = renderTourModal(ui);
+    else if (ui.patrocinadorFabDraft) modalHtml = renderPatrocinadorFabModal(ui);
     else if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
     else if (ui.agenda6Draft) modalHtml = renderAgenda6Modal(ui);
@@ -308,9 +310,9 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft)) {
-        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque / ascendente / S.O.S. / contacto de evento): tampoco re-renderizan, para no perder el foco
-        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft;
+      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft)) {
+        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque / ascendente / S.O.S. / contacto de evento / patrocinador desde el FAB): tampoco re-renderizan, para no perder el foco
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft;
         setPath(draft, el.dataset.draftField, el.value);
       } else if (el.dataset && el.dataset.rosterField) {
         const lista = getListaEnfoque(this.state, el.dataset.qn);
@@ -409,6 +411,10 @@ const Actions = {
     const input = document.getElementById("onboarding-name-input");
     const nombre = input ? input.value.trim() : "";
     if (!nombre) return;
+    const atomyIdInput = document.getElementById("onboarding-atomy-id-input");
+    const atomyPassInput = document.getElementById("onboarding-atomy-pass-input");
+    const atomyId = atomyIdInput ? atomyIdInput.value.trim() : "";
+    const atomyPass = atomyPassInput ? atomyPassInput.value.trim() : "";
     const sponsorNameInput = document.getElementById("onboarding-sponsor-name-input");
     const sponsorPhoneInput = document.getElementById("onboarding-sponsor-phone-input");
     const sponsorNombre = sponsorNameInput ? sponsorNameInput.value.trim() : "";
@@ -419,6 +425,8 @@ const Actions = {
     App.state.onboarded = true;
     App.state.racha = rh.racha;
     App.state.ultimaFecha = rh.ultimaFecha;
+    if (atomyId) App.state.arbolGenealogico.yo.atomyId = atomyId;
+    if (atomyPass) App.state.arbolGenealogico.yo.contrasena = atomyPass;
     if (sponsorNombre) App.state.arbolGenealogico.patrocinador.nombre = sponsorNombre;
     if (sponsorTelefono) {
       App.state.whatsapp = sponsorTelefono;
@@ -431,6 +439,37 @@ const Actions = {
     }
     App.persist(true);
     App.render();
+  },
+
+  "abrir-whatsapp-fab": function () {
+    if (App.state.whatsapp && App.state.whatsapp.trim()) {
+      window.open(waHref(App.state.whatsapp), "_blank", "noreferrer");
+      return;
+    }
+    App.ui.patrocinadorFabDraft = {
+      nombre: (App.state.arbolGenealogico.patrocinador && App.state.arbolGenealogico.patrocinador.nombre) || "",
+      telefono: "",
+    };
+    App.render();
+  },
+
+  "cancelar-patrocinador-fab": function () {
+    App.ui.patrocinadorFabDraft = null;
+    App.render();
+  },
+
+  "guardar-patrocinador-fab": function () {
+    const d = App.ui.patrocinadorFabDraft;
+    if (!d) return;
+    const telefono = (d.telefono || "").replace(/[^0-9]/g, "");
+    if (!telefono) return;
+    App.state.whatsapp = telefono;
+    App.state.arbolGenealogico.patrocinador.telefono = telefono;
+    if (d.nombre && d.nombre.trim()) App.state.arbolGenealogico.patrocinador.nombre = d.nombre.trim();
+    App.ui.patrocinadorFabDraft = null;
+    App.persist(true);
+    App.render();
+    window.open(waHref(telefono), "_blank", "noreferrer");
   },
 
   "iniciar-tour": function () {

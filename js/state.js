@@ -316,7 +316,7 @@ function defaultState() {
     ultimaFecha: null,
     actividad: [],
     dark: false,
-    whatsapp: "34600000000",
+    whatsapp: "",
     premios: PREMIOS_DEFECTO.map((p) => ({ ...p })),
     mentorMode: false,
     notifOn: true,

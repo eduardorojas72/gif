@@ -86,6 +86,14 @@ function renderOnboarding(ui) {
     '<input id="onboarding-name-input" type="text" placeholder="Tu nombre" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<div style="width:100%;max-width:320px;margin-top:26px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
+    '<h3 style="font-size:14px;font-weight:700">Tus datos de Atomy <span class="muted" style="font-weight:400">(opcional)</span></h3>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">Los dejamos anotados en tu Árbol Genealógico, así ya no tienes que buscarlos ni volver a pedirlos.</p>' +
+    '<input id="onboarding-atomy-id-input" type="text" placeholder="Tu ID de Atomy" ' +
+    'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    '<input id="onboarding-atomy-pass-input" type="text" placeholder="Tu contraseña de Atomy" ' +
+    'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    "</div>" +
+    '<div style="width:100%;max-width:320px;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
     '<h3 style="font-size:14px;font-weight:700">Tu patrocinador/a <span class="muted" style="font-weight:400">(opcional)</span></h3>' +
     '<p class="muted small" style="margin-top:2px;line-height:1.5">Así activamos de una vez el botón de WhatsApp para escribirle y lo dejamos anotado en tu Árbol Genealógico. Puedes saltarte esto y completarlo después.</p>' +
     '<input id="onboarding-sponsor-name-input" type="text" placeholder="Nombre de tu patrocinador/a" ' +
@@ -1327,10 +1335,10 @@ function renderCumbre(state) {
 /* ---------------- Ajustes ---------------- */
 
 function renderAjustes(state, ui) {
-  const whatsappField = state.mentorMode
-    ? '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">WhatsApp de contacto (patrocinador)</label>' +
-      '<input type="text" inputmode="numeric" placeholder="Ej. 34600000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>'
-    : "";
+  const whatsappField =
+    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">WhatsApp de tu patrocinador/a</label>' +
+    '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">El botón verde flotante le escribe directo a este número.</p>' +
+    '<input type="text" inputmode="numeric" placeholder="Ej. 34600000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
 
   const notifSupported = "Notification" in window;
   const notifRow = notifSupported
@@ -1350,7 +1358,7 @@ function renderAjustes(state, ui) {
     sectionHeaderHTML("Ajustes", "", "settings") +
     licenciaCard +
     '<div class="card row between">' +
-    '<div><div style="font-size:14px;font-weight:600">Modo patrocinador</div><div class="muted small" style="margin-top:2px">Activa el WhatsApp de tu patrocinador y el Informe de mis socios</div></div>' +
+    '<div><div style="font-size:14px;font-weight:600">Modo patrocinador</div><div class="muted small" style="margin-top:2px">Actívalo si tú también acompañas a tu propio equipo — agrega el Informe de mis socios</div></div>' +
     '<div class="toggle' + (state.mentorMode ? " on" : "") + '" data-action="toggle-mentor"><div class="knob"></div></div>' +
     "</div>" +
     whatsappField +
@@ -2141,6 +2149,26 @@ function renderActividadModal(ui) {
     '<button class="btn-primary" style="margin-top:14px" data-action="save-actividad">Guardar</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-actividad">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+function renderPatrocinadorFabModal(ui) {
+  const d = ui.patrocinadorFabDraft;
+  if (!d) return "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancelar-patrocinador-fab"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Registra a tu patrocinador/a</span>' +
+    '<button class="icon-btn" data-action="cancelar-patrocinador-fab">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">Aún no tienes anotado su WhatsApp. Regístralo una vez y este botón ya abrirá su chat directamente cada vez que lo toques.</p>' +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre || "") + '" placeholder="Nombre de tu patrocinador/a"></div>' +
+    '<div class="field"><label>WhatsApp</label><input type="text" inputmode="numeric" data-draft-field="telefono" value="' + escapeHtml(d.telefono || "") + '" placeholder="Ej. 34600000000"></div>' +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="guardar-patrocinador-fab">Guardar y escribirle</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancelar-patrocinador-fab">Cancelar</button>' +
     "</div></div>"
   );
 }
