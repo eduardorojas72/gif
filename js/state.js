@@ -339,6 +339,7 @@ function defaultState() {
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
     contactosEventos: [],
+    tourVisto: false,
   };
 }
 
@@ -544,6 +545,8 @@ function hydrateState(parsed) {
   merged.contactosEventos = Array.isArray(parsed.contactosEventos)
     ? parsed.contactosEventos.map(function (c) { return Object.assign(nuevoContactoEvento(), c); })
     : [];
+
+  merged.tourVisto = !!parsed.tourVisto;
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =

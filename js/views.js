@@ -22,6 +22,23 @@ const MENU_ITEMS = [
   { id: "ajustes", label: "Ajustes", icon: "settings" },
 ];
 
+const TOUR_PASOS = [
+  { icon: "compass", titulo: "¡Bienvenido/a a Cumbre 90!", texto: "Este recorrido rápido te muestra qué puedes hacer en cada sección de la app. Dura menos de 2 minutos y puedes saltarlo cuando quieras." },
+  { icon: "home", titulo: "Inicio", texto: "Aquí ves tu progreso general, tu racha de días activos y accesos rápidos a lo más importante." },
+  { icon: "user-badge", titulo: "Mi Perfil", texto: "Tus datos, tu rango actual en Atomy y tu foto." },
+  { icon: "footprints", titulo: "Los 8 Pasos", texto: "La base del negocio explicada paso a paso, con actividades prácticas para aplicar cada uno." },
+  { icon: "trail-map", titulo: "Plan de 6 Días", texto: "Tu entrenamiento inicial día por día, con misiones diarias — incluida la de descargar la app oficial de Atomy en tu teléfono." },
+  { icon: "users", titulo: "Lista de 250", texto: "Anota cada contacto (nombre, teléfono, estado) y da seguimiento a tu Lista de 250." },
+  { icon: "calendar", titulo: "Agenda Semanal", texto: "Programa tus llamadas, reuniones y Zooms, con recordatorios para no olvidarlos." },
+  { icon: "trending-up", titulo: "Informe Semanal", texto: "Al terminar la semana, solo elige el idioma y envía tu reporte de actividad a tu patrocinador — la app ya calculó los números por ti." },
+  { icon: "target", titulo: "Reunión de Enfoque", texto: "Organiza tu roster de izquierda y derecha, y usa la calculadora de productos para planear tu compra quincenal y compartirla con tu patrocinador." },
+  { icon: "mountain-flag", titulo: "Plan de 90 Días", texto: "Tus 6 quincenas con metas claras en el camino hacia Sales Master." },
+  { icon: "crown", titulo: "Mi Árbol Genealógico", texto: "Guarda ahí tu ID y contraseña, y los datos de tu patrocinador — desde aquí puedes escribirle directo por WhatsApp cuando tengas una duda." },
+  { icon: "bell", titulo: "Llamadas S.O.S. y Lista de Contactos", texto: "Guarda otros números de apoyo a los que puedes acudir, y las personas que conoces en eventos." },
+  { icon: "heart", titulo: "El Lema, Premios, Logros y Ajustes", texto: "Inspiración diaria, tus logros desbloqueados y la configuración de tu cuenta." },
+  { icon: "sparkles", titulo: "¡Listo!", texto: "Puedes volver a ver este recorrido cuando quieras con el botón flotante que verás en pantalla." },
+];
+
 function saludoHora() {
   const h = new Date().getHours();
   if (h < 12) return "Buenos días";
@@ -161,6 +178,43 @@ function getReminders(state) {
     }
   });
   return out;
+}
+
+function renderTourModal(ui) {
+  const total = TOUR_PASOS.length;
+  const paso = Math.max(0, Math.min(total - 1, ui.tourPaso || 0));
+  const info = TOUR_PASOS[paso];
+  const esPrimero = paso === 0;
+  const esUltimo = paso === total - 1;
+
+  const dots = TOUR_PASOS.map(function (_, i) {
+    return '<span class="tour-dot' + (i === paso ? " active" : "") + '"></span>';
+  }).join("");
+
+  const btnAnterior = !esPrimero
+    ? '<button class="btn-secondary" data-action="tour-anterior">' + Icon("chevron-left", { size: 15, color: "var(--gold-light)" }) + " Anterior</button>"
+    : "";
+  const btnSaltar = !esUltimo
+    ? '<button class="btn-secondary" data-action="tour-saltar">Saltar</button>'
+    : "";
+  const btnSiguiente =
+    '<button class="btn-primary" data-action="tour-siguiente">' +
+    (esUltimo ? "Entendido" : "Siguiente") +
+    (esUltimo ? "" : " " + Icon("chevron-right", { size: 15, color: "#1B1338" })) +
+    "</button>";
+
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop"></div>' +
+    '<div class="modal-card tour-card">' +
+    '<div class="tour-icon-circle">' + Icon(info.icon, { size: 30, color: "var(--gold)" }) + "</div>" +
+    '<h3 style="font-size:17px;font-weight:700;margin-top:6px">' + escapeHtml(info.titulo) + "</h3>" +
+    '<p class="muted" style="font-size:13.5px;line-height:1.55;margin-top:2px">' + escapeHtml(info.texto) + "</p>" +
+    '<div class="tour-dots">' + dots + "</div>" +
+    '<div class="muted small">Paso ' + (paso + 1) + " de " + total + "</div>" +
+    '<div class="tour-nav">' + btnAnterior + btnSaltar + btnSiguiente + "</div>" +
+    "</div></div>"
+  );
 }
 
 function renderBellPanel(state) {

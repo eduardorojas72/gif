@@ -81,6 +81,8 @@ const App = {
     quincenaResumenAbierto: false,
     quincenaVista: null,
     quincenaMetricaTab: "llamadas",
+    tourAbierto: false,
+    tourPaso: 0,
   },
   saveTimer: null,
   toastTimer: null,
@@ -205,7 +207,10 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<a class="fab-whatsapp" href="' + waHref(state.whatsapp) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</a>"
+      ? '<a class="fab-whatsapp" href="' + waHref(state.whatsapp) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</a>" +
+        (!ui.tourAbierto
+          ? '<button class="fab-tour" data-action="iniciar-tour" title="Ver recorrido explicativo">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
+          : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
 
@@ -250,7 +255,8 @@ const App = {
     document.getElementById("menu-slot").innerHTML = renderMenuSheet(ui);
 
     let modalHtml = "";
-    if (ui.logro) modalHtml = renderLogroModal(state, ui);
+    if (ui.tourAbierto) modalHtml = renderTourModal(ui);
+    else if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
     else if (ui.agenda6Draft) modalHtml = renderAgenda6Modal(ui);
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
@@ -419,7 +425,47 @@ const Actions = {
       App.state.arbolGenealogico.patrocinador.telefono = sponsorTelefono;
     }
     App.ui.view = "home";
+    if (!App.state.tourVisto) {
+      App.ui.tourAbierto = true;
+      App.ui.tourPaso = 0;
+    }
     App.persist(true);
+    App.render();
+  },
+
+  "iniciar-tour": function () {
+    App.ui.tourAbierto = true;
+    App.ui.tourPaso = 0;
+    App.render();
+  },
+
+  "tour-siguiente": function () {
+    if (App.ui.tourPaso < TOUR_PASOS.length - 1) {
+      App.ui.tourPaso++;
+    } else {
+      App.ui.tourAbierto = false;
+      App.state.tourVisto = true;
+      App.persist(true);
+    }
+    App.render();
+  },
+
+  "tour-anterior": function () {
+    App.ui.tourPaso = Math.max(0, App.ui.tourPaso - 1);
+    App.render();
+  },
+
+  "tour-saltar": function () {
+    App.ui.tourAbierto = false;
+    App.state.tourVisto = true;
+    App.persist(true);
+    App.showToast("Puedes volver a ver el recorrido con el botón flotante");
+    App.render();
+  },
+
+  "tour-ir-paso": function (arg) {
+    const i = Number(arg);
+    if (i >= 0 && i < TOUR_PASOS.length) App.ui.tourPaso = i;
     App.render();
   },
 
