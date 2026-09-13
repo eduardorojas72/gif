@@ -166,6 +166,13 @@ const OCHO_PASOS = [
       "Sé consultar mi historial y detalle de comisiones para verificar que todo esté correcto.",
       "Sé cómo actualizar mi cuenta bancaria para el pago de mis comisiones.",
       "Enseño cada una de estas tareas a mis socios directos, no solo las hago yo — así ellos también pueden enseñarlas a los suyos.",
+      "Sé abrir una reunión de Zoom.",
+      "Sé compartir pantalla en Zoom.",
+      "Sé agregar anfitrión y coanfitrión en una reunión de Zoom.",
+      "Sé grabar una reunión de Zoom y compartirla después.",
+      "Sé manejar herramientas de diseño y edición como Canva o CapCut, entre otras.",
+      "Uso la Inteligencia Artificial como apoyo para mi negocio.",
+      "Sé usar plataformas para preparar presentaciones: PowerPoint, Prezi, entre otras.",
     ],
   },
 ];
