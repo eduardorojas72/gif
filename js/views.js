@@ -553,6 +553,34 @@ function personaRowHTML(qKey, linea, p) {
   );
 }
 
+function resumenEnfoqueTexto(state, qKey) {
+  const q = peekQuincena(state, qKey);
+  function lineaTexto(nombre, linea) {
+    const arr = (q[linea] || []).slice().sort(function (a, b) { return (a.fecha || "9999-99-99").localeCompare(b.fecha || "9999-99-99"); });
+    const plan = sumaLinea(q, linea, false);
+    const ver = sumaLinea(q, linea, true);
+    const otros = Number(linea === "izquierda" ? q.otrosIzquierda : q.otrosDerecha) || 0;
+    const personasTxt = arr.length
+      ? arr.map(function (p) {
+          return "• " + (p.nombre || "(sin nombre)") + ": PVP " + (Number(p.pvp) || 0).toLocaleString("es") + " · PVG " + (Number(p.puntos) || 0).toLocaleString("es") + (p.verificado ? " ✅ verificado" : " (sin verificar)");
+        }).join("\n")
+      : "  (sin personas registradas)";
+    return (
+      "*Línea " + nombre + "*\n" +
+      personasTxt +
+      (otros ? "\n• Fuera de la lista (consumo/otros): " + otros.toLocaleString("es") + " puntos" : "") +
+      "\nVerificado: " + ver.toLocaleString("es") + " puntos · Planificado sin verificar: " + plan.toLocaleString("es") + " puntos"
+    );
+  }
+  return (
+    "🎯 Reunión de Enfoque — Quincena " + quincenaLabel(qKey) + ":\n\n" +
+    lineaTexto("Izquierda", "izquierda") + "\n\n" +
+    lineaTexto("Derecha", "derecha") +
+    "\n\n" + (q.reunionHecha ? "✅ Ya hice mi reunión de enfoque con mis socios." : "⏳ Aún no he hecho mi reunión de enfoque con mis socios.") +
+    "\n\n¿Me ayudas a revisarlo para planear mi quincena?"
+  );
+}
+
 function renderListas(state, ui) {
   const qKey = ui.quincenaKey || quincenaActualKey();
   const q = peekQuincena(state, qKey);
@@ -573,6 +601,9 @@ function renderListas(state, ui) {
     '<span class="lbl">' + (q.reunionHecha ? "Reunión de enfoque hecha esta quincena" : "Marcar: hice mi reunión de enfoque a mis socios") + "</span>" +
     "</div>" +
     resumenLineasHTML(planIzq, verIzq, planDer, verDer) +
+    (state.whatsapp && state.whatsapp.trim()
+      ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, resumenEnfoqueTexto(state, qKey)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
+      : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu Reunión de Enfoque.</p>') +
     '<div class="tabs">' +
     '<button class="tab-btn' + (linea === "izquierda" ? " active" : "") + '" data-action="set-linea" data-arg="izquierda">Izquierda (' + (q.izquierda || []).length + ")</button>" +
     '<button class="tab-btn' + (linea === "derecha" ? " active" : "") + '" data-action="set-linea" data-arg="derecha">Derecha (' + (q.derecha || []).length + ")</button>" +
