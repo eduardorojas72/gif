@@ -542,6 +542,8 @@ function renderPasos(state, ui) {
         "</div>"
       : "";
 
+    const distribuidoresCard = p.n === 8 ? renderDistribuidoresDuplicaCard(state, ui) : "";
+
     const reflexion = p.reflexion
       ? '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
         '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("heart", { size: 13, color: "var(--gold)" }) + " Reflexión para compartir</div>" +
@@ -572,7 +574,8 @@ function renderPasos(state, ui) {
     return (
       '<button class="flip-card paso-checklist' + (flipped ? " is-open" : "") + '" data-action="flip-paso" data-arg="' + p.n + '">' +
       '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
-      "</button>"
+      "</button>" +
+      distribuidoresCard
     );
   }).join("");
   const header =
@@ -580,6 +583,75 @@ function renderPasos(state, ui) {
     '<div><h2>Los 8 Pasos al Éxito</h2><p>Basado en la enseñanza del Presidente Han-Gill Park. Toca cada paso para ver la explicación completa.</p></div></div>';
   return header +
     '<div class="view-stack gap-sm">' + cards + "</div>";
+}
+
+/* Paso 8 — tabla de seguimiento: cada fila es un ítem de "Aprendo y Duplico",
+   cada columna un distribuidor del equipo. Vive FUERA del <button> volteable
+   (a diferencia del resto del contenido del paso) porque necesita <input> de
+   texto para el nombre — un <input> dentro de un <button> no es válido y en
+   la práctica el navegador no deja enfocarlo. */
+function renderDistribuidoresDuplicaCard(state, ui) {
+  const paso8 = OCHO_PASOS.find(function (p) { return p.n === 8; });
+  const items = (paso8 && paso8.duplicaChecklist) || [];
+  const distribuidores = state.distribuidoresDuplicado || [];
+  const confirmId = ui.confirmDeleteDistribuidor;
+  const addBtn = '<div class="btn-secondary" style="margin-top:12px;width:fit-content;cursor:pointer" data-action="add-distribuidor-duplica">+ Agregar distribuidor</div>';
+
+  const intro =
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' +
+    Icon("users", { size: 13, color: "var(--gold)" }) + " Seguimiento de duplicación por distribuidor</div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Agrega a cada distribuidor de tu equipo y marca, uno por uno, qué tareas de “Aprendo y Duplico” ya le has enseñado. Puedes ir añadiendo distribuidores poco a poco, no hace falta ponerlos todos de una vez.</p>';
+
+  if (!distribuidores.length) {
+    return '<div class="card" style="margin-top:14px">' + intro + addBtn + "</div>";
+  }
+
+  const headerCells = distribuidores.map(function (d) {
+    const total = items.length;
+    const done = d.checks.filter(Boolean).length;
+    const deleteInner = confirmId === d.id ? "¿Eliminar?" : Icon("x", { size: 12 });
+    return (
+      '<th style="min-width:150px;padding:0 6px 8px;vertical-align:top;font-weight:400">' +
+      '<input type="text" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre del distribuidor" data-distribuidor-field="nombre" data-distribuidor-id="' + d.id + '" style="width:100%;font-size:12.5px;font-weight:700;padding:6px 8px">' +
+      '<div class="row between" style="margin-top:4px;align-items:center">' +
+      '<span class="muted" style="font-size:10.5px">' + done + "/" + total + "</span>" +
+      '<div data-action="delete-distribuidor-duplica" data-arg="' + d.id + '" style="cursor:pointer;color:var(--warn);font-size:10.5px;display:flex;align-items:center;gap:3px;white-space:nowrap">' + deleteInner + "</div>" +
+      "</div>" +
+      "</th>"
+    );
+  }).join("");
+
+  const bodyRows = items.map(function (item, i) {
+    const cells = distribuidores.map(function (d) {
+      const on = !!d.checks[i];
+      return (
+        '<td style="text-align:center;padding:5px 6px">' +
+        '<div class="check-dot' + (on ? " on" : "") + '" style="width:26px;height:26px;font-size:10px;margin:0 auto;cursor:pointer" data-action="toggle-distribuidor-duplica-check" data-arg="' + d.id + "|" + i + '">' +
+        (on ? Icon("check", { size: 12, color: "#1B1338" }) : "") +
+        "</div>" +
+        "</td>"
+      );
+    }).join("");
+    return (
+      '<tr>' +
+      '<td style="padding:5px 12px 5px 0;font-size:12px;color:var(--text-soft);max-width:230px;position:sticky;left:0;background:var(--card)">' + escapeHtml(item) + "</td>" +
+      cells +
+      "</tr>"
+    );
+  }).join("");
+
+  return (
+    '<div class="card" style="margin-top:14px">' +
+    intro +
+    '<div style="overflow-x:auto;margin-top:10px">' +
+    '<table style="border-collapse:collapse;width:100%">' +
+    '<thead><tr><th style="position:sticky;left:0;background:var(--card)"></th>' + headerCells + "</tr></thead>" +
+    "<tbody>" + bodyRows + "</tbody>" +
+    "</table>" +
+    "</div>" +
+    addBtn +
+    "</div>"
+  );
 }
 
 /* ---------------- El Lema de Atomy ---------------- */

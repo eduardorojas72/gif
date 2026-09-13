@@ -173,6 +173,12 @@ const OCHO_PASOS = [
       "Sé manejar herramientas de diseño y edición como Canva o CapCut, entre otras.",
       "Uso la Inteligencia Artificial como apoyo para mi negocio.",
       "Sé usar plataformas para preparar presentaciones: PowerPoint, Prezi, entre otras.",
+      "Sé cómo cambiar de centro de distribución.",
+      "Tengo mis perfiles de redes sociales al día.",
+      "Me comunico directamente con el Corporativo cuando lo necesito.",
+      "Conozco muy bien el Plan de Compensación.",
+      "Sé generar un código de Registro y un código QR.",
+      "Uso plataformas de pago para completar mis pedidos cómodamente.",
     ],
   },
 ];

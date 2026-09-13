@@ -84,6 +84,7 @@ const App = {
     tourAbierto: false,
     tourPaso: 0,
     patrocinadorFabDraft: null,
+    confirmDeleteDistribuidor: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -337,6 +338,12 @@ const App = {
           const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
           row.classList.toggle("hidden", !match);
         });
+      } else if (el.dataset && el.dataset.distribuidorField) {
+        const item = (this.state.distribuidoresDuplicado || []).find((d) => d.id === el.dataset.distribuidorId);
+        if (item) {
+          item[el.dataset.distribuidorField] = el.value;
+          this.persist();
+        }
       } else if (el.dataset && el.dataset.agenda6Hora != null && this.ui.agenda6Draft) {
         const i = Number(el.dataset.agenda6Hora);
         this.ui.agenda6Draft.dias[i] = this.ui.agenda6Draft.dias[i] || { hora: "" };
@@ -940,6 +947,37 @@ const Actions = {
     const est = App.state.pasos[n];
     if (!est) return;
     est.duplicaChecks[i] = !est.duplicaChecks[i];
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Paso 8 — seguimiento de duplicación por distribuidor -------- */
+
+  "add-distribuidor-duplica": function () {
+    App.state.distribuidoresDuplicado.push(nuevoDistribuidorDuplica());
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-distribuidor-duplica": function (arg) {
+    if (App.ui.confirmDeleteDistribuidor !== arg) {
+      App.ui.confirmDeleteDistribuidor = arg;
+      App.render();
+      return;
+    }
+    App.state.distribuidoresDuplicado = App.state.distribuidoresDuplicado.filter((d) => d.id !== arg);
+    App.ui.confirmDeleteDistribuidor = null;
+    App.persist(true);
+    App.showToast("Distribuidor eliminado");
+    App.render();
+  },
+
+  "toggle-distribuidor-duplica-check": function (arg) {
+    const parts = arg.split("|");
+    const item = App.state.distribuidoresDuplicado.find((d) => d.id === parts[0]);
+    if (!item) return;
+    const i = Number(parts[1]);
+    item.checks[i] = !item.checks[i];
     App.persist(true);
     App.render();
   },

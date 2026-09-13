@@ -19,6 +19,17 @@ function emptyPasoState(n) {
   return { checks: (paso.actividades || []).map(() => false), duplicaChecks: (paso.duplicaChecklist || []).map(() => false) };
 }
 
+/* ---------------- Paso 8 — seguimiento de duplicación por distribuidor ---------------- */
+
+function duplicaChecklistLength() {
+  const paso8 = OCHO_PASOS.find((p) => p.n === 8);
+  return (paso8 && paso8.duplicaChecklist ? paso8.duplicaChecklist.length : 0);
+}
+
+function nuevoDistribuidorDuplica() {
+  return { id: "dd" + Math.random().toString(36).slice(2, 9), nombre: "", checks: Array(duplicaChecklistLength()).fill(false) };
+}
+
 function diaSemanaHoyId() {
   const map = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
   return map[new Date().getDay()];
@@ -340,6 +351,7 @@ function defaultState() {
     llamadasSOS: [],
     contactosEventos: [],
     tourVisto: false,
+    distribuidoresDuplicado: [],
   };
 }
 
@@ -551,6 +563,16 @@ function hydrateState(parsed) {
     : [];
 
   merged.tourVisto = !!parsed.tourVisto;
+
+  const totalDuplicaItems = duplicaChecklistLength();
+  merged.distribuidoresDuplicado = Array.isArray(parsed.distribuidoresDuplicado)
+    ? parsed.distribuidoresDuplicado.map(function (d) {
+        const base = nuevoDistribuidorDuplica();
+        const savedChecks = Array.isArray(d.checks) ? d.checks : [];
+        const checks = Array.from({ length: totalDuplicaItems }, function (_, i) { return !!savedChecks[i]; });
+        return Object.assign(base, d, { checks: checks });
+      })
+    : [];
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =
