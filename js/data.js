@@ -226,14 +226,7 @@ const DIAS = [
       },
       {
         h: "Escribe tu Escenario de Vida",
-        body: [
-          "Dibuja 4 cuadrantes y escribe una meta concreta en presente para cada pilar:",
-          "Vivir Bien (salud, hogar, finanzas): ej. “Para diciembre de 2026 habré liquidado la tarjeta de crédito y reformado la cocina de mi casa”.",
-          "Amar (familia y seres queridos): ej. “Tener todos los fines de semana libres, sin preocupaciones de trabajo, para pasarlos con mis hijos”.",
-          "Aprender (desarrollo personal): ej. “Ver 1 video de CH.ATOMY al día y perder el miedo a hablar en público para fin de año”.",
-          "Contribuir (impacto y legado): ej. “Donar el 5% de mis comisiones mensuales a un comedor social local”.",
-          "Ejercicio de 10 minutos: elige 1 ejemplo de cada pilar, ponlo por escrito con una fecha orientativa.",
-        ],
+        body: [],
       },
       {
         h: "Conoce la Visión de Atomy (CH.ATOMY Europa)",
