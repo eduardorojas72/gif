@@ -400,6 +400,17 @@ const DIAS = [
     objetivo: "Invitar sin presionar y compartir tu historia personal con naturalidad.",
     contenido: [
       {
+        h: "Consejos para crear tu Lista de Contactos",
+        body: [
+          "Vaciado inicial sin filtros: anota a todas las personas que conozcas, sin prejuzgar quién dirá que sí o que no. Familiares, excompañeros de trabajo o estudio, vecinos, proveedores de servicios (mecánico, contador, médico) y los contactos de tu agenda telefónica cuentan.",
+          "Divide tu lista en 3 mercados: Caliente (familiares y amigos íntimos — pídeles su opinión o apoyo para practicar tu presentación), Tibio (conocidos con los que interactúas poco — retoma primero la relación antes de presentar el proyecto) y Frío (personas que aún no conoces — se alimenta con redes sociales, eventos o el día a día).",
+          "Prioriza a quién contactar primero según su perfil: actitud positiva y abierta a aprender, credibilidad o influencia en su entorno, necesidad o deseo real de cambio (ingresos extra, más tiempo libre) y capacidad de adquirir el producto o iniciar el proyecto.",
+          "Regla de los 2 diarios: agrega al menos dos personas nuevas a tu Lista de 250 cada día, de forma natural, ya sea online u offline.",
+          "En redes sociales, no vendas directo: haz preguntas abiertas en tus publicaciones o historias, ofrece un recurso gratuito (una mini-guía, una plantilla) a cambio de que te escriban al privado, y desde ahí invita a pasar la conversación a WhatsApp — así conviertes una interacción en un contacto real de tu lista.",
+          "Anota siempre la fecha de tu última interacción y el acuerdo alcanzado (ej. “Llamar el jueves”, “Enviada información inicial”) para no perder el hilo con nadie.",
+        ],
+      },
+      {
         h: "Guion de 4 pasos para tu historia personal",
         body: [
           "Paso 1 — Tu antecedente: comparte tu situación previa (económica, de tiempo, de salud) con la que la otra persona se identifique. Ej.: “Llevaba tiempo sintiendo que los gastos del mes subían pero mis ingresos seguían igual...”",
