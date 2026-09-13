@@ -287,6 +287,7 @@ const DIAS = [
           "Los PV (Puntos de Valor) son el valor que la empresa asigna a cada producto; los ves en azul debajo del precio en la tienda online.",
           "Con un par de productos básicos de uso diario (ej. un kit de cuidado bucal y un champú) ya alcanzas los 10.000 PVP.",
           "Alcanzar los 10.000 PVP es la llave que activa tu cuenta de socio: a partir de ahí tu perfil queda habilitado para acumular volumen de equipo y cobrar comisiones.",
+          "Descarga la app oficial de Atomy en tu teléfono para hacer tus pedidos y revisar tus PV desde cualquier lugar: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) o https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
         ],
       },
       {
@@ -329,6 +330,7 @@ const DIAS = [
       "Comprendí el funcionamiento del equilibrio binario (Izquierda / Derecha).",
       "Elegí mis primeros 4 productos preferidos.",
       "Vi al menos un video sobre el Plan de Compensación.",
+      "Descargué la app oficial de Atomy en mi teléfono.",
     ],
     quiz: {
       pregunta: "¿Cuál es tu primer gran hito para activar tu cuenta?",
@@ -374,7 +376,7 @@ const DIAS = [
       {
         h: "Tu video de hoy",
         body: [
-          "En CH.ATOMY Europa → menú Producto, mira el video de HemoHIM o de la línea Absolute/The Fame para entender la filosofía Masstige: calidad absoluta a precio absoluto.",
+          "Entra en ch.atomy.com/eu (CH.ATOMY Europa) → menú Producto, y mira el video de HemoHIM o de la línea Absolute/The Fame para entender la filosofía Masstige: calidad absoluta a precio absoluto.",
         ],
       },
     ],
@@ -457,7 +459,7 @@ const DIAS = [
           "Meta a 30 días: una meta pequeña y alcanzable para tu primer mes. Ej.: “Probar 3 productos y registrar a mis primeros 2 consumidores”.",
           "Tus huecos de valor: no necesitas 8 horas al día. Busca 3-4 horas libres en tu semana (ej. 30 min al salir del trabajo o un rato el fin de semana) y bloquéalas en tu calendario.",
           "Tu cita semanal: agenda una llamada corta y fija de 15-20 minutos con tu mentor para ver avances, resolver dudas y ajustar lo que necesites.",
-          "15 minutos de aprendizaje diario: continúa viendo contenido de CH.ATOMY Europa a tu ritmo, como ya vienes haciendo desde el Día 1.",
+          "15 minutos de aprendizaje diario: continúa viendo contenido en ch.atomy.com/eu (CH.ATOMY Europa) a tu ritmo, como ya vienes haciendo desde el Día 1.",
           "💡 Consejo: un proyecto constante de 3 horas a la semana da 100 veces más resultado que un maratón de un solo día. Hazlo a tu ritmo.",
         ],
       },
@@ -507,7 +509,7 @@ const DIAS = [
       {
         h: "Tu video de cierre",
         body: [
-          "En CH.ATOMY Europa → menú Compañía, busca un video sobre la Cultura Atomy o la Filosofía del Fundador Han-Gill Park: honestidad y servicio al cliente.",
+          "Entra en ch.atomy.com/eu (CH.ATOMY Europa) → menú Compañía, y busca un video sobre la Cultura Atomy o la Filosofía del Fundador Han-Gill Park: honestidad y servicio al cliente.",
           "¡Con esto completas tu primera semana de entrenamiento! No buscamos vender desesperadamente, sino educar a un consumidor satisfecho y acompañar a otros a lograr sus metas con honestidad.",
         ],
       },

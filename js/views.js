@@ -5,19 +5,18 @@
 
 const MENU_ITEMS = [
   { id: "home", label: "Inicio", icon: "home" },
-  { id: "escenario", label: "Escenario de Vida", icon: "compass" },
   { id: "perfil", label: "Mi Perfil", icon: "user-badge" },
   { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
-  { id: "lema", label: "El Lema de Atomy", icon: "heart" },
+  { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
+  { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
+  { id: "informe", label: "Informe Semanal", icon: "trending-up" },
+  { id: "enfoque", label: "Reunión de Enfoque", icon: "target" },
+  { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
   { id: "arbol", label: "Mi Árbol Genealógico", icon: "crown" },
   { id: "sos", label: "Llamadas S.O.S.", icon: "bell" },
   { id: "eventos", label: "Lista de Contactos", icon: "users" },
-  { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
-  { id: "informe", label: "Informe Semanal", icon: "trending-up" },
-  { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
-  { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
-  { id: "enfoque", label: "Reunión de Enfoque", icon: "target" },
+  { id: "lema", label: "El Lema de Atomy", icon: "heart" },
   { id: "premios", label: "Premios", icon: "gift" },
   { id: "logros", label: "Logros", icon: "award" },
   { id: "ajustes", label: "Ajustes", icon: "settings" },
@@ -69,6 +68,14 @@ function renderOnboarding(ui) {
     '<p class="muted small" style="margin-top:4px">Así personalizamos tu recorrido.</p>' +
     '<input id="onboarding-name-input" type="text" placeholder="Tu nombre" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    '<div style="width:100%;max-width:320px;margin-top:26px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
+    '<h3 style="font-size:14px;font-weight:700">Tu patrocinador/a <span class="muted" style="font-weight:400">(opcional)</span></h3>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">Así activamos de una vez el botón de WhatsApp para escribirle y lo dejamos anotado en tu Árbol Genealógico. Puedes saltarte esto y completarlo después.</p>' +
+    '<input id="onboarding-sponsor-name-input" type="text" placeholder="Nombre de tu patrocinador/a" ' +
+    'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="Su WhatsApp, ej. 34600000000" ' +
+    'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
+    "</div>" +
     '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Empezar ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     "</div>"
   );
@@ -309,7 +316,7 @@ function escenarioVidaHomeCardHTML(state) {
 
   if (state.escenarioCompletado) {
     return (
-      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--gold);background:var(--accent-soft)" data-action="goto" data-arg="escenario">' +
+      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--gold);background:var(--accent-soft)" data-action="goto-escenario">' +
       '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Escenario de Vida</span></div>' +
       '<div style="font-size:14.5px;font-weight:700;margin-top:6px">🏆 ¡Círculo perfecto! Alcanzaste tus 8 metas.</div>' +
       '<div class="muted small" style="margin-top:2px">Toca para revisarlas o ponerte nuevas metas más grandes.</div>' +
@@ -318,7 +325,7 @@ function escenarioVidaHomeCardHTML(state) {
   }
   if (iniciadas === 0) {
     return (
-      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--accent)" data-action="goto" data-arg="escenario">' +
+      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--accent)" data-action="goto-escenario">' +
       '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--accent)" }) + '<span style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Antes de empezar</span></div>' +
       '<div style="font-size:14.5px;font-weight:700;margin-top:6px">Define tu Escenario de Vida — tu “por qué”</div>' +
       '<div class="muted small" style="margin-top:2px">Es el primer paso del Paso 1. Determina tus sueños en 8 áreas de tu vida antes de seguir avanzando.</div>' +
@@ -327,7 +334,7 @@ function escenarioVidaHomeCardHTML(state) {
   }
   const pct = Math.round((completas / ESCENARIO_CATEGORIAS.length) * 100);
   return (
-    '<button class="card card-hover" style="text-align:left;width:100%" data-action="goto" data-arg="escenario">' +
+    '<button class="card card-hover" style="text-align:left;width:100%" data-action="goto-escenario">' +
     '<div class="row between"><div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--accent)" }) + '<span style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Escenario de Vida</span></div>' +
     '<span class="muted small">' + completas + "/" + ESCENARIO_CATEGORIAS.length + "</span></div>" +
     '<div class="progressbar gold thin" style="margin-top:8px"><div style="width:' + Math.max(pct, 4) + '%"></div></div>' +
@@ -394,15 +401,16 @@ function bucketListSectionHTML(state, ui) {
   );
 }
 
-function renderEscenarioVida(state, ui) {
+/* Núcleo reutilizable de la experiencia Escenario de Vida (radar + tarjetas de
+   categoría + Lista de 100), sin el encabezado de sección ni la introducción —
+   se usa tanto en la vista independiente como incrustado dentro del Día 1. */
+function renderEscenarioVidaBody(state, ui) {
   const esc = state.escenarioVida;
   const completas = ESCENARIO_CATEGORIAS.filter(function (c) { return (esc[c.id] || {}).avance === 4; }).length;
   const cards = ESCENARIO_CATEGORIAS.map(function (c) { return escenarioCategoriaHTML(c, esc); }).join("");
   const pasos = "<ol style=\"margin:0;padding-left:18px\">" + ESCENARIO_PASOS.map(function (p) { return '<li class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(p) + "</li>"; }).join("") + "</ol>";
 
   return (
-    sectionHeaderHTML("Escenario de Vida", ESCENARIO_LEMA, "compass") +
-    '<div class="card"><p class="small" style="line-height:1.6">' + escapeHtml(ESCENARIO_INTRO) + "</p></div>" +
     '<div class="card" style="text-align:center">' +
     escenarioRadarSVG(ESCENARIO_CATEGORIAS, esc) +
     '<div class="muted small" style="margin-top:6px">' + completas + " de " + ESCENARIO_CATEGORIAS.length + " metas en el círculo perfecto</div>" +
@@ -410,6 +418,14 @@ function renderEscenarioVida(state, ui) {
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">¿Cómo se llena?</div>' + pasos + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
     bucketListSectionHTML(state, ui)
+  );
+}
+
+function renderEscenarioVida(state, ui) {
+  return (
+    sectionHeaderHTML("Escenario de Vida", ESCENARIO_LEMA, "compass") +
+    '<div class="card"><p class="small" style="line-height:1.6">' + escapeHtml(ESCENARIO_INTRO) + "</p></div>" +
+    renderEscenarioVidaBody(state, ui)
   );
 }
 
@@ -623,22 +639,32 @@ function renderPathMap(state) {
     heroMountainHTML(overlay);
 }
 
-function renderDiaDetalle(state, diaId) {
+function renderDiaDetalle(state, ui, diaId) {
   const dia = DIAS.find(function (d) { return d.id === diaId; });
   const est = state.dias[diaId];
   const allChecked = est.checks.every(Boolean);
 
   const nota = dia.nota ? '<div class="card" style="background:var(--accent-soft);border:none;font-size:14px;line-height:1.55">' + linkifyText(dia.nota) + "</div>" : "";
 
+  const escenarioAbierto = !!ui.escenarioAbierto;
   const contenido = (dia.contenido || []).length
     ? '<div class="view-stack gap-sm">' +
       (dia.contenido || []).map(function (sec) {
-        return (
+        const isEscenario = diaId === 1 && sec.h === "Escribe tu Escenario de Vida";
+        const headerHtml = isEscenario
+          ? '<button class="row between" style="width:100%;text-align:left;margin-bottom:8px" data-action="toggle-escenario-inline">' +
+            '<div style="font-weight:700;font-size:14px;color:var(--gold-light)">' + escapeHtml(sec.h) + "</div>" +
+            '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (escenarioAbierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+            "</button>"
+          : '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>";
+        const card =
           '<div class="card">' +
-          '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>" +
+          headerHtml +
           sec.body.map(function (p) { return '<p class="muted small" style="line-height:1.55;margin-top:6px">' + linkifyText(p) + "</p>"; }).join("") +
-          "</div>"
-        );
+          (isEscenario ? '<div class="muted small" style="margin-top:8px;font-weight:600">' + (escenarioAbierto ? "Toca para ocultar" : "Toca para abrir tu Escenario de Vida completo (radar, metas y Lista de 100)") + "</div>" : "") +
+          "</div>";
+        if (!isEscenario || !escenarioAbierto) return card;
+        return card + '<div class="view-stack gap-sm">' + renderEscenarioVidaBody(state, ui) + "</div>";
       }).join("") +
       "</div>"
     : "";
@@ -687,8 +713,16 @@ function renderDiaDetalle(state, diaId) {
   const finishStyle = est.done ? "background:var(--success)" : (allChecked ? "" : "background:var(--border);opacity:.55");
   const finishDisabled = !allChecked || est.done;
 
+  const nextDia = DIAS.find(function (d) { return d.id === diaId + 1; });
+  const nextDayBtn = nextDia
+    ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + nextDia.id + '">Siguiente día ' + Icon("chevron-right", { size: 16 }) + "</button>"
+    : "";
+
   return (
+    '<div class="row between">' +
     '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("chevron-left", { size: 16 }) + " Mapa del recorrido</button>" +
+    nextDayBtn +
+    "</div>" +
     '<div>' +
     '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Etapa ' + dia.id + "</div>" +
     '<h2 style="font-size:18px;font-weight:700;margin-top:2px">' + escapeHtml(dia.etapa) + "</h2>" +

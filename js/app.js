@@ -43,6 +43,7 @@ const App = {
     view: "welcome",
     menuOpen: false,
     activeDay: null,
+    escenarioAbierto: false,
     activeQuincena: null,
     enfoqueQuincena: null,
     bellOpen: false,
@@ -213,7 +214,6 @@ const App = {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
-      case "escenario": mainHtml = renderEscenarioVida(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "informe": mainHtml = renderInformeSemanal(state, ui); break;
       case "pasos": mainHtml = renderPasos(state, ui); break;
@@ -222,7 +222,7 @@ const App = {
       case "arbol": mainHtml = renderArbolGenealogico(state, ui); break;
       case "sos": mainHtml = renderLlamadasSOS(state, ui); break;
       case "eventos": mainHtml = renderContactosEventos(state, ui); break;
-      case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui.activeDay) : renderPathMap(state); break;
+      case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui, ui.activeDay) : renderPathMap(state); break;
       case "plan90":
         if (ui.activeQuincena) {
           mainHtml = renderQuincenaDetalle(state, ui, ui.activeQuincena);
@@ -403,12 +403,21 @@ const Actions = {
     const input = document.getElementById("onboarding-name-input");
     const nombre = input ? input.value.trim() : "";
     if (!nombre) return;
+    const sponsorNameInput = document.getElementById("onboarding-sponsor-name-input");
+    const sponsorPhoneInput = document.getElementById("onboarding-sponsor-phone-input");
+    const sponsorNombre = sponsorNameInput ? sponsorNameInput.value.trim() : "";
+    const sponsorTelefono = sponsorPhoneInput ? sponsorPhoneInput.value.replace(/[^0-9]/g, "") : "";
     const rh = calcularRacha(0, null);
     App.state.nombre = nombre;
     App.state.foto = App.ui.onboardingFoto;
     App.state.onboarded = true;
     App.state.racha = rh.racha;
     App.state.ultimaFecha = rh.ultimaFecha;
+    if (sponsorNombre) App.state.arbolGenealogico.patrocinador.nombre = sponsorNombre;
+    if (sponsorTelefono) {
+      App.state.whatsapp = sponsorTelefono;
+      App.state.arbolGenealogico.patrocinador.telefono = sponsorTelefono;
+    }
     App.ui.view = "home";
     App.persist(true);
     App.render();
@@ -437,6 +446,22 @@ const Actions = {
 
   "open-day": function (arg) { App.ui.activeDay = Number(arg); App.render(); },
   "back-to-map": function () { App.ui.activeDay = null; App.render(); },
+
+  "goto-escenario": function () {
+    App.ui.view = "plan6";
+    App.ui.activeDay = 1;
+    App.ui.escenarioAbierto = true;
+    App.ui.menuOpen = false;
+    App.render();
+    const c = document.getElementById("view-container");
+    if (c) c.scrollTop = 0;
+    window.scrollTo(0, 0);
+  },
+
+  "toggle-escenario-inline": function () {
+    App.ui.escenarioAbierto = !App.ui.escenarioAbierto;
+    App.render();
+  },
 
   "answer-quiz": function (arg, el) {
     const dayId = Number(el.dataset.day);
