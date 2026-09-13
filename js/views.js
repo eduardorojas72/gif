@@ -1379,6 +1379,15 @@ function renderAjustes(state, ui) {
     '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">El botón verde flotante le escribe directo a este número.</p>' +
     '<input type="text" inputmode="numeric" placeholder="Ej. 573000000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>' +
     notifRow +
+    '<div class="card">' +
+    '<div class="row gap-2">' + Icon("download", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Copia de seguridad</span></div>' +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Todos tus datos (Reunión de Enfoque, Árbol Genealógico, tu progreso) viven solo en este dispositivo. Descarga un respaldo y guárdalo donde quieras (tu Google Drive, correo, etc.) — así no lo pierdes si cambias de celular o borras datos del navegador.</p>' +
+    '<div class="row gap-2" style="margin-top:10px">' +
+    '<button class="btn-secondary" style="flex:1" data-action="descargar-respaldo">' + Icon("download", { size: 15 }) + " Descargar copia de seguridad</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="importar-respaldo-input">' + Icon("repeat", { size: 15 }) + " Restaurar desde archivo</button>" +
+    "</div>" +
+    '<input id="importar-respaldo-input" type="file" accept="application/json,.json" class="hidden" data-target="__importBackup">' +
+    "</div>" +
     '<button class="btn-secondary" style="border-color:var(--warn);color:var(--warn)" data-action="reset-progress">' + Icon("rotate-ccw", { size: 16 }) + " " + resetLabel + "</button>"
   );
 }

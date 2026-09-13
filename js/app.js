@@ -313,6 +313,31 @@ const App = {
         setPath(draft, el.dataset.draftField, el.value);
         return;
       }
+      if (el.type === "file" && el.dataset && el.dataset.target === "__importBackup") {
+        const file = el.files && el.files[0];
+        el.value = "";
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          let parsed;
+          try {
+            parsed = JSON.parse(reader.result);
+          } catch (e) {
+            this.showToast("Ese archivo no es un respaldo válido de Cumbre Master.");
+            return;
+          }
+          if (!window.confirm("Esto reemplazará todos tus datos actuales (Reunión de Enfoque, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
+          this.state = hydrateState(parsed);
+          this.state.racha = rh.racha;
+          this.state.ultimaFecha = rh.ultimaFecha;
+          this.persist(true);
+          this.render();
+          this.showToast("Datos restaurados correctamente ✨");
+        };
+        reader.readAsText(file);
+        return;
+      }
       if (el.type === "file" && el.dataset && el.dataset.target) {
         const file = el.files && el.files[0];
         if (!file) return;
@@ -818,6 +843,13 @@ const Actions = {
     } else {
       App.showToast("No se pudo copiar el mensaje");
     }
+  },
+
+  "descargar-respaldo": function () {
+    const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
+    const fecha = hoyISO();
+    downloadBlobCumbre(blob, "Cumbre-Master-Respaldo-" + slugFileCumbre(App.state.nombre || "lider") + "-" + fecha + ".json");
+    App.showToast("Copia de seguridad descargada");
   },
 
   "reset-progress": function () {
