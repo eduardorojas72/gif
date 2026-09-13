@@ -583,7 +583,6 @@ const Actions = {
 
   "share-day": function (arg) {
     downloadDiaCard(App.state, Number(arg));
-    App.showToast("Tarjeta lista para compartir ✨");
   },
 
   "open-quincena": function (arg) { App.ui.activeQuincena = Number(arg); App.render(); },

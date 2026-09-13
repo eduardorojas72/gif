@@ -13,6 +13,17 @@ function themeColors() {
   };
 }
 
+function downloadBlob(blob, filename) {
+  const dlUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = dlUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(dlUrl);
+}
+
 function svgToPngDownload(svgMarkup, width, height, filename) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -24,15 +35,47 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     URL.revokeObjectURL(url);
+    canvas.toBlob(function (blob) { downloadBlob(blob, filename); }, "image/png");
+  };
+  img.onerror = function () {
+    URL.revokeObjectURL(url);
+    App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+  };
+  img.src = url;
+}
+
+/* Como svgToPngDownload, pero intenta primero abrir el panel nativo de
+   "Compartir" del dispositivo (WhatsApp, Instagram, etc.) cuando el
+   navegador lo soporta con archivos adjuntos; si no, cae en la descarga
+   normal — así el botón "Compartir" comparte de verdad en vez de solo
+   guardar la imagen en silencio. */
+function svgToPngShare(svgMarkup, width, height, filename, shareText) {
+  const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function () {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
     canvas.toBlob(function (blob) {
-      const dlUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = dlUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(dlUrl);
+      if (!blob) {
+        App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+        return;
+      }
+      const file = new File([blob], filename, { type: "image/png" });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: "Cumbre 90", text: shareText }).catch(function (err) {
+          if (err && err.name === "AbortError") return;
+          downloadBlob(blob, filename);
+          App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+        });
+        return;
+      }
+      downloadBlob(blob, filename);
+      App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
     }, "image/png");
   };
   img.onerror = function () {
@@ -57,7 +100,7 @@ function safeXml(str) {
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngDownload(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png");
+  svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png", "¡Este es mi progreso en mi camino hacia Sales Master con Atomy! 🚀");
 }
 
 function downloadCertificado(state) {
@@ -113,7 +156,7 @@ function downloadDiaCard(state, diaId) {
     '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Recorrido hacia el éxito con Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngDownload(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png");
+  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "¡Avanzando en mi Plan de 6 Días con Atomy! 🚀");
 }
 
 function wrapText(str, max) {
