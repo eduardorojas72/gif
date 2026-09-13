@@ -52,7 +52,7 @@ function nuevoProductoCatalogo(seed) {
   seed = seed || {};
   return {
     id: seed.id || "prod" + Math.random().toString(36).slice(2, 9),
-    categoria: seed.categoria || "Mis productos",
+    categoria: seed.categoria || "Meus produtos",
     nombre: seed.nombre || "",
     pv: seed.pv || 0,
     precio: seed.precio || 0,
@@ -70,7 +70,7 @@ function emptyCatalogoProductosPais(paisId) {
     return nuevoProductoCatalogo({ id: paisId + "-prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
   });
   const lineasLibres = Array.from({ length: 20 }, function (_, i) {
-    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Mis productos" });
+    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Meus produtos" });
   });
   return productos.concat(lineasLibres);
 }
@@ -198,9 +198,9 @@ function calcularDerivadosPeriodo(state, dias) {
   const out = { contactados: 0, presentaciones: 0, registros: 0, seguimientosRealizados: 0 };
   contactos.forEach(function (c) {
     if (c.estadoFecha && dias.indexOf(c.estadoFecha) !== -1) {
-      if (c.estado === "Contactado") out.contactados++;
-      else if (c.estado === "Presentación") out.presentaciones++;
-      else if (c.estado === "Socio" || c.estado === "Consumidor") out.registros++;
+      if (c.estado === "Contatado") out.contactados++;
+      else if (c.estado === "Apresentação") out.presentaciones++;
+      else if (c.estado === "Sócio" || c.estado === "Consumidor") out.registros++;
     }
     (c.seguimientosRealizados || []).forEach(function (f) {
       if (dias.indexOf(f) !== -1) out.seguimientosRealizados++;
@@ -218,7 +218,7 @@ function calcularDerivadosPeriodo(state, dias) {
    hoyISO()), en vez de reconstruir objetos Date locales, para no desalinearse del
    resto de la app (que ya guarda fechas en UTC vía toISOString()). */
 
-const calMesesEs = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const calMesesEs = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
 function calQuincenaKeyFromISO(iso) {
   const year = iso.slice(0, 4);
@@ -264,7 +264,7 @@ function calFechasEnQuincena(key) {
 
 function calQuincenaLabel(key) {
   const { year, month, half } = calParseQuincenaKey(key);
-  return (half === 1 ? "1–15" : "16–fin") + " de " + calMesesEs[month - 1] + " " + year;
+  return (half === 1 ? "1–15" : "16–fim") + " de " + calMesesEs[month - 1] + " " + year;
 }
 
 function calQuincenaLabelCorta(key) {
@@ -431,15 +431,15 @@ function hydrateState(parsed) {
   merged.contactos = Array.isArray(parsed.contactos)
     ? parsed.contactos.map((c) => {
         const mc = Object.assign(
-          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO(), seguimientosRealizados: [] },
+          { id: "c" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "", nivel: "Morno", estado: "A contatar", notas: "", notaSeguimiento: "", proximoSeguimiento: null, creado: hoyISO(), seguimientosRealizados: [] },
           c
         );
-        // Migración: la lista de estados pasó de 8 a 6 valores. "Presentado" se
-        // renombra a "Presentación"; "Primer Pedido" y "Seguimiento" (que tenían
-        // automatismos que ya no existen) caen de forma conservadora en "Contactado",
-        // ya que como mínimo esas personas fueron contactadas.
-        if (mc.estado === "Presentado") mc.estado = "Presentación";
-        else if (mc.estado === "Primer Pedido" || mc.estado === "Seguimiento") mc.estado = "Contactado";
+        // Migração: a lista de estados passou de 8 para 6 valores. "Presentado" é
+        // renomeado para "Apresentação"; "Primer Pedido" e "Seguimiento" (que tinham
+        // automatismos que já não existem) caem de forma conservadora em "Contatado",
+        // já que no mínimo essas pessoas foram contatadas.
+        if (mc.estado === "Presentado") mc.estado = "Apresentação";
+        else if (mc.estado === "Primer Pedido" || mc.estado === "Seguimiento") mc.estado = "Contatado";
         // estadoFecha: cuándo cambió por última vez el estado. Si no existe (contactos
         // guardados antes de este campo), se usa la fecha de creación como mejor estimado.
         if (!mc.estadoFecha) mc.estadoFecha = mc.creado;

@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi recorrido en Cumbre 90");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Oi, tenho uma dúvida sobre minha jornada na Cumbre 90");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Oi" + (nombre ? " " + nombre : "") + "! Como você está?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 Conquistei a conquista de \"" + titulo + "\" na minha jornada rumo a Sales Master com a Atomy! 🚀 Se você tiver curiosidade, me pergunte do que se trata.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,7 +25,7 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartilhar</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
@@ -138,10 +138,10 @@ const App = {
 
     (dia.actividades || []).forEach((a) => {
       const tipo = agendaTipoInfo(a.tipo);
-      revisar(a, "Cumbre 90 — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+      revisar(a, "Cumbre 90 — " + tipo.label, a.nota || "Você tem isso programado para às " + a.hora + ".");
     });
     (dia.zooms || []).forEach((z) => {
-      revisar(z, "Cumbre 90 — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+      revisar(z, "Cumbre 90 — Zoom: " + (z.titulo || "Reunião"), "Começa às " + z.hora + ".");
     });
   },
 
@@ -156,8 +156,8 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre 90 — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre 90 — Lembrete", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " mais)" : primero.text,
       });
     } catch (e) {
       /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
@@ -208,9 +208,9 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escrever para seu(sua) patrocinador(a)">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
-          ? '<button class="fab-tour" data-action="iniciar-tour" title="Ver recorrido explicativo">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
+          ? '<button class="fab-tour" data-action="iniciar-tour" title="Ver tour explicativo">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
           : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
@@ -386,17 +386,17 @@ const App = {
           try {
             parsed = JSON.parse(reader.result);
           } catch (e) {
-            this.showToast("Ese archivo no es un respaldo válido de Cumbre 90.");
+            this.showToast("Esse arquivo não é um backup válido da Cumbre 90.");
             return;
           }
-          if (!window.confirm("Esto reemplazará todos tus datos actuales (Lista de 250, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          if (!window.confirm("Isso vai substituir todos os seus dados atuais (Lista de 250, Árvore Genealógica, progresso) pelos do arquivo de backup. Continuar?")) return;
           const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
           this.state = hydrateState(parsed);
           this.state.racha = rh.racha;
           this.state.ultimaFecha = rh.ultimaFecha;
           this.persist(true);
           this.render();
-          this.showToast("Datos restaurados correctamente ✨");
+          this.showToast("Dados restaurados com sucesso ✨");
         };
         reader.readAsText(file);
         return;
@@ -523,7 +523,7 @@ const Actions = {
     App.ui.tourAbierto = false;
     App.state.tourVisto = true;
     App.persist(true);
-    App.showToast("Puedes volver a ver el recorrido con el botón flotante");
+    App.showToast("Você pode ver o tour novamente com o botão flutuante");
     App.render();
   },
 
@@ -599,9 +599,9 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const dia = DIAS.find((d) => d.id === dayId);
-    App.addActividad("Completaste la Etapa: " + dia.etapa);
+    App.addActividad("Você completou a Etapa: " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 6 Días conquistada.", tipo: "generic" };
+    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " do Plano de Arranque — 6 Dias conquistada.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
@@ -628,17 +628,17 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const semana = SEMANAS.find((s) => s.n === weekN);
-    App.addActividad("Completaste la Semana " + weekN + " (" + semana.paso + ")");
+    App.addActividad("Você completou a Semana " + weekN + " (" + semana.paso + ")");
     App.celebrate();
 
     const q = QUINCENAS.find((qq) => qq.n === semana.q);
     const semanasQ = SEMANAS.filter((s) => s.q === q.n);
     const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
     if (quincenaCompleta) {
-      App.addActividad("Conquistaste el Campamento: " + q.nombre);
+      App.addActividad("Você conquistou o Acampamento: " + q.nombre);
       const premio = App.state.premios[q.n - 1];
-      let sub = "Campamento del Plan de 90 Días conquistado.";
-      if (premio) sub += " Desbloqueaste el premio: " + premio.premio + ".";
+      let sub = "Acampamento do Plano de 90 Dias conquistado.";
+      if (premio) sub += " Você desbloqueou o prêmio: " + premio.premio + ".";
       App.ui.logro = { titulo: q.nombre, sub: sub, tipo: "generic" };
 
       const totalCompletas = QUINCENAS.filter((qq2) => {
@@ -647,7 +647,7 @@ const Actions = {
       }).length;
       if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
         App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "¡Completaste las 6 quincenas del Plan de 90 Días!", tipo: "cumbre" };
+        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "Você completou as 6 quinzenas do Plano de 90 Dias!", tipo: "cumbre" };
       }
     }
     App.persist(true);
@@ -660,8 +660,8 @@ const Actions = {
     App.state.rangoIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nuevo rango alcanzado en Atomy.", tipo: "rango", rangoIndex: i };
-      App.addActividad("Alcanzaste el rango: " + RANGOS[i].nombre);
+      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Novo rank alcançado na Atomy.", tipo: "rango", rangoIndex: i };
+      App.addActividad("Você alcançou o rank: " + RANGOS[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -689,15 +689,15 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Ative as permissões de notificação nas configurações do seu navegador.");
     }
   },
 
   "descargar-respaldo": function () {
     const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
     const fecha = hoyISO();
-    downloadBlob(blob, "Cumbre90-Respaldo-" + slugFile(App.state.nombre || "socio") + "-" + fecha + ".json");
-    App.showToast("Copia de seguridad descargada");
+    downloadBlob(blob, "Cumbre90-Backup-" + slugFile(App.state.nombre || "socio") + "-" + fecha + ".json");
+    App.showToast("Cópia de segurança baixada");
   },
 
   "reset-progress": function () {
@@ -712,7 +712,7 @@ const Actions = {
     App.ui.activeDay = null;
     App.ui.onboardingFoto = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progresso reiniciado");
     App.render();
   },
 
@@ -752,11 +752,11 @@ const Actions = {
     foco.ultimaFecha = rh.ultimaFecha;
     const pilar = LEMA_ATOMY.pilares.find((p) => p.n === foco.pilar);
     if (foco.racha === 7) {
-      App.showToast("¡1 semana seguida viviendo “" + pilar.t + "”! 🔥");
+      App.showToast("1 semana seguida vivendo “" + pilar.t + "”! 🔥");
     } else if (foco.racha === 21) {
       App.celebrate();
-      App.ui.logro = { titulo: pilar.t, sub: "21 días seguidos — ya es un hábito.", tipo: "generic" };
-      App.addActividad("Convertiste “" + pilar.t + "” en un hábito de 21 días.");
+      App.ui.logro = { titulo: pilar.t, sub: "21 dias seguidos — já é um hábito.", tipo: "generic" };
+      App.addActividad("Você transformou “" + pilar.t + "” em um hábito de 21 dias.");
     }
     App.persist(true);
     App.render();
@@ -782,16 +782,16 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Mensagem copiada — cole onde quiser!"),
+        () => App.showToast("Não foi possível copiar a mensagem")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Não foi possível copiar a mensagem");
     }
   },
 
   "add-contacto": function () {
-    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
+    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Morno", estado: "A contatar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
     App.ui.contactoEditId = null;
     App.render();
   },
@@ -830,11 +830,11 @@ const Actions = {
       App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [] }, d));
     }
     const nombreRegistrado = d.nombre.trim();
-    const quedoComoSocio = d.estado === "Socio" && estadoAnterior !== "Socio";
+    const quedoComoSocio = d.estado === "Sócio" && estadoAnterior !== "Sócio";
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contato salvo");
     if (quedoComoSocio) {
       App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: 6 }, () => ({ hora: "" })) };
     }
@@ -852,7 +852,7 @@ const Actions = {
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contato excluído");
     App.render();
   },
 
@@ -862,7 +862,7 @@ const Actions = {
     if (!c) return;
     c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
     App.persist(true);
-    App.showToast("Seguimiento programado");
+    App.showToast("Acompanhamento agendado");
     App.render();
   },
 
@@ -873,7 +873,7 @@ const Actions = {
     c.seguimientosRealizados.push(hoyISO());
     c.proximoSeguimiento = null;
     App.persist(true);
-    App.showToast("Seguimiento marcado como hecho");
+    App.showToast("Acompanhamento marcado como feito");
     App.render();
   },
 
@@ -907,7 +907,7 @@ const Actions = {
         Object.assign(nuevaActividadAgenda(), {
           tipo: "plan6",
           hora: hora,
-          nota: "Día " + (i + 1) + " — " + diaInfo.titulo + " — con " + d.contactoNombre,
+          nota: "Dia " + (i + 1) + " — " + diaInfo.titulo + " — com " + d.contactoNombre,
           recordar: !!hora,
           recordarMin: 10,
         })
@@ -915,7 +915,7 @@ const Actions = {
     }
     App.ui.agenda6Draft = null;
     App.persist(true);
-    App.showToast("Agenda del Plan de 6 Días creada con " + d.contactoNombre);
+    App.showToast("Agenda do Plano de 6 Dias criada com " + d.contactoNombre);
     App.render();
   },
 
@@ -950,11 +950,11 @@ const Actions = {
       navigator.share({ title: "Cumbre 90", text: texto }).catch(() => {});
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(texto).then(
-        () => App.showToast("Reflexión copiada — ¡pégala donde quieras!"),
-        () => App.showToast("No se pudo copiar el texto")
+        () => App.showToast("Reflexão copiada — cole onde quiser!"),
+        () => App.showToast("Não foi possível copiar o texto")
       );
     } else {
-      App.showToast("No se pudo copiar el texto");
+      App.showToast("Não foi possível copiar o texto");
     }
   },
 
@@ -974,8 +974,8 @@ const Actions = {
     if (completo && !App.state.escenarioCompletado) {
       App.state.escenarioCompletado = true;
       App.celebrate();
-      App.ui.logro = { titulo: "Escenario de Vida", sub: "Uniste los 8 puntos en un círculo perfecto — ya tienes claro tu “por qué”.", tipo: "generic" };
-      App.addActividad("Completaste tu Escenario de Vida — ¡círculo perfecto!");
+      App.ui.logro = { titulo: "Cenário de Vida", sub: "Você uniu os 8 pontos em um círculo perfeito — agora tem claro o seu “por quê”.", tipo: "generic" };
+      App.addActividad("Você completou seu Cenário de Vida — círculo perfeito!");
     } else if (!completo) {
       App.state.escenarioCompletado = false;
     }
@@ -1024,7 +1024,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad guardada");
+    App.showToast("Atividade salva");
     App.render();
   },
 
@@ -1040,7 +1040,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad eliminada");
+    App.showToast("Atividade excluída");
     App.render();
   },
 
@@ -1089,7 +1089,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión guardada");
+    App.showToast("Reunião salva");
     App.render();
   },
 
@@ -1105,18 +1105,18 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión eliminada");
+    App.showToast("Reunião excluída");
     App.render();
   },
 
   "copy-zoom-link": function (arg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(arg).then(
-        () => App.showToast("Enlace copiado"),
-        () => App.showToast("No se pudo copiar el enlace")
+        () => App.showToast("Link copiado"),
+        () => App.showToast("Não foi possível copiar o link")
       );
     } else {
-      App.showToast("No se pudo copiar el enlace");
+      App.showToast("Não foi possível copiar o link");
     }
   },
 
@@ -1198,7 +1198,7 @@ const Actions = {
     }
     App.ui.personaEnfoqueDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Pessoa salva");
     App.render();
   },
 
@@ -1215,7 +1215,7 @@ const Actions = {
     App.ui.confirmDeletePersonaEnfoque = null;
     App.ui.personaEnfoqueDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Pessoa excluída");
     App.render();
   },
 
@@ -1259,7 +1259,7 @@ const Actions = {
     }
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Pessoa salva");
     App.render();
   },
 
@@ -1273,7 +1273,7 @@ const Actions = {
     App.ui.confirmDeleteAscendente = null;
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Pessoa excluída");
     App.render();
   },
 
@@ -1314,7 +1314,7 @@ const Actions = {
     }
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contato salvo");
     App.render();
   },
 
@@ -1328,7 +1328,7 @@ const Actions = {
     App.ui.confirmDeleteSOS = null;
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contato excluído");
     App.render();
   },
 
@@ -1370,7 +1370,7 @@ const Actions = {
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contato salvo");
     App.render();
   },
 
@@ -1384,7 +1384,7 @@ const Actions = {
     App.ui.confirmDeleteContactoEvento = null;
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contato excluído");
     App.render();
   },
 
@@ -1466,7 +1466,7 @@ const Actions = {
 
   "add-producto": function () {
     const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
-    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    catalogo.push(nuevoProductoCatalogo({ categoria: "Meus produtos" }));
     App.persist(true);
     App.render();
   },
