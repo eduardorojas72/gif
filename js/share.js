@@ -44,11 +44,11 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
   img.src = url;
 }
 
-/* Como svgToPngDownload, pero intenta primero abrir el panel nativo de
-   "Compartir" del dispositivo (WhatsApp, Instagram, etc.) cuando el
-   navegador lo soporta con archivos adjuntos; si no, cae en la descarga
-   normal — así el botón "Compartir" comparte de verdad en vez de solo
-   guardar la imagen en silencio. */
+/* Genera el PNG y abre el modal propio de "Compartir" (WhatsApp, Instagram,
+   Facebook, TikTok, LinkedIn, YouTube), en vez de saltar directo al panel
+   nativo del sistema operativo — así el socio ve siempre las mismas redes,
+   sin que se cuelen apps de escritorio (Correo, Outlook, Paint...) que el
+   picker nativo del SO añade según lo que tenga instalado. */
 function svgToPngShare(svgMarkup, width, height, filename, shareText) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -65,17 +65,8 @@ function svgToPngShare(svgMarkup, width, height, filename, shareText) {
         App.showToast("Nu s-a putut genera imaginea. Încearcă din nou.");
         return;
       }
-      const file = new File([blob], filename, { type: "image/png" });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: "Cumbre 90", text: shareText }).catch(function (err) {
-          if (err && err.name === "AbortError") return;
-          downloadBlob(blob, filename);
-          App.showToast("Nu s-a putut deschide panoul de partajare — imaginea a fost descărcată.");
-        });
-        return;
-      }
-      downloadBlob(blob, filename);
-      App.showToast("Imaginea a fost descărcată — poți s-o atașezi oriunde vrei să o distribui.");
+      App.ui.compartirImagenDraft = { blob: blob, filename: filename, shareText: shareText || "" };
+      App.render();
     }, "image/png");
   };
   img.onerror = function () {
@@ -99,8 +90,59 @@ function safeXml(str) {
 
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
+  const filename = "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "partener") + ".png";
+  const template = RANK_CARD_TEMPLATES[state.rangoIndex];
+
+  if (template) {
+    const shareText = RANK_SHARE_TEXTS[state.rangoIndex] || "";
+    fetch(template.img)
+      .then(function (r) { return r.blob(); })
+      .then(function (blob) {
+        return new Promise(function (resolve, reject) {
+          const reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then(function (dataUri) {
+        const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+        svgToPngShare(svg, template.w, template.h, filename, shareText);
+      })
+      .catch(function () {
+        App.showToast("Nu s-a putut încărca imaginea. Încearcă din nou.");
+      });
+    return;
+  }
+
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "partener") + ".png", "Acesta este progresul meu pe drumul spre Sales Master cu Atomy! 🚀");
+  svgToPngShare(svg, 800, 1000, filename, "Acesta este progresul meu pe drumul spre Sales Master cu Atomy! 🚀");
+}
+
+/* Tarjeta "Consumidor VIP" — publicación lista para compartir e invitar a
+   nuevos consumidores. Usa la misma plantilla y el mismo parche de nombre
+   que la tarjeta de reconocimiento del rango 0 (RANK_CARD_TEMPLATES), pero
+   como botón dedicado y siempre visible en Mi Rango, con su propio texto
+   de invitación, sin depender de cuál sea el rango actual del socio. */
+function downloadConsumidorVipCard(state) {
+  const template = RANK_CARD_TEMPLATES[0];
+  fetch(template.img)
+    .then(function (r) { return r.blob(); })
+    .then(function (blob) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then(function (dataUri) {
+      const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+      svgToPngShare(svg, template.w, template.h, "Cumbre90-Consumidor-VIP-" + slugFile(state.nombre || "partener") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
+    })
+    .catch(function () {
+      App.showToast("Nu s-a putut încărca imaginea. Încearcă din nou.");
+    });
 }
 
 function downloadCertificado(state) {

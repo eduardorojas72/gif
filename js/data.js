@@ -173,6 +173,12 @@ const OCHO_PASOS = [
       "Știu să folosesc instrumente de design și editare, precum Canva sau CapCut, printre altele.",
       "Folosesc Inteligența Artificială ca suport pentru afacerea mea.",
       "Știu să folosesc platforme pentru pregătirea prezentărilor: PowerPoint, Prezi, printre altele.",
+      "Știu cum să schimb centrul de distribuție.",
+      "Îmi țin profilurile de rețele sociale la zi.",
+      "Comunic direct cu Corporate atunci când am nevoie.",
+      "Cunosc foarte bine Planul de Compensare.",
+      "Știu să generez un cod de Înregistrare și un cod QR.",
+      "Folosesc platforme de plată pentru a-mi finaliza comenzile comod.",
     ],
   },
 ];
@@ -198,6 +204,33 @@ const ESCENARIO_CATEGORIAS = [
   { id: "educacion", label: "Educație", icon: "book-open", pilar: "A învăța", ejemplo: "Îmi voi trimite copiii să studieze [specializare sau țară] până la [data]." },
   { id: "tiempolibre", label: "Timp liber", icon: "sparkles", pilar: "A trăi bine", ejemplo: "În prezent nu am aproape deloc timp liber, dar voi practica [un sport sau hobby] de [nr.] ori pe săptămână pentru sănătatea mea și voi concura la [un turneu sau obiectiv] până la [data]." },
   { id: "negocio", label: "Afacere", icon: "trending-up", pilar: "A trăi bine", ejemplo: "În prezent câștig $[suma] lunar ca [rangul meu actual] și voi avansa la [rangul următor], câștigând $[suma] lunar până la [data]." },
+];
+
+const DIARIO_FUTURO_INTRO =
+  "Scrie o scrisoare sau un jurnal din perspectiva „eu-lui tău viitor” — persoana de succes în care te vei transforma. Povestește-i eu-lui tău de azi cum ai reușit, ce ai învățat pe drum și ce i-ai spune ca să-l încurajezi să continue.";
+
+const DIARIO_FUTURO_EJEMPLO =
+  "Ex.: „Astăzi am absolvit Școala Succesului Atomy... Cu ceva timp în urmă am avut un vis și am muncit din greu ca să-l transform în realitate. Nu a fost ușor, dar fiecare pas a meritat. Dacă citești asta, continuă înainte — persoana în care te vei transforma îți va fi recunoscătoare.”";
+
+const GRAN_PLAN_3_INTRO =
+  "Desenează-ți viu planul de 3 ani: la ce dată vei atinge fiecare nivel de măiestrie, cu câte PV de grup și ce venituri. Nu trebuie completat lună de lună — adaugă reperele care au sens pentru tine, în anul care corespunde.";
+
+const EVALUACION_8PASOS_CATEGORIAS = [
+  { id: "metas", label: "Stabilirea obiectivelor", pregunta: "Ai stabilit obiective specifice de performanță în afacere, pentru o viață echilibrată?" },
+  { id: "propositos", label: "Hotărâre", pregunta: "Te-ai implicat activ în afacere și ai luat inițiativa de a-ți exprima opiniile față de ceilalți, cu o atitudine pozitivă?" },
+  { id: "lista", label: "Întocmirea listei", pregunta: "Ai făcut o listă cu toate persoanele pe care le cunoști în jurul tău?" },
+  { id: "contacto", label: "Contact", pregunta: "Ai alocat un timp anume în fiecare zi și ai comunicat cu ei în mod regulat?" },
+  { id: "descripcion", label: "Descrierea afacerii", pregunta: "Ai explicat următoarele? ① Filozofia companiei ② Produsele ③ Planul de compensare ④ Viziunea companiei" },
+  { id: "seguimiento", label: "Gestionarea urmăririi", pregunta: "Ți-ai făcut timp să răspunzi la orice reclamație sau neînțelegere legată de produse/afacere, în interval de 48 de ore?" },
+  { id: "consulta", label: "Consultanță", pregunta: "Ai găsit o soluție la vreo problemă datorită consultărilor cu partenerii?" },
+  { id: "replicacion", label: "Replicare", pregunta: "Ai învățat din succesul sponsorului tău și ai împărtășit propriile cunoștințe cu partenerii tăi?" },
+];
+
+const EVALUACION_8PASOS_BANDAS = [
+  { min: 0, max: 10, texto: "Abia începi. Urmărește videoclipurile de instruire despre cei opt pași spre succes, pe măsură ce avansezi." },
+  { min: 11, max: 20, texto: "Este posibil ca afacerea ta să avanseze lent. Încearcă să-ți sporești pasiunea și efortul." },
+  { min: 21, max: 30, texto: "Ești dedicat să fii în frunte. Fii atent la ce te înconjoară, ca să nu-ți scape nimic." },
+  { min: 31, max: 40, texto: "Perfecționezi cei opt pași spre succes și ești un model pentru sponsorul și partenerii tăi de afaceri." },
 ];
 
 const LEMA_ATOMY = {
@@ -1643,14 +1676,13 @@ const CATALOGO_PRODUCTOS_NOTA_VACIO = "Încă nu avem încărcat catalogul acest
 const CONTACTO_NIVELES = ["Cald", "Călduț", "Rece"];
 const CONTACTO_ESTADOS = ["De contactat", "Contactat", "Prezentare", "Partener", "Consumator", "Respins"];
 
-const PREMIOS_DEFECTO = [
-  { hito: "Atingerea a 300.000 PVP", premio: "Set cadou de 4 Pași", imagen: null },
-  { hito: "2 cicluri de 300.000 PVG într-o quincenă", premio: "Cremă nutritivă de aur", imagen: null },
-  { hito: "Sales Master în 45 de zile", premio: "Set FAME", imagen: null },
-];
+/* Gol în mod intenționat: premiile sunt definite de sponsor pentru echipa
+   lui, nu de aplicație — nu are sens să afișăm exemple ca și cum ar fi
+   promisiuni reale înainte ca el să le configureze. */
+const PREMIOS_DEFECTO = [];
 
 const RANGOS = [
-  { nombre: "Consumator Conștient", meta: "Punctul tău de start", pv: "0 PVP", tier: 1 },
+  { nombre: "Consumator VIP", meta: "Punctul tău de start", pv: "0 PVP", tier: 1 },
   { nombre: "Membru Atomy", meta: "10.000 PV personale", pv: "10.000 PVP", tier: 1 },
   { nombre: "Agent", meta: "300.000 PV personale", pv: "300.000 PVP", tier: 2 },
   { nombre: "Agent Special", meta: "700.000 PV personale", pv: "700.000 PVP", tier: 2 },
@@ -1659,6 +1691,23 @@ const RANGOS = [
 
 const MENSAJE_BIENVENIDA =
   "Bine ai venit în acest drum spre succes. Este conceput ca să te bucuri de călătorie, să-ți împarți progresele și să întrebi despre îndoielile sau dificultățile pe care le poți întâlni. Înainte!";
+
+/* Publicație gata de postat pe rețelele sociale, pe care partenerul o
+   distribuie când devine Consumator VIP, ca să-și invite contactele să
+   li se alăture. */
+const CONSUMIDOR_VIP_SHARE_TEXT =
+  "Știai că acum sunt Consumator VIP? Asta îmi permite să cumpăr produse de calitate premium pentru casa mea direct de la fabrică, fără intermediari și fără costuri suplimentare. Ai vrea să afli cum poți avea același privilegiu, fără să plătești vreo taxă de membru?";
+
+/* Publicații gata de postat pe rețelele sociale pentru fiecare rang atins,
+   în aceeași ordine ca RANGOS (indexul 4, Sales Master, folosește textul
+   generic din downloadRecogCard până se definește unul propriu). */
+const RANK_SHARE_TEXTS = [
+  CONSUMIDOR_VIP_SHARE_TEXT,
+  "Azi sunt super fericit(ă)! Am atins oficial nivelul de Membru Atomy, ajungând la primele mele 10.000 PVP. Asta înseamnă că îmi cumpăr produse de calitate premium pentru casă direct de la fabrică, fără intermediari, și îmi activez chiar de acum propriul sistem de puncte. Dacă vrei să afli cum poți face la fel de acasă, fără să plătești vreo taxă de membru, scrie-mi direct și îți explic pas cu pas. 🚀",
+  "NIVEL DEBLOCAT: AGENT ATOMY (300.000 PVP)! 🚀\n\nCe a început ca o decizie inteligentă de consum pentru casă devine astăzi o structură de afacere solidă. 🎉\n\nAtingerea calificării de Agent înseamnă că nu doar consum produse de calitate premium direct de la fabrică, ci viziunea se extinde: Punctele mele de Valoare Personale îmi permit acum să maximizez sistemul de comisioane și să conduc prin exemplu.\n\nCreșterea constantă este singurul drum atunci când există un sistem clar. Continuăm să urcăm spre culme! 💪🔥\n\n💬 Vrei să înveți cum să construiești un consum inteligent care se transformă în venituri pentru casa ta? Scrie-mi „AGENT” în privat și îți arăt harta drumului.",
+  "⭐ REALIZARE ATINSĂ: AGENT SPECIAL (700.000 PVP)! ⭐\n\nFiecare treaptă din această cursă reflectă două lucruri: constanță personală și impactul pozitiv asupra oamenilor care au încredere în acest proiect. 🌟\n\nA ajunge Agent Special reprezintă o poziție de leadership și o pregătire esențială. Aici nu e vorba doar despre a cumpăra mai bine, ci despre a-i învăța pe alții să-și optimizeze economia casei în timp ce își construiesc propria libertate.\n\nMulțumesc întregii echipe pentru impulsul de zi cu zi. Viziunea devine tot mai clară, iar obiectivele tot mai mari. 🏔️✨\n\n💬 Dacă cauți un proiect cu sens, fără taxe lunare și cu o echipă care te însoțește pas cu pas, trimite-mi cuvântul „SPECIAL” și discutăm.",
+  "🏆 VIS ÎMPLINIT: NOU SALES MASTER! 🏆\n\nAm ajuns în vârf! Atingerea măiestriei de SALES MASTER este recunoașterea disciplinei, a dăruirii și, mai presus de toate, a muncii în echipă. 🔥💎\n\nAceasta nu este o realizare individuală; este rezultatul faptului că am ajutat zeci de familii să consume inteligent, înlocuind produsele de zi cu zi cu unele de calitate premium la un preț corect. Când îi ajuți pe alții să câștige, măiestria vine ca o consecință firească.\n\nSales Master este dovada că sistemul funcționează, că perseverența dă roade și că acesta este doar începutul unui impact masiv. 🌍✨\n\nFiecărui membru al echipei, sponsorilor mei și celor care au crezut în viziune încă din prima zi: vă mulțumesc din suflet! Culmea se urcă în echipă. 👥💙\n\n💬 Ești gata să construiești ceva cu adevărat al tău? Scrie-mi „CULME” în privat și te învăț să-ți trasezi propriul plan de succes.",
+];
 
 /* ---------------------------------------------------------------
    IDIOMA DEL INFORME SEMANAL — el socio puede usar la app en un idioma

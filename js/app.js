@@ -18,20 +18,24 @@ function shareTextForLogro(titulo) {
   return "🏆 Am obținut realizarea \"" + titulo + "\" în drumul meu spre Sales Master cu Atomy! 🚀 Dacă ești curios, întreabă-mă despre ce este vorba.";
 }
 
+/* Instagram, TikTok y YouTube no tienen una URL pública para prellenar un
+   texto (a diferencia de WhatsApp/Facebook/LinkedIn) — por eso para esas
+   plataformas el botón copia el mensaje al portapapeles y abre la web/app,
+   en vez de fingir un intent que esas redes no ofrecen. YouTube no está
+   entre las opciones porque no admite publicar un texto suelto como éste. */
 function shareLogroLinksHTML(titulo) {
   const text = shareTextForLogro(titulo);
-  const url = typeof window !== "undefined" && window.location ? window.location.href : "";
-  const enc = encodeURIComponent(text + (url ? " " + url : ""));
-  const waUrl = "https://wa.me/?text=" + enc;
-  const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
-  const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Distribuie</span></button>";
+  const encText = encodeURIComponent(text);
+  const waUrl = "https://wa.me/?text=" + encText;
+  const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent("https://atomy.com") + "&quote=" + encText;
+  const liUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent("https://atomy.com");
   return (
     '<div class="share-chip-row">' +
-    nativeBtn +
-    '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
-    '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
-    '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
+    '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("whatsapp", { size: 15, color: "#25D366" }) + "<span>WhatsApp</span></a>" +
+    '<button class="share-chip" data-action="share-logro-plataforma" data-arg="instagram|' + escapeHtml(titulo) + '">' + Icon("instagram", { size: 15 }) + "<span>Instagram</span></button>" +
+    '<button class="share-chip" data-action="share-logro-plataforma" data-arg="tiktok|' + escapeHtml(titulo) + '">' + Icon("tiktok", { size: 15 }) + "<span>TikTok</span></button>" +
+    '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("facebook", { size: 15, color: "#1877F2" }) + "<span>Facebook</span></a>" +
+    '<a class="share-chip" href="' + liUrl + '" target="_blank" rel="noreferrer">' + Icon("linkedin", { size: 15, color: "#0A66C2" }) + "<span>LinkedIn</span></a>" +
     '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiază</span></button>" +
     "</div>"
   );
@@ -84,6 +88,16 @@ const App = {
     tourAbierto: false,
     tourPaso: 0,
     patrocinadorFabDraft: null,
+    confirmDeleteDistribuidor: null,
+    compartirImagenDraft: null,
+    confirmDeletePremio: null,
+    granPlanOpen: false,
+    confirmDeleteHito: null,
+    diarioFuturoOpen: false,
+    mesEvaluacion8Pasos: null,
+    mesPlanComercial: null,
+    confirmDeleteMetaPlan: null,
+    confirmDeleteAccionPlan: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -242,7 +256,7 @@ const App = {
         getCatalogoProductos(state, state.pais || "CO");
         mainHtml = renderReunionEnfoquePage(state, ui);
         break;
-      case "premios": mainHtml = renderPremios(state); break;
+      case "premios": mainHtml = renderPremios(state, ui); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "logros": mainHtml = renderLogros(state); break;
       case "cumbre": mainHtml = renderCumbre(state); break;
@@ -252,11 +266,13 @@ const App = {
     const container = document.getElementById("view-container");
     container.className = "view-container" + (isAuth ? " view-stack" : "");
     container.innerHTML = mainHtml;
+    document.getElementById("app-bg").classList.toggle("bg-logros", ui.view === "logros");
 
     document.getElementById("menu-slot").innerHTML = renderMenuSheet(ui);
 
     let modalHtml = "";
     if (ui.tourAbierto) modalHtml = renderTourModal(ui);
+    else if (ui.compartirImagenDraft) modalHtml = renderCompartirImagenModal(ui);
     else if (ui.patrocinadorFabDraft) modalHtml = renderPatrocinadorFabModal(ui);
     else if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
@@ -337,6 +353,12 @@ const App = {
           const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
           row.classList.toggle("hidden", !match);
         });
+      } else if (el.dataset && el.dataset.distribuidorField) {
+        const item = (this.state.distribuidoresDuplicado || []).find((d) => d.id === el.dataset.distribuidorId);
+        if (item) {
+          item[el.dataset.distribuidorField] = el.value;
+          this.persist();
+        }
       } else if (el.dataset && el.dataset.agenda6Hora != null && this.ui.agenda6Draft) {
         const i = Number(el.dataset.agenda6Hora);
         this.ui.agenda6Draft.dias[i] = this.ui.agenda6Draft.dias[i] || { hora: "" };
@@ -540,6 +562,13 @@ const Actions = {
     App.render();
   },
 
+  "salir-app": function () {
+    App.ui.menuOpen = false;
+    App.render();
+    window.close();
+    App.showToast("Dacă nu s-a închis singură, poți acum să închizi această filă sau să te întorci.");
+  },
+
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
   "close-menu": function () { App.ui.menuOpen = false; App.render(); },
 
@@ -669,10 +698,216 @@ const Actions = {
 
   "download-recog-card": function () { downloadRecogCard(App.state); },
   "download-cert": function () { downloadCertificado(App.state); },
+  "share-consumidor-vip": function () { downloadConsumidorVipCard(App.state); },
+
+  /* -------- Modal "Compartir" para tarjetas-imagen (WhatsApp/Instagram/TikTok/Facebook/LinkedIn/YouTube) -------- */
+
+  "cerrar-compartir-imagen": function () {
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
+  "compartir-imagen-descargar": function () {
+    const d = App.ui.compartirImagenDraft;
+    if (!d) return;
+    downloadBlob(d.blob, d.filename);
+    App.showToast("Imaginea a fost descărcată — poți s-o atașezi oriunde vrei să o distribui.");
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
+  "compartir-imagen-mas-opciones": function () {
+    const d = App.ui.compartirImagenDraft;
+    if (!d) return;
+    const file = new File([d.blob], d.filename, { type: "image/png" });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: "Cumbre 90", text: d.shareText }).catch(function (err) {
+        if (err && err.name === "AbortError") return;
+        downloadBlob(d.blob, d.filename);
+        App.showToast("Nu s-a putut deschide panoul de partajare — imaginea a fost descărcată.");
+      });
+    } else {
+      downloadBlob(d.blob, d.filename);
+      App.showToast("Imaginea a fost descărcată — poți s-o atașezi oriunde vrei să o distribui.");
+    }
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
+
+  /* Instagram, TikTok y YouTube no aceptan recibir un archivo adjunto desde
+     una página web sin servidor propio — se descarga la imagen y se abre la
+     app/web para que el socio la adjunte a mano, avisando siempre con un toast. */
+  "compartir-imagen-plataforma": function (arg) {
+    const d = App.ui.compartirImagenDraft;
+    if (!d) return;
+    downloadBlob(d.blob, d.filename);
+    const urls = {
+      whatsapp: "https://wa.me/?text=" + encodeURIComponent(d.shareText || ""),
+      facebook: "https://www.facebook.com/",
+      instagram: "https://www.instagram.com/",
+      tiktok: "https://www.tiktok.com/upload",
+      linkedin: "https://www.linkedin.com/feed/?shareActive=true",
+      youtube: "https://studio.youtube.com/",
+    };
+    const labels = { whatsapp: "WhatsApp", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", linkedin: "LinkedIn", youtube: "YouTube" };
+    if (urls[arg]) window.open(urls[arg], "_blank");
+    App.showToast("Imaginea a fost descărcată — deschide-o în " + (labels[arg] || arg) + " și atașeaz-o acolo.");
+    App.ui.compartirImagenDraft = null;
+    App.render();
+  },
 
   "toggle-mentor": function () {
     App.state.mentorMode = !App.state.mentorMode;
     App.persist();
+    App.render();
+  },
+
+  "add-premio": function () {
+    App.state.premios.push(nuevoPremio());
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-premio": function (arg) {
+    const i = Number(arg);
+    if (App.ui.confirmDeletePremio !== i) {
+      App.ui.confirmDeletePremio = i;
+      App.render();
+      return;
+    }
+    App.state.premios.splice(i, 1);
+    App.ui.confirmDeletePremio = null;
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Gran Plan 3 -------- */
+
+  "toggle-granplan": function () {
+    App.ui.granPlanOpen = !App.ui.granPlanOpen;
+    App.render();
+  },
+
+  "add-hito-granplan": function (arg) {
+    App.state.granPlan3[arg].push(nuevoHitoGranPlan());
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-hito-granplan": function (arg) {
+    const parts = arg.split("|");
+    const anio = parts[0];
+    const i = Number(parts[1]);
+    const key = arg;
+    if (App.ui.confirmDeleteHito !== key) {
+      App.ui.confirmDeleteHito = key;
+      App.render();
+      return;
+    }
+    App.state.granPlan3[anio].splice(i, 1);
+    App.ui.confirmDeleteHito = null;
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Diario de mi yo futuro -------- */
+
+  "toggle-diario-futuro": function () {
+    App.ui.diarioFuturoOpen = !App.ui.diarioFuturoOpen;
+    App.render();
+  },
+
+  /* -------- Evaluación mensual de Los 8 Pasos -------- */
+
+  "eval8pasos-mes-anterior": function () {
+    App.ui.mesEvaluacion8Pasos = mesAdyacente(App.ui.mesEvaluacion8Pasos || mesActualKey(), -1);
+    App.render();
+  },
+
+  "eval8pasos-mes-siguiente": function () {
+    App.ui.mesEvaluacion8Pasos = mesAdyacente(App.ui.mesEvaluacion8Pasos || mesActualKey(), 1);
+    App.render();
+  },
+
+  "set-puntaje-8pasos": function (arg, el) {
+    const catId = el.dataset.cat;
+    const valor = Number(arg);
+    const mesKey = App.ui.mesEvaluacion8Pasos || mesActualKey();
+    const ev = getEvaluacion8Pasos(App.state, mesKey);
+    ev.puntajes[catId] = ev.puntajes[catId] === valor ? 0 : valor;
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Plan comercial mensual -------- */
+
+  "planmensual-mes-anterior": function () {
+    App.ui.mesPlanComercial = mesAdyacente(App.ui.mesPlanComercial || mesActualKey(), -1);
+    App.render();
+  },
+
+  "planmensual-mes-siguiente": function () {
+    App.ui.mesPlanComercial = mesAdyacente(App.ui.mesPlanComercial || mesActualKey(), 1);
+    App.render();
+  },
+
+  "add-meta-planmensual": function () {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    getPlanComercialMensual(App.state, mesKey).metas.push(nuevaMetaPlanMensual());
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-meta-planmensual": function (arg) {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const meta = getPlanComercialMensual(App.state, mesKey).metas.find((m) => m.id === arg);
+    if (!meta) return;
+    meta.hecha = !meta.hecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-meta-planmensual": function (arg) {
+    if (App.ui.confirmDeleteMetaPlan !== arg) {
+      App.ui.confirmDeleteMetaPlan = arg;
+      App.render();
+      return;
+    }
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const plan = getPlanComercialMensual(App.state, mesKey);
+    plan.metas = plan.metas.filter((m) => m.id !== arg);
+    App.ui.confirmDeleteMetaPlan = null;
+    App.persist(true);
+    App.render();
+  },
+
+  "add-accion-planmensual": function () {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    getPlanComercialMensual(App.state, mesKey).acciones.push(nuevaAccionPlanMensual());
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-accion-planmensual": function (arg) {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const accion = getPlanComercialMensual(App.state, mesKey).acciones.find((a) => a.id === arg);
+    if (!accion) return;
+    accion.hecha = !accion.hecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-accion-planmensual": function (arg) {
+    if (App.ui.confirmDeleteAccionPlan !== arg) {
+      App.ui.confirmDeleteAccionPlan = arg;
+      App.render();
+      return;
+    }
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const plan = getPlanComercialMensual(App.state, mesKey);
+    plan.acciones = plan.acciones.filter((a) => a.id !== arg);
+    App.ui.confirmDeleteAccionPlan = null;
+    App.persist(true);
     App.render();
   },
 
@@ -769,13 +1004,21 @@ const Actions = {
     App.render();
   },
 
-  "share-logro-native": function (arg) {
-    const text = shareTextForLogro(arg);
-    if (navigator.share) {
-      navigator.share({ title: "Cumbre 90", text: text, url: window.location.href }).catch(() => {});
+  "share-logro-plataforma": function (arg) {
+    const parts = String(arg || "").split("|");
+    const platform = parts[0];
+    const titulo = parts.slice(1).join("|");
+    const text = shareTextForLogro(titulo);
+    const abrir = { instagram: "https://www.instagram.com/", tiktok: "https://www.tiktok.com/upload" };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        () => App.showToast("Text copiat — lipește-l în povestea sau postarea ta."),
+        () => App.showToast("Textul nu a putut fi copiat.")
+      );
     } else {
-      Actions["share-logro-copy"](arg);
+      App.showToast("Textul nu a putut fi copiat.");
     }
+    if (abrir[platform]) window.open(abrir[platform], "_blank");
   },
 
   "share-logro-copy": function (arg) {
@@ -940,6 +1183,37 @@ const Actions = {
     const est = App.state.pasos[n];
     if (!est) return;
     est.duplicaChecks[i] = !est.duplicaChecks[i];
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Paso 8 — seguimiento de duplicación por distribuidor -------- */
+
+  "add-distribuidor-duplica": function () {
+    App.state.distribuidoresDuplicado.push(nuevoDistribuidorDuplica());
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-distribuidor-duplica": function (arg) {
+    if (App.ui.confirmDeleteDistribuidor !== arg) {
+      App.ui.confirmDeleteDistribuidor = arg;
+      App.render();
+      return;
+    }
+    App.state.distribuidoresDuplicado = App.state.distribuidoresDuplicado.filter((d) => d.id !== arg);
+    App.ui.confirmDeleteDistribuidor = null;
+    App.persist(true);
+    App.showToast("Distribuitor eliminat");
+    App.render();
+  },
+
+  "toggle-distribuidor-duplica-check": function (arg) {
+    const parts = arg.split("|");
+    const item = App.state.distribuidoresDuplicado.find((d) => d.id === parts[0]);
+    if (!item) return;
+    const i = Number(parts[1]);
+    item.checks[i] = !item.checks[i];
     App.persist(true);
     App.render();
   },

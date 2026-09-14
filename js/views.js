@@ -60,10 +60,10 @@ function mountainMarkHTML(size, lit) {
 
 function renderWelcome() {
   return (
-    '<div class="center-screen">' +
+    '<div class="center-screen cover-screen">' +
     mountainMarkHTML(64, true) +
     '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
-    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Los 8 Pasos al Éxito</p>' +
+    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Cei 8 Pași ai Succesului</p>' +
     '<p class="muted" style="margin-top:22px;max-width:300px;font-size:15px;line-height:1.6">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
     '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Începe drumul meu ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copie cu licență exclusivă pentru ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
@@ -131,10 +131,11 @@ function renderSidebar(ui) {
       Icon(it.icon, { size: 20 }) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
+  const salir = '<button class="sidebar-item" style="color:var(--warn)" data-action="salir-app">' + Icon("log-out", { size: 20 }) + "<span>Ieși</span></button>";
   return (
     '<div class="sidebar">' +
     '<div class="sidebar-logo">' + mountainMarkHTML(26, true) + "</div>" +
-    items +
+    items + salir +
     '<div class="sidebar-spacer"></div>' +
     "</div>"
   );
@@ -149,6 +150,7 @@ function renderMenuSheet(ui) {
       medallionHTML(it.icon, 34) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
+  const salir = '<button class="menu-item" style="color:var(--warn)" data-action="salir-app">' + medallionHTML("log-out", 34) + "<span>Ieși</span></button>";
   return (
     '<div class="menu-overlay">' +
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
@@ -156,8 +158,8 @@ function renderMenuSheet(ui) {
     '<div class="menu-handle"></div>' +
     '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">CUMBRE 90</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
-    '<div class="menu-list">' + items + "</div>" +
-    (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licencia exclusiva: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
+    '<div class="menu-list">' + items + salir + "</div>" +
+    (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licență exclusivă: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
     "</div></div>"
   );
 }
@@ -463,6 +465,134 @@ function bucketListSectionHTML(state, ui) {
   );
 }
 
+/* ---------------- Gran Plan 3 — proyección a 3 años ---------------- */
+
+function granPlanHitoRowHTML(anio, i, h, confirmKey) {
+  const key = anio + "|" + i;
+  return (
+    '<div class="card" style="padding:10px 12px">' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' +
+    '<input type="text" placeholder="Dată (ex. 08/2026)" value="' + escapeHtml(h.fecha) + '" data-field="granPlan3.' + anio + "." + i + '.fecha" style="flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Nivel de măiestrie" value="' + escapeHtml(h.nivel) + '" data-field="granPlan3.' + anio + "." + i + '.nivel" style="flex:1.4;min-width:130px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:6px;align-items:center;flex-wrap:wrap">' +
+    '<input type="text" placeholder="PV de grup" value="' + escapeHtml(h.pvGrupal) + '" data-field="granPlan3.' + anio + "." + i + '.pvGrupal" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Venituri" value="' + escapeHtml(h.ingresos) + '" data-field="granPlan3.' + anio + "." + i + '.ingresos" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<div data-action="delete-hito-granplan" data-arg="' + key + '" style="cursor:pointer;color:var(--warn);font-size:11px;padding:4px;flex-shrink:0">' + (confirmKey === key ? "Ștergi?" : Icon("x", { size: 14 })) + "</div>" +
+    "</div></div>"
+  );
+}
+
+function granPlanAnioHTML(anio, label, hitos, ui) {
+  const rows = hitos.map(function (h, i) { return granPlanHitoRowHTML(anio, i, h, ui.confirmDeleteHito); }).join("");
+  return (
+    '<div style="margin-top:14px">' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light)">' + escapeHtml(label) + "</div>" +
+    '<div class="view-stack gap-sm" style="margin-top:6px">' + rows + "</div>" +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-hito-granplan" data-arg="' + anio + '">+ Adaugă reper</div>' +
+    "</div>"
+  );
+}
+
+function granPlanSectionHTML(state, ui) {
+  const open = !!ui.granPlanOpen;
+  const gp = state.granPlan3;
+  const total = gp.anio1.length + gp.anio2.length + gp.anio3.length;
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
+    '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Marele Plan 3 — proiecție pe 3 ani</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    '<div class="muted small" style="margin-top:4px">' + total + " repere salvate</div>" +
+    (open
+      ? '<p class="muted small" style="margin-top:8px;line-height:1.5">' + escapeHtml(GRAN_PLAN_3_INTRO) + "</p>" +
+        granPlanAnioHTML("anio1", "Anul 1", gp.anio1, ui) +
+        granPlanAnioHTML("anio2", "Anul 2", gp.anio2, ui) +
+        granPlanAnioHTML("anio3", "Anul 3", gp.anio3, ui)
+      : "") +
+    "</div>"
+  );
+}
+
+/* ---------------- Diario de mi yo futuro ---------------- */
+
+function diarioFuturoSectionHTML(state, ui) {
+  const open = !!ui.diarioFuturoOpen;
+  const texto = state.diarioFuturo.texto;
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
+    '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Jurnalul eu-lui meu viitor</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    (open
+      ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
+        '<textarea rows="8" placeholder="' + escapeHtml(DIARIO_FUTURO_EJEMPLO) + '" data-field="diarioFuturo.texto" style="margin-top:8px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;font-size:13px;outline:none;resize:vertical;font-family:inherit;line-height:1.5">' + escapeHtml(texto) + "</textarea>"
+      : '<p class="muted small" style="margin-top:6px">' + (texto ? "Ți-ai scris deja scrisoarea — apasă pentru a o vedea sau edita." : "Încă nu ai scris-o.") + "</p>") +
+    "</div>"
+  );
+}
+
+/* ---------------- Plan comercial mensual ---------------- */
+
+function planComercialMensualHTML(state, ui) {
+  const mesKey = ui.mesPlanComercial || mesActualKey();
+  const plan = getPlanComercialMensual(state, mesKey);
+
+  const metasHtml = plan.metas.map(function (m, i) {
+    return (
+      '<div class="row gap-2" style="align-items:center;margin-top:6px">' +
+      '<div class="avance-dot' + (m.hecha ? " on" : "") + '" style="cursor:pointer;flex-shrink:0" data-action="toggle-meta-planmensual" data-arg="' + m.id + '"></div>' +
+      '<input type="text" placeholder="Ex. Să câștig 3000 USD pe lună" value="' + escapeHtml(m.texto) + '" data-field="planComercialMensual.' + mesKey + ".metas." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (m.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
+      '<div data-action="delete-meta-planmensual" data-arg="' + m.id + '" style="cursor:pointer;color:var(--warn);flex-shrink:0">' + (ui.confirmDeleteMetaPlan === m.id ? Icon("check", { size: 13, color: "var(--warn)" }) : Icon("x", { size: 13 })) + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  const accionesHtml = plan.acciones.map(function (a, i) {
+    return (
+      '<div class="row gap-2" style="align-items:center;margin-top:6px">' +
+      '<div class="avance-dot' + (a.hecha ? " on" : "") + '" style="cursor:pointer;flex-shrink:0" data-action="toggle-accion-planmensual" data-arg="' + a.id + '"></div>' +
+      '<input type="text" placeholder="Ex. Sună 10 persoane pe zi" value="' + escapeHtml(a.texto) + '" data-field="planComercialMensual.' + mesKey + ".acciones." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (a.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
+      '<div data-action="delete-accion-planmensual" data-arg="' + a.id + '" style="cursor:pointer;color:var(--warn);flex-shrink:0">' + (ui.confirmDeleteAccionPlan === a.id ? Icon("check", { size: 13, color: "var(--warn)" }) : Icon("x", { size: 13 })) + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  const quincenasHtml = plan.quincenas.map(function (q, i) {
+    const label = i === 0 ? "Prima quincenă a lunii" : "A doua jumătate a lunii";
+    return (
+      '<div class="card" style="padding:10px 12px;margin-top:8px">' +
+      '<div class="muted small" style="font-weight:600">' + label + "</div>" +
+      '<div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:80px"><label class="muted small">Venituri</label><input type="number" value="' + (Number(q.ingresos) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.ingresos" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:80px"><label class="muted small">PV din vânzări</label><input type="number" value="' + (Number(q.pv) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:100px"><label class="muted small">Nivel de măiestrie</label><input type="text" value="' + escapeHtml(q.nivel) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.nivel" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      "</div></div>"
+    );
+  }).join("");
+
+  return (
+    '<div class="card">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("target", { size: 13, color: "var(--gold)" }) + " Plan comercial lunar</div>" +
+    '<div class="row between" style="margin-top:8px;align-items:center">' +
+    '<div data-action="planmensual-mes-anterior" style="cursor:pointer;padding:4px">' + Icon("chevron-left", { size: 16 }) + "</div>" +
+    '<div style="font-weight:700;font-size:13px;text-transform:capitalize">' + escapeHtml(mesLabel(mesKey)) + "</div>" +
+    '<div data-action="planmensual-mes-siguiente" style="cursor:pointer;padding:4px">' + Icon("chevron-right", { size: 16 }) + "</div>" +
+    "</div>" +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Obiective</div>' +
+    metasHtml +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-meta-planmensual">+ Adaugă obiectiv</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Plan de acțiuni</div>' +
+    accionesHtml +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-accion-planmensual">+ Adaugă acțiune</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Venituri pe quincenă</div>' +
+    quincenasHtml +
+    "</div>"
+  );
+}
+
 /* Núcleo reutilizable de la experiencia Escenario de Vida (radar + tarjetas de
    categoría + Lista de 100), sin el encabezado de sección ni la introducción —
    se usa tanto en la vista independiente como incrustado dentro del Día 1. */
@@ -479,6 +609,9 @@ function renderEscenarioVidaBody(state, ui) {
     "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">Cum se completează?</div>' + pasos + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
+    granPlanSectionHTML(state, ui) +
+    diarioFuturoSectionHTML(state, ui) +
+    planComercialMensualHTML(state, ui) +
     bucketListSectionHTML(state, ui)
   );
 }
@@ -490,6 +623,56 @@ function renderEscenarioVida(state, ui) {
     renderEscenarioVidaBody(state, ui)
   );
 }
+
+/* ---------------- Evaluación mensual de Los 8 Pasos ---------------- */
+
+function evaluacion8PasosHTML(state, ui) {
+  const mesKey = ui.mesEvaluacion8Pasos || mesActualKey();
+  const ev = getEvaluacion8Pasos(state, mesKey);
+
+  const filas = EVALUACION_8PASOS_CATEGORIAS.map(function (c) {
+    const val = ev.puntajes[c.id] || 0;
+    const dots = [1, 2, 3, 4, 5].map(function (n) {
+      const on = n <= val;
+      return '<div class="avance-dot' + (on ? " on" : "") + '" style="cursor:pointer" data-action="set-puntaje-8pasos" data-cat="' + c.id + '" data-arg="' + n + '"></div>';
+    }).join("");
+    return (
+      '<div style="margin-top:12px">' +
+      '<div style="font-size:13px;font-weight:600">' + escapeHtml(c.label) + "</div>" +
+      '<div class="muted small" style="margin-top:2px;line-height:1.45">' + escapeHtml(c.pregunta) + "</div>" +
+      '<div class="row gap-1" style="margin-top:6px">' + dots + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  const total = EVALUACION_8PASOS_CATEGORIAS.reduce(function (sum, c) { return sum + (ev.puntajes[c.id] || 0); }, 0);
+  const banda = EVALUACION_8PASOS_BANDAS.find(function (b) { return total >= b.min && total <= b.max; }) || EVALUACION_8PASOS_BANDAS[0];
+
+  return (
+    '<div class="card">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + " Evaluarea lunară a Celor 8 Pași</div>" +
+    '<div class="row between" style="margin-top:8px;align-items:center">' +
+    '<div data-action="eval8pasos-mes-anterior" style="cursor:pointer;padding:4px">' + Icon("chevron-left", { size: 16 }) + "</div>" +
+    '<div style="font-weight:700;font-size:13px;text-transform:capitalize">' + escapeHtml(mesLabel(mesKey)) + "</div>" +
+    '<div data-action="eval8pasos-mes-siguiente" style="cursor:pointer;padding:4px">' + Icon("chevron-right", { size: 16 }) + "</div>" +
+    "</div>" +
+    filas +
+    '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
+    '<div class="row between"><span style="font-weight:700;font-size:13px">Punctajul tău luna aceasta</span><span style="font-weight:700;font-size:18px;color:var(--gold)">' + total + "</span></div>" +
+    '<p class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(banda.texto) + "</p>" +
+    "</div>" +
+    '<div class="field" style="margin-top:12px"><label>Puncte de laudă</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.alabanza" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.alabanza) + "</textarea></div>" +
+    '<div class="field" style="margin-top:8px"><label>Puncte de reflecție</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.reflexion" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.reflexion) + "</textarea></div>" +
+    '<div class="field" style="margin-top:8px"><label>Comentariile sponsorului</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.comentarioPatrocinador" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.comentarioPatrocinador) + "</textarea></div>" +
+    "</div>"
+  );
+}
+
+const OCHO_CORE_NOTA_HTML =
+  '<div class="card" style="background:var(--accent-soft);border:none">' +
+  '<div class="row gap-2" style="font-weight:700;font-size:13px">' + Icon("check-circle", { size: 15, color: "var(--accent)" }) + " 8 Core-ul tău zilnic/lunar</div>" +
+  '<p class="muted small" style="margin-top:6px;line-height:1.55">Controlul acela zilnic (Citire, Vizionare VOD, Prezență la întâlniri, Folosirea produsului, Prezentarea planului, Livrarea către consumator, Consultanță cu sponsorul, Generarea încrederii) îl completezi deja pe pagina ta oficială Atomy — intră la <b>Urmează spre Succes → 8 Core-ul meu lunar</b> și marchează-l acolo zi de zi.</p>' +
+  "</div>";
 
 /* ---------------- Los 8 Pasos ---------------- */
 
@@ -542,6 +725,8 @@ function renderPasos(state, ui) {
         "</div>"
       : "";
 
+    const distribuidoresCard = p.n === 8 ? renderDistribuidoresDuplicaCard(state, ui) : "";
+
     const reflexion = p.reflexion
       ? '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
         '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("heart", { size: 13, color: "var(--gold)" }) + " Reflecție de împărțit</div>" +
@@ -567,19 +752,92 @@ function renderPasos(state, ui) {
         ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(p.guion.titulo) + "</div>" +
           p.guion.lineas.map(function (l) { return '<p style="font-size:13px;line-height:1.55;margin-top:6px">' + linkifyText(l) + "</p>"; }).join("")
         : "") +
+      (p.n === 1 ? '<div style="margin-top:14px">' + smartOkrCardHTML() + "</div>" : "") +
       checklist + duplicaChecklist + reflexion +
       "</div>";
     return (
       '<button class="flip-card paso-checklist' + (flipped ? " is-open" : "") + '" data-action="flip-paso" data-arg="' + p.n + '">' +
       '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
-      "</button>"
+      "</button>" +
+      distribuidoresCard
     );
   }).join("");
   const header =
     '<div class="section-header">' + pasosHeaderMedallionHTML(64) +
     '<div><h2>Cei 8 Pași ai Succesului</h2><p>Bazat pe învățăturile Președintelui Han-Gill Park. Apasă pe fiecare pas pentru explicația completă.</p></div></div>';
   return header +
-    '<div class="view-stack gap-sm">' + cards + "</div>";
+    '<div class="view-stack gap-sm">' + cards + "</div>" +
+    evaluacion8PasosHTML(state, ui) +
+    OCHO_CORE_NOTA_HTML;
+}
+
+/* Paso 8 — tabla de seguimiento: cada fila es un ítem de "Aprendo y Duplico",
+   cada columna un distribuidor del equipo. Vive FUERA del <button> volteable
+   (a diferencia del resto del contenido del paso) porque necesita <input> de
+   texto para el nombre — un <input> dentro de un <button> no es válido y en
+   la práctica el navegador no deja enfocarlo. */
+function renderDistribuidoresDuplicaCard(state, ui) {
+  const paso8 = OCHO_PASOS.find(function (p) { return p.n === 8; });
+  const items = (paso8 && paso8.duplicaChecklist) || [];
+  const distribuidores = state.distribuidoresDuplicado || [];
+  const confirmId = ui.confirmDeleteDistribuidor;
+  const addBtn = '<div class="btn-secondary" style="margin-top:12px;width:fit-content;cursor:pointer" data-action="add-distribuidor-duplica">+ Adaugă distribuitor</div>';
+
+  const intro =
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' +
+    Icon("users", { size: 13, color: "var(--gold)" }) + " Urmărirea duplicării pe distribuitor</div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Adaugă fiecare distribuitor din echipa ta și marchează, unul câte unul, sarcinile din „Învăț și Duplic” pe care i le-ai predat deja. Poți adăuga distribuitorii treptat, nu trebuie să-i pui pe toți deodată.</p>';
+
+  if (!distribuidores.length) {
+    return '<div class="card" style="margin-top:14px">' + intro + addBtn + "</div>";
+  }
+
+  const headerCells = distribuidores.map(function (d) {
+    const total = items.length;
+    const done = d.checks.filter(Boolean).length;
+    const deleteInner = confirmId === d.id ? "Ștergi?" : Icon("x", { size: 12 });
+    return (
+      '<th style="min-width:150px;padding:0 6px 8px;vertical-align:top;font-weight:400">' +
+      '<input type="text" value="' + escapeHtml(d.nombre) + '" placeholder="Numele distribuitorului" data-distribuidor-field="nombre" data-distribuidor-id="' + d.id + '" style="width:100%;font-size:12.5px;font-weight:700;padding:6px 8px">' +
+      '<div class="row between" style="margin-top:4px;align-items:center">' +
+      '<span class="muted" style="font-size:10.5px">' + done + "/" + total + "</span>" +
+      '<div data-action="delete-distribuidor-duplica" data-arg="' + d.id + '" style="cursor:pointer;color:var(--warn);font-size:10.5px;display:flex;align-items:center;gap:3px;white-space:nowrap">' + deleteInner + "</div>" +
+      "</div>" +
+      "</th>"
+    );
+  }).join("");
+
+  const bodyRows = items.map(function (item, i) {
+    const cells = distribuidores.map(function (d) {
+      const on = !!d.checks[i];
+      return (
+        '<td style="text-align:center;padding:5px 6px">' +
+        '<div class="check-dot' + (on ? " on" : "") + '" style="width:26px;height:26px;font-size:10px;margin:0 auto;cursor:pointer" data-action="toggle-distribuidor-duplica-check" data-arg="' + d.id + "|" + i + '">' +
+        (on ? Icon("check", { size: 12, color: "#1B1338" }) : "") +
+        "</div>" +
+        "</td>"
+      );
+    }).join("");
+    return (
+      '<tr>' +
+      '<td style="padding:5px 12px 5px 0;font-size:12px;color:var(--text-soft);max-width:230px;position:sticky;left:0;background:var(--card)">' + escapeHtml(item) + "</td>" +
+      cells +
+      "</tr>"
+    );
+  }).join("");
+
+  return (
+    '<div class="card" style="margin-top:14px">' +
+    intro +
+    '<div style="overflow-x:auto;margin-top:10px">' +
+    '<table style="border-collapse:collapse;width:100%">' +
+    '<thead><tr><th style="position:sticky;left:0;background:var(--card)"></th>' + headerCells + "</tr></thead>" +
+    "<tbody>" + bodyRows + "</tbody>" +
+    "</table>" +
+    "</div>" +
+    addBtn +
+    "</div>"
+  );
 }
 
 /* ---------------- El Lema de Atomy ---------------- */
@@ -610,6 +868,75 @@ function lemaFocoHTML(state) {
         "</div>"
       : "") +
     "</div>"
+  );
+}
+
+/* Contenido de SMART/OKR — vive como fuente única en el pilar 2 de El Lema
+   de Atomy, pero se reutiliza (con su propio botón de Compartir) en Etapa 5
+   del Plan 6 Días y en el Paso 1 de Los 8 Pasos, donde el socio realmente
+   define sus objetivos. */
+function smartOkrShareText() {
+  const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
+  return "Cum să-ți creezi obiective clare:\n\n" + marcos.map(function (m) {
+    return m.nombre + ": " + m.explicacion + " Exemplu: " + m.ejemplo;
+  }).join("\n\n");
+}
+
+function smartOkrCardHTML() {
+  const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
+  const marcosHtml = marcos.map(function (m) {
+    return (
+      '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:12px">' + escapeHtml(m.nombre) + "</div>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
+      '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
+    );
+  }).join("");
+  return (
+    '<div class="card">' +
+    '<div style="font-weight:700;font-size:14px;color:var(--gold-light)">Cum să-ți creezi obiectivele</div>' +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Două moduri simple de a transforma o intenție vagă într-un obiectiv real.</p>' +
+    marcosHtml +
+    '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Împarte</div>" +
+    "</div>"
+  );
+}
+
+/* Modal propio de "Compartir" para las tarjetas-imagen (Mi Perfil, tarjeta
+   del día): en vez de saltar directo al panel nativo del sistema operativo
+   (que en escritorio muestra apps como Correo/Outlook/Paint, no redes
+   sociales), se ofrecen siempre las mismas 6 redes. Instagram, TikTok y
+   YouTube no tienen forma de recibir un archivo adjunto desde la web sin
+   backend propio, así que esos botones descargan la imagen y abren la app/
+   web para que se adjunte a mano — se avisa con un toast, nunca en silencio. */
+function renderCompartirImagenModal(ui) {
+  const d = ui.compartirImagenDraft;
+  if (!d) return "";
+  const plataformas = [
+    { id: "whatsapp", label: "WhatsApp", color: "#25D366" },
+    { id: "instagram", label: "Instagram", color: "#E1306C" },
+    { id: "tiktok", label: "TikTok", color: "var(--text)" },
+    { id: "facebook", label: "Facebook", color: "#1877F2" },
+    { id: "linkedin", label: "LinkedIn", color: "#0A66C2" },
+    { id: "youtube", label: "YouTube", color: "#FF0000" },
+  ];
+  const botones = plataformas.map(function (p) {
+    return (
+      '<button class="share-platform-btn" data-action="compartir-imagen-plataforma" data-arg="' + p.id + '">' +
+      '<span class="share-platform-icon" style="color:' + p.color + '">' + Icon(p.id, { size: 22, color: p.color }) + "</span>" +
+      "<span>" + p.label + "</span></button>"
+    );
+  }).join("");
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cerrar-compartir-imagen"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Distribuie</span>' +
+    '<button class="icon-btn" data-action="cerrar-compartir-imagen">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Alege unde vrei să distribui imaginea.</p>' +
+    '<div class="share-platform-grid" style="margin-top:10px">' + botones + "</div>" +
+    '<button class="btn-secondary" style="margin-top:14px" data-action="compartir-imagen-descargar">' + Icon("download", { size: 15 }) + " Doar descarcă imaginea</button>" +
+    '<button class="link-btn small" style="margin-top:10px" data-action="compartir-imagen-mas-opciones">Mai multe opțiuni de distribuire</button>' +
+    "</div></div>"
   );
 }
 
@@ -654,7 +981,8 @@ function renderLema(state, ui) {
             '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
             '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
           );
-        }).join("")
+        }).join("") +
+        '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Împarte</div>"
       : "";
     const back =
       '<div class="flip-face flip-back">' +
@@ -730,6 +1058,7 @@ function renderDiaDetalle(state, ui, diaId) {
   const allChecked = est.checks.every(Boolean);
 
   const nota = dia.nota ? '<div class="card" style="background:var(--accent-soft);border:none;font-size:14px;line-height:1.55">' + linkifyText(dia.nota) + "</div>" : "";
+  const smartOkr = diaId === 5 ? smartOkrCardHTML() : "";
 
   const escenarioAbierto = !!ui.escenarioAbierto;
   const contenido = (dia.contenido || []).length
@@ -814,7 +1143,7 @@ function renderDiaDetalle(state, ui, diaId) {
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(dia.titulo) + "</p>" +
     '<p class="muted" style="font-size:13.5px;margin-top:6px;font-style:italic">' + escapeHtml(dia.objetivo) + "</p>" +
     "</div>" +
-    nota + contenido + campos +
+    nota + contenido + smartOkr + campos +
     '<div class="card">' +
     '<div class="row gap-2" style="font-weight:600;font-size:14px;margin-bottom:12px">' + Icon("sparkles", { size: 15, color: "var(--gold)" }) + " Întrebare rapidă de recapitulare</div>" +
     '<div style="font-size:14px;margin-bottom:12px">' + escapeHtml(dia.quiz.pregunta) + "</div>" +
@@ -1210,6 +1539,7 @@ function renderQuincenaDetalle(state, ui, qn) {
   const q = QUINCENAS.find(function (x) { return x.n === qn; });
   const semanas = SEMANAS.filter(function (s) { return s.q === qn; });
   const qDone = semanas.every(function (s) { return state.semanas[s.n] && state.semanas[s.n].done; });
+  const doneCount = Object.values(derivarQuincenas(state)).filter(Boolean).length;
 
   const semanasHtml = semanas.map(function (s) {
     const est = state.semanas[s.n];
@@ -1245,6 +1575,7 @@ function renderQuincenaDetalle(state, ui, qn) {
     '<h2 style="font-size:18px;font-weight:700;margin-top:2px">' + escapeHtml(q.nombre) + "</h2>" +
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(q.foco) + "</p>" +
     "</div>" +
+    quincenaAscensoHTML(doneCount) +
     semanasHtml +
     (qDone ? '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-size:14px;font-weight:600">🏕️ Quincenă finalizată!</div>' : "") +
     '<button class="btn-secondary" data-action="goto" data-arg="enfoque">' + Icon("target", { size: 15 }) + " Du-te la Întâlnirea de Focalizare</button>"
@@ -1253,9 +1584,19 @@ function renderQuincenaDetalle(state, ui, qn) {
 
 /* ---------------- Premios del patrocinador ---------------- */
 
-function renderPremios(state) {
+function renderPremios(state, ui) {
   const quincenasMap = derivarQuincenas(state);
   const desc = "Personalizează-le cum vrei — schimbă-le când îți convine, chiar și lună de lună.";
+  const addBtn = '<button class="btn-secondary" style="margin-top:12px" data-action="add-premio">+ Adaugă premiu</button>';
+
+  if (!state.premios.length) {
+    return sectionHeaderHTML("Premiile sponsorului tău", desc, "gift") +
+      '<div class="card" style="text-align:center">' +
+      Icon("gift", { size: 30, color: "var(--text-soft)" }) +
+      '<p class="muted small" style="margin-top:10px;line-height:1.5">Sponsorul tău încă nu a configurat premii aici. De îndată ce îți confirmă unul, adaugă-l cu butonul de mai jos.</p>' +
+      "</div>" + addBtn;
+  }
+
   const tiles = state.premios.map(function (p, i) {
     const desbloqueado = !!quincenasMap[i + 1];
     const media = p.imagen ? '<img src="' + p.imagen + '" alt="' + escapeHtml(p.premio) + '"/>' : Icon("gift", { size: 30, color: "#fff" });
@@ -1263,6 +1604,10 @@ function renderPremios(state) {
       '<label class="icon-btn" style="position:absolute;bottom:8px;right:8px;width:28px;height:28px;border-radius:999px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer">' +
       Icon("image-plus", { size: 14, color: "#fff" }) +
       '<input type="file" accept="image/*" class="hidden" data-target="premios.' + i + '.imagen"></label>';
+    const deleteBtn =
+      '<div class="icon-btn" style="position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:999px;background:rgba(0,0,0,0.35);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer" data-action="delete-premio" data-arg="' + i + '">' +
+      (ui.confirmDeletePremio === i ? Icon("check", { size: 12, color: "var(--warn)" }) : Icon("x", { size: 12 })) +
+      "</div>";
     const body =
       '<div class="field-inline" style="display:flex;flex-direction:column;gap:6px">' +
       '<input type="text" placeholder="Etapă" value="' + escapeHtml(p.hito) + '" data-field="premios.' + i + '.hito">' +
@@ -1274,7 +1619,7 @@ function renderPremios(state) {
       '<div class="tile-media" style="background:' + (p.imagen ? "transparent" : "radial-gradient(circle at 30% 20%, var(--accent-soft), var(--accent))") + '">' +
       media +
       '<div class="badge ' + (desbloqueado ? "gold" : "dark") + '" style="position:absolute;top:8px;right:8px">' + (desbloqueado ? "Finalizat" : "De obținut") + "</div>" +
-      uploadBtn +
+      uploadBtn + deleteBtn +
       "</div>" +
       '<div class="tile-body">' + body + "</div>" +
       "</div>"
@@ -1283,6 +1628,7 @@ function renderPremios(state) {
 
   return sectionHeaderHTML("Premiile sponsorului tău", desc, "gift") +
     '<div class="grid-2">' + tiles + "</div>" +
+    addBtn +
     '<p class="muted small" style="line-height:1.5">Realizările se marchează chiar de tine, în aplicație. Sponsorul tău va verifica etapa (de exemplu, cu o captură de ecran pe care i-o trimiți pe WhatsApp) înainte de a-ți da premiul.</p>';
 }
 
@@ -1323,6 +1669,12 @@ function renderPerfil(state) {
     '<input id="perfil-file" type="file" accept="image/*" class="hidden" data-target="foto">' +
     "</div>" +
     '<div class="text-center muted small" style="margin-top:-8px">🔥 ' + state.racha + " " + (state.racha === 1 ? "zi la rând" : "zile la rând") + "</div>" +
+    '<div class="card" style="text-align:center">' +
+    '<div style="font-weight:700;font-size:14px">Invită la Consumator VIP</div>' +
+    '<p class="muted small" style="line-height:1.5;margin-top:4px">Distribuie această postare pe rețelele tale sociale, ca să-ți descopere contactele beneficiile de a fi Consumator VIP cu Atomy.</p>' +
+    '<img src="img/consumidor-vip.png" alt="Consumator VIP" style="width:100%;max-width:220px;border-radius:14px;margin:10px auto 0;display:block">' +
+    '<button class="btn-primary" style="width:100%;margin-top:10px;color:#fff" data-action="share-consumidor-vip">' + Icon("share2", { size: 15, color: "#fff" }) + " Distribuie</button>" +
+    "</div>" +
     '<div>' +
     '<div style="font-size:14px;font-weight:600;margin-bottom:2px">Rangul tău</div>' +
     '<div class="muted small" style="margin-bottom:12px">Apasă insigna rangului pe care îl ai actualmente în Atomy.</div>' +
@@ -1362,7 +1714,7 @@ function renderLogros(state) {
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapele Planului de 6 Zile</div><div class="grid-3">' + etapas + "</div></div>" +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Taberele Planului de 90 de Zile</div><div class="grid-3">' + camps + "</div></div>" +
     (state.premios.length ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Premiile sponsorului tău</div><div class="grid-3">' + premios + "</div></div>" : "") +
-    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Realizarea finală</div><div class="grid-3">' + logroChipHTML("Sales Master — Culmea", cumbreLograda, "mountain-flag") + "</div></div>";
+    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Realizarea finală</div><div class="grid-3">' + logroChipHTML("Sales Master — Culmea", cumbreLograda, "mountain-flag", "img/logro-cumbre.png") + "</div></div>";
 }
 
 /* ---------------- Cumbre ---------------- */
