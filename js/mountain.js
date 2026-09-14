@@ -271,31 +271,48 @@ function fontFaceDefsSVG() {
    TARJETAS DE RANGO CON FOTO REAL — plantillas diseñadas por el equipo
    (img/*.png) que reemplazan el diseño dibujado a mano para los rangos que
    ya tienen foto propia. Cada plantilla trae su propia cinta con un
-   "Nombre" de plantilla; se tapa con un parche dorado a juego antes de
-   escribir encima el nombre real del socio, igual que en la tarjeta de
-   Consumidor VIP. El índice de este array coincide con RANGOS (data.js).
-   Sales Master (índice 4) sigue usando el diseño dibujado a mano de
-   recogCardSVGMarkup hasta que el patrocinador suba su propia foto. */
+   "Nombre" de plantilla; se tapa con un parche a juego (dorado o del color
+   propio de la cinta, ver maskColor/maskColorLight) antes de escribir
+   encima el nombre real del socio, en negrilla y siguiendo la curva de esa
+   cinta (arch: cuánto se arquea el nombre hacia arriba en el centro). El
+   índice de este array coincide con RANGOS (data.js). */
 const RANK_CARD_TEMPLATES = [
-  { img: "img/consumidor-vip.png", w: 1080, h: 1920, mask: { x: 210, y: 1172, width: 660, height: 96, rx: 20 }, textY: 1236, textColor: "#173B73" },
-  { img: "img/miembro-atomy.png", w: 1080, h: 1920, mask: { x: 250, y: 1165, width: 580, height: 130, rx: 18 }, textY: 1252, textColor: "#1a1a1a" },
-  { img: "img/agente.png", w: 1240, h: 1748, mask: { x: 300, y: 1290, width: 640, height: 155, rx: 20 }, textY: 1400, textColor: "#1a1a1a" },
-  { img: "img/agente-especial.png", w: 1240, h: 1748, mask: { x: 300, y: 985, width: 640, height: 110, rx: 18 }, textY: 1060, textColor: "#1a1a1a" },
-  null,
+  { img: "img/consumidor-vip.png", w: 1080, h: 1920, mask: { x: 190, y: 1160, width: 700, height: 120, rx: 20 }, textY: 1240, textColor: "#173B73", arch: 10 },
+  { img: "img/miembro-atomy.png", w: 1080, h: 1920, mask: { x: 230, y: 1150, width: 620, height: 150, rx: 18 }, textY: 1255, textColor: "#1a1a1a", arch: 10 },
+  { img: "img/agente.png", w: 1240, h: 1748, mask: { x: 270, y: 1275, width: 700, height: 180, rx: 20 }, textY: 1405, textColor: "#1a1a1a", arch: 12 },
+  { img: "img/agente-especial.png", w: 1240, h: 1748, mask: { x: 270, y: 970, width: 700, height: 135, rx: 18 }, textY: 1062, textColor: "#1a1a1a", arch: 10 },
+  { img: "img/sales-master.png", w: 1240, h: 1748, mask: { x: 260, y: 1250, width: 720, height: 120, rx: 20 }, textY: 1360, textColor: "#FFFFFF", arch: 34, maskColor: "#0B2050", maskColorLight: "#1E4E9E" },
 ];
+
+function rankCardNameFontSize(nombre) {
+  const len = (nombre || "Tu nombre").length;
+  if (len <= 13) return 92;
+  if (len <= 18) return 76;
+  if (len <= 24) return 62;
+  return 50;
+}
 
 function rankCardTemplateSVGMarkup(nombre, photoHref, template) {
   const name = safeXml(nombre || "Tu nombre");
-  const fontSize = nameFontSize(nombre);
+  const fontSize = rankCardNameFontSize(nombre);
+  const maskColor = template.maskColor || CARD_GOLD;
+  const maskColorLight = template.maskColorLight || CARD_GOLD_LIGHT;
+  const cx = template.w / 2;
+  const half = template.mask.width / 2 - 24;
+  const x1 = cx - half, x2 = cx + half;
+  const curveId = "nameCurve" + template.textY;
   return (
     '<svg xmlns="http://www.w3.org/2000/svg" width="' + template.w + '" height="' + template.h + '" viewBox="0 0 ' + template.w + " " + template.h + '">' +
     fontFaceDefsSVG() +
     '<image href="' + photoHref + '" x="0" y="0" width="' + template.w + '" height="' + template.h + '"/>' +
     '<linearGradient id="rankMask" x1="0" y1="0" x2="1" y2="0">' +
-    '<stop offset="0%" stop-color="' + CARD_GOLD + '"/><stop offset="50%" stop-color="' + CARD_GOLD_LIGHT + '"/><stop offset="100%" stop-color="' + CARD_GOLD + '"/>' +
+    '<stop offset="0%" stop-color="' + maskColor + '"/><stop offset="50%" stop-color="' + maskColorLight + '"/><stop offset="100%" stop-color="' + maskColor + '"/>' +
     "</linearGradient>" +
     '<rect x="' + template.mask.x + '" y="' + template.mask.y + '" width="' + template.mask.width + '" height="' + template.mask.height + '" rx="' + template.mask.rx + '" fill="url(#rankMask)"/>' +
-    '<text x="' + (template.w / 2) + '" y="' + template.textY + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + fontSize + '" fill="' + template.textColor + '">' + name + "</text>" +
+    '<path id="' + curveId + '" d="M ' + x1 + " " + template.textY + " Q " + cx + " " + (template.textY - template.arch) + " " + x2 + " " + template.textY + '" fill="none"/>' +
+    '<text text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-weight="700" font-size="' + fontSize + '" fill="' + template.textColor + '">' +
+    '<textPath href="#' + curveId + '" startOffset="50%">' + name + "</textPath>" +
+    "</text>" +
     "</svg>"
   );
 }
