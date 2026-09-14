@@ -19,6 +19,17 @@ function emptyPasoState(n) {
   return { checks: (paso.actividades || []).map(() => false), duplicaChecks: (paso.duplicaChecklist || []).map(() => false) };
 }
 
+/* ---------------- Passo 8 — acompanhamento de duplicação por distribuidor ---------------- */
+
+function duplicaChecklistLength() {
+  const paso8 = OCHO_PASOS.find((p) => p.n === 8);
+  return (paso8 && paso8.duplicaChecklist ? paso8.duplicaChecklist.length : 0);
+}
+
+function nuevoDistribuidorDuplica() {
+  return { id: "dd" + Math.random().toString(36).slice(2, 9), nombre: "", checks: Array(duplicaChecklistLength()).fill(false) };
+}
+
 function diaSemanaHoyId() {
   const map = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
   return map[new Date().getDay()];
@@ -46,6 +57,10 @@ function nuevoBucketItem() {
 
 function emptyBucketList() {
   return Array.from({ length: 100 }, function () { return nuevoBucketItem(); });
+}
+
+function nuevoPremio() {
+  return { hito: "", premio: "", imagen: null };
 }
 
 function nuevoProductoCatalogo(seed) {
@@ -149,6 +164,76 @@ function emptyEscenarioVida() {
     acc[c.id] = { meta: "", avance: 0 };
     return acc;
   }, {});
+}
+
+/* ---------------- Gran Plano 3 — projeção de rank/PV/renda a 3 anos ---------------- */
+
+function nuevoHitoGranPlan() {
+  return { id: "gp" + Math.random().toString(36).slice(2, 9), fecha: "", nivel: "", pvGrupal: "", ingresos: "" };
+}
+
+function emptyGranPlan3() {
+  return { anio1: [], anio2: [], anio3: [] };
+}
+
+/* ---------------- Diário do meu eu futuro ---------------- */
+
+function emptyDiarioFuturo() {
+  return { texto: "" };
+}
+
+/* ---------------- Avaliação mensal de Os 8 Passos + Plano comercial mensal ----------------
+   Ambas se guardam por mês do calendário ("YYYY-MM"), com o mesmo formato de
+   navegação mês a mês (independente das "quinzenas" do Plano 90 Dias). */
+
+function mesActualKey() {
+  return hoyISO().slice(0, 7);
+}
+
+function mesAdyacente(key, delta) {
+  const parts = key.split("-");
+  let y = Number(parts[0]), m = Number(parts[1]) + delta;
+  while (m > 12) { m -= 12; y += 1; }
+  while (m < 1) { m += 12; y -= 1; }
+  return y + "-" + String(m).padStart(2, "0");
+}
+
+function mesLabel(key) {
+  const parts = key.split("-");
+  return calMesesEs[Number(parts[1]) - 1] + " " + parts[0];
+}
+
+function emptyEvaluacion8Pasos() {
+  return { puntajes: {}, alabanza: "", reflexion: "", comentarioPatrocinador: "" };
+}
+
+function getEvaluacion8Pasos(state, mesKey) {
+  if (!state.evaluacion8Pasos[mesKey]) state.evaluacion8Pasos[mesKey] = emptyEvaluacion8Pasos();
+  return state.evaluacion8Pasos[mesKey];
+}
+
+function nuevaMetaPlanMensual() {
+  return { id: "pm" + Math.random().toString(36).slice(2, 9), texto: "", hecha: false };
+}
+
+function nuevaAccionPlanMensual() {
+  return { id: "pa" + Math.random().toString(36).slice(2, 9), texto: "", hecha: false };
+}
+
+function emptyPlanComercialMensual() {
+  return {
+    metas: [],
+    acciones: [],
+    quincenas: [
+      { ingresos: 0, pv: 0, nivel: "" },
+      { ingresos: 0, pv: 0, nivel: "" },
+    ],
+  };
+}
+
+function getPlanComercialMensual(state, mesKey) {
+  if (!state.planComercialMensual[mesKey]) state.planComercialMensual[mesKey] = emptyPlanComercialMensual();
+  return state.planComercialMensual[mesKey];
 }
 
 /* ---------------- Informe Semanal — registro diario de acciones ---------------- */
@@ -327,6 +412,10 @@ function defaultState() {
     contactos: [],
     escenarioVida: emptyEscenarioVida(),
     escenarioCompletado: false,
+    granPlan3: emptyGranPlan3(),
+    diarioFuturo: emptyDiarioFuturo(),
+    evaluacion8Pasos: {},
+    planComercialMensual: {},
     bucketList: emptyBucketList(),
     agenda: emptyAgenda(),
     lemaFoco: { pilar: null, racha: 0, ultimaFecha: null },
@@ -340,6 +429,7 @@ function defaultState() {
     llamadasSOS: [],
     contactosEventos: [],
     tourVisto: false,
+    distribuidoresDuplicado: [],
   };
 }
 
@@ -463,6 +553,43 @@ function hydrateState(parsed) {
   }, {});
   merged.escenarioCompletado = !!parsed.escenarioCompletado;
 
+  const granGuardado = parsed.granPlan3 && typeof parsed.granPlan3 === "object" ? parsed.granPlan3 : {};
+  merged.granPlan3 = {
+    anio1: Array.isArray(granGuardado.anio1) ? granGuardado.anio1.map(function (h) { return Object.assign(nuevoHitoGranPlan(), h); }) : [],
+    anio2: Array.isArray(granGuardado.anio2) ? granGuardado.anio2.map(function (h) { return Object.assign(nuevoHitoGranPlan(), h); }) : [],
+    anio3: Array.isArray(granGuardado.anio3) ? granGuardado.anio3.map(function (h) { return Object.assign(nuevoHitoGranPlan(), h); }) : [],
+  };
+
+  merged.diarioFuturo = {
+    texto: parsed.diarioFuturo && typeof parsed.diarioFuturo.texto === "string" ? parsed.diarioFuturo.texto : "",
+  };
+
+  const evalGuardada = parsed.evaluacion8Pasos && typeof parsed.evaluacion8Pasos === "object" ? parsed.evaluacion8Pasos : {};
+  merged.evaluacion8Pasos = Object.keys(evalGuardada).reduce(function (acc, mesKey) {
+    const saved = evalGuardada[mesKey] || {};
+    acc[mesKey] = {
+      puntajes: saved.puntajes && typeof saved.puntajes === "object" ? saved.puntajes : {},
+      alabanza: typeof saved.alabanza === "string" ? saved.alabanza : "",
+      reflexion: typeof saved.reflexion === "string" ? saved.reflexion : "",
+      comentarioPatrocinador: typeof saved.comentarioPatrocinador === "string" ? saved.comentarioPatrocinador : "",
+    };
+    return acc;
+  }, {});
+
+  const planGuardado = parsed.planComercialMensual && typeof parsed.planComercialMensual === "object" ? parsed.planComercialMensual : {};
+  merged.planComercialMensual = Object.keys(planGuardado).reduce(function (acc, mesKey) {
+    const saved = planGuardado[mesKey] || {};
+    const base = emptyPlanComercialMensual();
+    acc[mesKey] = {
+      metas: Array.isArray(saved.metas) ? saved.metas.map(function (m) { return Object.assign(nuevaMetaPlanMensual(), m); }) : [],
+      acciones: Array.isArray(saved.acciones) ? saved.acciones.map(function (a) { return Object.assign(nuevaAccionPlanMensual(), a); }) : [],
+      quincenas: Array.isArray(saved.quincenas) && saved.quincenas.length === 2
+        ? saved.quincenas.map(function (q) { return { ingresos: Number(q.ingresos) || 0, pv: Number(q.pv) || 0, nivel: q.nivel || "" }; })
+        : base.quincenas,
+    };
+    return acc;
+  }, {});
+
   merged.agenda = DIAS_SEMANA.reduce(function (acc, d) {
     const saved = parsed.agenda && parsed.agenda[d.id];
     const actividades = saved && Array.isArray(saved.actividades) ? saved.actividades.map(function (a) { return Object.assign(nuevaActividadAgenda(), a); }) : [];
@@ -551,6 +678,16 @@ function hydrateState(parsed) {
     : [];
 
   merged.tourVisto = !!parsed.tourVisto;
+
+  const totalDuplicaItems = duplicaChecklistLength();
+  merged.distribuidoresDuplicado = Array.isArray(parsed.distribuidoresDuplicado)
+    ? parsed.distribuidoresDuplicado.map(function (d) {
+        const base = nuevoDistribuidorDuplica();
+        const savedChecks = Array.isArray(d.checks) ? d.checks : [];
+        const checks = Array.from({ length: totalDuplicaItems }, function (_, i) { return !!savedChecks[i]; });
+        return Object.assign(base, d, { checks: checks });
+      })
+    : [];
 
   merged.actividad = Array.isArray(parsed.actividad) ? parsed.actividad : [];
   merged.rangoIndex =

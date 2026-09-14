@@ -173,6 +173,12 @@ const OCHO_PASOS = [
       "Sei usar ferramentas de design e edição como Canva ou CapCut, entre outras.",
       "Uso a Inteligência Artificial como apoio para o meu negócio.",
       "Sei usar plataformas para preparar apresentações: PowerPoint, Prezi, entre outras.",
+      "Sei como mudar de centro de distribuição.",
+      "Tenho meus perfis de redes sociais atualizados.",
+      "Me comunico diretamente com o Corporativo quando preciso.",
+      "Conheço muito bem o Plano de Compensação.",
+      "Sei gerar um código de Registro e um código QR.",
+      "Uso plataformas de pagamento para completar meus pedidos com facilidade.",
     ],
   },
 ];
@@ -198,6 +204,33 @@ const ESCENARIO_CATEGORIAS = [
   { id: "educacion", label: "Educação", icon: "book-open", pilar: "Aprender", ejemplo: "Vou enviar meus filhos para estudar [curso ou país] até [data]." },
   { id: "tiempolibre", label: "Lazer", icon: "sparkles", pilar: "Viver bem", ejemplo: "Atualmente quase não tenho tempo livre, mas vou praticar [um esporte ou hobby] [n.º] vezes por semana pela minha saúde, e vou competir em [um torneio ou meta] até [data]." },
   { id: "negocio", label: "Negócio", icon: "trending-up", pilar: "Viver bem", ejemplo: "Atualmente ganho $[valor] por mês como [meu rank atual], e vou subir para [o próximo rank] ganhando $[valor] por mês até [data]." },
+];
+
+const DIARIO_FUTURO_INTRO =
+  "Escreva uma carta ou diário do ponto de vista do seu “eu futuro” — a pessoa de sucesso em quem você vai se tornar. Conte ao seu eu de hoje como você conseguiu, o que aprendeu pelo caminho e o que diria para incentivá-lo a continuar.";
+
+const DIARIO_FUTURO_EJEMPLO =
+  "Ex.: “Hoje me formei na Escola de Sucesso da Atomy... Há um tempo tive um sonho e trabalhei duro para realizá-lo. Não foi fácil, mas cada passo valeu a pena. Se você está lendo isso, continue em frente — a pessoa em quem você vai se tornar vai agradecer.”";
+
+const GRAN_PLAN_3_INTRO =
+  "Desenhe vividamente o seu plano de 3 anos: em que data você alcançará cada nível de maestria, com quantos PV grupais e qual renda. Não é preciso preencher mês a mês — adicione os marcos que fizerem sentido para você, no ano correspondente.";
+
+const EVALUACION_8PASOS_CATEGORIAS = [
+  { id: "metas", label: "Estabelecimento de metas", pregunta: "Você estabeleceu objetivos de desempenho empresarial específicos para uma vida equilibrada?" },
+  { id: "propositos", label: "Propósitos", pregunta: "Você se envolveu ativamente nos negócios e tomou a iniciativa de expressar suas opiniões aos outros com uma atitude positiva?" },
+  { id: "lista", label: "Fazer uma lista", pregunta: "Você fez uma lista de todas as pessoas que conhece ao seu redor?" },
+  { id: "contacto", label: "Contato", pregunta: "Você dedicou um tempo específico todos os dias e se comunicou com elas regularmente?" },
+  { id: "descripcion", label: "Descrição do negócio", pregunta: "Você explicou o seguinte? ① Filosofia da empresa ② Produtos ③ Plano de compensação ④ Visão corporativa" },
+  { id: "seguimiento", label: "Gestão de acompanhamento", pregunta: "Você tirou um tempo para responder a qualquer reclamação ou mal-entendido sobre produtos/negócios dentro de 48 horas?" },
+  { id: "consulta", label: "Consulta", pregunta: "Você encontrou uma solução para algum problema graças às consultas com seus sócios?" },
+  { id: "replicacion", label: "Replicação", pregunta: "Você aprendeu sobre o sucesso do seu patrocinador e compartilhou seu próprio conhecimento com seus sócios?" },
+];
+
+const EVALUACION_8PASOS_BANDAS = [
+  { min: 0, max: 10, texto: "Você está apenas começando. Veja os vídeos de capacitação sobre os oito passos rumo ao sucesso à medida que avança." },
+  { min: 11, max: 20, texto: "É possível que o seu negócio esteja avançando lentamente. Tente aumentar sua paixão e seu esforço." },
+  { min: 21, max: 30, texto: "Você está dedicado a estar à frente. Preste atenção ao seu entorno para não deixar nada passar despercebido." },
+  { min: 31, max: 40, texto: "Você está aperfeiçoando os oito passos rumo ao sucesso e servindo de modelo para seu patrocinador e sócios de negócio." },
 ];
 
 const LEMA_ATOMY = {
@@ -1643,14 +1676,13 @@ const CATALOGO_PRODUCTOS_NOTA_VACIO = "Ainda não temos o catálogo deste país 
 const CONTACTO_NIVELES = ["Quente", "Morno", "Frio"];
 const CONTACTO_ESTADOS = ["A contatar", "Contatado", "Apresentação", "Sócio", "Consumidor", "Descartado"];
 
-const PREMIOS_DEFECTO = [
-  { hito: "Alcançar 300.000 PVP", premio: "Set de 4 Passos de brinde", imagen: null },
-  { hito: "2 ciclos de 300.000 PVG em uma quinzena", premio: "Creme nutritivo de ouro", imagen: null },
-  { hito: "Sales Master em 45 dias", premio: "Set FAME", imagen: null },
-];
+/* Vazio de propósito: os prêmios são definidos pelo patrocinador para sua
+   equipe, não pelo app — não faz sentido mostrar exemplos como se fossem
+   promessas reais antes de ele configurá-los. */
+const PREMIOS_DEFECTO = [];
 
 const RANGOS = [
-  { nombre: "Consumidor Consciente", meta: "Seu ponto de partida", pv: "0 PVP", tier: 1 },
+  { nombre: "Consumidor VIP", meta: "Seu ponto de partida", pv: "0 PVP", tier: 1 },
   { nombre: "Membro Atomy", meta: "10.000 PV pessoais", pv: "10.000 PVP", tier: 1 },
   { nombre: "Agente", meta: "300.000 PV pessoais", pv: "300.000 PVP", tier: 2 },
   { nombre: "Agente Especial", meta: "700.000 PV pessoais", pv: "700.000 PVP", tier: 2 },
@@ -1659,6 +1691,22 @@ const RANGOS = [
 
 const MENSAJE_BIENVENIDA =
   "Bem-vindo a esta jornada rumo ao sucesso. Ela foi criada para que você aproveite o percurso, compartilhe seu progresso e tire suas dúvidas ou dificuldades que encontrar. Vamos lá!";
+
+/* Publicação pronta para redes sociais que o sócio compartilha ao se tornar
+   Consumidor VIP, para convidar seus contatos a entrar. */
+const CONSUMIDOR_VIP_SHARE_TEXT =
+  "Você sabia que agora eu sou Consumidor VIP? Isso me permite adquirir produtos de qualidade premium para minha casa direto da fábrica, sem intermediários nem custos extras. Quer saber como ter esse mesmo privilégio sem pagar nenhuma mensalidade?";
+
+/* Publicações prontas para redes sociais para cada rank alcançado, na mesma
+   ordem de RANGOS (índice 4, Sales Master, usa o texto genérico de
+   downloadRecogCard até que um próprio seja definido). */
+const RANK_SHARE_TEXTS = [
+  CONSUMIDOR_VIP_SHARE_TEXT,
+  "Hoje estou muito feliz! Alcancei oficialmente o nível de Membro Atomy, chegando aos meus primeiros 10.000 PVP. Isso significa que adquiro produtos de qualidade premium para minha casa direto da fábrica, sem intermediários, e já ativo meu próprio sistema de pontos. Se você quer descobrir como fazer o mesmo a partir da sua casa sem pagar mensalidades, me manda uma mensagem direta que eu explico passo a passo. 🚀",
+  "NÍVEL DESBLOQUEADO: AGENTE ATOMY (300.000 PVP)! 🚀\n\nO que começou como uma decisão inteligente de consumo para o lar hoje se transforma em uma estrutura de negócio sólida. 🎉\n\nAlcançar a qualificação de Agente significa que não só consumo produtos de qualidade premium direto da fábrica, mas a visão se expande: meus Pontos de Valor Pessoais agora me permitem maximizar o sistema de comissões e liderar pelo exemplo.\n\nO crescimento constante é o único caminho quando existe um sistema claro. Seguimos escalando a cumbre! 💪🔥\n\n💬 Quer aprender a construir um consumo inteligente que se traduza em renda para a sua casa? Me escreve \"AGENTE\" no privado que eu te mostro o mapa da rota.",
+  "⭐ CONQUISTA ALCANÇADA: AGENTE ESPECIAL (700.000 PVP)! ⭐\n\nCada degrau nessa jornada reflete duas coisas: constância pessoal e o impacto positivo nas pessoas que confiam neste projeto. 🌟\n\nChegar a Agente Especial representa uma posição de liderança e preparação fundamental. Aqui não se trata só de comprar melhor, mas de ensinar outras pessoas a otimizar a economia da sua casa enquanto constroem a própria liberdade.\n\nObrigado(a) a toda a equipe pelo impulso diário. A visão fica cada vez mais clara e as metas, cada vez maiores. 🏔️✨\n\n💬 Se você busca um projeto com propósito, sem mensalidades e com uma equipe que te acompanha passo a passo, me manda a palavra \"ESPECIAL\" que a gente conversa.",
+  "🏆 SONHO REALIZADO: NOVO SALES MASTER! 🏆\n\nChegamos ao topo! Alcançar a maestria de SALES MASTER é o reconhecimento à disciplina, à entrega e, acima de tudo, ao trabalho em equipe. 🔥💎\n\nEsta não é uma conquista individual; é o resultado de ajudar dezenas de famílias a consumir com inteligência, substituindo produtos do dia a dia por qualidade premium a um preço justo. Quando você ajuda outras pessoas a vencer, a maestria chega como consequência natural.\n\nSales Master é a prova de que o sistema funciona, que a perseverança compensa e que isso é só o começo de um impacto em grande escala. 🌍✨\n\nA cada membro da equipe, aos meus patrocinadores e a quem acreditou na visão desde o dia um: muito obrigado(a) de coração! A cumbre se escala em equipe. 👥💙\n\n💬 Pronto(a) para construir algo verdadeiramente seu? Me escreve \"CUMBRE\" no privado que eu te ensino a traçar o seu próprio plano de sucesso.",
+];
 
 /* ---------------------------------------------------------------
    IDIOMA DEL INFORME SEMANAL — el socio puede usar la app en un idioma

@@ -44,11 +44,11 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
   img.src = url;
 }
 
-/* Como svgToPngDownload, pero intenta primero abrir el panel nativo de
-   "Compartir" del dispositivo (WhatsApp, Instagram, etc.) cuando el
-   navegador lo soporta con archivos adjuntos; si no, cae en la descarga
-   normal — así el botón "Compartir" comparte de verdad en vez de solo
-   guardar la imagen en silencio. */
+/* Gera o PNG e abre o modal próprio de "Compartilhar" (WhatsApp, Instagram,
+   Facebook, TikTok, LinkedIn, YouTube), em vez de pular direto para o painel
+   nativo do sistema operacional — assim o sócio vê sempre as mesmas redes,
+   sem que apareçam apps de desktop (Correio, Outlook, Paint...) que o
+   seletor nativo do SO adiciona conforme o que estiver instalado. */
 function svgToPngShare(svgMarkup, width, height, filename, shareText) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -65,17 +65,8 @@ function svgToPngShare(svgMarkup, width, height, filename, shareText) {
         App.showToast("Não foi possível gerar a imagem. Tente de novo.");
         return;
       }
-      const file = new File([blob], filename, { type: "image/png" });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: "Cumbre 90", text: shareText }).catch(function (err) {
-          if (err && err.name === "AbortError") return;
-          downloadBlob(blob, filename);
-          App.showToast("Não foi possível abrir o painel de compartilhamento — a imagem foi baixada.");
-        });
-        return;
-      }
-      downloadBlob(blob, filename);
-      App.showToast("A imagem foi baixada — agora você pode anexá-la onde quiser compartilhá-la.");
+      App.ui.compartirImagenDraft = { blob: blob, filename: filename, shareText: shareText || "" };
+      App.render();
     }, "image/png");
   };
   img.onerror = function () {
@@ -99,8 +90,59 @@ function safeXml(str) {
 
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
+  const filename = "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png";
+  const template = RANK_CARD_TEMPLATES[state.rangoIndex];
+
+  if (template) {
+    const shareText = RANK_SHARE_TEXTS[state.rangoIndex] || "";
+    fetch(template.img)
+      .then(function (r) { return r.blob(); })
+      .then(function (blob) {
+        return new Promise(function (resolve, reject) {
+          const reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then(function (dataUri) {
+        const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+        svgToPngShare(svg, template.w, template.h, filename, shareText);
+      })
+      .catch(function () {
+        App.showToast("Não foi possível carregar a imagem. Tente de novo.");
+      });
+    return;
+  }
+
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png", "Este é o meu progresso no meu caminho até Sales Master com a Atomy! 🚀");
+  svgToPngShare(svg, 800, 1000, filename, "Este é o meu progresso no meu caminho até Sales Master com a Atomy! 🚀");
+}
+
+/* Cartão "Consumidor VIP" — publicação pronta para compartilhar e convidar
+   novos consumidores. Usa o mesmo modelo e o mesmo remendo de nome do
+   cartão de reconhecimento do rank 0 (RANK_CARD_TEMPLATES), mas como botão
+   dedicado e sempre visível em Meu Rank, com seu próprio texto de convite,
+   sem depender de qual seja o rank atual do sócio. */
+function downloadConsumidorVipCard(state) {
+  const template = RANK_CARD_TEMPLATES[0];
+  fetch(template.img)
+    .then(function (r) { return r.blob(); })
+    .then(function (blob) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then(function (dataUri) {
+      const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+      svgToPngShare(svg, template.w, template.h, "Cumbre90-Consumidor-VIP-" + slugFile(state.nombre || "socio") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
+    })
+    .catch(function () {
+      App.showToast("Não foi possível carregar a imagem. Tente de novo.");
+    });
 }
 
 function downloadCertificado(state) {
