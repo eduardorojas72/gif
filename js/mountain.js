@@ -215,24 +215,9 @@ function heroMountainHTML(overlayHtml) {
    de picos) — usada como fondo compartido en las tarjetas de las 6
    quincenas del Plan 90 y en las insignias de "6 conquistas" de Logros. */
 function campMountainBadgeSVG(dim) {
-  const gid = "cb" + Math.random().toString(36).slice(2, 8);
-  const stars = [];
-  for (let i = 0; i < 12; i++) {
-    stars.push([(i * 23.7) % 100, (i * 17.3) % 42, 0.5 + (i % 3) * 0.3]);
-  }
   return (
-    '<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;' + (dim ? "filter:grayscale(.35);opacity:.7" : "") + '">' +
-    '<defs><linearGradient id="sky' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0%" stop-color="#04070F"/><stop offset="55%" stop-color="#0E3358"/><stop offset="100%" stop-color="#1F5E90"/>' +
-    "</linearGradient></defs>" +
-    '<rect width="100" height="100" fill="url(#sky' + gid + ')"/>' +
-    stars.map(function (s) { return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity="0.85"/>'; }).join("") +
-    '<circle cx="18" cy="16" r="7" fill="#EAF4FF" opacity="0.9"/>' +
-    '<path d="M0 68 L14 46 L26 58 L40 34 L52 50 L66 30 L80 52 L92 42 L100 60 L100 100 L0 100 Z" fill="#0A1B33"/>' +
-    '<path d="M0 78 L18 58 L34 70 L50 48 L64 66 L82 52 L100 72 L100 100 L0 100 Z" fill="#050C18"/>' +
-    '<rect x="0" y="88" width="100" height="12" fill="#0B2038"/>' +
-    '<rect x="0" y="88" width="100" height="1.4" fill="#EAF4FF" opacity="0.25"/>' +
-    "</svg>"
+    '<img src="img/montana-plan90.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' +
+    (dim ? "filter:grayscale(.35);opacity:.7" : "") + '">'
   );
 }
 
