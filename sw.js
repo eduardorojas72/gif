@@ -1,10 +1,10 @@
-/* Service worker de Cumbre 90 — cachea los archivos estáticos para uso offline.
-   Estrategia "network-first": siempre intenta traer la versión más reciente
-   del servidor primero, y solo usa la copia en caché si no hay red. Así,
-   cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
-   vieja atascada en el caché del navegador. */
+/* Cumbre 90 service worker — caches static files for offline use.
+   "Network-first" strategy: always tries to fetch the latest version from
+   the server first, and only falls back to the cached copy when there's no
+   network. This way, every new deploy shows up immediately without any
+   trace of an old version stuck in the browser cache. */
 
-const CACHE_NAME = "cumbre90-cache-v3";
+const CACHE_NAME = "cumbre90-cache-v4";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -19,6 +19,18 @@ const CORE_ASSETS = [
   "./js/views.js",
   "./js/app.js",
   "./icons/icon.svg",
+  "./img/cover-cumbre90.png",
+  "./img/hero-plan6dias.png",
+  "./img/fondo-app.png",
+  "./img/fondo-logros.png",
+  "./img/montana-plan90.png",
+  "./img/montana-quincena.png",
+  "./img/logro-cumbre.png",
+  "./img/consumidor-vip.png",
+  "./img/miembro-atomy.png",
+  "./img/agente.png",
+  "./img/agente-especial.png",
+  "./img/sales-master.png",
 ];
 
 self.addEventListener("install", (event) => {

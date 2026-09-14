@@ -85,12 +85,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   overflow: hidden;
 }
 
-#app-bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
+:root {
+  --star-layers:
     radial-gradient(ellipse 900px 500px at 20% -8%, rgba(79, 163, 227, 0.20), transparent 60%),
     radial-gradient(ellipse 700px 500px at 100% 15%, rgba(232, 185, 78, 0.10), transparent 55%),
     radial-gradient(1.6px 1.6px at 12% 8%, rgba(255,255,255,.75), transparent 100%),
@@ -109,15 +105,31 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     radial-gradient(1px 1px at 22% 90%, rgba(255,255,255,.4), transparent 100%),
     linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size:
+  --star-sizes:
     auto, auto,
     100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
     100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
     100% 100%, 100% 100%,
     34px 34px, 34px 34px;
-  background-position:
+  --star-positions:
     0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
     -1px -1px, -1px -1px;
+  --bg-overlay: linear-gradient(180deg, rgba(5,10,20,0.55), rgba(5,10,20,0.88));
+}
+
+#app-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: var(--star-layers), var(--bg-overlay), url("../img/fondo-app.png");
+  background-size: var(--star-sizes), cover, cover;
+  background-position: var(--star-positions), center, center;
+}
+#app-bg.bg-logros {
+  background-image: var(--star-layers), var(--bg-overlay), url("../img/fondo-logros.png");
+  background-size: var(--star-sizes), cover, cover;
+  background-position: var(--star-positions), center, center;
 }
 
 .app-shell {
@@ -194,8 +206,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     padding: 16px 0;
     box-shadow: var(--shadow);
     z-index: 30;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
-  .sidebar-logo { margin-bottom: 12px; }
+  .sidebar-logo { margin-bottom: 12px; flex-shrink: 0; }
   .sidebar-item {
     width: 56px;
     height: 56px;
@@ -276,6 +290,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .flip-card { width: 100%; height: 240px; perspective: 1200px; text-align: left; transition: height .5s cubic-bezier(.4,.15,.2,1); }
 .flip-card.is-open { height: 430px; }
 .flip-card.is-open.short { height: 260px; }
+/* steps with a checklist + reflection need quite a bit more height so
+   everything fits without relying only on scrolling */
+.flip-card.paso-checklist.is-open { height: 620px; max-height: 80vh; }
 .flip-inner {
   position: relative; width: 100%; height: 100%;
   transition: transform .5s cubic-bezier(.4,.15,.2,1);
@@ -294,7 +311,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   display: flex; flex-direction: column;
 }
 .flip-front { align-items: center; text-align: center; gap: 6px; }
-.flip-back { transform: rotateY(180deg); text-align: left; overflow-y: auto; border-color: var(--gold); }
+.flip-back {
+  transform: rotateY(180deg); text-align: left; overflow-y: auto; border-color: var(--gold);
+  -webkit-overflow-scrolling: touch; touch-action: pan-y; overscroll-behavior: contain;
+}
+
+/* On mobile, the 3D flip combined with internal scrolling confuses the drag
+   gesture (the browser can't tell whether the touch should scroll the card
+   or the page), and the content gets "stuck" halfway without being able to
+   reach the Activities. For touch/imprecise pointers, the 3D flip is
+   disabled entirely: the back face is shown in normal flow (automatic
+   height), and it's the page that scrolls — a single scroll, no conflicts. */
+@media (hover: none), (pointer: coarse) {
+  .flip-card { height: auto !important; max-height: none !important; perspective: none; }
+  .flip-inner { transform: none !important; transition: none; }
+  .flip-face { position: static; overflow: visible; backface-visibility: visible; }
+  .flip-inner:not(.flipped) .flip-back { display: none; }
+  .flip-inner.flipped .flip-front { display: none; }
+  .flip-back { transform: none; overflow-y: visible; -webkit-overflow-scrolling: auto; touch-action: auto; }
+}
 
 .section-header { display: flex; align-items: center; gap: 12px; }
 .section-header h2 { font-size: 18px; font-weight: 700; color: var(--text); }
@@ -390,7 +425,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 /* forms */
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12px; font-weight: 600; color: var(--text); }
-.field input[type="text"], .field input:not([type]), .field textarea {
+.field input[type="text"], .field input[type="date"], .field input[type="time"], .field input:not([type]), .field textarea {
   background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft); color: var(--text);
   border-radius: 12px; padding: 11px 13px; font-size: 14px; outline: none; width: 100%;
   resize: none; transition: border-color .15s ease;
@@ -553,7 +588,36 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .modal-backdrop { position: absolute; inset: 0; background: rgba(4, 2, 12, 0.72); }
 .modal-card { position: relative; z-index: 1; background: linear-gradient(160deg, var(--card), var(--bg-2)); border: 1px solid var(--border); border-radius: 26px; padding: 26px 22px; max-width: 340px; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: var(--shadow); }
 
-/* modal de "logro conseguido" — texto dorado sobre fondo azul, para compartir */
+/* explanatory walkthrough (onboarding tour) */
+.tour-card { max-width: 420px; padding: 28px 24px; gap: 4px; }
+.tour-icon-circle {
+  width: 62px; height: 62px; border-radius: 999px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(232, 185, 78, 0.12); box-shadow: inset 0 0 0 1px var(--border);
+}
+.tour-dots { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+.tour-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--border); transition: width .2s ease, background .2s ease; }
+.tour-dot.active { width: 18px; background: var(--gold); }
+.tour-nav { display: flex; gap: 8px; width: 100%; margin-top: 18px; }
+.tour-nav > button { width: auto; flex: 1; min-width: 0; padding: 12px 10px; font-size: 13px; }
+@media (max-width: 420px) {
+  .tour-card { padding: 24px 16px; }
+  .tour-nav { flex-wrap: wrap; }
+  .tour-nav > button { flex: 1 1 auto; }
+}
+
+/* floating button to reopen the explanatory walkthrough */
+.fab-tour {
+  position: fixed; bottom: 88px; right: max(16px, calc((100vw - var(--max-w)) / 2 + 16px));
+  width: 46px; height: 46px; border-radius: 999px; background: linear-gradient(160deg, var(--accent), #2C6FB0);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 10px 24px -6px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.15); z-index: 25;
+}
+@media (min-width: 900px) {
+  .fab-tour { right: max(24px, calc((100vw - 560px) / 2 - 40px)); }
+}
+
+/* "achievement unlocked" modal — gold text on a blue background, for sharing */
 .logro-modal {
   background: linear-gradient(165deg, #0A1B33, #163A62 55%, #0A1B33);
   border: 1px solid var(--gold);
@@ -580,10 +644,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .share-chip:active { transform: scale(.97); }
 
+.share-platform-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.share-platform-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600;
+  padding: 12px 6px; border-radius: 14px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer;
+}
+.share-platform-btn:active { transform: scale(.96); }
+.share-platform-icon { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 999px; background: rgba(255,255,255,0.06); }
+
 /* onboarding / welcome */
 .center-screen {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 32px; text-align: center; min-height: 100vh; min-height: 100dvh;
+}
+.cover-screen {
+  background-image: linear-gradient(180deg, rgba(5,10,20,0.35) 0%, rgba(5,10,20,0.55) 55%, rgba(5,10,20,0.92) 100%), url("../img/cover-cumbre90.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .photo-picker {
   width: 96px; height: 96px; border-radius: 999px; border: 2px dashed var(--gold);
@@ -592,16 +671,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .photo-picker img { width: 100%; height: 100%; object-fit: cover; }
 
-/* escena montaña compacta (Inicio / cabecera Plan 90 Días) */
-.mountain-wrap { border-radius: var(--radius-lg); border: 1px solid var(--border-soft); padding: 10px; overflow: hidden; width: 100%; text-align: left; }
+/* compact mountain scene (Home / 90-Day Plan header) */
+.mountain-wrap {
+  border-radius: var(--radius-lg); border: 1px solid var(--border-soft); overflow: hidden; width: 100%; text-align: left;
+  background-image: url("../img/montana-plan90.png"); background-size: cover; background-position: center;
+}
+.mountain-wrap .mountain-caption { padding: 6px 10px 8px; }
+
+.quincena-ascenso-wrap {
+  position: relative; width: 100%; height: 150px; border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft); overflow: hidden;
+  background-image: linear-gradient(180deg, rgba(4,8,16,0.1), rgba(4,8,16,0.55)), url("../img/montana-quincena.png");
+  background-size: cover; background-position: center;
+}
+.ascenso-marker {
+  position: absolute; width: 18px; height: 18px; border-radius: 999px; transform: translate(-50%, -50%);
+  background: #F0C468; border: 2px solid #FBE7AE; box-shadow: 0 0 0 7px rgba(240, 196, 104, 0.3);
+  transition: top .4s ease;
+}
+.ascenso-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 20px 14px 10px;
+  background: linear-gradient(0deg, rgba(4,8,16,0.85), transparent);
+  color: #F5EFE1; font-size: 12.5px; font-weight: 600;
+}
 .mountain-caption { font-size: 12px; color: var(--text-soft); padding: 6px 4px 0; }
 
-/* tarjeta de reconocimiento (premium, dorado) — el contenido es un SVG generado en JS */
+/* recognition card (premium, gold) — the content is an SVG generated in JS */
 .recog-card {
   border-radius: 26px; overflow: hidden; position: relative; width: 100%; aspect-ratio: 4 / 5;
   box-shadow: var(--glow-gold); background: #0A0716;
 }
 .recog-card svg { display: block; width: 100%; height: 100%; }
+/* ranks with a real photo (RANK_CARD_TEMPLATES): each template comes with
+   its own image format, so the container takes on its native aspect ratio
+   instead of the 4:5 of the hand-drawn cards. */
+.recog-card.ratio-1080x1920 { aspect-ratio: 1080 / 1920; }
+.recog-card.ratio-1240x1748 { aspect-ratio: 1240 / 1748; }
 
 /* utilidades */
 .hidden { display: none !important; }
@@ -623,6 +728,29 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .avance-dot { width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--border); background: transparent; transition: background .15s ease, border-color .15s ease, transform .1s ease; }
 .avance-dot:active { transform: scale(0.9); }
 .avance-dot.on { background: linear-gradient(180deg, var(--gold-light), var(--gold)); border-color: var(--gold); }
+
+/* ---- Focus Meeting: tabs, line summary, roster cards ---- */
+.tabs { display: flex; gap: 6px; background: rgba(255,255,255,0.04); border-radius: 12px; padding: 4px; }
+.tab-btn { flex: 1; text-align: center; padding: 9px 10px; border-radius: 9px; font-size: 13px; font-weight: 700; color: var(--text-soft); }
+.tab-btn.active { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #1B1338; }
+
+.resumen-linea { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.resumen-linea .card { padding: 12px; }
+.resumen-linea .rl-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gold-light); }
+.resumen-linea .rl-value { font-size: 18px; font-weight: 700; margin-top: 3px; }
+.resumen-linea .rl-sub { font-size: 11.5px; color: var(--text-soft); margin-top: 2px; }
+
+.roster-row .rr-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.roster-row input[type="number"], .roster-row input[type="date"] {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft); color: var(--text);
+  border-radius: 9px; padding: 8px 10px; font-size: 13px; outline: none;
+}
+.roster-row input[type="number"]:focus, .roster-row input[type="date"]:focus { border-color: var(--gold); }
+.roster-check { display: flex; align-items: center; gap: 8px; margin-top: 8px; cursor: pointer; }
+.roster-check .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.roster-check.on .box { background: linear-gradient(180deg, var(--gold-light), var(--gold)); border-color: var(--gold); color: #1B1338; }
+.roster-check .lbl { font-size: 12.5px; font-weight: 600; color: var(--text-soft); }
+.roster-check.on .lbl { color: var(--success); }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }

@@ -5,6 +5,7 @@
 
 const ICON_PATHS = {
   menu: '<line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="20.5" y2="20.5"/>',
   x: '<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>',
   "check-circle": '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/>',
   circle: '<circle cx="12" cy="12" r="9"/>',
@@ -56,6 +57,15 @@ const ICON_PATHS = {
   plane: '<path d="M3 12.8 20.5 4l-6.3 16.5-2.9-7.3L3 12.8Z"/>',
   coins: '<circle cx="9" cy="14.5" r="5.5"/><path d="M13.2 5.3a5.5 5.5 0 1 1 0 10.4"/><path d="M6.7 14.5h4.6"/>',
   car: '<path d="M5 16.5 6.2 11a2 2 0 0 1 1.9-1.4h7.8a2 2 0 0 1 1.9 1.4l1.2 5.5"/><rect x="3.5" y="16.5" width="17" height="3.5" rx="1"/><circle cx="7.5" cy="18.2" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.5" cy="18.2" r="1.3" fill="currentColor" stroke="none"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/>',
+  video: '<rect x="3" y="6.5" width="13" height="11" rx="1.5"/><path d="M16.5 10.5 21 7.5v9l-4.5-3Z"/>',
+  "log-out": '<path d="M9 21H5.5A1.5 1.5 0 0 1 4 19.5v-15A1.5 1.5 0 0 1 5.5 3H9"/><path d="M16 17l5-5-5-5"/><line x1="21" y1="12" x2="9" y2="12"/>',
+  whatsapp: '<path d="M6.5 17.5 4 20l2.6-.7A8 8 0 1 0 4 12a8 8 0 0 0 2.5 5.5Z"/><path d="M9 9.6c.3-.8 1-.7 1.4-.2l.6 1c.2.3.1.6-.1.9l-.4.5c-.2.3-.1.6.1.9.5.7 1.3 1.4 2.1 1.8.3.1.6.1.8-.1l.5-.5c.3-.3.6-.3.9-.1l1 .6c.4.3.5 1-.1 1.4-1.5 1.1-3.8.3-5.4-1.3S8 11 9 9.6Z" fill="currentColor" stroke="none"/>',
+  instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/>',
+  facebook: '<circle cx="12" cy="12" r="9"/><path d="M14 8.5h-1.5c-.8 0-1.3.5-1.3 1.3V11H14l-.3 2.2h-1.9V20h-2.3v-6.8H8V11h1.5V9.6c0-1.9 1.1-3.1 3-3.1H14Z" fill="currentColor" stroke="none"/>',
+  tiktok: '<path d="M14 3.5c.4 2 1.8 3.4 3.8 3.6v2.6c-1.4 0-2.7-.4-3.8-1.2v6.6a5 5 0 1 1-4.3-4.9v2.7a2.3 2.3 0 1 0 1.7 2.2V3.5Z"/>',
+  linkedin: '<rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.2" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><line x1="8.2" y1="11.2" x2="8.2" y2="17"/><path d="M11.5 17v-4c0-1.4 1-2.3 2.2-2.3 1.2 0 2 .9 2 2.3v4"/>',
+  youtube: '<rect x="2.5" y="6" width="19" height="12" rx="3.5"/><path d="M10.2 9.5 15 12l-4.8 2.5Z" fill="currentColor" stroke="none"/>',
 };
 
 function Icon(name, opts) {

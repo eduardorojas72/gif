@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------
-   TARJETAS EXPORTABLES — SVG -> PNG vía canvas (100% cliente)
+   EXPORTABLE CARDS — SVG -> PNG via canvas (100% client-side)
 --------------------------------------------------------------- */
 
 function themeColors() {
@@ -13,6 +13,17 @@ function themeColors() {
   };
 }
 
+function downloadBlob(blob, filename) {
+  const dlUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = dlUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(dlUrl);
+}
+
 function svgToPngDownload(svgMarkup, width, height, filename) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -24,15 +35,38 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     URL.revokeObjectURL(url);
+    canvas.toBlob(function (blob) { downloadBlob(blob, filename); }, "image/png");
+  };
+  img.onerror = function () {
+    URL.revokeObjectURL(url);
+    App.showToast("Couldn't generate the image. Please try again.");
+  };
+  img.src = url;
+}
+
+/* Generates the PNG and opens the app's own "Share" modal (WhatsApp,
+   Instagram, Facebook, TikTok, LinkedIn, YouTube), instead of jumping
+   straight to the OS's native share panel — this way the partner always
+   sees the same networks, without desktop apps (Mail, Outlook, Paint...)
+   that the OS's native picker adds depending on what's installed. */
+function svgToPngShare(svgMarkup, width, height, filename, shareText) {
+  const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function () {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
     canvas.toBlob(function (blob) {
-      const dlUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = dlUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(dlUrl);
+      if (!blob) {
+        App.showToast("Couldn't generate the image. Please try again.");
+        return;
+      }
+      App.ui.compartirImagenDraft = { blob: blob, filename: filename, shareText: shareText || "" };
+      App.render();
     }, "image/png");
   };
   img.onerror = function () {
@@ -44,7 +78,7 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
 
 function slugFile(str) {
   return String(str == null ? "" : str)
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
     .replace(/[^a-zA-Z0-9\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-");
@@ -56,8 +90,59 @@ function safeXml(str) {
 
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
+  const filename = "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "partner") + ".png";
+  const template = RANK_CARD_TEMPLATES[state.rangoIndex];
+
+  if (template) {
+    const shareText = RANK_SHARE_TEXTS[state.rangoIndex] || "";
+    fetch(template.img)
+      .then(function (r) { return r.blob(); })
+      .then(function (blob) {
+        return new Promise(function (resolve, reject) {
+          const reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then(function (dataUri) {
+        const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+        svgToPngShare(svg, template.w, template.h, filename, shareText);
+      })
+      .catch(function () {
+        App.showToast("Couldn't load the image. Please try again.");
+      });
+    return;
+  }
+
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngDownload(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png");
+  svgToPngShare(svg, 800, 1000, filename, "This is my progress on my way to Sales Master with Atomy! 🚀");
+}
+
+/* "VIP Consumer" card — a ready-to-share post to invite new consumers. Uses
+   the same template and name patch as the rank-0 recognition card
+   (RANK_CARD_TEMPLATES), but as a dedicated button that's always visible on
+   My Rank, with its own invitation text, regardless of the partner's
+   current rank. */
+function downloadConsumidorVipCard(state) {
+  const template = RANK_CARD_TEMPLATES[0];
+  fetch(template.img)
+    .then(function (r) { return r.blob(); })
+    .then(function (blob) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then(function (dataUri) {
+      const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+      svgToPngShare(svg, template.w, template.h, "Cumbre90-VIP-Consumer-" + slugFile(state.nombre || "partner") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
+    })
+    .catch(function () {
+      App.showToast("Couldn't load the image. Please try again.");
+    });
 }
 
 function downloadCertificado(state) {
@@ -113,7 +198,7 @@ function downloadDiaCard(state, diaId) {
     '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Journey to success with Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngDownload(svg, width, height, "Cumbre90-Stage" + dia.id + "-" + slugFile(dia.etapa) + ".png");
+  svgToPngShare(svg, width, height, "Cumbre90-Stage" + dia.id + "-" + slugFile(dia.etapa) + ".png", "Making progress on my 6-Day Plan with Atomy! 🚀");
 }
 
 function wrapText(str, max) {
