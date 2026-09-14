@@ -25,6 +25,7 @@ const CORE_ASSETS = [
   "./img/fondo-logros.png",
   "./img/montana-plan90.png",
   "./img/montana-quincena.png",
+  "./img/logro-cumbre.png",
 ];
 
 self.addEventListener("install", (event) => {

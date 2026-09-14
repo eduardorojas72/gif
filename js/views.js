@@ -1525,7 +1525,7 @@ function renderLogros(state) {
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapas del Plan de 6 Días</div><div class="grid-3">' + etapas + "</div></div>" +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Campamentos del Plan de 90 Días</div><div class="grid-3">' + camps + "</div></div>" +
     (state.premios.length ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Premios de tu patrocinador</div><div class="grid-3">' + premios + "</div></div>" : "") +
-    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Logro final</div><div class="grid-3">' + logroChipHTML("Sales Master — la Cumbre", cumbreLograda, "mountain-flag") + "</div></div>";
+    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Logro final</div><div class="grid-3">' + logroChipHTML("Sales Master — la Cumbre", cumbreLograda, "mountain-flag", "img/logro-cumbre.png") + "</div></div>";
 }
 
 /* ---------------- Cumbre ---------------- */
