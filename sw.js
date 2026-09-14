@@ -4,7 +4,7 @@
    cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
    vieja atascada en el caché del navegador. */
 
-const CACHE_NAME = "cumbre-master-cache-v2";
+const CACHE_NAME = "cumbre-master-cache-v3";
 const CORE_ASSETS = [
   "./",
   "./index.html",

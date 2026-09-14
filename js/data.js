@@ -992,3 +992,36 @@ const AGENDA_TIPOS = [
   { id: "formacion", label: "Formación de equipo", icon: "book-open" },
   { id: "reunion-lideres", label: "Reunión de líderes", icon: "crown" },
 ];
+
+/* ---------------------------------------------------------------
+   HERRAMIENTAS DE PLANIFICACIÓN — Gran Plan 3, Diario de mi yo futuro,
+   Evaluación mensual de Los 8 Pasos y Plan comercial mensual, incrustadas
+   en Planeador de Quincena.
+--------------------------------------------------------------- */
+
+const DIARIO_FUTURO_INTRO =
+  "Escribe una carta o diario desde el punto de vista de tu “yo futuro” — la persona exitosa en la que te convertirás. Cuéntale a tu yo de hoy cómo lo lograste, qué aprendiste en el camino y qué le dirías para animarlo a seguir.";
+
+const DIARIO_FUTURO_EJEMPLO =
+  "Ej.: “Hoy me gradué de la Escuela de Éxito de Atomy... Hace tiempo tuve un sueño y trabajé duro para hacerlo realidad. No fue fácil, pero cada paso valió la pena. Si estás leyendo esto, sigue adelante — la persona en la que te vas a convertir te lo va a agradecer.”";
+
+const GRAN_PLAN_3_INTRO =
+  "Dibuja vívidamente tu plan de 3 años: en qué fecha alcanzarás cada nivel de maestría, con cuántos PV grupales y qué ingresos. No hace falta llenarlo mes a mes — agrega los hitos que tengan sentido para ti, en el año que corresponda.";
+
+const EVALUACION_8PASOS_CATEGORIAS = [
+  { id: "metas", label: "Establecimiento de metas", pregunta: "¿Estableció objetivos de rendimiento empresarial específicos para una vida equilibrada?" },
+  { id: "propositos", label: "Propósitos", pregunta: "¿Se involucró activamente en los negocios y tomó la iniciativa de expresar sus opiniones a otros con una actitud positiva?" },
+  { id: "lista", label: "Hacer una lista", pregunta: "¿Hizo una lista de todas las personas que conoce a su alrededor?" },
+  { id: "contacto", label: "Contacto", pregunta: "¿Dedicó un tiempo específico cada día y se comunicó con ellos regularmente?" },
+  { id: "descripcion", label: "Descripción del negocio", pregunta: "¿Explicó lo siguiente? ① Filosofía de la empresa ② Productos ③ Plan de compensación ④ Visión corporativa" },
+  { id: "seguimiento", label: "Gestión de seguimiento", pregunta: "¿Se tomó el tiempo para responder a cualquier queja o malentendido sobre productos/negocios dentro de 48 horas?" },
+  { id: "consulta", label: "Consulta", pregunta: "¿Encontró una solución a algún problema gracias a las consultas con socios?" },
+  { id: "replicacion", label: "Replicación", pregunta: "¿Aprendió sobre el éxito de su patrocinador y compartió su propio conocimiento con sus socios?" },
+];
+
+const EVALUACION_8PASOS_BANDAS = [
+  { min: 0, max: 10, texto: "Apenas está comenzando. Vea los videos de capacitación sobre los ocho pasos hacia el éxito a medida que avanza." },
+  { min: 11, max: 20, texto: "Es posible que su negocio avance lentamente. Intente aumentar su pasión y esfuerzo." },
+  { min: 21, max: 30, texto: "Está dedicado a estar a la cabeza. Preste atención a su entorno para no pasar por alto nada." },
+  { min: 31, max: 40, texto: "Está perfeccionando los ocho pasos hacia el éxito y sirviendo como modelo para su patrocinador y socios comerciales." },
+];

@@ -355,6 +355,184 @@ function renderPlanCompensacion(ui, state) {
 
 /* ---------------- Planeador de Quincena ---------------- */
 
+/* ---------------- Gran Plan 3 — proyección a 3 años ---------------- */
+
+function granPlanHitoRowHTML(anio, i, h, confirmKey) {
+  const key = anio + "|" + i;
+  return (
+    '<div class="card" style="padding:10px 12px">' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' +
+    '<input type="text" placeholder="Fecha (ej. 08/2026)" value="' + escapeHtml(h.fecha) + '" data-field="granPlan3.' + anio + "." + i + '.fecha" style="flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Nivel de maestría" value="' + escapeHtml(h.nivel) + '" data-field="granPlan3.' + anio + "." + i + '.nivel" style="flex:1.4;min-width:130px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:6px;align-items:center;flex-wrap:wrap">' +
+    '<input type="text" placeholder="PV grupal" value="' + escapeHtml(h.pvGrupal) + '" data-field="granPlan3.' + anio + "." + i + '.pvGrupal" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Ingresos" value="' + escapeHtml(h.ingresos) + '" data-field="granPlan3.' + anio + "." + i + '.ingresos" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<div data-action="delete-hito-granplan" data-arg="' + key + '" style="cursor:pointer;color:var(--warn);font-size:11px;padding:4px;flex-shrink:0">' + (confirmKey === key ? "¿Eliminar?" : Icon("x", { size: 14 })) + "</div>" +
+    "</div></div>"
+  );
+}
+
+function granPlanAnioHTML(anio, label, hitos, ui) {
+  const rows = hitos.map(function (h, i) { return granPlanHitoRowHTML(anio, i, h, ui.confirmDeleteHito); }).join("");
+  return (
+    '<div style="margin-top:14px">' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light)">' + escapeHtml(label) + "</div>" +
+    '<div class="view-stack gap-sm" style="margin-top:6px">' + rows + "</div>" +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-hito-granplan" data-arg="' + anio + '">+ Agregar hito</div>' +
+    "</div>"
+  );
+}
+
+function granPlanSectionHTML(state, ui) {
+  const open = !!ui.granPlanOpen;
+  const gp = state.granPlan3;
+  const total = gp.anio1.length + gp.anio2.length + gp.anio3.length;
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
+    '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Gran Plan 3 — proyección a 3 años</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    '<div class="muted small" style="margin-top:4px">' + total + " hitos guardados</div>" +
+    (open
+      ? '<p class="muted small" style="margin-top:8px;line-height:1.5">' + escapeHtml(GRAN_PLAN_3_INTRO) + "</p>" +
+        granPlanAnioHTML("anio1", "Año 1", gp.anio1, ui) +
+        granPlanAnioHTML("anio2", "Año 2", gp.anio2, ui) +
+        granPlanAnioHTML("anio3", "Año 3", gp.anio3, ui)
+      : "") +
+    "</div>"
+  );
+}
+
+/* ---------------- Diario de mi yo futuro ---------------- */
+
+function diarioFuturoSectionHTML(state, ui) {
+  const open = !!ui.diarioFuturoOpen;
+  const texto = state.diarioFuturo.texto;
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
+    '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Diario de mi yo futuro</span></div>' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    "</button>" +
+    (open
+      ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
+        '<textarea rows="8" placeholder="' + escapeHtml(DIARIO_FUTURO_EJEMPLO) + '" data-field="diarioFuturo.texto" style="margin-top:8px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;font-size:13px;outline:none;resize:vertical;font-family:inherit;line-height:1.5">' + escapeHtml(texto) + "</textarea>"
+      : '<p class="muted small" style="margin-top:6px">' + (texto ? "Ya escribiste tu carta — toca para verla o editarla." : "Aún no la has escrito.") + "</p>") +
+    "</div>"
+  );
+}
+
+/* ---------------- Plan comercial mensual ---------------- */
+
+function planComercialMensualHTML(state, ui) {
+  const mesKey = ui.mesPlanComercial || mesActualKey();
+  const plan = getPlanComercialMensual(state, mesKey);
+
+  const metasHtml = plan.metas.map(function (m, i) {
+    return (
+      '<div class="row gap-2" style="align-items:center;margin-top:6px">' +
+      '<div class="avance-dot' + (m.hecha ? " on" : "") + '" style="cursor:pointer;flex-shrink:0" data-action="toggle-meta-planmensual" data-arg="' + m.id + '"></div>' +
+      '<input type="text" placeholder="Ej. Ganar 3000 USD al mes" value="' + escapeHtml(m.texto) + '" data-field="planComercialMensual.' + mesKey + ".metas." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (m.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
+      '<div data-action="delete-meta-planmensual" data-arg="' + m.id + '" style="cursor:pointer;color:var(--warn);flex-shrink:0">' + (ui.confirmDeleteMetaPlan === m.id ? Icon("check", { size: 13, color: "var(--warn)" }) : Icon("x", { size: 13 })) + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  const accionesHtml = plan.acciones.map(function (a, i) {
+    return (
+      '<div class="row gap-2" style="align-items:center;margin-top:6px">' +
+      '<div class="avance-dot' + (a.hecha ? " on" : "") + '" style="cursor:pointer;flex-shrink:0" data-action="toggle-accion-planmensual" data-arg="' + a.id + '"></div>' +
+      '<input type="text" placeholder="Ej. Llamar a 10 personas al día" value="' + escapeHtml(a.texto) + '" data-field="planComercialMensual.' + mesKey + ".acciones." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (a.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
+      '<div data-action="delete-accion-planmensual" data-arg="' + a.id + '" style="cursor:pointer;color:var(--warn);flex-shrink:0">' + (ui.confirmDeleteAccionPlan === a.id ? Icon("check", { size: 13, color: "var(--warn)" }) : Icon("x", { size: 13 })) + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  const quincenasHtml = plan.quincenas.map(function (q, i) {
+    const label = i === 0 ? "Primera quincena del mes" : "Segunda mitad del mes";
+    return (
+      '<div class="card" style="padding:10px 12px;margin-top:8px">' +
+      '<div class="muted small" style="font-weight:600">' + label + "</div>" +
+      '<div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:80px"><label class="muted small">Ingresos</label><input type="number" value="' + (Number(q.ingresos) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.ingresos" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:80px"><label class="muted small">PV de ventas</label><input type="number" value="' + (Number(q.pv) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:100px"><label class="muted small">Nivel de maestría</label><input type="text" value="' + escapeHtml(q.nivel) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.nivel" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      "</div></div>"
+    );
+  }).join("");
+
+  return (
+    '<div class="card">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("target", { size: 13, color: "var(--gold)" }) + " Plan comercial mensual</div>" +
+    '<div class="row between" style="margin-top:8px;align-items:center">' +
+    '<div data-action="planmensual-mes-anterior" style="cursor:pointer;padding:4px">' + Icon("chevron-left", { size: 16 }) + "</div>" +
+    '<div style="font-weight:700;font-size:13px;text-transform:capitalize">' + escapeHtml(mesLabel(mesKey)) + "</div>" +
+    '<div data-action="planmensual-mes-siguiente" style="cursor:pointer;padding:4px">' + Icon("chevron-right", { size: 16 }) + "</div>" +
+    "</div>" +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Metas</div>' +
+    metasHtml +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-meta-planmensual">+ Agregar meta</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Plan de acciones</div>' +
+    accionesHtml +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-accion-planmensual">+ Agregar acción</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Ingresos por quincena</div>' +
+    quincenasHtml +
+    "</div>"
+  );
+}
+
+/* ---------------- Evaluación mensual de Los 8 Pasos ---------------- */
+
+function evaluacion8PasosHTML(state, ui) {
+  const mesKey = ui.mesEvaluacion8Pasos || mesActualKey();
+  const ev = getEvaluacion8Pasos(state, mesKey);
+
+  const filas = EVALUACION_8PASOS_CATEGORIAS.map(function (c) {
+    const val = ev.puntajes[c.id] || 0;
+    const dots = [1, 2, 3, 4, 5].map(function (n) {
+      const on = n <= val;
+      return '<div class="avance-dot' + (on ? " on" : "") + '" style="cursor:pointer" data-action="set-puntaje-8pasos" data-cat="' + c.id + '" data-arg="' + n + '"></div>';
+    }).join("");
+    return (
+      '<div style="margin-top:12px">' +
+      '<div style="font-size:13px;font-weight:600">' + escapeHtml(c.label) + "</div>" +
+      '<div class="muted small" style="margin-top:2px;line-height:1.45">' + escapeHtml(c.pregunta) + "</div>" +
+      '<div class="row gap-1" style="margin-top:6px">' + dots + "</div>" +
+      "</div>"
+    );
+  }).join("");
+
+  const total = EVALUACION_8PASOS_CATEGORIAS.reduce(function (sum, c) { return sum + (ev.puntajes[c.id] || 0); }, 0);
+  const banda = EVALUACION_8PASOS_BANDAS.find(function (b) { return total >= b.min && total <= b.max; }) || EVALUACION_8PASOS_BANDAS[0];
+
+  return (
+    '<div class="card">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + " Evaluación mensual de Los 8 Pasos</div>" +
+    '<div class="row between" style="margin-top:8px;align-items:center">' +
+    '<div data-action="eval8pasos-mes-anterior" style="cursor:pointer;padding:4px">' + Icon("chevron-left", { size: 16 }) + "</div>" +
+    '<div style="font-weight:700;font-size:13px;text-transform:capitalize">' + escapeHtml(mesLabel(mesKey)) + "</div>" +
+    '<div data-action="eval8pasos-mes-siguiente" style="cursor:pointer;padding:4px">' + Icon("chevron-right", { size: 16 }) + "</div>" +
+    "</div>" +
+    filas +
+    '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
+    '<div class="row between"><span style="font-weight:700;font-size:13px">Su puntuación este mes</span><span style="font-weight:700;font-size:18px;color:var(--gold)">' + total + "</span></div>" +
+    '<p class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(banda.texto) + "</p>" +
+    "</div>" +
+    '<div class="field" style="margin-top:12px"><label>Puntos de alabanza</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.alabanza" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.alabanza) + "</textarea></div>" +
+    '<div class="field" style="margin-top:8px"><label>Puntos de reflexión</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.reflexion" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.reflexion) + "</textarea></div>" +
+    '<div class="field" style="margin-top:8px"><label>Comentarios del patrocinador</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.comentarioPatrocinador" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.comentarioPatrocinador) + "</textarea></div>" +
+    "</div>"
+  );
+}
+
+const OCHO_CORE_NOTA_HTML =
+  '<div class="card" style="background:var(--accent-soft);border:none">' +
+  '<div class="row gap-2" style="font-weight:700;font-size:13px">' + Icon("check-circle", { size: 15, color: "var(--accent)" }) + " Tu 8 Core diario/mensual</div>" +
+  '<p class="muted small" style="margin-top:6px;line-height:1.55">Ese control diario (Lectura, Ver VOD, Asistencia a reuniones, Uso del producto, Mostrar el plan, Entrega al consumidor, Consulta de patrocinador, Generando confianza) ya lo llevas en tu página oficial de Atomy — entra a <b>Sigue al Éxito → Mi 8 Core mensual</b> y márcalo ahí día a día.</p>' +
+  "</div>";
+
 function renderPlaneador(state, ui) {
   const qKey = ui.quincenaKey || quincenaActualKey();
   const q = peekQuincena(state, qKey);
@@ -397,7 +575,12 @@ function renderPlaneador(state, ui) {
     quincenaNavHTML(qKey) +
     alerta +
     '<div class="resumen-linea">' + bloqueCalc("Izquierda", faltIzq, ritmoIzq) + bloqueCalc("Derecha", faltDer, ritmoDer) + "</div>" +
-    '<button class="btn-secondary" data-action="goto" data-arg="listas">' + Icon("users", { size: 15 }) + " Ir a Reunión de Enfoque</button>"
+    '<button class="btn-secondary" data-action="goto" data-arg="listas">' + Icon("users", { size: 15 }) + " Ir a Reunión de Enfoque</button>" +
+    granPlanSectionHTML(state, ui) +
+    diarioFuturoSectionHTML(state, ui) +
+    planComercialMensualHTML(state, ui) +
+    evaluacion8PasosHTML(state, ui) +
+    OCHO_CORE_NOTA_HTML
   );
 }
 
