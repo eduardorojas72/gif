@@ -267,6 +267,39 @@ function fontFaceDefsSVG() {
   return "<style>@font-face{font-family:'Cumbre Script';src:url(data:font/ttf;base64," + ALEX_BRUSH_TTF_B64 + ") format('truetype');}</style>";
 }
 
+/* ---------------------------------------------------------------
+   TARJETAS DE RANGO CON FOTO REAL — plantillas diseñadas por el equipo
+   (img/*.png) que reemplazan el diseño dibujado a mano para los rangos que
+   ya tienen foto propia. Cada plantilla trae su propia cinta con un
+   "Nombre" de plantilla; se tapa con un parche dorado a juego antes de
+   escribir encima el nombre real del socio, igual que en la tarjeta de
+   Consumidor VIP. El índice de este array coincide con RANGOS (data.js).
+   Sales Master (índice 4) sigue usando el diseño dibujado a mano de
+   recogCardSVGMarkup hasta que el patrocinador suba su propia foto. */
+const RANK_CARD_TEMPLATES = [
+  { img: "img/consumidor-vip.png", w: 1080, h: 1920, mask: { x: 210, y: 1172, width: 660, height: 96, rx: 20 }, textY: 1236, textColor: "#173B73" },
+  { img: "img/miembro-atomy.png", w: 1080, h: 1920, mask: { x: 250, y: 1165, width: 580, height: 130, rx: 18 }, textY: 1252, textColor: "#1a1a1a" },
+  { img: "img/agente.png", w: 1240, h: 1748, mask: { x: 300, y: 1290, width: 640, height: 155, rx: 20 }, textY: 1400, textColor: "#1a1a1a" },
+  { img: "img/agente-especial.png", w: 1240, h: 1748, mask: { x: 300, y: 985, width: 640, height: 110, rx: 18 }, textY: 1060, textColor: "#1a1a1a" },
+  null,
+];
+
+function rankCardTemplateSVGMarkup(nombre, photoHref, template) {
+  const name = safeXml(nombre || "Tu nombre");
+  const fontSize = nameFontSize(nombre);
+  return (
+    '<svg xmlns="http://www.w3.org/2000/svg" width="' + template.w + '" height="' + template.h + '" viewBox="0 0 ' + template.w + " " + template.h + '">' +
+    fontFaceDefsSVG() +
+    '<image href="' + photoHref + '" x="0" y="0" width="' + template.w + '" height="' + template.h + '"/>' +
+    '<linearGradient id="rankMask" x1="0" y1="0" x2="1" y2="0">' +
+    '<stop offset="0%" stop-color="' + CARD_GOLD + '"/><stop offset="50%" stop-color="' + CARD_GOLD_LIGHT + '"/><stop offset="100%" stop-color="' + CARD_GOLD + '"/>' +
+    "</linearGradient>" +
+    '<rect x="' + template.mask.x + '" y="' + template.mask.y + '" width="' + template.mask.width + '" height="' + template.mask.height + '" rx="' + template.mask.rx + '" fill="url(#rankMask)"/>' +
+    '<text x="' + (template.w / 2) + '" y="' + template.textY + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + fontSize + '" fill="' + template.textColor + '">' + name + "</text>" +
+    "</svg>"
+  );
+}
+
 function nameFontSize(nombre) {
   const len = (nombre || "Tu nombre").length;
   if (len <= 13) return 78;
@@ -367,6 +400,9 @@ function cardFooterSVG(cx, y) {
 }
 
 function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
+  const template = RANK_CARD_TEMPLATES[rangoIndex];
+  if (template) return rankCardTemplateSVGMarkup(nombre, template.img, template);
+
   const W = 800, H = 1000, cx = 400;
   const name = nombre || "Tu nombre";
   const nameSize = nameFontSize(name);
@@ -455,5 +491,7 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
 }
 
 function recogCardHTML(nombre, foto, rango, pv, rangoIndex) {
-  return '<div class="recog-card">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
+  const template = RANK_CARD_TEMPLATES[rangoIndex];
+  const ratioClass = template ? " ratio-" + template.w + "x" + template.h : "";
+  return '<div class="recog-card' + ratioClass + '">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
 }

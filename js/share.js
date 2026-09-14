@@ -90,19 +90,43 @@ function safeXml(str) {
 
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
+  const filename = "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png";
+  const template = RANK_CARD_TEMPLATES[state.rangoIndex];
+
+  if (template) {
+    const shareText = RANK_SHARE_TEXTS[state.rangoIndex] || "";
+    fetch(template.img)
+      .then(function (r) { return r.blob(); })
+      .then(function (blob) {
+        return new Promise(function (resolve, reject) {
+          const reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then(function (dataUri) {
+        const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+        svgToPngShare(svg, template.w, template.h, filename, shareText);
+      })
+      .catch(function () {
+        App.showToast("No se pudo cargar la imagen. Inténtalo de nuevo.");
+      });
+    return;
+  }
+
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png", "¡Este es mi progreso en mi camino hacia Sales Master con Atomy! 🚀");
+  svgToPngShare(svg, 800, 1000, filename, "¡Este es mi progreso en mi camino hacia Sales Master con Atomy! 🚀");
 }
 
 /* Tarjeta "Consumidor VIP" — publicación lista para compartir e invitar a
-   nuevos consumidores. Usa la plantilla diseñada por el equipo (img/consumidor-vip.png)
-   y superpone el nombre del socio con la misma tipografía script de las tarjetas
-   de reconocimiento. La plantilla se incrusta como data URI (igual que las
-   fotos de perfil en recogCardHTML): un href relativo dentro de un SVG cargado
-   desde un blob: URL no siempre resuelve ni carga a tiempo para el rasterizado. */
+   nuevos consumidores. Usa la misma plantilla y el mismo parche de nombre
+   que la tarjeta de reconocimiento del rango 0 (RANK_CARD_TEMPLATES), pero
+   como botón dedicado y siempre visible en Mi Rango, con su propio texto
+   de invitación, sin depender de cuál sea el rango actual del socio. */
 function downloadConsumidorVipCard(state) {
-  const nombre = safeXml(state.nombre || "Socio Atomy");
-  fetch("img/consumidor-vip.png")
+  const template = RANK_CARD_TEMPLATES[0];
+  fetch(template.img)
     .then(function (r) { return r.blob(); })
     .then(function (blob) {
       return new Promise(function (resolve, reject) {
@@ -113,20 +137,8 @@ function downloadConsumidorVipCard(state) {
       });
     })
     .then(function (dataUri) {
-      const fontSize = nameFontSize(state.nombre);
-      const svg =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920">' +
-        fontFaceDefsSVG() +
-        '<image href="' + dataUri + '" x="0" y="0" width="1080" height="1920"/>' +
-        '<linearGradient id="vipRibbonMask" x1="0" y1="0" x2="1" y2="0">' +
-        '<stop offset="0%" stop-color="' + CARD_GOLD + '"/><stop offset="50%" stop-color="' + CARD_GOLD_LIGHT + '"/><stop offset="100%" stop-color="' + CARD_GOLD + '"/>' +
-        "</linearGradient>" +
-        /* Tapa el "Nombre" de la plantilla con un parche del mismo tono dorado
-           del listón antes de escribir el nombre real encima. */
-        '<rect x="210" y="1172" width="660" height="96" rx="20" fill="url(#vipRibbonMask)"/>' +
-        '<text x="540" y="1236" text-anchor="middle" font-family="Cumbre Script, cursive" font-size="' + fontSize + '" fill="#173B73">' + nombre + "</text>" +
-        "</svg>";
-      svgToPngShare(svg, 1080, 1920, "Cumbre90-Consumidor-VIP-" + slugFile(state.nombre || "socio") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
+      const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+      svgToPngShare(svg, template.w, template.h, "Cumbre90-Consumidor-VIP-" + slugFile(state.nombre || "socio") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
     })
     .catch(function () {
       App.showToast("No se pudo cargar la imagen. Inténtalo de nuevo.");

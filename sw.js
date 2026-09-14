@@ -4,7 +4,7 @@
    cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
    vieja atascada en el caché del navegador. */
 
-const CACHE_NAME = "cumbre90-cache-v5";
+const CACHE_NAME = "cumbre90-cache-v6";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -27,6 +27,9 @@ const CORE_ASSETS = [
   "./img/montana-quincena.png",
   "./img/logro-cumbre.png",
   "./img/consumidor-vip.png",
+  "./img/miembro-atomy.png",
+  "./img/agente.png",
+  "./img/agente-especial.png",
 ];
 
 self.addEventListener("install", (event) => {

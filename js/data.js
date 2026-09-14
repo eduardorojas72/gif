@@ -1697,6 +1697,17 @@ const MENSAJE_BIENVENIDA =
 const CONSUMIDOR_VIP_SHARE_TEXT =
   "¿Sabías que ahora soy Consumidor VIP? Eso me permite adquirir productos de calidad premium para mi hogar directamente de fábrica, sin intermediarios ni costes extra. ¿Te gustaría saber cómo tener este mismo privilegio sin pagar ninguna membresía?";
 
+/* Publicaciones listas para redes sociales por cada rango alcanzado, en el
+   mismo orden que RANGOS (índice 4, Sales Master, usa el texto genérico de
+   downloadRecogCard hasta que se defina uno propio). */
+const RANK_SHARE_TEXTS = [
+  CONSUMIDOR_VIP_SHARE_TEXT,
+  "¡Hoy estoy súper feliz! He alcanzado oficialmente el nivel de Miembro Atomy llegando a mis primeros 10.000 PVP. Esto significa que adquiero productos de calidad premium para mi hogar directamente de fábrica, sin intermediarios y activando desde ya mi propio sistema de puntos. Si quieres descubrir cómo hacer lo mismo desde tu hogar sin pagar membresías, mándame un mensaje directo y te explico paso a paso. 🚀",
+  "¡NIVEL DESBLOQUEADO: AGENTE ATOMY (300.000 PVP)! 🚀\n\nLo que empezó como una decisión inteligente de consumo para el hogar hoy se convierte en una estructura de negocio sólida. 🎉\n\nAlcanzar la calificación de Agente significa que no solo consumo productos de calidad premium directamente de fábrica, sino que la visión se expande: mis Puntos de Valor Personales ahora me permiten maximizar el sistema de comisiones y liderar con el ejemplo.\n\nEl crecimiento constante es la única ruta cuando hay un sistema claro. ¡Seguimos escalando la cumbre! 💪🔥\n\n💬 ¿Quieres aprender a construir un consumo inteligente que se traduzca en ingresos para tu hogar? Escríbeme \"AGENTE\" por privado y te muestro el mapa de ruta.",
+  "⭐ ¡LOGRO ALCANZADO: AGENTE ESPECIAL (700.000 PVP)! ⭐\n\nCada escalón en esta carrera refleja dos cosas: constancia personal y el impacto positivo en las personas que confían en este proyecto. 🌟\n\nLlegar a Agente Especial representa una posición de liderazgo y preparación clave. Aquí no se trata solo de comprar mejor, sino de enseñar a otros a optimizar la economía de sus hogares mientras construyen su propia libertad.\n\nGracias a todo el equipo por el impulso diario. La visión es cada vez más clara y las metas más grandes. 🏔️✨\n\n💬 Si buscas un proyecto con propósito, sin cuotas mensuales y con un equipo que te acompañe paso a paso, envíame la palabra \"ESPECIAL\" y lo comentamos.",
+  null,
+];
+
 /* ---------------------------------------------------------------
    IDIOMA DEL INFORME SEMANAL — el socio puede usar la app en un idioma
    y elegir enviar su informe en otro, según el idioma de su patrocinador.
