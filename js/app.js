@@ -91,6 +91,13 @@ const App = {
     confirmDeleteDistribuidor: null,
     compartirImagenDraft: null,
     confirmDeletePremio: null,
+    granPlanOpen: false,
+    confirmDeleteHito: null,
+    diarioFuturoOpen: false,
+    mesEvaluacion8Pasos: null,
+    mesPlanComercial: null,
+    confirmDeleteMetaPlan: null,
+    confirmDeleteAccionPlan: null,
   },
   saveTimer: null,
   toastTimer: null,
@@ -769,6 +776,136 @@ const Actions = {
     }
     App.state.premios.splice(i, 1);
     App.ui.confirmDeletePremio = null;
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Gran Plan 3 -------- */
+
+  "toggle-granplan": function () {
+    App.ui.granPlanOpen = !App.ui.granPlanOpen;
+    App.render();
+  },
+
+  "add-hito-granplan": function (arg) {
+    App.state.granPlan3[arg].push(nuevoHitoGranPlan());
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-hito-granplan": function (arg) {
+    const parts = arg.split("|");
+    const anio = parts[0];
+    const i = Number(parts[1]);
+    const key = arg;
+    if (App.ui.confirmDeleteHito !== key) {
+      App.ui.confirmDeleteHito = key;
+      App.render();
+      return;
+    }
+    App.state.granPlan3[anio].splice(i, 1);
+    App.ui.confirmDeleteHito = null;
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Diario de mi yo futuro -------- */
+
+  "toggle-diario-futuro": function () {
+    App.ui.diarioFuturoOpen = !App.ui.diarioFuturoOpen;
+    App.render();
+  },
+
+  /* -------- Evaluación mensual de Los 8 Pasos -------- */
+
+  "eval8pasos-mes-anterior": function () {
+    App.ui.mesEvaluacion8Pasos = mesAdyacente(App.ui.mesEvaluacion8Pasos || mesActualKey(), -1);
+    App.render();
+  },
+
+  "eval8pasos-mes-siguiente": function () {
+    App.ui.mesEvaluacion8Pasos = mesAdyacente(App.ui.mesEvaluacion8Pasos || mesActualKey(), 1);
+    App.render();
+  },
+
+  "set-puntaje-8pasos": function (arg, el) {
+    const catId = el.dataset.cat;
+    const valor = Number(arg);
+    const mesKey = App.ui.mesEvaluacion8Pasos || mesActualKey();
+    const ev = getEvaluacion8Pasos(App.state, mesKey);
+    ev.puntajes[catId] = ev.puntajes[catId] === valor ? 0 : valor;
+    App.persist(true);
+    App.render();
+  },
+
+  /* -------- Plan comercial mensual -------- */
+
+  "planmensual-mes-anterior": function () {
+    App.ui.mesPlanComercial = mesAdyacente(App.ui.mesPlanComercial || mesActualKey(), -1);
+    App.render();
+  },
+
+  "planmensual-mes-siguiente": function () {
+    App.ui.mesPlanComercial = mesAdyacente(App.ui.mesPlanComercial || mesActualKey(), 1);
+    App.render();
+  },
+
+  "add-meta-planmensual": function () {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    getPlanComercialMensual(App.state, mesKey).metas.push(nuevaMetaPlanMensual());
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-meta-planmensual": function (arg) {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const meta = getPlanComercialMensual(App.state, mesKey).metas.find((m) => m.id === arg);
+    if (!meta) return;
+    meta.hecha = !meta.hecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-meta-planmensual": function (arg) {
+    if (App.ui.confirmDeleteMetaPlan !== arg) {
+      App.ui.confirmDeleteMetaPlan = arg;
+      App.render();
+      return;
+    }
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const plan = getPlanComercialMensual(App.state, mesKey);
+    plan.metas = plan.metas.filter((m) => m.id !== arg);
+    App.ui.confirmDeleteMetaPlan = null;
+    App.persist(true);
+    App.render();
+  },
+
+  "add-accion-planmensual": function () {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    getPlanComercialMensual(App.state, mesKey).acciones.push(nuevaAccionPlanMensual());
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-accion-planmensual": function (arg) {
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const accion = getPlanComercialMensual(App.state, mesKey).acciones.find((a) => a.id === arg);
+    if (!accion) return;
+    accion.hecha = !accion.hecha;
+    App.persist(true);
+    App.render();
+  },
+
+  "delete-accion-planmensual": function (arg) {
+    if (App.ui.confirmDeleteAccionPlan !== arg) {
+      App.ui.confirmDeleteAccionPlan = arg;
+      App.render();
+      return;
+    }
+    const mesKey = App.ui.mesPlanComercial || mesActualKey();
+    const plan = getPlanComercialMensual(App.state, mesKey);
+    plan.acciones = plan.acciones.filter((a) => a.id !== arg);
+    App.ui.confirmDeleteAccionPlan = null;
     App.persist(true);
     App.render();
   },
