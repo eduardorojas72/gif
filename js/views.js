@@ -1669,6 +1669,12 @@ function renderPerfil(state) {
     '<input id="perfil-file" type="file" accept="image/*" class="hidden" data-target="foto">' +
     "</div>" +
     '<div class="text-center muted small" style="margin-top:-8px">🔥 ' + state.racha + " " + (state.racha === 1 ? "día seguido" : "días seguidos") + "</div>" +
+    '<div class="card" style="text-align:center">' +
+    '<div style="font-weight:700;font-size:14px">Invita a ser Consumidor VIP</div>' +
+    '<p class="muted small" style="line-height:1.5;margin-top:4px">Comparte esta publicación en tus redes para que tus contactos descubran los beneficios de ser Consumidor VIP con Atomy.</p>' +
+    '<img src="img/consumidor-vip.png" alt="Consumidor VIP" style="width:100%;max-width:220px;border-radius:14px;margin:10px auto 0;display:block">' +
+    '<button class="btn-primary" style="width:100%;margin-top:10px;color:#fff" data-action="share-consumidor-vip">' + Icon("share2", { size: 15, color: "#fff" }) + " Compartir</button>" +
+    "</div>" +
     '<div>' +
     '<div style="font-size:14px;font-weight:600;margin-bottom:2px">Tu rango</div>' +
     '<div class="muted small" style="margin-bottom:12px">Toca la insignia del rango que tienes actualmente en Atomy.</div>' +

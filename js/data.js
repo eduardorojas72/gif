@@ -1682,7 +1682,7 @@ const CONTACTO_ESTADOS = ["Por contactar", "Contactado", "Presentación", "Socio
 const PREMIOS_DEFECTO = [];
 
 const RANGOS = [
-  { nombre: "Consumidor Consciente", meta: "Tu punto de partida", pv: "0 PVP", tier: 1 },
+  { nombre: "Consumidor VIP", meta: "Tu punto de partida", pv: "0 PVP", tier: 1 },
   { nombre: "Miembro Atomy", meta: "10.000 PV personales", pv: "10.000 PVP", tier: 1 },
   { nombre: "Agente", meta: "300.000 PV personales", pv: "300.000 PVP", tier: 2 },
   { nombre: "Agente Especial", meta: "700.000 PV personales", pv: "700.000 PVP", tier: 2 },
@@ -1691,6 +1691,11 @@ const RANGOS = [
 
 const MENSAJE_BIENVENIDA =
   "Bienvenido a este recorrido al éxito. Está diseñado para que disfrutes del recorrido, compartas tus progresos y consultes tus dudas o dificultades que puedas encontrar. ¡Adelante!";
+
+/* Publicación lista para redes sociales que el socio comparte al convertirse
+   en Consumidor VIP, para invitar a sus contactos a unirse. */
+const CONSUMIDOR_VIP_SHARE_TEXT =
+  "¿Sabías que ahora soy Consumidor VIP? Eso me permite adquirir productos de calidad premium para mi hogar directamente de fábrica, sin intermediarios ni costes extra. ¿Te gustaría saber cómo tener este mismo privilegio sin pagar ninguna membresía?";
 
 /* ---------------------------------------------------------------
    IDIOMA DEL INFORME SEMANAL — el socio puede usar la app en un idioma

@@ -698,6 +698,7 @@ const Actions = {
 
   "download-recog-card": function () { downloadRecogCard(App.state); },
   "download-cert": function () { downloadCertificado(App.state); },
+  "share-consumidor-vip": function () { downloadConsumidorVipCard(App.state); },
 
   /* -------- Modal "Compartir" para tarjetas-imagen (WhatsApp/Instagram/TikTok/Facebook/LinkedIn/YouTube) -------- */
 

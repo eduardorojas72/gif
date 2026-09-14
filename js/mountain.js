@@ -250,7 +250,7 @@ function campLogroChipHTML(titulo, hecho) {
    sirve tanto para la vista en pantalla como para la exportación a
    PNG (share.js), así ambas quedan siempre idénticas. Cinco diseños,
    uno por rango:
-     0 Consumidor Consciente → fondo azul "brumoso" + título apilado
+     0 Consumidor VIP → fondo azul "brumoso" + título apilado
      1 Miembro Atomy → tarjeta con lazo azul
      2 Agente → misma tarjeta con variación (lazo con filo dorado)
      3 Agente Especial → lazo oscuro con texto e hilo dorados
@@ -385,7 +385,7 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
   let body = "";
 
   if (rangoIndex === 0) {
-    /* ---- Consumidor Consciente: azul brumoso + título apilado + script ---- */
+    /* ---- Consumidor VIP: azul brumoso + título apilado + script ---- */
     const lines = titleLinesSVG(rango);
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#bgMisty)" rx="30"/>' +

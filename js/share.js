@@ -94,6 +94,45 @@ function downloadRecogCard(state) {
   svgToPngShare(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png", "¡Este es mi progreso en mi camino hacia Sales Master con Atomy! 🚀");
 }
 
+/* Tarjeta "Consumidor VIP" — publicación lista para compartir e invitar a
+   nuevos consumidores. Usa la plantilla diseñada por el equipo (img/consumidor-vip.png)
+   y superpone el nombre del socio con la misma tipografía script de las tarjetas
+   de reconocimiento. La plantilla se incrusta como data URI (igual que las
+   fotos de perfil en recogCardHTML): un href relativo dentro de un SVG cargado
+   desde un blob: URL no siempre resuelve ni carga a tiempo para el rasterizado. */
+function downloadConsumidorVipCard(state) {
+  const nombre = safeXml(state.nombre || "Socio Atomy");
+  fetch("img/consumidor-vip.png")
+    .then(function (r) { return r.blob(); })
+    .then(function (blob) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then(function (dataUri) {
+      const fontSize = nameFontSize(state.nombre);
+      const svg =
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920">' +
+        fontFaceDefsSVG() +
+        '<image href="' + dataUri + '" x="0" y="0" width="1080" height="1920"/>' +
+        '<linearGradient id="vipRibbonMask" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0%" stop-color="' + CARD_GOLD + '"/><stop offset="50%" stop-color="' + CARD_GOLD_LIGHT + '"/><stop offset="100%" stop-color="' + CARD_GOLD + '"/>' +
+        "</linearGradient>" +
+        /* Tapa el "Nombre" de la plantilla con un parche del mismo tono dorado
+           del listón antes de escribir el nombre real encima. */
+        '<rect x="210" y="1172" width="660" height="96" rx="20" fill="url(#vipRibbonMask)"/>' +
+        '<text x="540" y="1236" text-anchor="middle" font-family="Cumbre Script, cursive" font-size="' + fontSize + '" fill="#173B73">' + nombre + "</text>" +
+        "</svg>";
+      svgToPngShare(svg, 1080, 1920, "Cumbre90-Consumidor-VIP-" + slugFile(state.nombre || "socio") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
+    })
+    .catch(function () {
+      App.showToast("No se pudo cargar la imagen. Inténtalo de nuevo.");
+    });
+}
+
 function downloadCertificado(state) {
   const t = themeColors();
   const fecha = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
