@@ -209,6 +209,8 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Comment Créer Ton Scénario De Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Pourquoi Choisir Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Plan De Rémunération", url: "https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Plan De Rémunération 2", url: "https://ch.atomy.com/EU/601?listType=300" },
       { titulo: "Comment M'Inscrire Comme Consommateur?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Comment Joindre Des Documents?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Comment Inscrire Un Distributeur?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
@@ -217,6 +219,12 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Comment Passer Une Commande", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
       { titulo: "Comment S'Inscrire Comme Membre Global", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
       { titulo: "Comment Joindre Des Documents", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+      { titulo: "Utilisation De Canva", url: "https://www.youtube.com/watch?v=MKY6pTgIjdw&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=2" },
+      { titulo: "Power Point", url: "https://www.youtube.com/watch?v=PCyPI6FuDdk&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=3" },
+      { titulo: "Comment Être Un Bon Orateur", url: "https://www.youtube.com/watch?v=7-XQv2Jc-OU&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=6" },
+      { titulo: "Comment Changer De Centre D'Éducation", url: "https://www.youtube.com/watch?v=3MzuY0eOYwI&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=2" },
+      { titulo: "Comment Changer La Date D'Achat", url: "https://www.youtube.com/watch?v=hIaQ6yADgdQ&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=3" },
+      { titulo: "Créer Un Catalogue Personnalisé", url: "https://www.youtube.com/watch?v=GRb9rViVmV0&list=PL8ppuTSO8Oq3sw2Wd0usLcZFQa2IQf9t5&index=5" },
     ],
   },
   {
@@ -228,6 +236,13 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Avantages Des Produits Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
       { titulo: "Gamme HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
       { titulo: "Kit 4 Étapes", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+      { titulo: "100 Produits En Un Jour", url: "https://www.youtube.com/watch?v=iUnUPst5rBE" },
+      { titulo: "Notre Brosse À Dents", url: "https://www.youtube.com/watch?v=8e_mC_-pUyw" },
+      { titulo: "Le Noni", url: "https://www.youtube.com/watch?v=nn0ewzm4klI" },
+      { titulo: "Gamme FAME", url: "https://www.youtube.com/watch?v=CRUkbrsASEA" },
+      { titulo: "Gamme Absolute", url: "https://www.youtube.com/watch?v=QrHUSQQJZXc" },
+      { titulo: "Système De Soin De Nuit", url: "https://www.youtube.com/watch?v=GOx3Tv8poU0" },
+      { titulo: "Hemo Him", url: "https://www.youtube.com/watch?v=A1HUZhZFnzU&list=PLuY6acO4NoFDbgYduzQ8eeVvE7wphkpxl&index=6" },
     ],
   },
   {
@@ -237,8 +252,18 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Développement Personnel Et Professionnel", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
       { titulo: "Les 8 Étapes Vers Le Succès - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Utilisation Des Réseaux Sociaux", url: "https://www.youtube.com/watch?v=r7WkxT1qCrA&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO" },
     ],
   },
+];
+
+const NEGOCIO_DOCUMENTOS = [
+  { titulo: "Formulaire De Récupération D'Adhésion", url: "docs/formulario-recuperacion-membresia.pdf" },
+  { titulo: "Formulaire De Changement De Profil", url: "docs/formulario-cambio-perfil.pdf" },
+  { titulo: "Formulaire De Retour Ou D'Échange De Produit", url: "docs/formulario-devolucion-cambio-producto.pdf" },
+  { titulo: "Plan De Rémunération 2021 Colombie", url: "docs/plan-de-compensacion-colombia.pdf" },
+  { titulo: "Scénario De Vie (PDF)", url: "docs/escenario-de-vida.pdf" },
+  { titulo: "Code D'Éthique Des Membres - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
 const ESCENARIO_INTRO =
@@ -440,6 +465,7 @@ const DIAS = [
           "Les PV (Points de Valeur) représentent la valeur que l'entreprise attribue à chaque produit ; tu les vois en bleu sous le prix, dans la boutique en ligne.",
           "Avec seulement deux produits de base du quotidien (ex. un kit de soin bucco-dentaire et un shampoing), tu atteins déjà les 10 000 PVP.",
           "Atteindre les 10 000 PVP est la clé qui active ton compte de partenaire : à partir de là, ton profil est habilité à accumuler du volume d'équipe et à percevoir des commissions.",
+          "Visite le site officiel d'Atomy : https://eu.atomy.com",
           "Télécharge l'application officielle Atomy sur ton téléphone pour passer tes commandes et suivre tes PV depuis n'importe où : https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=fr (Android) ou https://apps.apple.com/fr/app/official-atomy-shop/id1637879180 (iPhone).",
         ],
       },
@@ -475,6 +501,13 @@ const DIAS = [
           "Ce parcours Cumbre 90 t'y mène exactement. Les rangs au-dessus de Sales Master (Diamond Master et au-delà) sortent du cadre de ces 90 jours, mais tu auras alors déjà l'habitude et l'équipe pour continuer à progresser.",
         ],
       },
+      {
+        h: "Ta vidéo du jour",
+        body: [
+          "Vidéo d'aide — Plan de Rémunération : https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING",
+          "Vidéo d'aide — Plan de Rémunération (2) : https://ch.atomy.com/EU/601?listType=300",
+        ],
+      },
     ],
     campos: [],
     nota: "Retiens tes deux grands paliers : 10 000 PVP (active ton compte) et 300 000 PVP (triple ta commission par cycle). Tes PV personnels ne s'effacent ni ne se réinitialisent jamais.",
@@ -486,7 +519,7 @@ const DIAS = [
       "J'ai téléchargé l'application officielle d'Atomy sur mon téléphone.",
     ],
     quiz: {
-      pregunta: "Quel est ton premier grand palier pour activer ton compte ?",
+      pregunta: "Avec combien de points ton compte s'active-t-il pour percevoir des commissions ?",
       opciones: ["300 000 PV de Groupe", "10 000 PV Personnels", "50 nouveaux contacts"],
       correcta: 1,
     },
