@@ -209,6 +209,8 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "How To Create Your Life Scenario", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Why Choose Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Compensation Plan", url: "https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Compensation Plan 2", url: "https://ch.atomy.com/EU/601?listType=300" },
       { titulo: "How Do I Register As A Consumer?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "How To Attach Documents?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "How To Register A Distributor?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
@@ -217,6 +219,12 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "How To Place An Order", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
       { titulo: "How To Register As A Global Member", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
       { titulo: "How To Attach Documents", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+      { titulo: "Using Canva", url: "https://www.youtube.com/watch?v=MKY6pTgIjdw&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=2" },
+      { titulo: "Power Point", url: "https://www.youtube.com/watch?v=PCyPI6FuDdk&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=3" },
+      { titulo: "How To Be A Good Speaker", url: "https://www.youtube.com/watch?v=7-XQv2Jc-OU&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=6" },
+      { titulo: "How To Change Your Education Center", url: "https://www.youtube.com/watch?v=3MzuY0eOYwI&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=2" },
+      { titulo: "How To Change The Purchase Date", url: "https://www.youtube.com/watch?v=hIaQ6yADgdQ&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=3" },
+      { titulo: "Create A Custom Catalog", url: "https://www.youtube.com/watch?v=GRb9rViVmV0&list=PL8ppuTSO8Oq3sw2Wd0usLcZFQa2IQf9t5&index=5" },
     ],
   },
   {
@@ -228,6 +236,13 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Benefits Of Atomy Products", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
       { titulo: "HEMOHIM Line", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
       { titulo: "4-Step Set", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+      { titulo: "100 Products In One Day", url: "https://www.youtube.com/watch?v=iUnUPst5rBE" },
+      { titulo: "Our Toothbrush", url: "https://www.youtube.com/watch?v=8e_mC_-pUyw" },
+      { titulo: "The Noni", url: "https://www.youtube.com/watch?v=nn0ewzm4klI" },
+      { titulo: "FAME Line", url: "https://www.youtube.com/watch?v=CRUkbrsASEA" },
+      { titulo: "Absolute Line", url: "https://www.youtube.com/watch?v=QrHUSQQJZXc" },
+      { titulo: "Night Care System", url: "https://www.youtube.com/watch?v=GOx3Tv8poU0" },
+      { titulo: "Hemo Him", url: "https://www.youtube.com/watch?v=A1HUZhZFnzU&list=PLuY6acO4NoFDbgYduzQ8eeVvE7wphkpxl&index=6" },
     ],
   },
   {
@@ -237,8 +252,18 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Personal And Business Development", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
       { titulo: "The 8 Steps To Success - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Using Social Media", url: "https://www.youtube.com/watch?v=r7WkxT1qCrA&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO" },
     ],
   },
+];
+
+const NEGOCIO_DOCUMENTOS = [
+  { titulo: "Membership Recovery Form", url: "docs/formulario-recuperacion-membresia.pdf" },
+  { titulo: "Profile Change Form", url: "docs/formulario-cambio-perfil.pdf" },
+  { titulo: "Product Return Or Exchange Form", url: "docs/formulario-devolucion-cambio-producto.pdf" },
+  { titulo: "2021 Compensation Plan Colombia", url: "docs/plan-de-compensacion-colombia.pdf" },
+  { titulo: "Life Scenario (PDF)", url: "docs/escenario-de-vida.pdf" },
+  { titulo: "Members Code Of Ethics - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
 const ESCENARIO_INTRO =
@@ -440,6 +465,7 @@ const DIAS = [
           "PV (Point Value) is the value the company assigns to each product; you'll see it in blue under the price in the online store.",
           "With just a couple of basic everyday products (e.g. an oral care kit and a shampoo) you already reach 10,000 PPV.",
           "Reaching 10,000 PPV is the key that activates your partner account: from there, your profile is enabled to accumulate team volume and earn commissions.",
+          "Visit the official Atomy page: https://eu.atomy.com",
           "Download the official Atomy app on your phone to place orders and check your PV from anywhere: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) or https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
         ],
       },
@@ -475,6 +501,13 @@ const DIAS = [
           "This Cumbre 90 journey takes you exactly there. The ranks above Sales Master (Diamond Master and beyond) sit outside these 90 days, but by then you'll already have the habit and the team to keep climbing.",
         ],
       },
+      {
+        h: "Your video today",
+        body: [
+          "Helpful video — Compensation Plan: https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING",
+          "Helpful video — Compensation Plan (2): https://ch.atomy.com/EU/601?listType=300",
+        ],
+      },
     ],
     campos: [],
     nota: "Remember your two big milestones: 10,000 PPV (activates your account) and 300,000 PPV (triples your commission per cycle). Your personal PV never gets erased or reset.",
@@ -486,7 +519,7 @@ const DIAS = [
       "I downloaded the official Atomy app on my phone.",
     ],
     quiz: {
-      pregunta: "What is your first big milestone to activate your account?",
+      pregunta: "How many points does it take to activate your account to earn commissions?",
       opciones: ["300,000 Group PV", "10,000 Personal PV", "50 new contacts"],
       correcta: 1,
     },
