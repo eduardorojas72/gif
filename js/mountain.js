@@ -417,9 +417,6 @@ function cardFooterSVG(cx, y) {
 }
 
 function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
-  const template = RANK_CARD_TEMPLATES[rangoIndex];
-  if (template) return rankCardTemplateSVGMarkup(nombre, template.img, template);
-
   const W = 800, H = 1000, cx = 400;
   const name = nombre || "Tu nombre";
   const nameSize = nameFontSize(name);
@@ -508,7 +505,5 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
 }
 
 function recogCardHTML(nombre, foto, rango, pv, rangoIndex) {
-  const template = RANK_CARD_TEMPLATES[rangoIndex];
-  const ratioClass = template ? " ratio-" + template.w + "x" + template.h : "";
-  return '<div class="recog-card' + ratioClass + '">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
+  return '<div class="recog-card">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
 }
