@@ -183,6 +183,63 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_VIDEOS = [
+  { titulo: "Cómo Crear tu Escenario de Vida", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "Tu Por Qué: Escenario de Vida", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Metas Claras, Vida Clara", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+];
+
+const RECURSOS_AUDIOVISUALES = [
+  {
+    id: "inicio",
+    label: "Inicio",
+    icon: "compass",
+    videos: [
+      { titulo: "Conociendo a Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
+      { titulo: "La Visión de Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "La Historia de Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+    ],
+  },
+  {
+    id: "negocio",
+    label: "Negocio",
+    icon: "presentation",
+    videos: [
+      { titulo: "Cómo Crear tu Escenario de Vida", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Por Qué Elegir Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "El Negocio Atomy — Parte 1", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "El Negocio Atomy — Parte 2", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "El Negocio Atomy — Parte 3", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Tu Por Qué: Escenario de Vida", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Metas Claras, Vida Clara", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Capacitación Atomy 1", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "Capacitación Atomy 2", url: "https://www.youtube.com/watch?v=Gkxd5vvgDD8" },
+      { titulo: "Capacitación Atomy 3", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "Capacitación Atomy 4", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+  {
+    id: "producto",
+    label: "Producto",
+    icon: "package",
+    videos: [
+      { titulo: "Calidad y Confianza Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Beneficios de los Productos Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Línea HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Crecimiento Empresarial",
+    icon: "trending-up",
+    videos: [
+      { titulo: "Liderazgo y Crecimiento", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "De Consumidor a Líder", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Desarrollo Personal y Empresarial", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+    ],
+  },
+];
+
 const ESCENARIO_INTRO =
   "El Escenario de Vida es la base de todo tu recorrido: antes de aprender la ruta, define tu destino. Antes de trabajar por trabajar, decide para qué. Escribe tus metas en cada una de las 8 áreas de tu vida balanceada — cuanto más claras y detalladas (cifras, lugares, fechas), más fuerza tendrán para sostenerte en los días difíciles.";
 
@@ -472,6 +529,7 @@ const DIAS = [
         h: "Tu video de hoy",
         body: [
           "Entra en ch.atomy.com/eu (CH.ATOMY Europa) → menú Producto, y mira el video de HemoHIM o de la línea Absolute/The Fame para entender la filosofía Masstige: calidad absoluta a precio absoluto.",
+          "Encuentra más videos de ayuda para hacer tu pedido en el menú “Recursos Audiovisuales” (categoría Negocio).",
         ],
       },
     ],
@@ -530,6 +588,12 @@ const DIAS = [
           "Mensaje 3 — El gancho sin presión: menciona que el sistema también te permite generar beneficios económicos por recomendarlo, algo que el súper normal no ofrece.",
           "Mensaje 4 — La invitación: “No sé si sea algo para ti, pero si te da curiosidad, avísame y nos tomamos un café o hacemos una llamadita corta y te cuento de qué se trata.”",
           "Consejo de duplicación: practica tu historia en una reunión 1 a 1 con tu patrocinador y ajusten juntos cualquier frase que suene demasiado formal o corporativa.",
+        ],
+      },
+      {
+        h: "Tu video de hoy",
+        body: [
+          "Encuentra el video de cómo registrar a un nuevo socio en el menú “Recursos Audiovisuales” (categoría Negocio).",
         ],
       },
     ],

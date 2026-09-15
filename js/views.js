@@ -13,6 +13,7 @@ const MENU_ITEMS = [
   { id: "informe", label: "Informe Semanal", icon: "trending-up" },
   { id: "enfoque", label: "Reunión de Enfoque", icon: "target" },
   { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
+  { id: "recursos", label: "Recursos Audiovisuales", icon: "video" },
   { id: "arbol", label: "Mi Árbol Genealógico", icon: "crown" },
   { id: "sos", label: "Llamadas S.O.S.", icon: "bell" },
   { id: "eventos", label: "Lista de Contactos", icon: "users" },
@@ -608,6 +609,7 @@ function renderEscenarioVidaBody(state, ui) {
     '<div class="muted small" style="margin-top:6px">' + completas + " de " + ESCENARIO_CATEGORIAS.length + " metas en el círculo perfecto</div>" +
     "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">¿Cómo se llena?</div>' + pasos + "</div>" +
+    '<div class="card"><div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("video", { size: 13, color: "var(--gold)" }) + " Videos que te ayudan a construirlo</div>" + videoListCardHTML(ESCENARIO_VIDEOS) + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
     granPlanSectionHTML(state, ui) +
     diarioFuturoSectionHTML(state, ui) +
@@ -621,6 +623,36 @@ function renderEscenarioVida(state, ui) {
     sectionHeaderHTML("Escenario de Vida", ESCENARIO_LEMA, "compass") +
     '<div class="card"><p class="small" style="line-height:1.6">' + escapeHtml(ESCENARIO_INTRO) + "</p></div>" +
     renderEscenarioVidaBody(state, ui)
+  );
+}
+
+function videoRowHTML(v) {
+  return (
+    '<a class="card card-hover row gap-3" style="text-decoration:none;color:inherit;align-items:center" href="' + escapeHtml(v.url) + '" target="_blank" rel="noreferrer">' +
+    '<div style="flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">' + Icon("video", { size: 17, color: "var(--gold)" }) + "</div>" +
+    '<div style="flex:1;font-weight:600;font-size:13.5px;line-height:1.4">' + escapeHtml(v.titulo) + "</div>" +
+    Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+    "</a>"
+  );
+}
+
+function videoListCardHTML(videos) {
+  return '<div class="view-stack gap-sm">' + videos.map(videoRowHTML).join("") + "</div>";
+}
+
+function renderRecursosAudiovisuales(state, ui) {
+  const categorias = RECURSOS_AUDIOVISUALES.map(function (cat) {
+    return (
+      '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
+      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon(cat.icon, { size: 14, color: "var(--gold)" }) + " " + escapeHtml(cat.label) + "</div>" +
+      videoListCardHTML(cat.videos) +
+      "</div>"
+    );
+  }).join("");
+
+  return (
+    sectionHeaderHTML("Recursos Audiovisuales", "Los videos más importantes para entender y compartir Atomy, organizados por tema.", "video") +
+    categorias
   );
 }
 
