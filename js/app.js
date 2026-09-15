@@ -256,6 +256,7 @@ const App = {
         getCatalogoProductos(state, state.pais || "CO");
         mainHtml = renderReunionEnfoquePage(state, ui);
         break;
+      case "recursos": mainHtml = renderRecursosAudiovisuales(state, ui); break;
       case "premios": mainHtml = renderPremios(state, ui); break;
       case "perfil": mainHtml = renderPerfil(state); break;
       case "logros": mainHtml = renderLogros(state); break;

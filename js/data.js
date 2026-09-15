@@ -183,6 +183,63 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_VIDEOS = [
+  { titulo: "Cum Să-ți Creezi Scenariul De Viață", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "De Ce-ul Tău: Scenariul De Viață", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Obiective Clare, Viață Clară", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+];
+
+const RECURSOS_AUDIOVISUALES = [
+  {
+    id: "inicio",
+    label: "Început",
+    icon: "compass",
+    videos: [
+      { titulo: "Cunoscând Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
+      { titulo: "Istoria Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Cei 8 Pași Spre Succes - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Leadership Și Creștere", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
+    ],
+  },
+  {
+    id: "negocio",
+    label: "Afaceri",
+    icon: "presentation",
+    videos: [
+      { titulo: "Cum Să-ți Creezi Scenariul De Viață", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "De Ce Să Alegi Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Cum Mă Înregistrez Ca Consumator?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Cum Atașez Documente?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Cum Înregistrez Un Distribuitor?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "De Ce-ul Tău: Scenariul De Viață", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Obiective Clare, Viață Clară", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Cum Se Face O Achiziție", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "Cum Te Înregistrezi Ca Membru Global", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "Cum Se Atașează Documente", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+    ],
+  },
+  {
+    id: "producto",
+    label: "Produs",
+    icon: "package",
+    videos: [
+      { titulo: "Calitate Și Încredere Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Beneficiile Produselor Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Linia HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
+      { titulo: "Set 4 Pași", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Creștere Antreprenorială",
+    icon: "trending-up",
+    videos: [
+      { titulo: "Dezvoltare Personală Și Antreprenorială", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+      { titulo: "Cei 8 Pași Spre Succes - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+];
+
 const ESCENARIO_INTRO =
   "Scenariul de Viață este baza întregului tău drum: înainte să înveți traseul, definește-ți destinația. Înainte să muncești de dragul muncii, decide pentru ce anume. Scrie-ți obiectivele în fiecare dintre cele 8 domenii ale vieții tale echilibrate — cu cât sunt mai clare și mai detaliate (sume, locuri, date), cu atât vor avea mai multă forță să te susțină în zilele grele.";
 
@@ -335,6 +392,7 @@ const DIAS = [
           "Intră pe ch.atomy.com/eu din browser sau de pe telefon și schimbă limba în Română de la iconița globului (colțul din dreapta sus).",
           "Explorează meniurile: Companie/Viziune (istoria fondatorului Han-Gill Park și susținerea științifică din partea KAERI și Kolmar), Produs (skincare, sănătate, casă), Afacere/Educație (plan de compensare, seminarii) și Membru/Povești de Succes (mărturii reale).",
           "Folosește lupa de căutare pentru subiecte specifice, de exemplu „HemoHIM” sau „Plan de Compensare”.",
+          "Vizionează videoul instituțional: https://youtu.be/oIOqIRBXZFM",
           "Recomandare: dedică 15 minute pe zi vizionării a 1 video despre Companie și 1 despre Produs.",
         ],
       },
@@ -449,7 +507,7 @@ const DIAS = [
         h: "Alege-ți prima comandă (consumul tău conștient)",
         body: [
           "Alege produsele pe care ai nevoie cu adevărat să le reînnoiești acasă chiar astăzi (pastă de dinți, șampon, detergent, suplimente). Obiectivul este simplu: să testezi calitatea mărcii pentru a putea vorbi cu încredere de la prima zi.",
-          "Pentru asta, mergem pe site, intră cu ID-ul și parola ta.",
+          "Pentru asta, intră pe https://eu.atomy.com/main cu ID-ul și parola ta.",
         ],
       },
       {
@@ -471,6 +529,7 @@ const DIAS = [
         h: "Videoul tău de astăzi",
         body: [
           "Intră pe ch.atomy.com/eu (CH.ATOMY Europa) → meniul Produs, și urmărește videoul despre HemoHIM sau despre linia Absolute/The Fame pentru a înțelege filosofia Masstige: calitate absolută la preț absolut.",
+          "Video ajutător — Cum se face o achiziție: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
     ],
@@ -529,6 +588,13 @@ const DIAS = [
           "Mesaj 3 — Cârligul fără presiune: menționează că sistemul îți permite și să obții beneficii economice recomandându-l, ceva ce supermarketul obișnuit nu oferă.",
           "Mesaj 4 — Invitația: „Nu știu dacă e ceva pentru tine, dar dacă te intrigă, dă-mi de veste și bem o cafea sau facem un mic apel scurt și-ți povestesc despre ce e vorba.”",
           "Sfat de duplicare: exersează-ți povestea într-o întâlnire 1 la 1 cu sponsorul tău și ajustați împreună orice frază care sună prea formal sau corporatist.",
+        ],
+      },
+      {
+        h: "Videoul tău de astăzi",
+        body: [
+          "Video ajutător — Cum se înregistrează un distribuitor?: https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING",
+          "Video ajutător — Cum te înregistrezi ca membru global: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
     ],
@@ -1690,7 +1756,9 @@ const RANGOS = [
 ];
 
 const MENSAJE_BIENVENIDA =
-  "Bine ai venit în acest drum spre succes. Este conceput ca să te bucuri de călătorie, să-ți împarți progresele și să întrebi despre îndoielile sau dificultățile pe care le poți întâlni. Înainte!";
+  "Bine ai venit la o oportunitate extraordinară! Fie că ești nou în Atomy, fie că ești deja de o vreme cu noi dar simți că proiectul tău s-a blocat sau are nevoie de un suflu nou, vreau să-ți spun ceva cu toată sinceritatea: e în regulă să faci o pauză strategică pentru a-ți regla busola.\n\n" +
+  "Nu ești singur(ă). Nu venim să evaluăm trecutul, ci să construim viitorul. Angajamentul meu față de tine este să-ți dau o mână de ajutor și să te însoțesc la fiecare pas. Totuși, pentru a atinge rangurile Atomy și a obține adevărata libertate financiară, trebuie să asumăm un pact de angajament reciproc: tu pui acțiunea zilnică și determinarea, iar eu pun 100% din sprijinul meu ca să te însoțesc spre succes. Facem acest pact? Da? Atunci, înainte!\n\n" +
+  "Acest document integrează, în mod practic, sistemul verificat al Celor 8 Pași spre Succes ai Președintelui Han-Gill Park cu structura cronologică a Planului de 90 de Zile spre Rangul de Sales Master, permițând atât activarea partenerilor noi, cât și repornirea strategică a echipelor deja în mișcare, atingând astfel prima noastră treaptă în cursa spre Succesul Atomy.";
 
 /* Publicație gata de postat pe rețelele sociale, pe care partenerul o
    distribuie când devine Consumator VIP, ca să-și invite contactele să

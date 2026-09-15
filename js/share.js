@@ -91,30 +91,6 @@ function safeXml(str) {
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
   const filename = "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "partener") + ".png";
-  const template = RANK_CARD_TEMPLATES[state.rangoIndex];
-
-  if (template) {
-    const shareText = RANK_SHARE_TEXTS[state.rangoIndex] || "";
-    fetch(template.img)
-      .then(function (r) { return r.blob(); })
-      .then(function (blob) {
-        return new Promise(function (resolve, reject) {
-          const reader = new FileReader();
-          reader.onload = function () { resolve(reader.result); };
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      })
-      .then(function (dataUri) {
-        const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
-        svgToPngShare(svg, template.w, template.h, filename, shareText);
-      })
-      .catch(function () {
-        App.showToast("Nu s-a putut încărca imaginea. Încearcă din nou.");
-      });
-    return;
-  }
-
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
   svgToPngShare(svg, 800, 1000, filename, "Acesta este progresul meu pe drumul spre Sales Master cu Atomy! 🚀");
 }
