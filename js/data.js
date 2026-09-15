@@ -183,6 +183,63 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_VIDEOS = [
+  { titulo: "Come Creare Il Tuo Scenario Di Vita", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "Il Tuo Perché: Scenario Di Vita", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Obiettivi Chiari, Vita Chiara", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+];
+
+const RECURSOS_AUDIOVISUALES = [
+  {
+    id: "inicio",
+    label: "Inizio",
+    icon: "compass",
+    videos: [
+      { titulo: "Conoscere Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
+      { titulo: "La Storia Di Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Gli 8 Passi Verso Il Successo - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Leadership E Crescita", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
+    ],
+  },
+  {
+    id: "negocio",
+    label: "Business",
+    icon: "presentation",
+    videos: [
+      { titulo: "Come Creare Il Tuo Scenario Di Vita", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Perché Scegliere Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Come Registrarmi Come Consumatore?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Come Allegare Documenti?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Come Registrare Un Distributore?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Il Tuo Perché: Scenario Di Vita", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Obiettivi Chiari, Vita Chiara", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Come Effettuare Un Ordine", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "Come Registrarti Come Membro Globale", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "Come Allegare Documenti", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+    ],
+  },
+  {
+    id: "producto",
+    label: "Prodotto",
+    icon: "package",
+    videos: [
+      { titulo: "Qualità E Fiducia Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Benefici Dei Prodotti Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Linea HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
+      { titulo: "Set 4 Passi", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Crescita Aziendale",
+    icon: "trending-up",
+    videos: [
+      { titulo: "Sviluppo Personale E Aziendale", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+      { titulo: "Gli 8 Passi Verso Il Successo - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+];
+
 const ESCENARIO_INTRO =
   "Il tuo Scenario di Vita è la base di tutto il tuo percorso: prima di imparare la strada, definisci la tua destinazione. Prima di lavorare tanto per lavorare, decidi per cosa. Scrivi i tuoi obiettivi in ciascuna delle 8 aree della tua vita equilibrata — più sono chiari e dettagliati (cifre, luoghi, date), più forza ti daranno nei giorni difficili.";
 
@@ -340,6 +397,7 @@ const DIAS = [
           "Vai su ch.atomy.com/eu dal browser o dal telefono e cambia la lingua in italiano tramite l'icona del globo (in alto a destra).",
           "Esplora i menu: Azienda/Visione (la storia del fondatore Han-Gill Park e il supporto scientifico di KAERI e Kolmar), Prodotto (skincare, salute, casa), Business/Formazione (piano compensi, seminari) e Membro/Storie di Successo (testimonianze reali).",
           "Usa la lente di ricerca per argomenti specifici, ad esempio «HemoHIM» o «Piano Compensi».",
+          "Guarda il video istituzionale: https://youtu.be/oIOqIRBXZFM",
           "Consiglio: dedica 15 minuti al giorno a guardare 1 video Azienda e 1 video Prodotto.",
         ],
       },
@@ -453,7 +511,7 @@ const DIAS = [
         h: "Scegli il tuo primo ordine (il tuo consumo consapevole)",
         body: [
           "Scegli i prodotti che devi davvero rifornire in casa oggi stesso (dentifricio, shampoo, detersivo, integratori). L'obiettivo è semplice: provare la qualità del marchio per poterne parlare con autorità fin dal primo giorno.",
-          "Per farlo, vai sul sito e accedi con il tuo ID e la tua password.",
+          "Per farlo, vai su https://eu.atomy.com/main e accedi con il tuo ID e la tua password.",
         ],
       },
       {
@@ -475,6 +533,7 @@ const DIAS = [
         h: "Il tuo video di oggi",
         body: [
           "Su CH.ATOMY Europa → menu Prodotto, guarda il video su HemoHIM o sulla linea Absolute/The Fame per capire la filosofia Masstige: qualità assoluta a prezzo assoluto.",
+          "Video di supporto — Come effettuare un ordine: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
     ],
@@ -533,6 +592,13 @@ const DIAS = [
           "Messaggio 3 — L'aggancio senza pressione: menziona che il sistema ti permette anche di generare un'entrata economica raccomandandolo, cosa che il supermercato normale non offre.",
           "Messaggio 4 — L'invito: «Non so se faccia per te, ma se ti incuriosisce, fammi sapere e ci prendiamo un caffè o facciamo una breve chiamata e te ne parlo.»",
           "Consiglio di duplicazione: esercita la tua storia in un incontro 1 a 1 con il tuo sponsor e correggete insieme qualsiasi frase che suoni troppo formale o aziendale.",
+        ],
+      },
+      {
+        h: "Il tuo video di oggi",
+        body: [
+          "Video di supporto — Come registrare un distributore?: https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING",
+          "Video di supporto — Come registrarti come membro globale: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
     ],
@@ -1692,7 +1758,9 @@ const RANGOS = [
   { nombre: "Sales Master", meta: "700.000 PV personali + 2.500.000 PV per ogni gamba", pv: "5.000.000 PVG", tier: 3 },
 ];
 const MENSAJE_BIENVENIDA =
-  "Benvenuto in questo percorso verso il successo. È pensato perché tu ti goda il viaggio, condivida i tuoi progressi e chieda pure per qualsiasi dubbio o difficoltà. Si parte!";
+  "Benvenuto in un'opportunità straordinaria! Che tu sia nuovo in Atomy o che tu sia già con noi da un po' ma senta che il tuo progetto si è fermato o abbia bisogno di una nuova spinta, voglio dirti una cosa con totale sincerità: va benissimo fare una pausa strategica per ritrovare la rotta.\n\n" +
+  "Non sei solo. Non siamo qui per valutare il passato, ma per costruire il futuro. Il mio impegno con te è darti una mano e accompagnarti in ogni passo. Tuttavia, per raggiungere i ranghi di Atomy e ottenere la vera libertà finanziaria, dobbiamo stringere un patto di impegno reciproco: tu metti l'azione quotidiana e la determinazione, io metto il 100% del mio supporto per accompagnarti al successo. Facciamo questo patto? Sì? Allora si parte!\n\n" +
+  "Questo documento integra in modo pratico il sistema collaudato degli 8 Passi verso il Successo del Presidente Han-Gill Park con la struttura cronologica del Piano di 90 Giorni verso il rango di Sales Master, permettendo sia l'attivazione di nuovi soci sia il rilancio strategico dei team già in corsa, raggiungendo così il nostro primo gradino nella corsa al Successo di Atomy.";
 
 /* Pubblicazione pronta per i social che il socio condivide diventando
    Consumatore VIP, per invitare i suoi contatti a unirsi. */
