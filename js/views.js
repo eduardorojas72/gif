@@ -798,7 +798,7 @@ function renderPasos(state, ui) {
     '<div class="section-header">' + pasosHeaderMedallionHTML(64) +
     '<div><h2>Os 8 Passos para o Sucesso</h2><p>Baseado no ensino do Presidente Han-Gill Park. Toque em cada passo para ver a explicação completa.</p></div></div>';
   return header +
-    videoRowHTML({ titulo: "Os 8 Passos para o Sucesso (vídeo)", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" }) +
+    videoRowHTML({ titulo: "Os 8 Passos Para O Sucesso - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" }) +
     '<div class="view-stack gap-sm" style="margin-top:10px">' + cards + "</div>" +
     evaluacion8PasosHTML(state, ui) +
     OCHO_CORE_NOTA_HTML;
