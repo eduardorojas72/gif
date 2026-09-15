@@ -726,7 +726,7 @@ function escapeHtml(str) {
    that still goes through escapeHtml alone. */
 function linkifyText(str) {
   const escaped = escapeHtml(str);
-  const urlPattern = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)+(?:com|net|org|us|io|app|co|info|es|mx|br|ca|eu)(?:\/[^\s<]*)?)/gi;
+  const urlPattern = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)+(?:com|net|org|us|io|app|co|info|es|mx|br|ca|eu|be)(?:\/[^\s<]*)?)/gi;
   return escaped.replace(urlPattern, function (match) {
     const href = /^https?:\/\//i.test(match) ? match : "https://" + match;
     return '<a href="' + href + '" target="_blank" rel="noreferrer" style="color:var(--gold-light);text-decoration:underline">' + match + "</a>";

@@ -184,6 +184,63 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_VIDEOS = [
+  { titulo: "How To Create Your Life Scenario", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "Your Why: Life Scenario", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Clear Goals, Clear Life", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+];
+
+const RECURSOS_AUDIOVISUALES = [
+  {
+    id: "inicio",
+    label: "Home",
+    icon: "compass",
+    videos: [
+      { titulo: "Getting To Know Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
+      { titulo: "The Atomy Story", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "The 8 Steps To Success - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Leadership And Growth", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
+    ],
+  },
+  {
+    id: "negocio",
+    label: "Business",
+    icon: "presentation",
+    videos: [
+      { titulo: "How To Create Your Life Scenario", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Why Choose Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "How Do I Register As A Consumer?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "How To Attach Documents?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "How To Register A Distributor?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Your Why: Life Scenario", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Clear Goals, Clear Life", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "How To Place An Order", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "How To Register As A Global Member", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "How To Attach Documents", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+    ],
+  },
+  {
+    id: "producto",
+    label: "Product",
+    icon: "package",
+    videos: [
+      { titulo: "Atomy Quality And Trust", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Benefits Of Atomy Products", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "HEMOHIM Line", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
+      { titulo: "4-Step Set", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Business Growth",
+    icon: "trending-up",
+    videos: [
+      { titulo: "Personal And Business Development", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+      { titulo: "The 8 Steps To Success - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+];
+
 const ESCENARIO_INTRO =
   "Your Life Scenario is the foundation of your whole journey: before you learn the route, define your destination. Before working just to work, decide what for. Write your goals in each of the 8 areas of your balanced life — the clearer and more detailed they are (numbers, places, dates), the more strength they'll give you on the hard days.";
 
@@ -336,6 +393,7 @@ const DIAS = [
           "Go to ch.atomy.com/eu from your browser or phone and switch the language to English using the globe icon (top-right corner).",
           "Explore the menus: Company/Vision (founder Han-Gill Park's story and the scientific backing of KAERI and Kolmar), Product (skincare, health, home), Business/Education (compensation plan, seminars), and Member/Success Stories (real testimonials).",
           "Use the search icon for specific topics, for example “HemoHIM” or “Compensation Plan.”",
+          "Watch the institutional video: https://youtu.be/oIOqIRBXZFM",
           "Recommendation: spend 15 minutes a day watching 1 Company video and 1 Product video.",
         ],
       },
@@ -450,7 +508,7 @@ const DIAS = [
         h: "Choose your first order (your conscious consumption)",
         body: [
           "Choose the products you genuinely need to restock at home right now (toothpaste, shampoo, detergent, supplements). The goal is simple: try the brand's quality so you can speak about it with authority from day one.",
-          "To do that, go to the website and log in with your ID and password.",
+          "To do that, go to https://eu.atomy.com/main and log in with your ID and password.",
         ],
       },
       {
@@ -472,6 +530,7 @@ const DIAS = [
         h: "Today's video",
         body: [
           "Go to ch.atomy.com/eu (CH.ATOMY Europe) → Product menu, and watch the video on HemoHIM or the Absolute/The Fame line to understand the Masstige philosophy: absolute quality at an absolute price.",
+          "Help video — How to Place an Order: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
     ],
@@ -530,6 +589,13 @@ const DIAS = [
           "Message 3 — The no-pressure hook: mention that the system also lets you earn financial benefits by recommending it, something a regular supermarket doesn't offer.",
           "Message 4 — The invitation: “I don't know if this is something for you, but if you're curious, let me know and we can grab a coffee or hop on a quick call and I'll tell you about it.”",
           "Duplication tip: practice your story in a 1-on-1 meeting with your sponsor and work together on any phrase that sounds too formal or corporate.",
+        ],
+      },
+      {
+        h: "Today's video",
+        body: [
+          "Help video — How do I register a distributor?: https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING",
+          "Help video — How to register as a global member: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
     ],
@@ -1691,7 +1757,9 @@ const RANGOS = [
 ];
 
 const MENSAJE_BIENVENIDA =
-  "Welcome to this journey to success. It's designed for you to enjoy the ride, share your progress, and ask about any doubts or difficulties you run into. Let's go!";
+  "Welcome to an extraordinary opportunity! Whether you're new to Atomy or you've been with us for a while but feel your project has stalled and could use a fresh start, I want to say this to you honestly: it's okay to take a strategic pause to recalibrate your compass.\n\n" +
+  "You're not alone. We're not here to judge the past — we're here to build the future. My commitment to you is to walk beside you and support you every step of the way. But to reach Atomy's ranks and achieve true financial freedom, we need to make a pact of mutual commitment: you bring the daily action and determination, and I bring 100% of my support to help you succeed. Shall we make that pact? Yes? Then let's go!\n\n" +
+  "This guide brings together, in a practical way, President Han-Gill Park's proven 8 Steps to Success system with the chronological structure of the 90-Day Plan toward the Sales Master rank — making it possible both to launch new partners and to strategically restart teams already underway, taking this first step together on the road to success with Atomy.";
 
 /* Ready-to-share social media post that the partner shares upon
    becoming a VIP Consumer, to invite their contacts to join. */
