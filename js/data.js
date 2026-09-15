@@ -185,8 +185,8 @@ const OCHO_PASOS = [
 ];
 
 const ESCENARIO_VIDEOS = [
-  { titulo: "Comment Créer ton Scénario de Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
-  { titulo: "Ton Pourquoi : Scénario de Vie", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Comment Créer Ton Scénario De Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "Ton Pourquoi : Scénario De Vie", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
   { titulo: "Objectifs Clairs, Vie Claire", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
 ];
 
@@ -197,9 +197,9 @@ const RECURSOS_AUDIOVISUALES = [
     icon: "compass",
     videos: [
       { titulo: "Découvrir Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
-      { titulo: "La Vision d'Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
-      { titulo: "L'Histoire d'Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
-      { titulo: "Les 8 Étapes vers le Succès", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "L'Histoire D'Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Les 8 Étapes Vers Le Succès - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Leadership Et Croissance", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
     ],
   },
   {
@@ -207,17 +207,16 @@ const RECURSOS_AUDIOVISUALES = [
     label: "Entreprise",
     icon: "presentation",
     videos: [
-      { titulo: "Comment Créer ton Scénario de Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Comment Créer Ton Scénario De Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Pourquoi Choisir Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
-      { titulo: "L'Entreprise Atomy — Partie 1", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
-      { titulo: "L'Entreprise Atomy — Partie 2", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
-      { titulo: "L'Entreprise Atomy — Partie 3", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
-      { titulo: "Ton Pourquoi : Scénario de Vie", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Comment M'Inscrire Comme Consommateur?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Comment Joindre Des Documents?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Comment Inscrire Un Distributeur?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Ton Pourquoi : Scénario De Vie", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
       { titulo: "Objectifs Clairs, Vie Claire", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
-      { titulo: "Comment Passer une Commande", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
-      { titulo: "Comment Inscrire un Distributeur", url: "https://www.youtube.com/watch?v=Gkxd5vvgDD8" },
-      { titulo: "Comment Faire une Inscription Globale", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
-      { titulo: "Comment Joindre des Documents", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+      { titulo: "Comment Passer Une Commande", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "Comment S'Inscrire Comme Membre Global", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "Comment Joindre Des Documents", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
     ],
   },
   {
@@ -225,8 +224,8 @@ const RECURSOS_AUDIOVISUALES = [
     label: "Produit",
     icon: "package",
     videos: [
-      { titulo: "Qualité et Confiance Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
-      { titulo: "Avantages des Produits Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Qualité Et Confiance Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Avantages Des Produits Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
       { titulo: "Gamme HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
       { titulo: "Kit 4 Étapes", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
     ],
@@ -236,10 +235,8 @@ const RECURSOS_AUDIOVISUALES = [
     label: "Croissance Professionnelle",
     icon: "trending-up",
     videos: [
-      { titulo: "Leadership et Croissance", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
-      { titulo: "De Consommateur à Leader", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
-      { titulo: "Développement Personnel et Professionnel", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
-      { titulo: "Les 8 Étapes vers le Succès", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Développement Personnel Et Professionnel", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+      { titulo: "Les 8 Étapes Vers Le Succès - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
     ],
   },
 ];
@@ -597,8 +594,8 @@ const DIAS = [
       {
         h: "Ta vidéo du jour",
         body: [
-          "Vidéo d'aide — Comment inscrire un distributeur : https://www.youtube.com/watch?v=Gkxd5vvgDD8",
-          "Vidéo d'aide — Comment faire une inscription globale : https://www.youtube.com/watch?v=tTuD_uoPaUA",
+          "Vidéo d'aide — Comment inscrire un distributeur : https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING",
+          "Vidéo d'aide — Comment s'inscrire comme membre global : https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
     ],
