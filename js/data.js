@@ -216,6 +216,12 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Cómo Realizar Una Compra", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
       { titulo: "Cómo Registrarte Como Miembro Global", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
       { titulo: "Cómo Adjuntar Documentos", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+      { titulo: "Uso De Canva", url: "https://www.youtube.com/watch?v=MKY6pTgIjdw&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=2" },
+      { titulo: "Power Point", url: "https://www.youtube.com/watch?v=PCyPI6FuDdk&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=3" },
+      { titulo: "Cómo Ser Un Buen Ponente", url: "https://www.youtube.com/watch?v=7-XQv2Jc-OU&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=6" },
+      { titulo: "Cómo Cambiar De Centro De Educación", url: "https://www.youtube.com/watch?v=3MzuY0eOYwI&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=2" },
+      { titulo: "Cómo Cambiar La Fecha De Compra", url: "https://www.youtube.com/watch?v=hIaQ6yADgdQ&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=3" },
+      { titulo: "Crear Un Catálogo Personalizado", url: "https://www.youtube.com/watch?v=GRb9rViVmV0&list=PL8ppuTSO8Oq3sw2Wd0usLcZFQa2IQf9t5&index=5" },
     ],
   },
   {
@@ -227,6 +233,13 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Beneficios De Los Productos Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
       { titulo: "Línea HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
       { titulo: "Set 4 Pasos", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+      { titulo: "100 Productos En Un Día", url: "https://www.youtube.com/watch?v=iUnUPst5rBE" },
+      { titulo: "Nuestro Cepillo De Dientes", url: "https://www.youtube.com/watch?v=8e_mC_-pUyw" },
+      { titulo: "El Noni", url: "https://www.youtube.com/watch?v=nn0ewzm4klI" },
+      { titulo: "Línea FAME", url: "https://www.youtube.com/watch?v=CRUkbrsASEA" },
+      { titulo: "Línea Absolute", url: "https://www.youtube.com/watch?v=QrHUSQQJZXc" },
+      { titulo: "Sistema De Cuidado Nocturno", url: "https://www.youtube.com/watch?v=GOx3Tv8poU0" },
+      { titulo: "Hemo Him", url: "https://www.youtube.com/watch?v=A1HUZhZFnzU&list=PLuY6acO4NoFDbgYduzQ8eeVvE7wphkpxl&index=6" },
     ],
   },
   {
@@ -236,6 +249,7 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Desarrollo Personal Y Empresarial", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
       { titulo: "Los 8 Pasos Al Éxito - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Uso De Redes Sociales", url: "https://www.youtube.com/watch?v=r7WkxT1qCrA&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO" },
     ],
   },
 ];
@@ -439,6 +453,7 @@ const DIAS = [
           "Los PV (Puntos de Valor) son el valor que la empresa asigna a cada producto; los ves en azul debajo del precio en la tienda online.",
           "Con un par de productos básicos de uso diario (ej. un kit de cuidado bucal y un champú) ya alcanzas los 10.000 PVP.",
           "Alcanzar los 10.000 PVP es la llave que activa tu cuenta de socio: a partir de ahí tu perfil queda habilitado para acumular volumen de equipo y cobrar comisiones.",
+          "Visita la página oficial de Atomy: https://eu.atomy.com",
           "Descarga la app oficial de Atomy en tu teléfono para hacer tus pedidos y revisar tus PV desde cualquier lugar: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) o https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
         ],
       },
@@ -485,7 +500,7 @@ const DIAS = [
       "Descargué la app oficial de Atomy en mi teléfono.",
     ],
     quiz: {
-      pregunta: "¿Cuál es tu primer gran hito para activar tu cuenta?",
+      pregunta: "¿Con cuántos puntos se activa tu cuenta para cobrar comisiones?",
       opciones: ["300.000 PV Grupales", "10.000 PV Personales", "50 contactos nuevos"],
       correcta: 1,
     },
