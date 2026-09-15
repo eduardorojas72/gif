@@ -184,6 +184,66 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_VIDEOS = [
+  { titulo: "Comment Créer ton Scénario de Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "Ton Pourquoi : Scénario de Vie", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Objectifs Clairs, Vie Claire", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+];
+
+const RECURSOS_AUDIOVISUALES = [
+  {
+    id: "inicio",
+    label: "Accueil",
+    icon: "compass",
+    videos: [
+      { titulo: "Découvrir Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
+      { titulo: "La Vision d'Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "L'Histoire d'Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Les 8 Étapes vers le Succès", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+  {
+    id: "negocio",
+    label: "Entreprise",
+    icon: "presentation",
+    videos: [
+      { titulo: "Comment Créer ton Scénario de Vie", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Pourquoi Choisir Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "L'Entreprise Atomy — Partie 1", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "L'Entreprise Atomy — Partie 2", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "L'Entreprise Atomy — Partie 3", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Ton Pourquoi : Scénario de Vie", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Objectifs Clairs, Vie Claire", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Comment Passer une Commande", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "Comment Inscrire un Distributeur", url: "https://www.youtube.com/watch?v=Gkxd5vvgDD8" },
+      { titulo: "Comment Faire une Inscription Globale", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "Comment Joindre des Documents", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+    ],
+  },
+  {
+    id: "producto",
+    label: "Produit",
+    icon: "package",
+    videos: [
+      { titulo: "Qualité et Confiance Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Avantages des Produits Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Gamme HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
+      { titulo: "Kit 4 Étapes", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Croissance Professionnelle",
+    icon: "trending-up",
+    videos: [
+      { titulo: "Leadership et Croissance", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "De Consommateur à Leader", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Développement Personnel et Professionnel", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+      { titulo: "Les 8 Étapes vers le Succès", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+];
+
 const ESCENARIO_INTRO =
   "Ton Scénario de Vie est la base de tout ton parcours : avant d'apprendre la route, définis ta destination. Avant de travailler pour travailler, décide pour quoi. Écris tes objectifs dans chacun des 8 domaines de ta vie équilibrée — plus ils sont clairs et détaillés (chiffres, lieux, dates), plus ils te donneront de force dans les jours difficiles.";
 
@@ -336,6 +396,7 @@ const DIAS = [
           "Rends-toi sur ch.atomy.com/eu depuis ton navigateur ou ton téléphone et passe la langue en français grâce à l'icône du globe (en haut à droite).",
           "Explore les menus : Entreprise/Vision (l'histoire du fondateur Han-Gill Park et le soutien scientifique de KAERI et Kolmar), Produit (soins de la peau, santé, maison), Business/Formation (plan de rémunération, séminaires) et Membre/Témoignages (témoignages réels).",
           "Utilise la loupe de recherche pour des sujets précis, par exemple « HemoHIM » ou « Plan de Rémunération ».",
+          "Regarde la vidéo institutionnelle : https://youtu.be/oIOqIRBXZFM",
           "Recommandation : consacre 15 minutes par jour à regarder 1 vidéo Entreprise et 1 vidéo Produit.",
         ],
       },
@@ -450,7 +511,7 @@ const DIAS = [
         h: "Choisis ta première commande (ta consommation consciente)",
         body: [
           "Choisis les produits que tu dois vraiment renouveler à la maison dès aujourd'hui (dentifrice, shampoing, lessive, compléments). L'objectif est simple : tester la qualité de la marque pour pouvoir en parler avec autorité dès le premier jour.",
-          "Pour cela, rends-toi sur le site et connecte-toi avec ton identifiant et ton mot de passe.",
+          "Pour cela, rends-toi sur https://eu.atomy.com/main et connecte-toi avec ton identifiant et ton mot de passe.",
         ],
       },
       {
@@ -472,6 +533,7 @@ const DIAS = [
         h: "Ta vidéo du jour",
         body: [
           "Sur CH.ATOMY Europe → menu Produit, regarde la vidéo sur HemoHIM ou sur la gamme Absolute/The Fame pour comprendre la philosophie Masstige : qualité absolue à prix absolu.",
+          "Vidéo d'aide — Comment passer une commande : https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
     ],
@@ -530,6 +592,13 @@ const DIAS = [
           "Message 3 — L'accroche sans pression : mentionne que le système te permet aussi de générer des revenus en le recommandant, ce que le supermarché classique n'offre pas.",
           "Message 4 — L'invitation : « Je ne sais pas si c'est pour toi, mais si ça t'intrigue, préviens-moi et on prend un café ou on s'appelle rapidement pour que je t'explique de quoi il s'agit. »",
           "Conseil de duplication : entraîne-toi à raconter ton histoire lors d'un rendez-vous en tête-à-tête avec ton parrain et ajustez ensemble toute phrase qui sonne trop formelle ou trop « entreprise ».",
+        ],
+      },
+      {
+        h: "Ta vidéo du jour",
+        body: [
+          "Vidéo d'aide — Comment inscrire un distributeur : https://www.youtube.com/watch?v=Gkxd5vvgDD8",
+          "Vidéo d'aide — Comment faire une inscription globale : https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
     ],
@@ -1691,7 +1760,9 @@ const RANGOS = [
 ];
 
 const MENSAJE_BIENVENIDA =
-  "Bienvenue dans ce parcours vers la réussite. Il est conçu pour que tu profites du trajet, partages tes progrès et poses tes questions ou tes difficultés. En route !";
+  "Bienvenue dans une opportunité extraordinaire ! Que tu sois nouveau chez Atomy ou que tu sois déjà avec nous depuis un moment mais que tu sentes que ton projet s'est essoufflé ou a besoin d'un nouveau souffle, je veux te dire une chose en toute sincérité : c'est normal de faire une pause stratégique pour réajuster le cap.\n\n" +
+  "Tu n'es pas seul. Nous ne venons pas juger le passé, mais construire l'avenir. Mon engagement envers toi, c'est de te tendre la main et de t'accompagner à chaque étape. Cependant, pour atteindre les rangs d'Atomy et obtenir une véritable liberté financière, nous devons sceller un pacte d'engagement mutuel : toi, tu apportes l'action quotidienne et la détermination, et moi, j'apporte 100 % de mon soutien pour t'accompagner vers le succès. On scelle ce pacte ? Oui ? Alors, en route !\n\n" +
+  "Ce document intègre de façon concrète le système éprouvé des 8 Étapes vers le Succès du Président Han-Gill Park avec la structure chronologique du Plan de 90 Jours vers le rang Sales Master, permettant à la fois l'activation des nouveaux partenaires et le redémarrage stratégique des équipes déjà en marche — franchissant ainsi notre premier palier dans la course au Succès chez Atomy.";
 
 /* Publication prête pour les réseaux sociaux que le partenaire partage en devenant
    Consommateur VIP, pour inviter ses contacts à le rejoindre. */

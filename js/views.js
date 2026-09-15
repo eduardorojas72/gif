@@ -13,6 +13,7 @@ const MENU_ITEMS = [
   { id: "informe", label: "Rapport Hebdomadaire", icon: "trending-up" },
   { id: "enfoque", label: "Réunion de Mise au Point", icon: "target" },
   { id: "plan90", label: "Plan de 90 Jours", icon: "mountain-flag" },
+  { id: "recursos", label: "Ressources Audiovisuelles", icon: "video" },
   { id: "arbol", label: "Mon Arbre Généalogique", icon: "crown" },
   { id: "sos", label: "Appels S.O.S.", icon: "bell" },
   { id: "eventos", label: "Liste de Contacts", icon: "users" },
@@ -64,7 +65,7 @@ function renderWelcome() {
     mountainMarkHTML(64, true) +
     '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
     '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Les 8 Étapes vers le Succès</p>' +
-    '<p class="muted" style="margin-top:22px;max-width:300px;font-size:15px;line-height:1.6">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
+    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
     '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Commencer mon parcours ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copie sous licence exclusive pour ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"
@@ -608,6 +609,7 @@ function renderEscenarioVidaBody(state, ui) {
     '<div class="muted small" style="margin-top:6px">' + completas + " sur " + ESCENARIO_CATEGORIAS.length + " objectifs dans le cercle parfait</div>" +
     "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">Comment le remplir ?</div>' + pasos + "</div>" +
+    '<div class="card"><div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("video", { size: 13, color: "var(--gold)" }) + " Vidéos qui t'aident à le construire</div>" + videoListCardHTML(ESCENARIO_VIDEOS) + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
     granPlanSectionHTML(state, ui) +
     diarioFuturoSectionHTML(state, ui) +
@@ -621,6 +623,36 @@ function renderEscenarioVida(state, ui) {
     sectionHeaderHTML("Scénario de Vie", ESCENARIO_LEMA, "compass") +
     '<div class="card"><p class="small" style="line-height:1.6">' + escapeHtml(ESCENARIO_INTRO) + "</p></div>" +
     renderEscenarioVidaBody(state, ui)
+  );
+}
+
+function videoRowHTML(v) {
+  return (
+    '<a class="card card-hover row gap-3" style="text-decoration:none;color:inherit;align-items:center" href="' + escapeHtml(v.url) + '" target="_blank" rel="noreferrer">' +
+    '<div style="flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">' + Icon("video", { size: 17, color: "var(--gold)" }) + "</div>" +
+    '<div style="flex:1;font-weight:600;font-size:13.5px;line-height:1.4">' + escapeHtml(v.titulo) + "</div>" +
+    Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+    "</a>"
+  );
+}
+
+function videoListCardHTML(videos) {
+  return '<div class="view-stack gap-sm">' + videos.map(videoRowHTML).join("") + "</div>";
+}
+
+function renderRecursosAudiovisuales(state, ui) {
+  const categorias = RECURSOS_AUDIOVISUALES.map(function (cat) {
+    return (
+      '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
+      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon(cat.icon, { size: 14, color: "var(--gold)" }) + " " + escapeHtml(cat.label) + "</div>" +
+      videoListCardHTML(cat.videos) +
+      "</div>"
+    );
+  }).join("");
+
+  return (
+    sectionHeaderHTML("Ressources Audiovisuelles", "Les vidéos les plus importantes pour comprendre et partager Atomy, classées par thème.", "video") +
+    categorias
   );
 }
 
@@ -766,7 +798,8 @@ function renderPasos(state, ui) {
     '<div class="section-header">' + pasosHeaderMedallionHTML(64) +
     '<div><h2>Les 8 Étapes vers le Succès</h2><p>D\'après l\'enseignement du Président Han-Gill Park. Touche chaque étape pour voir l\'explication complète.</p></div></div>';
   return header +
-    '<div class="view-stack gap-sm">' + cards + "</div>" +
+    videoRowHTML({ titulo: "Les 8 Étapes vers le Succès (vidéo)", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" }) +
+    '<div class="view-stack gap-sm" style="margin-top:10px">' + cards + "</div>" +
     evaluacion8PasosHTML(state, ui) +
     OCHO_CORE_NOTA_HTML;
 }
