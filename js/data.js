@@ -183,6 +183,66 @@ const OCHO_PASOS = [
   },
 ];
 
+const ESCENARIO_VIDEOS = [
+  { titulo: "Como Criar seu Cenário de Vida", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+  { titulo: "Seu Por Quê: Cenário de Vida", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+  { titulo: "Metas Claras, Vida Clara", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+];
+
+const RECURSOS_AUDIOVISUALES = [
+  {
+    id: "inicio",
+    label: "Início",
+    icon: "compass",
+    videos: [
+      { titulo: "Conhecendo a Atomy", url: "https://youtu.be/oIOqIRBXZFM" },
+      { titulo: "A Visão da Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "A História da Atomy", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Os 8 Passos para o Sucesso", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+  {
+    id: "negocio",
+    label: "Negócio",
+    icon: "presentation",
+    videos: [
+      { titulo: "Como Criar seu Cenário de Vida", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Por Que Escolher a Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "O Negócio Atomy — Parte 1", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "O Negócio Atomy — Parte 2", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "O Negócio Atomy — Parte 3", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Seu Por Quê: Cenário de Vida", url: "https://ch.atomy.com/eu/844?listType=100&categoryId=84&orderType=FILMING" },
+      { titulo: "Metas Claras, Vida Clara", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Como Fazer uma Compra", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
+      { titulo: "Como Registrar um Distribuidor", url: "https://www.youtube.com/watch?v=Gkxd5vvgDD8" },
+      { titulo: "Como Fazer um Registro Global", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
+      { titulo: "Como Anexar Documentos", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+    ],
+  },
+  {
+    id: "producto",
+    label: "Produto",
+    icon: "package",
+    videos: [
+      { titulo: "Qualidade e Confiança Atomy", url: "https://ch.atomy.com/co/1540?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Benefícios dos Produtos Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Linha HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
+      { titulo: "Kit 4 Passos", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+    ],
+  },
+  {
+    id: "crecimiento",
+    label: "Crescimento Empresarial",
+    icon: "trending-up",
+    videos: [
+      { titulo: "Liderança e Crescimento", url: "https://ch.atomy.com/eu/1125?categoryId=56&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "De Consumidor a Líder", url: "https://ch.atomy.com/co/440?categoryId=47&listType=100&page=2&tags=&orderType=FILMING" },
+      { titulo: "Desenvolvimento Pessoal e Empresarial", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
+      { titulo: "Os 8 Passos para o Sucesso", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+    ],
+  },
+];
+
 const ESCENARIO_INTRO =
   "O Cenário de Vida é a base de toda a sua jornada: antes de aprender a rota, defina seu destino. Antes de trabalhar só por trabalhar, decida para quê. Escreva suas metas em cada uma das 8 áreas da sua vida equilibrada — quanto mais claras e detalhadas (valores, lugares, datas), mais força elas terão para te sustentar nos dias difíceis.";
 
@@ -335,6 +395,7 @@ const DIAS = [
           "Entre em ch.atomy.com/eu pelo navegador ou pelo celular e mude o idioma para Português pelo ícone do globo terrestre (canto superior direito).",
           "Explore os menus: Empresa/Visão (história do fundador Han-Gill Park e respaldo científico da KAERI e da Kolmar), Produto (skincare, saúde, casa), Negócio/Educação (plano de compensação, seminários) e Membro/Histórias de Sucesso (depoimentos reais).",
           "Use a lupa de busca para temas específicos, por exemplo “HemoHIM” ou “Plano de Compensação”.",
+          "Assista ao vídeo institucional: https://youtu.be/oIOqIRBXZFM",
           "Recomendação: dedique 15 minutos por dia a ver 1 vídeo da Empresa e 1 de Produto.",
         ],
       },
@@ -449,7 +510,7 @@ const DIAS = [
         h: "Escolha seu primeiro pedido (seu consumo consciente)",
         body: [
           "Escolha os produtos que você realmente precisa repor em casa hoje mesmo (pasta de dente, shampoo, detergente, suplementos). A meta é simples: testar a qualidade da marca para poder falar com propriedade desde o dia um.",
-          "Para isso, vamos à página: entre com seu ID e senha.",
+          "Para isso, entre em https://eu.atomy.com/main com seu ID e senha.",
         ],
       },
       {
@@ -471,6 +532,7 @@ const DIAS = [
         h: "Seu vídeo de hoje",
         body: [
           "Entre em ch.atomy.com/eu (CH.ATOMY Europa) → menu Produto, e veja o vídeo do HemoHIM ou da linha Absolute/The Fame para entender a filosofia Masstige: qualidade absoluta a preço absoluto.",
+          "Vídeo de ajuda — Como fazer uma compra: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
     ],
@@ -529,6 +591,13 @@ const DIAS = [
           "Mensagem 3 — O gancho sem pressão: mencione que o sistema também permite gerar benefícios econômicos por recomendar, algo que o supermercado comum não oferece.",
           "Mensagem 4 — O convite: “Não sei se isso é para você, mas se ficou curioso(a), me avisa e a gente toma um café ou faz uma ligadinha rápida e eu te conto do que se trata.”",
           "Dica de duplicação: pratique sua história em uma reunião 1 a 1 com seu patrocinador e ajustem juntos qualquer frase que soe muito formal ou corporativa.",
+        ],
+      },
+      {
+        h: "Seu vídeo de hoje",
+        body: [
+          "Vídeo de ajuda — Como registrar um distribuidor: https://www.youtube.com/watch?v=Gkxd5vvgDD8",
+          "Vídeo de ajuda — Como fazer um registro global: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
     ],
@@ -1690,7 +1759,9 @@ const RANGOS = [
 ];
 
 const MENSAJE_BIENVENIDA =
-  "Bem-vindo a esta jornada rumo ao sucesso. Ela foi criada para que você aproveite o percurso, compartilhe seu progresso e tire suas dúvidas ou dificuldades que encontrar. Vamos lá!";
+  "Bem-vindo a uma oportunidade extraordinária! Seja você novo na Atomy, seja alguém que já está conosco há um tempo mas sente que o seu projeto parou ou precisa de um novo fôlego, quero te dizer uma coisa com total sinceridade: tudo bem fazer uma pausa estratégica para reajustar a bússola.\n\n" +
+  "Você não está sozinho. Não viemos avaliar o passado, e sim construir o futuro. Meu compromisso com você é te dar a mão e te acompanhar em cada passo. No entanto, para alcançar os ranks da Atomy e conquistar a verdadeira liberdade financeira, precisamos firmar um pacto de compromisso mútuo: você entra com a ação diária e a determinação, e eu entro com 100% do meu apoio para te acompanhar até o sucesso. Fechamos esse pacto? Sim? Então vamos em frente!\n\n" +
+  "Este documento integra de forma prática o sistema comprovado dos 8 Passos para o Sucesso do Presidente Han-Gill Park com a estrutura cronológica do Plano de 90 Dias rumo ao Rank de Sales Master, permitindo tanto a ativação de novos sócios quanto o reinício estratégico de equipes já em andamento, alcançando assim o nosso primeiro degrau na corrida rumo ao Sucesso na Atomy.";
 
 /* Publicação pronta para redes sociais que o sócio compartilha ao se tornar
    Consumidor VIP, para convidar seus contatos a entrar. */
