@@ -209,6 +209,7 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Cómo Crear Tu Escenario De Vida", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Por Qué Elegir Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Plan De Compensación", url: "https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Plan De Compensación 2", url: "https://ch.atomy.com/EU/601?listType=300" },
       { titulo: "¿Cómo Registrarme Como Consumidor?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "¿Cómo Adjuntar Documentos?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "¿Cómo Registrar Un Distribuidor?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
@@ -494,6 +495,7 @@ const DIAS = [
         h: "Tu video de hoy",
         body: [
           "Video de ayuda — Plan de Compensación: https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING",
+          "Video de ayuda — Plan de Compensación (2): https://ch.atomy.com/EU/601?listType=300",
         ],
       },
     ],
