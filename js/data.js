@@ -262,6 +262,7 @@ const NEGOCIO_DOCUMENTOS = [
   { titulo: "Formulario De Devolución O Cambio De Producto", url: "docs/formulario-devolucion-cambio-producto.pdf" },
   { titulo: "Plan De Compensación 2021 Colombia", url: "docs/plan-de-compensacion-colombia.pdf" },
   { titulo: "Escenario De Vida (PDF)", url: "docs/escenario-de-vida.pdf" },
+  { titulo: "Código De Ética Miembros - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
 const ESCENARIO_INTRO =
