@@ -13,6 +13,17 @@ function themeColors() {
   };
 }
 
+function downloadBlob(blob, filename) {
+  const dlUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = dlUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(dlUrl);
+}
+
 function svgToPngDownload(svgMarkup, width, height, filename) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -24,15 +35,38 @@ function svgToPngDownload(svgMarkup, width, height, filename) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
     URL.revokeObjectURL(url);
+    canvas.toBlob(function (blob) { downloadBlob(blob, filename); }, "image/png");
+  };
+  img.onerror = function () {
+    URL.revokeObjectURL(url);
+    App.showToast("Impossibile generare l'immagine. Riprova.");
+  };
+  img.src = url;
+}
+
+/* Genera el PNG y abre el modal propio de "Compartir" (WhatsApp, Instagram,
+   Facebook, TikTok, LinkedIn, YouTube), en vez de saltar directo al panel
+   nativo del sistema operativo — así el socio ve siempre las mismas redes,
+   sin que se cuelen apps de escritorio (Correo, Outlook, Paint...) que el
+   picker nativo del SO añade según lo que tenga instalado. */
+function svgToPngShare(svgMarkup, width, height, filename, shareText) {
+  const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function () {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
     canvas.toBlob(function (blob) {
-      const dlUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = dlUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(dlUrl);
+      if (!blob) {
+        App.showToast("Impossibile generare l'immagine. Riprova.");
+        return;
+      }
+      App.ui.compartirImagenDraft = { blob: blob, filename: filename, shareText: shareText || "" };
+      App.render();
     }, "image/png");
   };
   img.onerror = function () {
@@ -56,8 +90,59 @@ function safeXml(str) {
 
 function downloadRecogCard(state) {
   const rangoObj = RANGOS[state.rangoIndex];
+  const filename = "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png";
+  const template = RANK_CARD_TEMPLATES[state.rangoIndex];
+
+  if (template) {
+    const shareText = RANK_SHARE_TEXTS[state.rangoIndex] || "";
+    fetch(template.img)
+      .then(function (r) { return r.blob(); })
+      .then(function (blob) {
+        return new Promise(function (resolve, reject) {
+          const reader = new FileReader();
+          reader.onload = function () { resolve(reader.result); };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+      .then(function (dataUri) {
+        const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+        svgToPngShare(svg, template.w, template.h, filename, shareText);
+      })
+      .catch(function () {
+        App.showToast("Impossibile caricare l'immagine. Riprova.");
+      });
+    return;
+  }
+
   const svg = recogCardSVGMarkup(state.nombre, state.foto, rangoObj.nombre, rangoObj.pv, state.rangoIndex);
-  svgToPngDownload(svg, 800, 1000, "Cumbre90-" + slugFile(rangoObj.nombre) + "-" + slugFile(state.nombre || "socio") + ".png");
+  svgToPngShare(svg, 800, 1000, filename, "Ecco il mio progresso nel mio cammino verso Sales Master con Atomy! 🚀");
+}
+
+/* Tarjeta "Consumidor VIP" — publicación lista para compartir e invitar a
+   nuevos consumidores. Usa la misma plantilla y el mismo parche de nombre
+   que la tarjeta de reconocimiento del rango 0 (RANK_CARD_TEMPLATES), pero
+   como botón dedicado y siempre visible en Mi Rango, con su propio texto
+   de invitación, sin depender de cuál sea el rango actual del socio. */
+function downloadConsumidorVipCard(state) {
+  const template = RANK_CARD_TEMPLATES[0];
+  fetch(template.img)
+    .then(function (r) { return r.blob(); })
+    .then(function (blob) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then(function (dataUri) {
+      const svg = rankCardTemplateSVGMarkup(state.nombre, dataUri, template);
+      svgToPngShare(svg, template.w, template.h, "Cumbre90-Consumidor-VIP-" + slugFile(state.nombre || "socio") + ".png", CONSUMIDOR_VIP_SHARE_TEXT);
+    })
+    .catch(function () {
+      App.showToast("Impossibile caricare l'immagine. Riprova.");
+    });
 }
 
 function downloadCertificado(state) {
@@ -78,7 +163,7 @@ function downloadCertificado(state) {
     '<text x="450" y="470" text-anchor="middle" font-family="Arial" font-size="13" fill="' + t.textSoft + '">' + fecha + "</text>" +
     '<text x="450" y="560" text-anchor="middle" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Codice: ' + codigo + "</text>" +
     "</svg>";
-  svgToPngDownload(svg, 900, 620, "Certificato-Cumbre90-" + slugFile(state.nombre || "partner") + ".png");
+  svgToPngDownload(svg, 900, 620, "Certificato-Cumbre90-" + slugFile(state.nombre || "socio") + ".png");
 }
 
 function downloadDiaCard(state, diaId) {
@@ -113,7 +198,7 @@ function downloadDiaCard(state, diaId) {
     '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Percorso verso il successo con Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngDownload(svg, width, height, "Cumbre90-Tappa" + dia.id + "-" + slugFile(dia.etapa) + ".png");
+  svgToPngShare(svg, width, height, "Cumbre90-Tappa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "Sto avanzando nel mio Piano di 6 Giorni con Atomy! 🚀");
 }
 
 function wrapText(str, max) {
