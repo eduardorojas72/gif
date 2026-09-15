@@ -208,6 +208,7 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Cómo Crear Tu Escenario De Vida", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Por Qué Elegir Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Plan De Compensación", url: "https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "¿Cómo Registrarme Como Consumidor?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "¿Cómo Adjuntar Documentos?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "¿Cómo Registrar Un Distribuidor?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
@@ -487,6 +488,12 @@ const DIAS = [
           "Tu progreso personal avanza en hitos de PV que nunca se pierden: 10.000 PVP activa tu cuenta, 300.000 PVP te da Agente, y 700.000 PVP te da Agente Especial.",
           "Sales Master —la meta de tu Plan de 90 Días— se alcanza cuando, además de tus 700.000 PVP, tu línea Izquierda y tu línea Derecha acumulan cada una 2.500.000 PVG en la misma quincena de calificación.",
           "Este recorrido de Cumbre 90 te lleva exactamente hasta ahí. Los rangos que existen por encima de Sales Master (Diamond Master en adelante) quedan fuera de estos 90 días, pero para entonces ya tendrás el hábito y el equipo para seguir subiendo.",
+        ],
+      },
+      {
+        h: "Tu video de hoy",
+        body: [
+          "Video de ayuda — Plan de Compensación: https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING",
         ],
       },
     ],
