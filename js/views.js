@@ -64,7 +64,7 @@ function renderWelcome() {
     mountainMarkHTML(64, true) +
     '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
     '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Los 8 Pasos al Éxito</p>' +
-    '<p class="muted" style="margin-top:22px;max-width:300px;font-size:15px;line-height:1.6">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
+    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
     '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Comenzar mi recorrido ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copia con licencia exclusiva para ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"

@@ -1691,7 +1691,9 @@ const RANGOS = [
 ];
 
 const MENSAJE_BIENVENIDA =
-  "Bienvenido a este recorrido al éxito. Está diseñado para que disfrutes del recorrido, compartas tus progresos y consultes tus dudas o dificultades que puedas encontrar. ¡Adelante!";
+  "¡Bienvenido a una oportunidad extraordinaria! Tanto si eres nuevo en Atomy, como si ya llevas un tiempo con nosotros pero sientes que tu proyecto se ha paralizado o necesita un nuevo aire, quiero decirte algo con total sinceridad: está bien hacer una pausa estratégica para afinar la brújula.\n\n" +
+  "No estás solo. No venimos a evaluar el pasado, sino a construir el futuro. Mi compromiso contigo es darte la mano y acompañarte en cada paso. Sin embargo, para alcanzar los rangos de Atomy y lograr la verdadera libertad financiera, debemos asumir un pacto de compromiso mutuo: tú pones la acción diaria y la determinación, y yo pongo el 100% de mi apoyo para acompañarte al éxito. ¿Hacemos ese pacto? ¿Sí? ¡Pues adelante!\n\n" +
+  "Este documento integra de forma práctica el sistema probado de los 8 Pasos al Éxito del Presidente Han-Gill Park con la estructura cronológica del Plan de 90 Días hacia el Rango de Sales Master, permitiendo tanto la activación de socios nuevos como el rearranque estratégico de equipos en marcha, alcanzando de esta manera nuestro primer peldaño en la carrera al Éxito de Atomy.";
 
 /* Publicación lista para redes sociales que el socio comparte al convertirse
    en Consumidor VIP, para invitar a sus contactos a unirse. */
