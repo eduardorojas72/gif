@@ -208,6 +208,8 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Cum Să-ți Creezi Scenariul De Viață", url: "https://ch.atomy.com/eu/870?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "De Ce Să Alegi Atomy", url: "https://ch.atomy.com/co/1697?categoryId=78&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Planul De Compensare", url: "https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
+      { titulo: "Planul De Compensare 2", url: "https://ch.atomy.com/EU/601?listType=300" },
       { titulo: "Cum Mă Înregistrez Ca Consumator?", url: "https://ch.atomy.com/co/1544?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Cum Atașez Documente?", url: "https://ch.atomy.com/co/1543?categoryId=52&listType=100&page=1&tags=&orderType=FILMING" },
       { titulo: "Cum Înregistrez Un Distribuitor?", url: "https://ch.atomy.com/co/1541?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
@@ -216,6 +218,12 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Cum Se Face O Achiziție", url: "https://www.youtube.com/watch?v=onxu6h1FpKc" },
       { titulo: "Cum Te Înregistrezi Ca Membru Global", url: "https://www.youtube.com/watch?v=tTuD_uoPaUA" },
       { titulo: "Cum Se Atașează Documente", url: "https://www.youtube.com/watch?v=KYVwtw0YYyc" },
+      { titulo: "Utilizarea Canva", url: "https://www.youtube.com/watch?v=MKY6pTgIjdw&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=2" },
+      { titulo: "Power Point", url: "https://www.youtube.com/watch?v=PCyPI6FuDdk&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=3" },
+      { titulo: "Cum Să Fii Un Vorbitor Bun", url: "https://www.youtube.com/watch?v=7-XQv2Jc-OU&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO&index=6" },
+      { titulo: "Cum Să Schimbi Centrul De Educație", url: "https://www.youtube.com/watch?v=3MzuY0eOYwI&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=2" },
+      { titulo: "Cum Să Schimbi Data Achiziției", url: "https://www.youtube.com/watch?v=hIaQ6yADgdQ&list=PLvLMbQwFdZNFcMAfQ23I8GUcWmh3SdpIS&index=3" },
+      { titulo: "Creează Un Catalog Personalizat", url: "https://www.youtube.com/watch?v=GRb9rViVmV0&list=PL8ppuTSO8Oq3sw2Wd0usLcZFQa2IQf9t5&index=5" },
     ],
   },
   {
@@ -227,6 +235,13 @@ const RECURSOS_AUDIOVISUALES = [
       { titulo: "Beneficiile Produselor Atomy", url: "https://ch.atomy.com/co/40?categoryId=52&listType=100&page=2&tags=&orderType=FILMING" },
       { titulo: "Linia HEMOHIM", url: "https://ch.atomy.com/co/1514?listType=100&page=1&tags=hemo+him&orderType=FILMING" },
       { titulo: "Set 4 Pași", url: "https://www.youtube.com/watch?v=sJU3ymZukN4" },
+      { titulo: "100 De Produse Într-O Zi", url: "https://www.youtube.com/watch?v=iUnUPst5rBE" },
+      { titulo: "Periuța Noastră De Dinți", url: "https://www.youtube.com/watch?v=8e_mC_-pUyw" },
+      { titulo: "Noni", url: "https://www.youtube.com/watch?v=nn0ewzm4klI" },
+      { titulo: "Gama FAME", url: "https://www.youtube.com/watch?v=CRUkbrsASEA" },
+      { titulo: "Gama Absolute", url: "https://www.youtube.com/watch?v=QrHUSQQJZXc" },
+      { titulo: "Sistem De Îngrijire De Noapte", url: "https://www.youtube.com/watch?v=GOx3Tv8poU0" },
+      { titulo: "Hemo Him", url: "https://www.youtube.com/watch?v=A1HUZhZFnzU&list=PLuY6acO4NoFDbgYduzQ8eeVvE7wphkpxl&index=6" },
     ],
   },
   {
@@ -236,8 +251,18 @@ const RECURSOS_AUDIOVISUALES = [
     videos: [
       { titulo: "Dezvoltare Personală Și Antreprenorială", url: "https://ch.atomy.com/co/513?categoryId=47&listType=100&page=5&tags=&orderType=FILMING" },
       { titulo: "Cei 8 Pași Spre Succes - Han Gill Park", url: "https://www.youtube.com/watch?v=z-Nzz1HkoE8" },
+      { titulo: "Utilizarea Rețelelor Sociale", url: "https://www.youtube.com/watch?v=r7WkxT1qCrA&list=PLvLMbQwFdZNFpG0hav8qZoXWi9Qv12imO" },
     ],
   },
+];
+
+const NEGOCIO_DOCUMENTOS = [
+  { titulo: "Formular De Recuperare A Membership-Ului", url: "docs/formulario-recuperacion-membresia.pdf" },
+  { titulo: "Formular De Schimbare A Profilului", url: "docs/formulario-cambio-perfil.pdf" },
+  { titulo: "Formular De Retur Sau Schimb Al Produsului", url: "docs/formulario-devolucion-cambio-producto.pdf" },
+  { titulo: "Planul De Compensare 2021 Columbia", url: "docs/plan-de-compensacion-colombia.pdf" },
+  { titulo: "Scenariul De Viață (PDF)", url: "docs/escenario-de-vida.pdf" },
+  { titulo: "Codul De Etică Al Membrilor - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
 const ESCENARIO_INTRO =
@@ -439,6 +464,7 @@ const DIAS = [
           "PV (Puncte de Valoare) sunt valoarea pe care compania o atribuie fiecărui produs; le vezi cu albastru sub preț, în magazinul online.",
           "Cu doar câteva produse de bază, de uz zilnic (ex. un kit de îngrijire bucală și un șampon), ajungi deja la cele 10.000 PVP.",
           "Atingerea celor 10.000 PVP este cheia care îți activează contul de partener: de acolo, profilul tău devine abilitat să acumuleze volum de echipă și să încaseze comisioane.",
+          "Vizitează pagina oficială Atomy: https://eu.atomy.com",
           "Descarcă aplicația oficială Atomy pe telefon pentru a-ți face comenzile și a-ți verifica PV-urile de oriunde: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) sau https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
         ],
       },
@@ -474,6 +500,13 @@ const DIAS = [
           "Acest traseu Cumbre 90 te duce exact până acolo. Rangurile care există peste Sales Master (Diamond Master și mai departe) rămân în afara acestor 90 de zile, dar până atunci vei avea deja obiceiul și echipa pentru a continua să avansezi.",
         ],
       },
+      {
+        h: "Videoclipul tău de astăzi",
+        body: [
+          "Video de ajutor — Planul de Compensare: https://ch.atomy.com/eu/876?categoryId=84&listType=100&page=1&tags=&orderType=FILMING",
+          "Video de ajutor — Planul de Compensare (2): https://ch.atomy.com/EU/601?listType=300",
+        ],
+      },
     ],
     campos: [],
     nota: "Nu uita cele două mari etape ale tale: 10.000 PVP (îți activează contul) și 300.000 PVP (îți triplezi comisionul pe ciclu). PV-urile tale personale nu se șterg niciodată și nici nu se resetează.",
@@ -485,7 +518,7 @@ const DIAS = [
       "Am descărcat aplicația oficială Atomy pe telefon.",
     ],
     quiz: {
-      pregunta: "Care este prima ta mare etapă pentru a-ți activa contul?",
+      pregunta: "Cu câte puncte se activează contul tău pentru a încasa comisioane?",
       opciones: ["300.000 PV de Grup", "10.000 PV Personale", "50 de contacte noi"],
       correcta: 1,
     },
