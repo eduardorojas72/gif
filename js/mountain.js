@@ -137,30 +137,25 @@ function mountainSceneHTML(quincenas, cumbreLograda, height) {
   ];
   const pathD = "M" + trail.map((p) => p.x + "," + p.y).join(" L") + " L" + peak.x + "," + peak.y;
 
-  const estrellas = [];
-  for (let i = 0; i < 46; i++) {
-    const sx = (i * 37.3) % 300;
-    const sy = (i * 53.7) % 128;
-    const sr = 0.5 + ((i * 11) % 10) / 10;
-    estrellas.push([sx, sy, sr]);
-  }
-
   const gid = "mtn" + Math.random().toString(36).slice(2, 8);
 
+  /* Los 6 círculos se rellenan de dorado y muestran un check en cuanto esa
+     quincena queda completada (quincenas[i+1] true) — el "encendido" que
+     pediste ya ocurre automáticamente aquí. */
   const marcadores = trail.map((p, i) => {
     const done = !!quincenas[i + 1];
-    const glow = done ? '<circle cx="' + p.x + '" cy="' + p.y + '" r="9" fill="#F0C468" opacity="0.35"/>' : "";
+    const glow = done ? '<circle cx="' + p.x + '" cy="' + p.y + '" r="9" fill="#F0C468" opacity="0.4"/>' : "";
     const check = done
       ? '<path d="M' + (p.x - 2.3) + ',' + p.y + ' l1.6,1.8 l3,-3.4" stroke="#0A1B33" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
       : "";
     return (
       "<g>" + glow +
-      '<circle cx="' + p.x + '" cy="' + p.y + '" r="6" fill="' + (done ? "#F0C468" : "#0E2440") + '" stroke="' + (done ? "#FBE7AE" : "#4A80B0") + '" stroke-width="2" stroke-opacity="' + (done ? 1 : 0.6) + '"/>' +
+      '<circle cx="' + p.x + '" cy="' + p.y + '" r="6" fill="' + (done ? "#F0C468" : "rgba(10,27,51,0.6)") + '" stroke="' + (done ? "#FBE7AE" : "#EAF4FF") + '" stroke-width="2" stroke-opacity="' + (done ? 1 : 0.85) + '"/>' +
       check + "</g>"
     );
   }).join("");
 
-  const flagColor = cumbreLograda ? "#F0C468" : "#BFE0FF";
+  const flagColor = cumbreLograda ? "#F0C468" : "#EAF4FF";
   const flagFill = cumbreLograda ? "#F0C468" : "#4FA3E3";
 
   const doneCount = Object.values(quincenas).filter(Boolean).length;
@@ -169,40 +164,16 @@ function mountainSceneHTML(quincenas, cumbreLograda, height) {
     '<div class="mountain-wrap">' +
     '<svg viewBox="0 0 300 190" width="100%" height="' + height + '" preserveAspectRatio="xMidYMax meet">' +
     "<defs>" +
-      '<linearGradient id="sky' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0%" stop-color="#04070F"/><stop offset="45%" stop-color="#0A1B33"/>' +
-        '<stop offset="75%" stop-color="#123A5E"/><stop offset="100%" stop-color="#1C4E78"/>' +
+      '<linearGradient id="vig' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#04070F" stop-opacity="0.05"/>' +
+        '<stop offset="55%" stop-color="#04070F" stop-opacity="0.05"/>' +
+        '<stop offset="100%" stop-color="#04070F" stop-opacity="0.55"/>' +
       "</linearGradient>" +
-      '<linearGradient id="peakFill' + gid + '" x1="0" y1="0" x2="1" y2="1">' +
-        '<stop offset="0%" stop-color="#163A5E"/><stop offset="100%" stop-color="#071527"/>' +
-      "</linearGradient>" +
-      '<radialGradient id="glow' + gid + '" cx="50%" cy="50%" r="50%">' +
-        '<stop offset="0%" stop-color="#DCEFFF" stop-opacity="0.55"/>' +
-        '<stop offset="45%" stop-color="#4FA3E3" stop-opacity="0.25"/>' +
-        '<stop offset="100%" stop-color="#4FA3E3" stop-opacity="0"/>' +
-      "</radialGradient>" +
-      '<radialGradient id="moonGlow' + gid + '" cx="50%" cy="50%" r="50%">' +
-        '<stop offset="0%" stop-color="#EAF4FF" stop-opacity="0.55"/>' +
-        '<stop offset="100%" stop-color="#EAF4FF" stop-opacity="0"/>' +
-      "</radialGradient>" +
     "</defs>" +
-    '<rect x="0" y="0" width="300" height="190" fill="url(#sky' + gid + ')" rx="14"/>' +
-    estrellas.map(function (s) { return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#ffffff" opacity="0.85"/>'; }).join("") +
-    '<circle cx="42" cy="27" r="20" fill="url(#moonGlow' + gid + ')"/>' +
-    '<circle cx="42" cy="27" r="7.5" fill="#EAF4FF"/>' +
-    '<circle cx="' + peak.x + '" cy="' + (peak.y + 35) + '" r="80" fill="url(#glow' + gid + ')"/>' +
-    '<path d="M-10 150 L30 110 L60 135 L95 95 L130 125 L160 100 L195 130 L230 105 L265 135 L310 115 L310 190 L-10 190 Z" fill="#0F2A4A" opacity="0.5"/>' +
-    '<path d="M-10 165 L40 130 L75 155 L115 115 L150 145 L185 120 L220 150 L255 125 L300 155 L310 150 L310 190 L-10 190 Z" fill="#0A1D36" opacity="0.75"/>' +
-    '<path d="M-10 150 L15 120 L35 132 L55 95 L72 108 L90 72 L105 85 L122 55 L138 64 L152 28 L160 18 L170 32 L183 50 L198 40 L213 68 L230 58 L248 88 L263 78 L285 112 L310 100 L310 190 L-10 190 Z" fill="url(#peakFill' + gid + ')"/>' +
-    '<path d="M152 28 L160 18 L170 32 L183 50 L172 58 L163 48 L153 60 L142 50 Z" fill="#EAF4FF" opacity="0.85"/>' +
-    '<path d="M122 55 L138 64 L128 74 L116 66 Z" fill="#EAF4FF" opacity="0.55"/>' +
-    '<path d="M-10 172 L10 155 L25 168 L40 150 L55 165 L70 148 L88 168 L105 152 L122 170 L140 150 L158 172 L175 152 L193 170 L210 150 L228 168 L245 152 L263 170 L280 150 L300 165 L310 158 L310 190 L-10 190 Z" fill="#050C18"/>' +
-    '<rect x="0" y="176" width="300" height="14" fill="#0A1B33"/>' +
-    '<rect x="0" y="176" width="300" height="2" fill="#4FA3E3" opacity="0.3"/>' +
-    '<rect x="0" y="182" width="300" height="1.4" fill="#EAF4FF" opacity="0.15"/>' +
-    '<path d="' + pathD + '" fill="none" stroke="#F0C468" stroke-opacity="0.6" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>' +
+    '<rect x="0" y="0" width="300" height="190" fill="url(#vig' + gid + ')"/>' +
+    '<path d="' + pathD + '" fill="none" stroke="#F0C468" stroke-opacity="0.8" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>' +
     marcadores +
-    '<line x1="' + peak.x + '" y1="' + peak.y + '" x2="' + peak.x + '" y2="' + (peak.y - 22) + '" stroke="' + flagColor + '" stroke-width="2" stroke-opacity="' + (cumbreLograda ? 1 : 0.5) + '"/>' +
+    '<line x1="' + peak.x + '" y1="' + peak.y + '" x2="' + peak.x + '" y2="' + (peak.y - 22) + '" stroke="' + flagColor + '" stroke-width="2" stroke-opacity="' + (cumbreLograda ? 1 : 0.75) + '"/>' +
     '<path d="M' + peak.x + ',' + (peak.y - 22) + ' L' + (peak.x + 14) + ',' + (peak.y - 17) + ' L' + peak.x + ',' + (peak.y - 12) + ' Z" fill="' + flagFill + '"/>' +
     "</svg>" +
     '<div class="mountain-caption">' + doneCount + " sur 6 quinzaines conquises</div>" +
@@ -210,97 +181,28 @@ function mountainSceneHTML(quincenas, cumbreLograda, height) {
   );
 }
 
-/* ---------------------------------------------------------------
-   MONTAÑA HERO ILUSTRADA — cabecera del Plan de 6 Días.
-   Lago alpino + picos nevados + bosque + senderistas, estilo vector
-   plano coherente con la identidad dorado/violeta de la app. Se usa
-   dos veces (nítida + desenfocada) para el efecto "linterna" que
-   sigue al cursor, definido en CSS (.hero-mountain).
---------------------------------------------------------------- */
-
-function mountainHeroSVGMarkup(idSuffix) {
-  const g = "mh" + idSuffix;
-  const estrellas = [];
-  for (let i = 0; i < 90; i++) {
-    const sx = (i * 47.3) % 600;
-    const sy = (i * 113.7) % 560;
-    const sr = 0.5 + ((i * 7) % 10) / 10;
-    estrellas.push([sx, sy, sr]);
-  }
+/* Tarjeta de cada quincena individual: foto de la montaña + un punto que
+   asciende más arriba cuantas más quincenas lleves completadas en total
+   (0 de 6 = casi a la base, 6 de 6 = casi en la cima). Es el mismo "vas
+   aquí" en las 6 páginas de quincena, no algo distinto por cada una. */
+function quincenaAscensoHTML(doneCount) {
+  const total = 6;
+  const frac = Math.max(0, Math.min(1, doneCount / total));
+  const topPercent = (88 - frac * 76).toFixed(1);
   return (
-    '<svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">' +
-    "<defs>" +
-      '<linearGradient id="sky' + g + '" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0%" stop-color="#03050A"/>' +
-        '<stop offset="26%" stop-color="#071B33"/>' +
-        '<stop offset="52%" stop-color="#0E3358"/>' +
-        '<stop offset="70%" stop-color="#164A78"/>' +
-        '<stop offset="80%" stop-color="#1F5E90"/>' +
-      '</linearGradient>' +
-      '<linearGradient id="lake' + g + '" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0%" stop-color="#2A6690"/>' +
-        '<stop offset="18%" stop-color="#123A5E"/>' +
-        '<stop offset="100%" stop-color="#050C18"/>' +
-      '</linearGradient>' +
-      '<radialGradient id="sun' + g + '" cx="50%" cy="50%" r="50%">' +
-        '<stop offset="0%" stop-color="#EAF4FF" stop-opacity="0.85"/>' +
-        '<stop offset="45%" stop-color="#4FA3E3" stop-opacity="0.3"/>' +
-        '<stop offset="100%" stop-color="#4FA3E3" stop-opacity="0"/>' +
-      '</radialGradient>' +
-      '<radialGradient id="moon' + g + '" cx="50%" cy="50%" r="50%">' +
-        '<stop offset="0%" stop-color="#EAF4FF" stop-opacity="0.6"/>' +
-        '<stop offset="100%" stop-color="#EAF4FF" stop-opacity="0"/>' +
-      '</radialGradient>' +
-    "</defs>" +
-    '<rect x="0" y="0" width="600" height="800" fill="url(#sky' + g + ')"/>' +
-    estrellas.map(function (s) { return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity="0.8"/>'; }).join("") +
-    '<circle cx="115" cy="118" r="60" fill="url(#moon' + g + ')"/>' +
-    '<circle cx="115" cy="118" r="24" fill="#EAF4FF"/>' +
-    '<circle cx="360" cy="470" r="150" fill="url(#sun' + g + ')"/>' +
-    /* cordilleras lejanas */
-    '<path d="M-20 480 L90 360 L180 430 L260 330 L340 420 L420 340 L520 410 L640 350 L640 800 L-20 800 Z" fill="#123055" opacity="0.55"/>' +
-    '<path d="M-20 520 L110 400 L220 470 L320 380 L440 460 L560 390 L640 440 L640 800 L-20 800 Z" fill="#0C2140" opacity="0.7"/>' +
-    /* pico principal — cara en sombra y cara iluminada */
-    '<path d="M300 150 L120 500 L480 500 Z" fill="#0A1A2E"/>' +
-    '<path d="M300 150 L210 330 L245 360 L180 460 L235 500 L120 500 Z" fill="#081524"/>' +
-    '<path d="M300 150 L370 300 L335 325 L410 430 L360 500 L480 500 Z" fill="#0E2A48"/>' +
-    '<path d="M300 150 L246 268 L272 288 L224 372 L262 402 L206 500 L235 500 L300 150 Z" fill="#EAF2FA" opacity="0.92"/>' +
-    '<path d="M300 150 L246 268 L272 288 L224 372 L262 402 L206 500 L120 500 L300 150 Z" fill="#6BBBF2" opacity="0.28"/>' +
-    /* picos secundarios */
-    '<path d="M120 260 L20 500 L220 500 Z" fill="#0E2A48" opacity="0.9"/>' +
-    '<path d="M120 260 L86 340 L108 356 L64 440 L96 460 L20 500 L120 260 Z" fill="#DCE9F5" opacity="0.55"/>' +
-    '<path d="M470 230 L580 500 L390 500 Z" fill="#0C2140" opacity="0.9"/>' +
-    '<path d="M470 230 L500 330 L478 345 L516 430 L486 460 L580 500 L470 230 Z" fill="#DCE9F5" opacity="0.5"/>' +
-    /* bosque de pinos en la base */
-    '<path d="M-20 560 L20 470 L55 520 L95 440 L130 510 L165 460 L200 520 L235 465 L270 515 L300 470 L330 515 L365 460 L400 520 L435 465 L470 515 L505 450 L545 520 L580 470 L640 550 L640 800 L-20 800 Z" fill="#081524"/>' +
-    '<path d="M-20 600 L40 540 L90 580 L150 520 L210 585 L270 535 L330 590 L390 530 L450 585 L510 535 L580 595 L640 545 L640 800 L-20 800 Z" fill="#0C1F38" opacity="0.9"/>' +
-    /* lago con reflejo */
-    '<rect x="0" y="600" width="600" height="200" fill="url(#lake' + g + ')"/>' +
-    '<path d="M180 600 L300 660 L420 600 L470 600 L340 690 L470 780 L440 800 L300 705 L160 800 L130 780 L260 690 L130 600 Z" fill="#040A16" opacity="0.35"/>' +
-    '<rect x="0" y="632" width="600" height="3" fill="#EAF4FF" opacity="0.22"/>' +
-    '<rect x="0" y="668" width="600" height="2" fill="#EAF4FF" opacity="0.16"/>' +
-    '<rect x="0" y="712" width="600" height="2" fill="#EAF4FF" opacity="0.12"/>' +
-    '<rect x="0" y="758" width="600" height="2" fill="#EAF4FF" opacity="0.1"/>' +
-    /* cabaña con ventanas encendidas junto a la orilla */
-    '<circle cx="205" cy="592" r="34" fill="#F0C468" opacity="0.16"/>' +
-    '<path d="M182 606 L182 578 L205 560 L228 578 L228 606 Z" fill="#040A16"/>' +
-    '<rect x="192" y="586" width="10" height="10" fill="#F6D98A" opacity="0.92"/>' +
-    '<rect x="210" y="586" width="10" height="10" fill="#F6D98A" opacity="0.92"/>' +
-    /* orilla + senderistas */
-    '<path d="M-20 800 L-20 730 Q160 690 300 715 Q440 738 640 700 L640 800 Z" fill="#040A16"/>' +
-    '<g fill="#03050A">' +
-      '<ellipse cx="284" cy="705" rx="2.6" ry="2.6"/><path d="M282 707 q2 8 -1 15 M286 707 q-2 8 3 14 M284 700 v-9 M284 691 q-6 -3 -9 -1 M284 694 q7 -4 10 -1"/>' +
-      '<ellipse cx="304" cy="710" rx="2.4" ry="2.4"/><path d="M302 712 q2 7 -1 13 M306 712 q-1 7 3 12 M304 705 v-8 M304 697 q-5 -3 -8 -1"/>' +
-    "</g>" +
-    "</svg>"
+    '<div class="quincena-ascenso-wrap">' +
+    '<div class="ascenso-marker" style="left:50%;top:' + topPercent + '%"></div>' +
+    '<div class="ascenso-caption">Vas en ' + doneCount + " de " + total + " quincenas conquistadas</div>" +
+    "</div>"
   );
 }
 
 function heroMountainHTML(overlayHtml) {
+  const foto = '<img src="img/hero-plan6dias.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">';
   return (
     '<div class="hero-mountain" id="hero-mountain">' +
-    '<div class="hm-layer hm-blur">' + mountainHeroSVGMarkup("b") + "</div>" +
-    '<div class="hm-layer hm-sharp">' + mountainHeroSVGMarkup("a") + "</div>" +
+    '<div class="hm-layer hm-blur">' + foto + "</div>" +
+    '<div class="hm-layer hm-sharp">' + foto + "</div>" +
     '<div class="hm-glow"></div>' +
     '<div class="hm-vignette"></div>' +
     '<div class="hm-hint">' + Icon("sparkles", { size: 11, color: "rgba(255,255,255,.85)" }) + " Déplace le curseur pour révéler le sommet</div>" +
@@ -313,24 +215,9 @@ function heroMountainHTML(overlayHtml) {
    de picos) — usada como fondo compartido en las tarjetas de las 6
    quincenas del Plan 90 y en las insignias de "6 conquistas" de Logros. */
 function campMountainBadgeSVG(dim) {
-  const gid = "cb" + Math.random().toString(36).slice(2, 8);
-  const stars = [];
-  for (let i = 0; i < 12; i++) {
-    stars.push([(i * 23.7) % 100, (i * 17.3) % 42, 0.5 + (i % 3) * 0.3]);
-  }
   return (
-    '<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;' + (dim ? "filter:grayscale(.35);opacity:.7" : "") + '">' +
-    '<defs><linearGradient id="sky' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0%" stop-color="#04070F"/><stop offset="55%" stop-color="#0E3358"/><stop offset="100%" stop-color="#1F5E90"/>' +
-    "</linearGradient></defs>" +
-    '<rect width="100" height="100" fill="url(#sky' + gid + ')"/>' +
-    stars.map(function (s) { return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity="0.85"/>'; }).join("") +
-    '<circle cx="18" cy="16" r="7" fill="#EAF4FF" opacity="0.9"/>' +
-    '<path d="M0 68 L14 46 L26 58 L40 34 L52 50 L66 30 L80 52 L92 42 L100 60 L100 100 L0 100 Z" fill="#0A1B33"/>' +
-    '<path d="M0 78 L18 58 L34 70 L50 48 L64 66 L82 52 L100 72 L100 100 L0 100 Z" fill="#050C18"/>' +
-    '<rect x="0" y="88" width="100" height="12" fill="#0B2038"/>' +
-    '<rect x="0" y="88" width="100" height="1.4" fill="#EAF4FF" opacity="0.25"/>' +
-    "</svg>"
+    '<img src="img/montana-plan90.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' +
+    (dim ? "filter:grayscale(.35);opacity:.7" : "") + '">'
   );
 }
 
@@ -363,7 +250,7 @@ function campLogroChipHTML(titulo, hecho) {
    sirve tanto para la vista en pantalla como para la exportación a
    PNG (share.js), así ambas quedan siempre idénticas. Cinco diseños,
    uno por rango:
-     0 Consumidor Consciente → fondo azul "brumoso" + título apilado
+     0 Consumidor VIP → fondo azul "brumoso" + título apilado
      1 Miembro Atomy → tarjeta con lazo azul
      2 Agente → misma tarjeta con variación (lazo con filo dorado)
      3 Agente Especial → lazo oscuro con texto e hilo dorados
@@ -380,8 +267,58 @@ function fontFaceDefsSVG() {
   return "<style>@font-face{font-family:'Cumbre Script';src:url(data:font/ttf;base64," + ALEX_BRUSH_TTF_B64 + ") format('truetype');}</style>";
 }
 
+/* ---------------------------------------------------------------
+   TARJETAS DE RANGO CON FOTO REAL — plantillas diseñadas por el equipo
+   (img/*.png) que reemplazan el diseño dibujado a mano para los rangos que
+   ya tienen foto propia. Cada plantilla trae su propia cinta con un
+   "Nombre" de plantilla; se tapa con un parche a juego (dorado o del color
+   propio de la cinta, ver maskColor/maskColorLight) antes de escribir
+   encima el nombre real del socio, en negrilla y siguiendo la curva de esa
+   cinta (arch: cuánto se arquea el nombre hacia arriba en el centro). El
+   índice de este array coincide con RANGOS (data.js). */
+const RANK_CARD_TEMPLATES = [
+  { img: "img/consumidor-vip.png", w: 1080, h: 1920, mask: { x: 190, y: 1160, width: 700, height: 120, rx: 20 }, textY: 1240, textColor: "#173B73", arch: 10 },
+  { img: "img/miembro-atomy.png", w: 1080, h: 1920, mask: { x: 230, y: 1150, width: 620, height: 150, rx: 18 }, textY: 1255, textColor: "#1a1a1a", arch: 10 },
+  { img: "img/agente.png", w: 1240, h: 1748, mask: { x: 270, y: 1275, width: 700, height: 180, rx: 20 }, textY: 1405, textColor: "#1a1a1a", arch: 12 },
+  { img: "img/agente-especial.png", w: 1240, h: 1748, mask: { x: 270, y: 970, width: 700, height: 135, rx: 18 }, textY: 1062, textColor: "#1a1a1a", arch: 10 },
+  { img: "img/sales-master.png", w: 1240, h: 1748, mask: { x: 260, y: 1250, width: 720, height: 120, rx: 20 }, textY: 1360, textColor: "#FFFFFF", arch: 34, maskColor: "#0B2050", maskColorLight: "#1E4E9E" },
+];
+
+function rankCardNameFontSize(nombre) {
+  const len = (nombre || "Ton nom").length;
+  if (len <= 13) return 92;
+  if (len <= 18) return 76;
+  if (len <= 24) return 62;
+  return 50;
+}
+
+function rankCardTemplateSVGMarkup(nombre, photoHref, template) {
+  const name = safeXml(nombre || "Ton nom");
+  const fontSize = rankCardNameFontSize(nombre);
+  const maskColor = template.maskColor || CARD_GOLD;
+  const maskColorLight = template.maskColorLight || CARD_GOLD_LIGHT;
+  const cx = template.w / 2;
+  const half = template.mask.width / 2 - 24;
+  const x1 = cx - half, x2 = cx + half;
+  const curveId = "nameCurve" + template.textY;
+  return (
+    '<svg xmlns="http://www.w3.org/2000/svg" width="' + template.w + '" height="' + template.h + '" viewBox="0 0 ' + template.w + " " + template.h + '">' +
+    fontFaceDefsSVG() +
+    '<image href="' + photoHref + '" x="0" y="0" width="' + template.w + '" height="' + template.h + '"/>' +
+    '<linearGradient id="rankMask" x1="0" y1="0" x2="1" y2="0">' +
+    '<stop offset="0%" stop-color="' + maskColor + '"/><stop offset="50%" stop-color="' + maskColorLight + '"/><stop offset="100%" stop-color="' + maskColor + '"/>' +
+    "</linearGradient>" +
+    '<rect x="' + template.mask.x + '" y="' + template.mask.y + '" width="' + template.mask.width + '" height="' + template.mask.height + '" rx="' + template.mask.rx + '" fill="url(#rankMask)"/>' +
+    '<path id="' + curveId + '" d="M ' + x1 + " " + template.textY + " Q " + cx + " " + (template.textY - template.arch) + " " + x2 + " " + template.textY + '" fill="none"/>' +
+    '<text text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-weight="700" font-size="' + fontSize + '" fill="' + template.textColor + '">' +
+    '<textPath href="#' + curveId + '" startOffset="50%">' + name + "</textPath>" +
+    "</text>" +
+    "</svg>"
+  );
+}
+
 function nameFontSize(nombre) {
-  const len = (nombre || "Tu nombre").length;
+  const len = (nombre || "Ton nom").length;
   if (len <= 13) return 78;
   if (len <= 18) return 64;
   if (len <= 24) return 52;
@@ -480,8 +417,11 @@ function cardFooterSVG(cx, y) {
 }
 
 function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
+  const template = RANK_CARD_TEMPLATES[rangoIndex];
+  if (template) return rankCardTemplateSVGMarkup(nombre, template.img, template);
+
   const W = 800, H = 1000, cx = 400;
-  const name = nombre || "Tu nombre";
+  const name = nombre || "Ton nom";
   const nameSize = nameFontSize(name);
   const defs =
     "<defs>" +
@@ -498,7 +438,7 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
   let body = "";
 
   if (rangoIndex === 0) {
-    /* ---- Consumidor Consciente: azul brumoso + título apilado + script ---- */
+    /* ---- Consumidor VIP: azul brumoso + título apilado + script ---- */
     const lines = titleLinesSVG(rango);
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#bgMisty)" rx="30"/>' +
@@ -568,5 +508,7 @@ function recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) {
 }
 
 function recogCardHTML(nombre, foto, rango, pv, rangoIndex) {
-  return '<div class="recog-card">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
+  const template = RANK_CARD_TEMPLATES[rangoIndex];
+  const ratioClass = template ? " ratio-" + template.w + "x" + template.h : "";
+  return '<div class="recog-card' + ratioClass + '">' + recogCardSVGMarkup(nombre, foto, rango, pv, rangoIndex) + "</div>";
 }
