@@ -256,6 +256,14 @@ const RECURSOS_AUDIOVISUALES = [
   },
 ];
 
+const NEGOCIO_DOCUMENTOS = [
+  { titulo: "Formulario De Recuperación De Membresía", url: "docs/formulario-recuperacion-membresia.pdf" },
+  { titulo: "Formulario De Cambio De Perfil", url: "docs/formulario-cambio-perfil.pdf" },
+  { titulo: "Formulario De Devolución O Cambio De Producto", url: "docs/formulario-devolucion-cambio-producto.pdf" },
+  { titulo: "Plan De Compensación 2021 Colombia", url: "docs/plan-de-compensacion-colombia.pdf" },
+  { titulo: "Escenario De Vida (PDF)", url: "docs/escenario-de-vida.pdf" },
+];
+
 const ESCENARIO_INTRO =
   "El Escenario de Vida es la base de todo tu recorrido: antes de aprender la ruta, define tu destino. Antes de trabajar por trabajar, decide para qué. Escribe tus metas en cada una de las 8 áreas de tu vida balanceada — cuanto más claras y detalladas (cifras, lugares, fechas), más fuerza tendrán para sostenerte en los días difíciles.";
 

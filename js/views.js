@@ -640,12 +640,30 @@ function videoListCardHTML(videos) {
   return '<div class="view-stack gap-sm">' + videos.map(videoRowHTML).join("") + "</div>";
 }
 
+function documentRowHTML(d) {
+  return (
+    '<a class="card card-hover row gap-3" style="text-decoration:none;color:inherit;align-items:center" href="' + escapeHtml(d.url) + '" target="_blank" rel="noreferrer">' +
+    '<div style="flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">' + Icon("download", { size: 17, color: "var(--gold)" }) + "</div>" +
+    '<div style="flex:1;font-weight:600;font-size:13.5px;line-height:1.4">' + escapeHtml(d.titulo) + "</div>" +
+    Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+    "</a>"
+  );
+}
+
+function documentListCardHTML(documentos) {
+  return '<div class="view-stack gap-sm">' + documentos.map(documentRowHTML).join("") + "</div>";
+}
+
 function renderRecursosAudiovisuales(state, ui) {
   const categorias = RECURSOS_AUDIOVISUALES.map(function (cat) {
+    const documentos = cat.id === "negocio"
+      ? '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px">' + Icon("download", { size: 14, color: "var(--gold)" }) + " Documentos</div>" + documentListCardHTML(NEGOCIO_DOCUMENTOS)
+      : "";
     return (
       '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
       '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon(cat.icon, { size: 14, color: "var(--gold)" }) + " " + escapeHtml(cat.label) + "</div>" +
       videoListCardHTML(cat.videos) +
+      documentos +
       "</div>"
     );
   }).join("");
