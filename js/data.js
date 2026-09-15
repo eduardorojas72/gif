@@ -335,6 +335,7 @@ const DIAS = [
           "Entra en ch.atomy.com/eu desde tu navegador o teléfono y cambia el idioma a Español desde el icono del globo terráqueo (esquina superior derecha).",
           "Explora los menús: Compañía/Visión (historia del fundador Han-Gill Park y respaldo científico de KAERI y Kolmar), Producto (skincare, salud, hogar), Negocio/Educación (plan de compensación, seminarios) y Miembro/Historias de Éxito (testimonios reales).",
           "Usa la lupa de búsqueda para temas específicos, por ejemplo “HemoHIM” o “Plan de Compensación”.",
+          "Visualiza el video institucional: https://youtu.be/oIOqIRBXZFM",
           "Recomendación: dedica 15 minutos al día a ver 1 video de Compañía y 1 de Producto.",
         ],
       },
@@ -449,7 +450,7 @@ const DIAS = [
         h: "Elige tu primer pedido (tu consumo consciente)",
         body: [
           "Elige los productos que realmente necesitas reponer en casa hoy mismo (pasta de dientes, champú, detergente, suplementos). La meta es simple: probar la calidad de la marca para poder hablar con propiedad desde el día uno.",
-          "Para ello vamos a la página, entra con tu ID y contraseña.",
+          "Para ello entra en https://eu.atomy.com/main con tu ID y contraseña.",
         ],
       },
       {
