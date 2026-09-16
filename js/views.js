@@ -1855,14 +1855,24 @@ function renderContactos(state, ui) {
 
   const filtered = filtro === "todos" ? contactos : contactos.filter(function (c) { return c.nivel === filtro; });
   const sorted = filtered.slice().sort(function (a, b) {
+    if (filtro === "todos") {
+      const an = CONTACTO_NIVELES.indexOf(a.nivel), bn = CONTACTO_NIVELES.indexOf(b.nivel);
+      if (an !== bn) return an - bn;
+    }
     const av = a.proximoSeguimiento || "9999-99-99";
     const bv = b.proximoSeguimiento || "9999-99-99";
     if (av !== bv) return av < bv ? -1 : 1;
     return (a.nombre || "").localeCompare(b.nombre || "");
   });
 
+  let lastNivel = null;
   const rows = sorted.length
     ? sorted.map(function (c) {
+        let nivelHeader = "";
+        if (filtro === "todos" && c.nivel !== lastNivel) {
+          lastNivel = c.nivel;
+          nivelHeader = '<div class="row gap-2" style="margin-top:16px;margin-bottom:2px;color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(c.nivel) + " · " + (counts[c.nivel] || 0) + "</div>";
+        }
         const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
         const esHoy = c.proximoSeguimiento === hoy;
         const fechaTxt = c.proximoSeguimiento ? (vencido ? "Restant · " : esHoy ? "Astăzi · " : "") + c.proximoSeguimiento : "Fără urmărire";
@@ -1870,7 +1880,7 @@ function renderContactos(state, ui) {
         const waLink = c.telefono
           ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
           : "";
-        return (
+        return nivelHeader + (
           '<div class="card contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
           '<div class="row between" style="align-items:flex-start">' +
           '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre) + "</div>" +
@@ -1904,8 +1914,27 @@ function renderContactos(state, ui) {
     sectionHeaderHTML("Lista de 250 de Contacte", contactos.length + " din 250 înregistrate", "users") +
     '<input id="contacto-search" type="text" placeholder="Caută după nume sau telefon..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
-    '<button class="btn-primary" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Contact nou</button>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-primary" style="flex:1" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Nou</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="importar-contactos">' + Icon("download", { size: 16 }) + " Importă contacte</button>" +
+    "</div>" +
     '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function renderImportarContactosModal(ui) {
+  if (!ui.importarContactosOpen) return "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cerrar-importar-contactos"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Importă contacte</span>' +
+    '<button class="icon-btn" data-action="cerrar-importar-contactos">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Browserul tău nu permite deschiderea directă a selectorului de contacte aici. Copiază-ți contactele de pe telefon — unul pe linie, în formatul <b>Nume, Telefon</b> — și lipește-le mai jos:</p>' +
+    '<textarea rows="9" id="importar-contactos-textarea" placeholder="Ana Popescu, +40 721 111 222\nIon Ionescu, +40 721 333 444" style="margin-top:10px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="confirmar-importar-contactos">Importă</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cerrar-importar-contactos">Anulează</button>' +
+    "</div></div>"
   );
 }
 

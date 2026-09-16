@@ -277,6 +277,7 @@ const App = {
     else if (ui.patrocinadorFabDraft) modalHtml = renderPatrocinadorFabModal(ui);
     else if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
+    else if (ui.importarContactosOpen) modalHtml = renderImportarContactosModal(ui);
     else if (ui.agenda6Draft) modalHtml = renderAgenda6Modal(ui);
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
     else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
@@ -443,6 +444,35 @@ const App = {
     });
   },
 };
+
+// Adaugă contacte noi în Lista de 250 din {nombre, telefono},
+// fără a duplica după telefon (folosit atât de selectorul nativ, cât și de
+// modalul „lipește lista” din „Importă contacte”).
+function importarContactosDesdeListado(entradas) {
+  let agregados = 0, duplicados = 0;
+  entradas.forEach(function (e) {
+    const nombre = (e.nombre || "").trim();
+    if (!nombre) return;
+    const telNormalizado = (e.telefono || "").replace(/\s+/g, "");
+    const yaExiste = telNormalizado && App.state.contactos.some(function (x) {
+      return x.telefono && x.telefono.replace(/\s+/g, "") === telNormalizado;
+    });
+    if (yaExiste) { duplicados++; return; }
+    App.state.contactos.push({
+      id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      nombre: nombre, telefono: (e.telefono || "").trim(), pais: "", nivel: "Călduț", estado: "De contactat",
+      notas: "", notaSeguimiento: "", proximoSeguimiento: null,
+      creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [],
+    });
+    agregados++;
+  });
+  App.persist(true);
+  App.render();
+  const partes = [];
+  if (agregados) partes.push(agregados + " contact" + (agregados === 1 ? "" : "e") + " importat" + (agregados === 1 ? "" : "e"));
+  if (duplicados) partes.push(duplicados + (duplicados === 1 ? " era" : " erau") + " deja în lista ta");
+  App.showToast(partes.length ? partes.join(" · ") : "Niciun contact nou importat");
+}
 
 const Actions = {
   "start-app": function () {
@@ -1098,6 +1128,44 @@ const Actions = {
     App.persist(true);
     App.showToast("Contact șters");
     App.render();
+  },
+
+  // Importă contacte: în browserele cu suport (Chrome Android) deschide direct
+  // selectorul nativ al telefonului; în restul (iPhone, computer) revine la
+  // modalul de „lipește lista” ca alternativă.
+  "importar-contactos": async function () {
+    if (navigator.contacts && navigator.contacts.select) {
+      let elegidos;
+      try {
+        elegidos = await navigator.contacts.select(["name", "tel"], { multiple: true });
+      } catch (e) {
+        return; // utilizatorul a anulat selectorul, sau browserul l-a blocat
+      }
+      if (!elegidos || !elegidos.length) return;
+      importarContactosDesdeListado(elegidos.map((c) => ({
+        nombre: (c.name && c.name[0]) || "",
+        telefono: (c.tel && c.tel[0]) || "",
+      })));
+      return;
+    }
+    App.ui.importarContactosOpen = true;
+    App.render();
+  },
+
+  "cerrar-importar-contactos": function () {
+    App.ui.importarContactosOpen = false;
+    App.render();
+  },
+
+  "confirmar-importar-contactos": function () {
+    const el = document.getElementById("importar-contactos-textarea");
+    const lineas = ((el && el.value) || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const parseados = lineas.map((linea) => {
+      const partes = linea.split(/[,;\t]/).map((p) => p.trim());
+      return { nombre: partes[0] || "", telefono: partes[1] || "" };
+    });
+    App.ui.importarContactosOpen = false;
+    importarContactosDesdeListado(parseados);
   },
 
   "quick-seguimiento": function (arg, el) {
