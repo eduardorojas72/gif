@@ -9,6 +9,7 @@ const MENU_ITEMS = [
   { id: "pasos", label: "Cei 8 Pași", icon: "footprints" },
   { id: "plan6", label: "Plan 6 Zile", icon: "trail-map" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
+  { id: "clientes", label: "Clienți", icon: "package" },
   { id: "agenda", label: "Agenda Săptămânală", icon: "calendar" },
   { id: "informe", label: "Raport Săptămânal", icon: "trending-up" },
   { id: "enfoque", label: "Întâlnire de Focalizare", icon: "target" },
@@ -31,6 +32,7 @@ const TOUR_PASOS = [
   { icon: "footprints", titulo: "Cei 8 Pași", texto: "Baza afacerii explicată pas cu pas, cu activități practice pentru a aplica fiecare pas." },
   { icon: "trail-map", titulo: "Planul de 6 Zile", texto: "Instruirea ta inițială, zi de zi, cu misiuni zilnice — inclusiv cea de a descărca aplicația oficială Atomy pe telefon." },
   { icon: "users", titulo: "Lista de 250", texto: "Notează fiecare contact (nume, telefon, stadiu) și urmărește-ți Lista de 250." },
+  { icon: "package", titulo: "Clienți", texto: "Înregistrează-i pe cei care au cumpărat deja: datele lor, istoricul fiecărei comenzi cu valoarea și PV-ul ei, și dă-le urmărire cu recordatoare de la 1 săptămână până la 11 luni." },
   { icon: "calendar", titulo: "Agenda Săptămânală", texto: "Programează-ți apelurile, întâlnirile și Zoom-urile, cu recordatoare ca să nu le uiți." },
   { icon: "trending-up", titulo: "Raportul Săptămânal", texto: "La finalul săptămânii, alege doar limba și trimite-i raportul tău de activitate sponsorului tău — aplicația a calculat deja cifrele pentru tine." },
   { icon: "target", titulo: "Întâlnirea de Focalizare", texto: "Organizează-ți roster-ul de stânga și dreapta, și folosește calculatorul de produse pentru a-ți planifica achiziția quincenală și a o împărți cu sponsorul tău." },
@@ -1985,6 +1987,154 @@ function renderContactoModal(ui) {
     '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto">Salvează contactul</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto">Anulează</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Clienți — persoane care au cumpărat deja, cu istoricul comenzilor ---------------- */
+
+function clienteRowHTML(c) {
+  const hoy = hoyISO();
+  const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
+  const esHoy = c.proximoSeguimiento === hoy;
+  const fechaTxt = c.proximoSeguimiento ? (vencido ? "Restant · " : esHoy ? "Astăzi · " : "") + c.proximoSeguimiento : "Fără urmărire";
+  const fechaColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
+  const waLink = c.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
+    : "";
+  const totalCompras = (c.compras || []).length;
+  return (
+    '<div class="card cliente-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "Fără nume") + "</div>" +
+    '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono || "Fără telefon") + (totalCompras ? " · " + totalCompras + " achiziț" + (totalCompras === 1 ? "ie" : "ii") : "") + "</div></div>" +
+    '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="7">1 săpt</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="14">2 săpt</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="30">1 lună</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="60">2 luni</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-meses="11">11 luni</button>' +
+    waLink +
+    '<button class="icon-btn" data-action="edit-cliente" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
+    "</div>" +
+    "</div>"
+  );
+}
+
+function renderClientes(state) {
+  const clientes = state.clientes || [];
+  const sorted = clientes.slice().sort(function (a, b) {
+    const av = a.proximoSeguimiento || "9999-99-99";
+    const bv = b.proximoSeguimiento || "9999-99-99";
+    if (av !== bv) return av < bv ? -1 : 1;
+    return (a.nombre || "").localeCompare(b.nombre || "");
+  });
+  const rows = sorted.length
+    ? sorted.map(clienteRowHTML).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Încă nu ai clienți înregistrați. Apasă „Client nou” pentru a începe.</p>';
+  return (
+    sectionHeaderHTML("Clienți", clientes.length + " înregistrați", "package") +
+    '<input id="cliente-search" type="text" placeholder="Caută după nume sau telefon..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
+    '<button class="btn-primary" data-action="add-cliente">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Client nou</button>" +
+    '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function compraClienteRowHTML(co) {
+  return (
+    '<div class="row between" style="padding:7px 0;border-top:1px solid var(--border-soft);align-items:center">' +
+    '<div style="min-width:0"><div style="font-weight:600;font-size:13px">' + escapeHtml(co.producto || "Produs") + "</div>" +
+    '<div class="muted small">' + (co.fecha || "") + " · " + (Number(co.valor) || 0).toLocaleString() + " · " + (Number(co.pv) || 0) + " PV</div></div>" +
+    '<button class="icon-btn" data-action="delete-compra-cliente" data-arg="' + co.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div>"
+  );
+}
+
+function renderClienteModal(ui) {
+  const d = ui.clienteDraft;
+  if (!d) return "";
+  const editing = !!ui.clienteEditId;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-cliente" data-arg="' + ui.clienteEditId + '">' +
+      (ui.confirmDeleteCliente === ui.clienteEditId ? "Sigur? Apasă din nou pentru a șterge" : "Șterge clientul") +
+      "</button>"
+    : "";
+  const compras = (d.compras || []).slice().sort(function (a, b) { return (b.fecha || "").localeCompare(a.fecha || ""); });
+  const comprasHtml = compras.length
+    ? compras.map(compraClienteRowHTML).join("")
+    : '<p class="muted small" style="padding:4px 0">Încă nu sunt achiziții înregistrate.</p>';
+  const totalPV = compras.reduce(function (acc, co) { return acc + (Number(co.pv) || 0); }, 0);
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-cliente"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:400px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editează clientul" : "Client nou") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-cliente">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nume</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nume complet"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Opțional"></div>' +
+    '<div class="field" style="flex:1"><label>Parolă</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Opțional"></div>' +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Telefon</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+40 712 345 678"></div>' +
+    '<div class="field" style="flex:1"><label>Data de naștere</label><input type="date" data-draft-field="fechaNacimiento" value="' + (d.fechaNacimiento || "") + '"></div>' +
+    "</div>" +
+    '<div class="field"><label>Observații</label><textarea rows="2" data-draft-field="observaciones" placeholder="Ex. alergii, vreo afecțiune, preferințe...">' + escapeHtml(d.observaciones || "") + "</textarea></div>" +
+    '<div class="field"><label>Următoarea urmărire</label><input type="date" data-draft-field="proximoSeguimiento" value="' + (d.proximoSeguimiento || "") + '"></div>' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="7">1 săpt</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="14">2 săpt</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="30">1 lună</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="60">2 luni</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-meses="11">11 luni</button>' +
+    "</div>" +
+    '<div class="card" style="margin-top:2px">' +
+    '<div class="row gap-2" style="align-items:center">' + Icon("package", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13.5px">Produse cumpărate</span></div>' +
+    (totalPV ? '<div class="muted small" style="margin-top:2px">Total istoric: ' + totalPV + " PV</div>" : "") +
+    '<div style="margin-top:2px">' + comprasHtml + "</div>" +
+    '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+    '<input id="cliente-compra-producto" type="text" placeholder="Produs" style="flex:2;min-width:110px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    '<input id="cliente-compra-valor" type="number" min="0" placeholder="Valoare" style="flex:1;min-width:70px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    '<input id="cliente-compra-pv" type="number" min="0" placeholder="PV" style="flex:1;min-width:60px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    "</div>" +
+    '<input id="cliente-compra-fecha" type="date" value="' + hoyISO() + '" style="margin-top:8px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    '<button class="btn-secondary" style="margin-top:8px;width:100%" data-action="add-compra-cliente">' + Icon("coins", { size: 14 }) + " Adaugă achiziția</button>" +
+    "</div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-cliente">Salvează clientul</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-cliente">Anulează</button>' +
+    "</div></div>"
+  );
+}
+
+function renderCumpleanosPanel(state) {
+  const hoy = cumpleanosHoy(state.clientes);
+  const body = hoy.length
+    ? hoy.map(function (c) {
+        const waBtn = c.telefono
+          ? '<a class="icon-btn" style="flex-shrink:0" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+          : "";
+        return (
+          '<div class="row gap-2" style="align-items:center;text-align:left;padding:10px 0;border-top:1px solid var(--border)">' +
+          Icon("party", { size: 16, color: "var(--gold)" }) +
+          '<span class="small" style="color:var(--text);flex:1;font-weight:600">' + escapeHtml(c.nombre) + "</span>" +
+          waBtn +
+          "</div>"
+        );
+      }).join("")
+    : '<p class="muted small" style="margin-top:8px">Astăzi nu sunt zile de naștere printre clienții tăi.</p>';
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="close-modal"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch">' +
+    '<div class="row between">' +
+    '<span class="row gap-2" style="align-items:center;font-weight:700;font-size:15px">' + Icon("party", { size: 16, color: "var(--gold)" }) + "<span>Zile de naștere azi</span></span>" +
+    '<button class="icon-btn" data-action="close-modal">' + Icon("x", { size: 18 }) + "</button></div>" +
+    body +
     "</div></div>"
   );
 }

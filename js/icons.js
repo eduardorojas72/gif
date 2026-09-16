@@ -66,6 +66,7 @@ const ICON_PATHS = {
   tiktok: '<path d="M14 3.5c.4 2 1.8 3.4 3.8 3.6v2.6c-1.4 0-2.7-.4-3.8-1.2v6.6a5 5 0 1 1-4.3-4.9v2.7a2.3 2.3 0 1 0 1.7 2.2V3.5Z"/>',
   linkedin: '<rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.2" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><line x1="8.2" y1="11.2" x2="8.2" y2="17"/><path d="M11.5 17v-4c0-1.4 1-2.3 2.2-2.3 1.2 0 2 .9 2 2.3v4"/>',
   youtube: '<rect x="2.5" y="6" width="19" height="12" rx="3.5"/><path d="M10.2 9.5 15 12l-4.8 2.5Z" fill="currentColor" stroke="none"/>',
+  party: '<path d="M5.5 18.5 17.5 6.5l1.4 1.4-12 12z"/><path d="M17.5 6.5c0-1.7-1.2-3.3-3-3.3"/><circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="6.5" cy="14" r="1" fill="currentColor" stroke="none"/><circle cx="13" cy="4" r="1" fill="currentColor" stroke="none"/>',
 };
 
 function Icon(name, opts) {
