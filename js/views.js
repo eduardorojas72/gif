@@ -1855,14 +1855,24 @@ function renderContactos(state, ui) {
 
   const filtered = filtro === "tutti" ? contactos : contactos.filter(function (c) { return c.nivel === filtro; });
   const sorted = filtered.slice().sort(function (a, b) {
+    if (filtro === "tutti") {
+      const an = CONTACTO_NIVELES.indexOf(a.nivel), bn = CONTACTO_NIVELES.indexOf(b.nivel);
+      if (an !== bn) return an - bn;
+    }
     const av = a.proximoSeguimiento || "9999-99-99";
     const bv = b.proximoSeguimiento || "9999-99-99";
     if (av !== bv) return av < bv ? -1 : 1;
     return (a.nombre || "").localeCompare(b.nombre || "");
   });
 
+  let lastNivel = null;
   const rows = sorted.length
     ? sorted.map(function (c) {
+        let nivelHeader = "";
+        if (filtro === "tutti" && c.nivel !== lastNivel) {
+          lastNivel = c.nivel;
+          nivelHeader = '<div class="row gap-2" style="margin-top:16px;margin-bottom:2px;color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(c.nivel) + " · " + (counts[c.nivel] || 0) + "</div>";
+        }
         const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
         const esHoy = c.proximoSeguimiento === hoy;
         const fechaTxt = c.proximoSeguimiento ? (vencido ? "Scaduto · " : esHoy ? "Oggi · " : "") + c.proximoSeguimiento : "Nessun follow-up";
@@ -1870,7 +1880,7 @@ function renderContactos(state, ui) {
         const waLink = c.telefono
           ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
           : "";
-        return (
+        return nivelHeader + (
           '<div class="card contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
           '<div class="row between" style="align-items:flex-start">' +
           '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre) + "</div>" +
@@ -1904,8 +1914,27 @@ function renderContactos(state, ui) {
     sectionHeaderHTML("Lista dei 250 Contatti", contactos.length + " su 250 registrati", "users") +
     '<input id="contacto-search" type="text" placeholder="Cerca per nome o telefono..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
-    '<button class="btn-primary" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Nuovo contatto</button>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-primary" style="flex:1" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Nuovo</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="importar-contactos">' + Icon("download", { size: 16 }) + " Importa contatti</button>" +
+    "</div>" +
     '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function renderImportarContactosModal(ui) {
+  if (!ui.importarContactosOpen) return "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cerrar-importar-contactos"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Importa contatti</span>' +
+    '<button class="icon-btn" data-action="cerrar-importar-contactos">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Il tuo browser non permette di aprire il selettore di contatti direttamente qui. Copia i tuoi contatti dal telefono — uno per riga, nel formato <b>Nome, Telefono</b> — e incollali qui sotto:</p>' +
+    '<textarea rows="9" id="importar-contactos-textarea" placeholder="Anna Rossi, +39 333 111 2222\nMarco Bianchi, +39 333 444 5555" style="margin-top:10px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="confirmar-importar-contactos">Importa</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cerrar-importar-contactos">Annulla</button>' +
+    "</div></div>"
   );
 }
 
