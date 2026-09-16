@@ -9,6 +9,7 @@ const MENU_ITEMS = [
   { id: "pasos", label: "Gli 8 Passi", icon: "footprints" },
   { id: "plan6", label: "Piano 6 Giorni", icon: "trail-map" },
   { id: "contactos", label: "Lista dei 250", icon: "users" },
+  { id: "clientes", label: "Clienti", icon: "package" },
   { id: "agenda", label: "Agenda Settimanale", icon: "calendar" },
   { id: "informe", label: "Report Settimanale", icon: "trending-up" },
   { id: "enfoque", label: "Riunione di Allineamento", icon: "target" },
@@ -31,6 +32,7 @@ const TOUR_PASOS = [
   { icon: "footprints", titulo: "Gli 8 Passi", texto: "Le basi del business spiegate passo per passo, con attività pratiche per applicare ognuno di essi." },
   { icon: "trail-map", titulo: "Piano di 6 Giorni", texto: "Il tuo addestramento iniziale giorno per giorno, con missioni quotidiane — inclusa quella di scaricare l'app ufficiale di Atomy sul tuo telefono." },
   { icon: "users", titulo: "Lista dei 250", texto: "Annota ogni contatto (nome, telefono, stato) e segui la tua Lista dei 250." },
+  { icon: "package", titulo: "Clienti", texto: "Registra chi ha già acquistato: i suoi dati, lo storico di ogni ordine con il suo valore e i PV, e fai follow-up con promemoria da 1 settimana fino a 11 mesi." },
   { icon: "calendar", titulo: "Agenda Settimanale", texto: "Programma le tue chiamate, riunioni e Zoom, con promemoria per non dimenticarli." },
   { icon: "trending-up", titulo: "Report Settimanale", texto: "Alla fine della settimana, scegli semplicemente la lingua e invia il tuo report di attività al tuo sponsor — l'app ha già calcolato i numeri per te." },
   { icon: "target", titulo: "Riunione di Allineamento", texto: "Organizza il tuo roster sinistra e destra, e usa la calcolatrice dei prodotti per pianificare il tuo acquisto quindicinale e condividerlo con il tuo sponsor." },
@@ -1985,6 +1987,154 @@ function renderContactoModal(ui) {
     '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto">Salva contatto</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto">Annulla</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Clienti — persone che hanno già comprato, con storico degli ordini ---------------- */
+
+function clienteRowHTML(c) {
+  const hoy = hoyISO();
+  const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
+  const esHoy = c.proximoSeguimiento === hoy;
+  const fechaTxt = c.proximoSeguimiento ? (vencido ? "Scaduto · " : esHoy ? "Oggi · " : "") + c.proximoSeguimiento : "Nessun follow-up";
+  const fechaColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
+  const waLink = c.telefono
+    ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
+    : "";
+  const totalCompras = (c.compras || []).length;
+  return (
+    '<div class="card cliente-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
+    '<div class="row between" style="align-items:flex-start">' +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "Senza nome") + "</div>" +
+    '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono || "Senza telefono") + (totalCompras ? " · " + totalCompras + " acquist" + (totalCompras === 1 ? "o" : "i") : "") + "</div></div>" +
+    '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="7">1 sett</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="14">2 sett</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="30">1 mese</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-dias="60">2 mesi</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:60px;font-size:11.5px" data-action="quick-seguimiento-cliente" data-arg="' + c.id + '" data-meses="11">11 mesi</button>' +
+    waLink +
+    '<button class="icon-btn" data-action="edit-cliente" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
+    "</div>" +
+    "</div>"
+  );
+}
+
+function renderClientes(state) {
+  const clientes = state.clientes || [];
+  const sorted = clientes.slice().sort(function (a, b) {
+    const av = a.proximoSeguimiento || "9999-99-99";
+    const bv = b.proximoSeguimiento || "9999-99-99";
+    if (av !== bv) return av < bv ? -1 : 1;
+    return (a.nombre || "").localeCompare(b.nombre || "");
+  });
+  const rows = sorted.length
+    ? sorted.map(clienteRowHTML).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Non hai ancora nessun cliente registrato. Tocca «Nuovo cliente» per iniziare.</p>';
+  return (
+    sectionHeaderHTML("Clienti", clientes.length + " registrati", "package") +
+    '<input id="cliente-search" type="text" placeholder="Cerca per nome o telefono..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
+    '<button class="btn-primary" data-action="add-cliente">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Nuovo cliente</button>" +
+    '<div class="view-stack gap-sm">' + rows + "</div>"
+  );
+}
+
+function compraClienteRowHTML(co) {
+  return (
+    '<div class="row between" style="padding:7px 0;border-top:1px solid var(--border-soft);align-items:center">' +
+    '<div style="min-width:0"><div style="font-weight:600;font-size:13px">' + escapeHtml(co.producto || "Prodotto") + "</div>" +
+    '<div class="muted small">' + (co.fecha || "") + " · " + (Number(co.valor) || 0).toLocaleString() + " · " + (Number(co.pv) || 0) + " PV</div></div>" +
+    '<button class="icon-btn" data-action="delete-compra-cliente" data-arg="' + co.id + '">' + Icon("x", { size: 14 }) + "</button>" +
+    "</div>"
+  );
+}
+
+function renderClienteModal(ui) {
+  const d = ui.clienteDraft;
+  if (!d) return "";
+  const editing = !!ui.clienteEditId;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-cliente" data-arg="' + ui.clienteEditId + '">' +
+      (ui.confirmDeleteCliente === ui.clienteEditId ? "Sicuro? Tocca di nuovo per eliminare" : "Elimina cliente") +
+      "</button>"
+    : "";
+  const compras = (d.compras || []).slice().sort(function (a, b) { return (b.fecha || "").localeCompare(a.fecha || ""); });
+  const comprasHtml = compras.length
+    ? compras.map(compraClienteRowHTML).join("")
+    : '<p class="muted small" style="padding:4px 0">Non ci sono ancora acquisti registrati.</p>';
+  const totalPV = compras.reduce(function (acc, co) { return acc + (Number(co.pv) || 0); }, 0);
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-cliente"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:400px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Modifica cliente" : "Nuovo cliente") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-cliente">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nome</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nome completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Facoltativo"></div>' +
+    '<div class="field" style="flex:1"><label>Password</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Facoltativo"></div>' +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Telefono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+39 320 000 0000"></div>' +
+    '<div class="field" style="flex:1"><label>Data di nascita</label><input type="date" data-draft-field="fechaNacimiento" value="' + (d.fechaNacimiento || "") + '"></div>' +
+    "</div>" +
+    '<div class="field"><label>Osservazioni</label><textarea rows="2" data-draft-field="observaciones" placeholder="Es. allergie, qualche malattia, preferenze...">' + escapeHtml(d.observaciones || "") + "</textarea></div>" +
+    '<div class="field"><label>Prossimo follow-up</label><input type="date" data-draft-field="proximoSeguimiento" value="' + (d.proximoSeguimiento || "") + '"></div>' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="7">1 sett</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="14">2 sett</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="30">1 mese</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-dias="60">2 mesi</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:56px;font-size:11.5px" data-action="quick-draft-seguimiento-cliente" data-meses="11">11 mesi</button>' +
+    "</div>" +
+    '<div class="card" style="margin-top:2px">' +
+    '<div class="row gap-2" style="align-items:center">' + Icon("package", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13.5px">Prodotti acquistati</span></div>' +
+    (totalPV ? '<div class="muted small" style="margin-top:2px">Totale storico: ' + totalPV + " PV</div>" : "") +
+    '<div style="margin-top:2px">' + comprasHtml + "</div>" +
+    '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+    '<input id="cliente-compra-producto" type="text" placeholder="Prodotto" style="flex:2;min-width:110px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    '<input id="cliente-compra-valor" type="number" min="0" placeholder="Valore" style="flex:1;min-width:70px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    '<input id="cliente-compra-pv" type="number" min="0" placeholder="PV" style="flex:1;min-width:60px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    "</div>" +
+    '<input id="cliente-compra-fecha" type="date" value="' + hoyISO() + '" style="margin-top:8px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px;font-size:13px;outline:none">' +
+    '<button class="btn-secondary" style="margin-top:8px;width:100%" data-action="add-compra-cliente">' + Icon("coins", { size: 14 }) + " Aggiungi acquisto</button>" +
+    "</div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-cliente">Salva cliente</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-cliente">Annulla</button>' +
+    "</div></div>"
+  );
+}
+
+function renderCumpleanosPanel(state) {
+  const hoy = cumpleanosHoy(state.clientes);
+  const body = hoy.length
+    ? hoy.map(function (c) {
+        const waBtn = c.telefono
+          ? '<a class="icon-btn" style="flex-shrink:0" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+          : "";
+        return (
+          '<div class="row gap-2" style="align-items:center;text-align:left;padding:10px 0;border-top:1px solid var(--border)">' +
+          Icon("party", { size: 16, color: "var(--gold)" }) +
+          '<span class="small" style="color:var(--text);flex:1;font-weight:600">' + escapeHtml(c.nombre) + "</span>" +
+          waBtn +
+          "</div>"
+        );
+      }).join("")
+    : '<p class="muted small" style="margin-top:8px">Oggi non ci sono compleanni tra i tuoi clienti.</p>';
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="close-modal"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch">' +
+    '<div class="row between">' +
+    '<span class="row gap-2" style="align-items:center;font-weight:700;font-size:15px">' + Icon("party", { size: 16, color: "var(--gold)" }) + "<span>Compleanni di oggi</span></span>" +
+    '<button class="icon-btn" data-action="close-modal">' + Icon("x", { size: 18 }) + "</button></div>" +
+    body +
     "</div></div>"
   );
 }
