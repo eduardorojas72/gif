@@ -15,6 +15,7 @@ const MENU_ITEMS = [
   { id: "plan90", label: "Plan 90 Días", icon: "mountain-flag" },
   { id: "recursos", label: "Recursos Audiovisuales", icon: "video" },
   { id: "arbol", label: "Mi Árbol Genealógico", icon: "crown" },
+  { id: "socios", label: "Mis Socios", icon: "users" },
   { id: "sos", label: "Llamadas S.O.S.", icon: "bell" },
   { id: "eventos", label: "Lista de Contactos", icon: "users" },
   { id: "lema", label: "El Lema de Atomy", icon: "heart" },
@@ -35,6 +36,7 @@ const TOUR_PASOS = [
   { icon: "target", titulo: "Reunión de Enfoque", texto: "Organiza tu roster de izquierda y derecha, y usa la calculadora de productos para planear tu compra quincenal y compartirla con tu patrocinador." },
   { icon: "mountain-flag", titulo: "Plan de 90 Días", texto: "Tus 6 quincenas con metas claras en el camino hacia Sales Master." },
   { icon: "crown", titulo: "Mi Árbol Genealógico", texto: "Guarda ahí tu ID y contraseña, y los datos de tu patrocinador — desde aquí puedes escribirle directo por WhatsApp cuando tengas una duda." },
+  { icon: "users", titulo: "Mis Socios", texto: "Tu directorio permanente de equipo por línea izquierda y derecha — toca un nombre para ver su ID, Zoom, PVP y fecha de última compra. La línea se pone naranja cuando lleva 11 meses sin comprar." },
   { icon: "bell", titulo: "Llamadas S.O.S. y Lista de Contactos", texto: "Guarda otros números de apoyo a los que puedes acudir, y las personas que conoces en eventos." },
   { icon: "heart", titulo: "El Lema, Premios, Logros y Ajustes", texto: "Inspiración diaria, tus logros desbloqueados y la configuración de tu cuenta." },
   { icon: "sparkles", titulo: "¡Listo!", texto: "Puedes volver a ver este recorrido cuando quieras con el botón flotante que verás en pantalla." },
@@ -1905,6 +1907,10 @@ function renderContactos(state, ui) {
           waLink +
           '<button class="icon-btn" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
           "</div>" +
+          '<div class="row gap-2" style="margin-top:6px">' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 13 }) + " Llamada</button>" +
+          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 13 }) + " Mensaje</button>" +
+          "</div>" +
           "</div>"
         );
       }).join("")
@@ -1912,6 +1918,7 @@ function renderContactos(state, ui) {
 
   return (
     sectionHeaderHTML("Lista de 250 Contactos", contactos.length + " de 250 registrados", "users") +
+    '<p class="muted small" style="margin-top:-4px">Toca “Llamada” o “Mensaje” en cada contacto para que quede registrado en tu Informe Semanal.</p>' +
     '<input id="contacto-search" type="text" placeholder="Buscar por nombre o teléfono..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +
@@ -2126,6 +2133,7 @@ function sosRowHTML(s) {
     '<div class="row between" style="align-items:flex-start">' +
     '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(s.nombre || "Sin nombre") + "</div>" +
     (s.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(s.telefono) + "</div>" : "") +
+    (s.zoomId ? '<div class="muted small" style="margin-top:2px">Zoom: ' + escapeHtml(s.zoomId) + "</div>" : "") +
     "</div>" +
     '<div class="row gap-2">' +
     waLink +
@@ -2168,11 +2176,92 @@ function renderSOSModal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
     '<div class="field"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Código/ID de Zoom</label><input type="text" data-draft-field="zoomId" value="' + escapeHtml(d.zoomId || "") + '" placeholder="Ej. 123 456 7890"></div>' +
     '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="¿Por qué acudir a esta persona?">' + escapeHtml(d.nota || "") + "</textarea></div>" +
     "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-sos">Guardar</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-sos">Cancelar</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- Mis Socios — directorio permanente por línea izquierda/derecha ---------------- */
+
+function misSocioRowHTML(linea, s) {
+  const meses = mesesDesde(s.fechaUltimaCompra);
+  const porVencer = meses !== null && meses >= 11;
+  return (
+    '<button class="card" style="padding:11px 13px;width:100%;text-align:left;display:block;cursor:pointer' +
+    (porVencer ? ";border-color:var(--warn);background:rgba(240,166,92,0.1)" : "") + '" data-action="edit-socio" data-linea="' + linea + '" data-arg="' + s.id + '">' +
+    '<div class="row between" style="align-items:center;gap:6px">' +
+    '<span style="font-weight:700;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' + (porVencer ? ";color:var(--warn)" : "") + '">' + escapeHtml(s.nombre || "Sin nombre") + "</span>" +
+    (porVencer ? Icon("triangle-alert", { size: 14, color: "var(--warn)" }) : "") +
+    "</div></button>"
+  );
+}
+
+function misSociosColumnaHTML(state, linea) {
+  const lista = (state.misSocios && state.misSocios[linea]) || [];
+  const sorted = lista.slice().sort(function (a, b) { return (a.nombre || "").localeCompare(b.nombre || ""); });
+  const rows = sorted.length
+    ? sorted.map(function (s) { return misSocioRowHTML(linea, s); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:12px 0">Sin socios aún.</p>';
+  return (
+    '<div style="min-width:0">' +
+    '<div style="font-weight:700;font-size:13px;margin-bottom:6px">' + (linea === "izquierda" ? "Izquierda" : "Derecha") + " · " + lista.length + "</div>" +
+    '<button class="btn-secondary" style="width:100%;padding:8px;font-size:12.5px" data-action="add-socio" data-arg="' + linea + '">' + Icon("phone-call", { size: 14 }) + " Agregar</button>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
+    "</div>"
+  );
+}
+
+function renderMisSocios(state) {
+  return (
+    sectionHeaderHTML("Mis Socios", "Tu directorio permanente de equipo, por línea izquierda y derecha. Toca un nombre para ver o actualizar sus datos.", "users") +
+    '<div class="card"><p class="small" style="line-height:1.6">Cuando un socio lleve <b>11 meses sin comprar</b>, su nombre se resalta en naranja para avisarte que está a punto de caducar y debe hacer una compra.</p></div>' +
+    '<div class="grid-2">' + misSociosColumnaHTML(state, "izquierda") + misSociosColumnaHTML(state, "derecha") + "</div>"
+  );
+}
+
+function renderSocioModal(ui) {
+  const d = ui.socioDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-socio" data-arg="' + d.id + '">' +
+      (ui.confirmDeleteSocio === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar socio") +
+      "</button>"
+    : "";
+  const meses = mesesDesde(d.fechaUltimaCompra);
+  const aviso = meses !== null && meses >= 11
+    ? '<p class="small" style="margin-top:-4px;color:var(--warn);font-weight:600;display:flex;align-items:center;gap:5px">' + Icon("triangle-alert", { size: 13, color: "var(--warn)" }) + "Lleva " + meses + " meses sin comprar — está por caducar</p>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-socio"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar socio" : "Nuevo socio — línea " + (d.linea === "izquierda" ? "Izquierda" : "Derecha")) + "</span>" +
+    '<button class="icon-btn" data-action="cancel-socio">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Ej. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Contraseña</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Opcional"></div>' +
+    "</div>" +
+    '<div class="field"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Código/ID de Zoom</label><input type="text" data-draft-field="zoomId" value="' + escapeHtml(d.zoomId || "") + '" placeholder="Ej. 123 456 7890"></div>' +
+    '<div class="field"><label>PVP <span class="muted" style="font-weight:400">(actualízalo cuando te lo envíe)</span></label><input type="number" min="0" step="10000" data-draft-field="pvp" value="' + (Number(d.pvp) || 0) + '"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Fecha de cumpleaños</label><input type="date" data-draft-field="fechaCumpleanos" value="' + (d.fechaCumpleanos || "") + '"></div>' +
+    '<div class="field" style="flex:1"><label>Fecha de última compra</label><input type="date" data-draft-field="fechaUltimaCompra" value="' + (d.fechaUltimaCompra || "") + '"></div>' +
+    "</div>" +
+    aviso +
+    '<div class="field"><label>Notas</label><textarea rows="2" data-draft-field="notas" placeholder="Observaciones...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-socio">Guardar</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-socio">Cancelar</button>' +
     "</div></div>"
   );
 }
