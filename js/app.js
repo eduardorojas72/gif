@@ -278,6 +278,7 @@ const App = {
     else if (ui.patrocinadorFabDraft) modalHtml = renderPatrocinadorFabModal(ui);
     else if (ui.logro) modalHtml = renderLogroModal(state, ui);
     else if (ui.contactoDraft) modalHtml = renderContactoModal(ui);
+    else if (ui.importarContactosOpen) modalHtml = renderImportarContactosModal(ui);
     else if (ui.agenda6Draft) modalHtml = renderAgenda6Modal(ui);
     else if (ui.actividadDraft) modalHtml = renderActividadModal(ui);
     else if (ui.zoomDraft) modalHtml = renderZoomModal(ui);
@@ -444,6 +445,35 @@ const App = {
     });
   },
 };
+
+// Adiciona novos contatos à Lista de 250 a partir de {nombre, telefono},
+// sem duplicar por telefone (usado tanto pelo seletor nativo quanto pelo
+// modal de "colar lista" de "Importar contatos").
+function importarContactosDesdeListado(entradas) {
+  let agregados = 0, duplicados = 0;
+  entradas.forEach(function (e) {
+    const nombre = (e.nombre || "").trim();
+    if (!nombre) return;
+    const telNormalizado = (e.telefono || "").replace(/\s+/g, "");
+    const yaExiste = telNormalizado && App.state.contactos.some(function (x) {
+      return x.telefono && x.telefono.replace(/\s+/g, "") === telNormalizado;
+    });
+    if (yaExiste) { duplicados++; return; }
+    App.state.contactos.push({
+      id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      nombre: nombre, telefono: (e.telefono || "").trim(), pais: "", nivel: "Morno", estado: "A contatar",
+      notas: "", notaSeguimiento: "", proximoSeguimiento: null,
+      creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [],
+    });
+    agregados++;
+  });
+  App.persist(true);
+  App.render();
+  const partes = [];
+  if (agregados) partes.push(agregados + " contato" + (agregados === 1 ? "" : "s") + " importado" + (agregados === 1 ? "" : "s"));
+  if (duplicados) partes.push(duplicados + " já estava" + (duplicados === 1 ? "" : "m") + " na sua lista");
+  App.showToast(partes.length ? partes.join(" · ") : "Nenhum contato novo importado");
+}
 
 const Actions = {
   "start-app": function () {
@@ -1100,6 +1130,44 @@ const Actions = {
     App.persist(true);
     App.showToast("Contato excluído");
     App.render();
+  },
+
+  // Importar contatos: em navegadores com suporte (Chrome Android) abre o
+  // seletor nativo do telefone diretamente; nos demais (iPhone, computador)
+  // recai no modal de "colar lista" como alternativa.
+  "importar-contactos": async function () {
+    if (navigator.contacts && navigator.contacts.select) {
+      let elegidos;
+      try {
+        elegidos = await navigator.contacts.select(["name", "tel"], { multiple: true });
+      } catch (e) {
+        return; // o usuário cancelou o seletor, ou o navegador o bloqueou
+      }
+      if (!elegidos || !elegidos.length) return;
+      importarContactosDesdeListado(elegidos.map((c) => ({
+        nombre: (c.name && c.name[0]) || "",
+        telefono: (c.tel && c.tel[0]) || "",
+      })));
+      return;
+    }
+    App.ui.importarContactosOpen = true;
+    App.render();
+  },
+
+  "cerrar-importar-contactos": function () {
+    App.ui.importarContactosOpen = false;
+    App.render();
+  },
+
+  "confirmar-importar-contactos": function () {
+    const el = document.getElementById("importar-contactos-textarea");
+    const lineas = ((el && el.value) || "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const parseados = lineas.map((linea) => {
+      const partes = linea.split(/[,;\t]/).map((p) => p.trim());
+      return { nombre: partes[0] || "", telefono: partes[1] || "" };
+    });
+    App.ui.importarContactosOpen = false;
+    importarContactosDesdeListado(parseados);
   },
 
   "quick-seguimiento": function (arg, el) {
