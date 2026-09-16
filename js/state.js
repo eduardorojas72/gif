@@ -152,11 +152,36 @@ function emptyArbolGenealogico() {
 }
 
 function nuevaLlamadaSOS() {
-  return { id: "s" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", nota: "" };
+  return { id: "s" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", zoomId: "", nota: "" };
 }
 
 function nuevoContactoEvento() {
   return { id: "e" + Math.random().toString(36).slice(2, 9), nombre: "", pais: "", telefono: "", observaciones: "" };
+}
+
+/* ---------------- I Miei Soci — directorio permanente del mio team, per linea sinistra/destra ---------------- */
+
+function nuevoSocio() {
+  return {
+    id: "ms" + Math.random().toString(36).slice(2, 9),
+    nombre: "", atomyId: "", contrasena: "", telefono: "", zoomId: "",
+    pvp: 0, fechaCumpleanos: "", fechaUltimaCompra: "", notas: "",
+  };
+}
+
+function emptyMisSocios() {
+  return { izquierda: [], derecha: [] };
+}
+
+/* Mesi completi trascorsi da una data ISO a oggi (null se non c'è data).
+   Si usa per avvisare quando un socio è ~11 mesi senza comprare ed è in scadenza. */
+function mesesDesde(fechaISO) {
+  if (!fechaISO) return null;
+  const then = new Date(fechaISO + "T00:00:00");
+  const now = new Date();
+  let meses = (now.getFullYear() - then.getFullYear()) * 12 + (now.getMonth() - then.getMonth());
+  if (now.getDate() < then.getDate()) meses -= 1;
+  return Math.max(0, meses);
 }
 
 function emptyEscenarioVida() {
@@ -427,6 +452,7 @@ function defaultState() {
     idiomaInforme: "it",
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
+    misSocios: emptyMisSocios(),
     contactosEventos: [],
     tourVisto: false,
     distribuidoresDuplicado: [],
@@ -672,6 +698,12 @@ function hydrateState(parsed) {
   merged.llamadasSOS = Array.isArray(parsed.llamadasSOS)
     ? parsed.llamadasSOS.map(function (s) { return Object.assign(nuevaLlamadaSOS(), s); })
     : [];
+
+  const misSociosGuardado = parsed.misSocios && typeof parsed.misSocios === "object" ? parsed.misSocios : {};
+  merged.misSocios = {
+    izquierda: Array.isArray(misSociosGuardado.izquierda) ? misSociosGuardado.izquierda.map(function (s) { return Object.assign(nuevoSocio(), s); }) : [],
+    derecha: Array.isArray(misSociosGuardado.derecha) ? misSociosGuardado.derecha.map(function (s) { return Object.assign(nuevoSocio(), s); }) : [],
+  };
 
   merged.contactosEventos = Array.isArray(parsed.contactosEventos)
     ? parsed.contactosEventos.map(function (c) { return Object.assign(nuevoContactoEvento(), c); })

@@ -15,6 +15,7 @@ const MENU_ITEMS = [
   { id: "plan90", label: "Piano 90 Giorni", icon: "mountain-flag" },
   { id: "recursos", label: "Risorse Audiovisive", icon: "video" },
   { id: "arbol", label: "Il Mio Albero Genealogico", icon: "crown" },
+  { id: "socios", label: "I Miei Soci", icon: "users" },
   { id: "sos", label: "Chiamate S.O.S.", icon: "bell" },
   { id: "eventos", label: "Lista Contatti", icon: "users" },
   { id: "lema", label: "Il Motto di Atomy", icon: "heart" },
@@ -35,6 +36,7 @@ const TOUR_PASOS = [
   { icon: "target", titulo: "Riunione di Allineamento", texto: "Organizza il tuo roster sinistra e destra, e usa la calcolatrice dei prodotti per pianificare il tuo acquisto quindicinale e condividerlo con il tuo sponsor." },
   { icon: "mountain-flag", titulo: "Piano di 90 Giorni", texto: "Le tue 6 quindicine con obiettivi chiari verso Sales Master." },
   { icon: "crown", titulo: "Il Mio Albero Genealogico", texto: "Salva qui il tuo ID e la password, e i dati del tuo sponsor — da qui puoi scrivergli direttamente su WhatsApp quando hai un dubbio." },
+  { icon: "users", titulo: "I Miei Soci", texto: "La tua rubrica permanente di team per linea sinistra e destra — tocca un nome per vedere il suo ID, Zoom, PVP e data dell'ultimo acquisto. Il nome diventa arancione quando è senza acquisti da 11 mesi." },
   { icon: "bell", titulo: "Chiamate S.O.S. e Lista Contatti", texto: "Salva altri numeri di supporto a cui rivolgerti, e le persone che conosci agli eventi." },
   { icon: "heart", titulo: "Il Motto, Premi, Traguardi e Impostazioni", texto: "Ispirazione quotidiana, i tuoi traguardi sbloccati e la configurazione del tuo account." },
   { icon: "sparkles", titulo: "Pronto/a!", texto: "Puoi rivedere questo tour quando vuoi con il pulsante flottante che vedrai sullo schermo." },
@@ -1905,6 +1907,10 @@ function renderContactos(state, ui) {
           waLink +
           '<button class="icon-btn" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
           "</div>" +
+          '<div class="row gap-2" style="margin-top:6px">' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 13 }) + " Chiamata</button>" +
+          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 13 }) + " Messaggio</button>" +
+          "</div>" +
           "</div>"
         );
       }).join("")
@@ -1912,6 +1918,7 @@ function renderContactos(state, ui) {
 
   return (
     sectionHeaderHTML("Lista dei 250 Contatti", contactos.length + " su 250 registrati", "users") +
+    '<p class="muted small" style="margin-top:-4px">Tocca «Chiamata» o «Messaggio» su ogni contatto per registrarlo nel tuo Report Settimanale.</p>' +
     '<input id="contacto-search" type="text" placeholder="Cerca per nome o telefono..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +
@@ -2126,6 +2133,7 @@ function sosRowHTML(s) {
     '<div class="row between" style="align-items:flex-start">' +
     '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(s.nombre || "Senza nome") + "</div>" +
     (s.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(s.telefono) + "</div>" : "") +
+    (s.zoomId ? '<div class="muted small" style="margin-top:2px">Zoom: ' + escapeHtml(s.zoomId) + "</div>" : "") +
     "</div>" +
     '<div class="row gap-2">' +
     waLink +
@@ -2168,11 +2176,92 @@ function renderSOSModal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Nome</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nome completo"></div>' +
     '<div class="field"><label>Telefono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Codice/ID Zoom</label><input type="text" data-draft-field="zoomId" value="' + escapeHtml(d.zoomId || "") + '" placeholder="Es. 123 456 7890"></div>' +
     '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="Perché rivolgersi a questa persona?">' + escapeHtml(d.nota || "") + "</textarea></div>" +
     "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-sos">Salva</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-sos">Annulla</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- I Miei Soci — rubrica permanente per linea sinistra/destra ---------------- */
+
+function misSocioRowHTML(linea, s) {
+  const meses = mesesDesde(s.fechaUltimaCompra);
+  const porVencer = meses !== null && meses >= 11;
+  return (
+    '<button class="card" style="padding:11px 13px;width:100%;text-align:left;display:block;cursor:pointer' +
+    (porVencer ? ";border-color:var(--warn);background:rgba(240,166,92,0.1)" : "") + '" data-action="edit-socio" data-linea="' + linea + '" data-arg="' + s.id + '">' +
+    '<div class="row between" style="align-items:center;gap:6px">' +
+    '<span style="font-weight:700;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' + (porVencer ? ";color:var(--warn)" : "") + '">' + escapeHtml(s.nombre || "Senza nome") + "</span>" +
+    (porVencer ? Icon("triangle-alert", { size: 14, color: "var(--warn)" }) : "") +
+    "</div></button>"
+  );
+}
+
+function misSociosColumnaHTML(state, linea) {
+  const lista = (state.misSocios && state.misSocios[linea]) || [];
+  const sorted = lista.slice().sort(function (a, b) { return (a.nombre || "").localeCompare(b.nombre || ""); });
+  const rows = sorted.length
+    ? sorted.map(function (s) { return misSocioRowHTML(linea, s); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:12px 0">Nessun socio ancora.</p>';
+  return (
+    '<div style="min-width:0">' +
+    '<div style="font-weight:700;font-size:13px;margin-bottom:6px">' + (linea === "izquierda" ? "Sinistra" : "Destra") + " · " + lista.length + "</div>" +
+    '<button class="btn-secondary" style="width:100%;padding:8px;font-size:12.5px" data-action="add-socio" data-arg="' + linea + '">' + Icon("phone-call", { size: 14 }) + " Aggiungi</button>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
+    "</div>"
+  );
+}
+
+function renderMisSocios(state) {
+  return (
+    sectionHeaderHTML("I Miei Soci", "La tua rubrica permanente di team, per linea sinistra e destra. Tocca un nome per vedere o aggiornare i suoi dati.", "users") +
+    '<div class="card"><p class="small" style="line-height:1.6">Quando un socio resta <b>11 mesi senza comprare</b>, il suo nome si evidenzia in arancione per avvisarti che è in scadenza e deve fare un acquisto.</p></div>' +
+    '<div class="grid-2">' + misSociosColumnaHTML(state, "izquierda") + misSociosColumnaHTML(state, "derecha") + "</div>"
+  );
+}
+
+function renderSocioModal(ui) {
+  const d = ui.socioDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-socio" data-arg="' + d.id + '">' +
+      (ui.confirmDeleteSocio === d.id ? "Sicuro? Tocca di nuovo per eliminare" : "Elimina socio") +
+      "</button>"
+    : "";
+  const meses = mesesDesde(d.fechaUltimaCompra);
+  const aviso = meses !== null && meses >= 11
+    ? '<p class="small" style="margin-top:-4px;color:var(--warn);font-weight:600;display:flex;align-items:center;gap:5px">' + Icon("triangle-alert", { size: 13, color: "var(--warn)" }) + "Senza comprare da " + meses + " mesi — è in scadenza</p>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-socio"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Modifica socio" : "Nuovo socio — linea " + (d.linea === "izquierda" ? "Sinistra" : "Destra")) + "</span>" +
+    '<button class="icon-btn" data-action="cancel-socio">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Nome</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nome completo"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Es. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Password</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Facoltativo"></div>' +
+    "</div>" +
+    '<div class="field"><label>Telefono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Codice/ID Zoom</label><input type="text" data-draft-field="zoomId" value="' + escapeHtml(d.zoomId || "") + '" placeholder="Es. 123 456 7890"></div>' +
+    '<div class="field"><label>PVP <span class="muted" style="font-weight:400">(aggiornalo quando te lo invia)</span></label><input type="number" min="0" step="10000" data-draft-field="pvp" value="' + (Number(d.pvp) || 0) + '"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Data di compleanno</label><input type="date" data-draft-field="fechaCumpleanos" value="' + (d.fechaCumpleanos || "") + '"></div>' +
+    '<div class="field" style="flex:1"><label>Data dell\'ultimo acquisto</label><input type="date" data-draft-field="fechaUltimaCompra" value="' + (d.fechaUltimaCompra || "") + '"></div>' +
+    "</div>" +
+    aviso +
+    '<div class="field"><label>Note</label><textarea rows="2" data-draft-field="notas" placeholder="Osservazioni...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-socio">Salva</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-socio">Annulla</button>' +
     "</div></div>"
   );
 }
