@@ -93,6 +93,10 @@ const App = {
     confirmDeletePremio: null,
     granPlanOpen: false,
     confirmDeleteHito: null,
+    clienteDraft: null,
+    clienteEditId: null,
+    confirmDeleteCliente: null,
+    cumpleanosOpen: false,
     diarioFuturoOpen: false,
     mesEvaluacion8Pasos: null,
     mesPlanComercial: null,
@@ -221,10 +225,14 @@ const App = {
 
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
+    const hayCumpleanosHoy = isAuth && cumpleanosHoy(state.clientes).length > 0;
     document.getElementById("fab-slot").innerHTML = isAuth
       ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
           ? '<button class="fab-tour" data-action="iniciar-tour" title="Ver recorrido explicativo">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
+          : "") +
+        (hayCumpleanosHoy
+          ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Anniversaires du jour">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
           : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
@@ -239,6 +247,7 @@ const App = {
       case "pasos": mainHtml = renderPasos(state, ui); break;
       case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
+      case "clientes": mainHtml = renderClientes(state); break;
       case "arbol": mainHtml = renderArbolGenealogico(state, ui); break;
       case "socios": mainHtml = renderMisSocios(state); break;
       case "sos": mainHtml = renderLlamadasSOS(state, ui); break;
@@ -286,6 +295,8 @@ const App = {
     else if (ui.ascendenteDraft) modalHtml = renderAscendenteModal(ui);
     else if (ui.sosDraft) modalHtml = renderSOSModal(ui);
     else if (ui.socioDraft) modalHtml = renderSocioModal(ui);
+    else if (ui.clienteDraft) modalHtml = renderClienteModal(ui);
+    else if (ui.cumpleanosOpen) modalHtml = renderCumpleanosPanel(state);
     else if (ui.contactoEventoDraft) modalHtml = renderContactoEventoModal(ui);
     else if (ui.carteleraOpen) modalHtml = renderCarteleraModal();
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
@@ -330,9 +341,9 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft)) {
-        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque / ascendente / S.O.S. / contacto de evento / patrocinador desde el FAB / partenaire): tampoco re-renderizan, para no perder el foco
-        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft;
+      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft || this.ui.clienteDraft)) {
+        // formularios con borrador (contacto / actividad de agenda / zoom / persona de Reunión de Enfoque / ascendente / S.O.S. / contacto de evento / patrocinador desde el FAB / partenaire / client): tampoco re-renderizan, para no perder el foco
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft || this.ui.clienteDraft;
         const value = el.dataset.draftField === "pvp" ? (Number(el.value) || 0) : el.value;
         setPath(draft, el.dataset.draftField, value);
       } else if (el.dataset && el.dataset.rosterField) {
@@ -348,6 +359,12 @@ const App = {
         // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
         const q = el.value.trim().toLowerCase();
         document.querySelectorAll(".contact-row").forEach((row) => {
+          const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
+          row.classList.toggle("hidden", !match);
+        });
+      } else if (el.id === "cliente-search") {
+        const q = el.value.trim().toLowerCase();
+        document.querySelectorAll(".cliente-row").forEach((row) => {
           const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
           row.classList.toggle("hidden", !match);
         });
@@ -986,7 +1003,8 @@ const Actions = {
   },
 
   "open-bell": function () { App.ui.bellOpen = true; App.render(); },
-  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.ui.carteleraOpen = false; App.render(); },
+  "open-cumpleanos": function () { App.ui.cumpleanosOpen = true; App.render(); },
+  "close-modal": function () { App.ui.bellOpen = false; App.ui.logro = null; App.ui.carteleraOpen = false; App.ui.cumpleanosOpen = false; App.render(); },
   "open-cartelera": function () { App.ui.carteleraOpen = true; App.render(); },
 
   "toggle-bucket-list": function () {
@@ -1761,6 +1779,101 @@ const Actions = {
     App.ui.socioDraft = null;
     App.persist(true);
     App.showToast("Partenaire supprimé");
+    App.render();
+  },
+
+  /* -------- Clients -------- */
+
+  "add-cliente": function () {
+    App.ui.clienteDraft = nuevoCliente();
+    App.ui.clienteEditId = null;
+    App.ui.confirmDeleteCliente = null;
+    App.render();
+  },
+
+  "edit-cliente": function (arg) {
+    const c = (App.state.clientes || []).find((x) => x.id === arg);
+    if (!c) return;
+    App.ui.clienteDraft = Object.assign({}, c, { compras: (c.compras || []).map((co) => Object.assign({}, co)) });
+    App.ui.clienteEditId = arg;
+    App.ui.confirmDeleteCliente = null;
+    App.render();
+  },
+
+  "cancel-cliente": function () {
+    App.ui.clienteDraft = null;
+    App.ui.clienteEditId = null;
+    App.ui.confirmDeleteCliente = null;
+    App.render();
+  },
+
+  "save-cliente": function () {
+    const d = App.ui.clienteDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    const campos = {
+      nombre: d.nombre, atomyId: d.atomyId, contrasena: d.contrasena, telefono: d.telefono,
+      fechaNacimiento: d.fechaNacimiento, observaciones: d.observaciones,
+      proximoSeguimiento: d.proximoSeguimiento || null, compras: d.compras || [],
+    };
+    if (!Array.isArray(App.state.clientes)) App.state.clientes = [];
+    if (App.ui.clienteEditId) {
+      const idx = App.state.clientes.findIndex((x) => x.id === App.ui.clienteEditId);
+      if (idx !== -1) Object.assign(App.state.clientes[idx], campos);
+    } else {
+      App.state.clientes.push(Object.assign(nuevoCliente(), campos, { creado: hoyISO() }));
+    }
+    App.ui.clienteDraft = null;
+    App.ui.clienteEditId = null;
+    App.persist(true);
+    App.showToast("Client enregistré");
+    App.render();
+  },
+
+  "delete-cliente": function (arg) {
+    if (App.ui.confirmDeleteCliente !== arg) {
+      App.ui.confirmDeleteCliente = arg;
+      App.render();
+      return;
+    }
+    App.state.clientes = (App.state.clientes || []).filter((x) => x.id !== arg);
+    App.ui.confirmDeleteCliente = null;
+    App.ui.clienteDraft = null;
+    App.ui.clienteEditId = null;
+    App.persist(true);
+    App.showToast("Client supprimé");
+    App.render();
+  },
+
+  "quick-seguimiento-cliente": function (arg, el) {
+    const c = (App.state.clientes || []).find((x) => x.id === arg);
+    if (!c) return;
+    c.proximoSeguimiento = el.dataset.meses ? addMesesISO(hoyISO(), Number(el.dataset.meses)) : addDiasISO(hoyISO(), Number(el.dataset.dias));
+    App.persist(true);
+    App.showToast("Suivi programmé");
+    App.render();
+  },
+
+  "quick-draft-seguimiento-cliente": function (arg, el) {
+    if (!App.ui.clienteDraft) return;
+    App.ui.clienteDraft.proximoSeguimiento = el.dataset.meses ? addMesesISO(hoyISO(), Number(el.dataset.meses)) : addDiasISO(hoyISO(), Number(el.dataset.dias));
+    App.render();
+  },
+
+  "add-compra-cliente": function () {
+    if (!App.ui.clienteDraft) return;
+    const producto = (document.getElementById("cliente-compra-producto") || {}).value || "";
+    const valor = Number((document.getElementById("cliente-compra-valor") || {}).value) || 0;
+    const pv = Number((document.getElementById("cliente-compra-pv") || {}).value) || 0;
+    const fecha = (document.getElementById("cliente-compra-fecha") || {}).value || hoyISO();
+    if (!producto.trim()) return;
+    if (!Array.isArray(App.ui.clienteDraft.compras)) App.ui.clienteDraft.compras = [];
+    App.ui.clienteDraft.compras.push(Object.assign(nuevaCompraCliente(), { producto: producto.trim(), valor: valor, pv: pv, fecha: fecha }));
+    App.render();
+  },
+
+  "delete-compra-cliente": function (arg) {
+    if (!App.ui.clienteDraft) return;
+    App.ui.clienteDraft.compras = (App.ui.clienteDraft.compras || []).filter((co) => co.id !== arg);
     App.render();
   },
 

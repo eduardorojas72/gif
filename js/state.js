@@ -184,6 +184,33 @@ function mesesDesde(fechaISO) {
   return Math.max(0, meses);
 }
 
+/* Ajoute des mois de calendrier à une date ISO (pour le suivi à "11 mois" de Clients). */
+function addMesesISO(fechaISO, meses) {
+  const d = new Date(fechaISO + "T00:00:00");
+  d.setMonth(d.getMonth() + meses);
+  return d.toISOString().slice(0, 10);
+}
+
+/* ---------------- Clients — personnes ayant déjà acheté, avec historique de commandes ---------------- */
+
+function nuevaCompraCliente() {
+  return { id: "co" + Math.random().toString(36).slice(2, 9), fecha: hoyISO(), producto: "", valor: 0, pv: 0 };
+}
+
+function nuevoCliente() {
+  return {
+    id: "cli" + Math.random().toString(36).slice(2, 9),
+    nombre: "", atomyId: "", contrasena: "", telefono: "", fechaNacimiento: "",
+    observaciones: "", compras: [], proximoSeguimiento: null, creado: "",
+  };
+}
+
+/* Clients dont l'anniversaire (jour et mois) est aujourd'hui — pour l'alerte flottante. */
+function cumpleanosHoy(clientes) {
+  const hoy = hoyISO().slice(5); // "MM-DD"
+  return (clientes || []).filter(function (c) { return c.fechaNacimiento && c.fechaNacimiento.slice(5) === hoy; });
+}
+
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
     acc[c.id] = { meta: "", avance: 0 };
@@ -453,6 +480,7 @@ function defaultState() {
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
     misSocios: emptyMisSocios(),
+    clientes: [],
     contactosEventos: [],
     tourVisto: false,
     distribuidoresDuplicado: [],
@@ -704,6 +732,13 @@ function hydrateState(parsed) {
     izquierda: Array.isArray(misSociosGuardado.izquierda) ? misSociosGuardado.izquierda.map(function (s) { return Object.assign(nuevoSocio(), s); }) : [],
     derecha: Array.isArray(misSociosGuardado.derecha) ? misSociosGuardado.derecha.map(function (s) { return Object.assign(nuevoSocio(), s); }) : [],
   };
+
+  merged.clientes = Array.isArray(parsed.clientes)
+    ? parsed.clientes.map(function (c) {
+        const compras = Array.isArray(c.compras) ? c.compras.map(function (co) { return Object.assign(nuevaCompraCliente(), co); }) : [];
+        return Object.assign(nuevoCliente(), c, { compras: compras });
+      })
+    : [];
 
   merged.contactosEventos = Array.isArray(parsed.contactosEventos)
     ? parsed.contactosEventos.map(function (c) { return Object.assign(nuevoContactoEvento(), c); })
