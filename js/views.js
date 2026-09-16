@@ -15,6 +15,7 @@ const MENU_ITEMS = [
   { id: "plan90", label: "90-Day Plan", icon: "mountain-flag" },
   { id: "recursos", label: "Audiovisual Resources", icon: "video" },
   { id: "arbol", label: "My Genealogy Tree", icon: "crown" },
+  { id: "socios", label: "My Partners", icon: "users" },
   { id: "sos", label: "S.O.S. Calls", icon: "bell" },
   { id: "eventos", label: "Contact List", icon: "users" },
   { id: "lema", label: "Atomy's Motto", icon: "heart" },
@@ -35,6 +36,7 @@ const TOUR_PASOS = [
   { icon: "target", titulo: "Focus Meeting", texto: "Organize your Left and Right roster, and use the product calculator to plan your fortnightly purchase and share it with your sponsor." },
   { icon: "mountain-flag", titulo: "90-Day Plan", texto: "Your 6 fortnights with clear goals on the way to Sales Master." },
   { icon: "crown", titulo: "My Genealogy Tree", texto: "Save your ID and password there, along with your sponsor's info — from here you can message them directly on WhatsApp whenever you have a question." },
+  { icon: "users", titulo: "My Partners", texto: "Your permanent team directory by Left and Right line — tap a name to see their ID, Zoom, PVP, and last purchase date. The line turns orange when it's gone 11 months without a purchase." },
   { icon: "bell", titulo: "S.O.S. Calls and Contact List", texto: "Save other support numbers you can turn to, and the people you meet at events." },
   { icon: "heart", titulo: "The Motto, Rewards, Achievements, and Settings", texto: "Daily inspiration, your unlocked achievements, and your account settings." },
   { icon: "sparkles", titulo: "All set!", texto: "You can watch this tour again anytime using the floating button you'll see on screen." },
@@ -1905,6 +1907,10 @@ function renderContactos(state, ui) {
           waLink +
           '<button class="icon-btn" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
           "</div>" +
+          '<div class="row gap-2" style="margin-top:6px">' +
+          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 13 }) + " Call</button>" +
+          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 13 }) + " Message</button>" +
+          "</div>" +
           "</div>"
         );
       }).join("")
@@ -1912,6 +1918,7 @@ function renderContactos(state, ui) {
 
   return (
     sectionHeaderHTML("List of 250 Contacts", contactos.length + " of 250 registered", "users") +
+    '<p class="muted small" style="margin-top:-4px">Tap “Call” or “Message” on each contact to log it in your Weekly Report.</p>' +
     '<input id="contacto-search" type="text" placeholder="Search by name or phone..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +
@@ -2126,6 +2133,7 @@ function sosRowHTML(s) {
     '<div class="row between" style="align-items:flex-start">' +
     '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(s.nombre || "No name") + "</div>" +
     (s.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(s.telefono) + "</div>" : "") +
+    (s.zoomId ? '<div class="muted small" style="margin-top:2px">Zoom: ' + escapeHtml(s.zoomId) + "</div>" : "") +
     "</div>" +
     '<div class="row gap-2">' +
     waLink +
@@ -2168,11 +2176,92 @@ function renderSOSModal(ui) {
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Full name"></div>' +
     '<div class="field"><label>Phone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+1 555 000 0000"></div>' +
+    '<div class="field"><label>Zoom ID</label><input type="text" data-draft-field="zoomId" value="' + escapeHtml(d.zoomId || "") + '" placeholder="E.g. 123 456 7890"></div>' +
     '<div class="field"><label>Note</label><textarea rows="2" data-draft-field="nota" placeholder="Why turn to this person?">' + escapeHtml(d.nota || "") + "</textarea></div>" +
     "</div>" +
     '<button class="btn-primary" style="margin-top:14px" data-action="save-sos">Save</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-sos">Cancel</button>' +
+    "</div></div>"
+  );
+}
+
+/* ---------------- My Partners — permanent directory by Left/Right line ---------------- */
+
+function misSocioRowHTML(linea, s) {
+  const meses = mesesDesde(s.fechaUltimaCompra);
+  const porVencer = meses !== null && meses >= 11;
+  return (
+    '<button class="card" style="padding:11px 13px;width:100%;text-align:left;display:block;cursor:pointer' +
+    (porVencer ? ";border-color:var(--warn);background:rgba(240,166,92,0.1)" : "") + '" data-action="edit-socio" data-linea="' + linea + '" data-arg="' + s.id + '">' +
+    '<div class="row between" style="align-items:center;gap:6px">' +
+    '<span style="font-weight:700;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' + (porVencer ? ";color:var(--warn)" : "") + '">' + escapeHtml(s.nombre || "No name") + "</span>" +
+    (porVencer ? Icon("triangle-alert", { size: 14, color: "var(--warn)" }) : "") +
+    "</div></button>"
+  );
+}
+
+function misSociosColumnaHTML(state, linea) {
+  const lista = (state.misSocios && state.misSocios[linea]) || [];
+  const sorted = lista.slice().sort(function (a, b) { return (a.nombre || "").localeCompare(b.nombre || ""); });
+  const rows = sorted.length
+    ? sorted.map(function (s) { return misSocioRowHTML(linea, s); }).join("")
+    : '<p class="muted small" style="text-align:center;padding:12px 0">No partners yet.</p>';
+  return (
+    '<div style="min-width:0">' +
+    '<div style="font-weight:700;font-size:13px;margin-bottom:6px">' + (linea === "izquierda" ? "Left" : "Right") + " · " + lista.length + "</div>" +
+    '<button class="btn-secondary" style="width:100%;padding:8px;font-size:12.5px" data-action="add-socio" data-arg="' + linea + '">' + Icon("phone-call", { size: 14 }) + " Add</button>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
+    "</div>"
+  );
+}
+
+function renderMisSocios(state) {
+  return (
+    sectionHeaderHTML("My Partners", "Your permanent team directory, by Left and Right line. Tap a name to view or update their info.", "users") +
+    '<div class="card"><p class="small" style="line-height:1.6">When a partner has gone <b>11 months without a purchase</b>, their name is highlighted in orange to warn you they are about to expire and need to make a purchase.</p></div>' +
+    '<div class="grid-2">' + misSociosColumnaHTML(state, "izquierda") + misSociosColumnaHTML(state, "derecha") + "</div>"
+  );
+}
+
+function renderSocioModal(ui) {
+  const d = ui.socioDraft;
+  if (!d) return "";
+  const editing = !!d.id;
+  const deleteBtn = editing
+    ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-socio" data-arg="' + d.id + '">' +
+      (ui.confirmDeleteSocio === d.id ? "Are you sure? Tap again to delete" : "Delete partner") +
+      "</button>"
+    : "";
+  const meses = mesesDesde(d.fechaUltimaCompra);
+  const aviso = meses !== null && meses >= 11
+    ? '<p class="small" style="margin-top:-4px;color:var(--warn);font-weight:600;display:flex;align-items:center;gap:5px">' + Icon("triangle-alert", { size: 13, color: "var(--warn)" }) + "Gone " + meses + " months without a purchase — about to expire</p>"
+    : "";
+  return (
+    '<div class="modal-overlay">' +
+    '<div class="modal-backdrop" data-action="cancel-socio"></div>' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit partner" : "New partner — " + (d.linea === "izquierda" ? "Left" : "Right") + " line") + "</span>" +
+    '<button class="icon-btn" data-action="cancel-socio">' + Icon("x", { size: 18 }) + "</button></div>" +
+    '<div class="view-stack gap-sm" style="margin-top:8px">' +
+    '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Full name"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Atomy ID</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="E.g. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Password</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Optional"></div>' +
+    "</div>" +
+    '<div class="field"><label>Phone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+1 555 000 0000"></div>' +
+    '<div class="field"><label>Zoom ID</label><input type="text" data-draft-field="zoomId" value="' + escapeHtml(d.zoomId || "") + '" placeholder="E.g. 123 456 7890"></div>' +
+    '<div class="field"><label>PVP <span class="muted" style="font-weight:400">(update it whenever they send it to you)</span></label><input type="number" min="0" step="10000" data-draft-field="pvp" value="' + (Number(d.pvp) || 0) + '"></div>' +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Birthday</label><input type="date" data-draft-field="fechaCumpleanos" value="' + (d.fechaCumpleanos || "") + '"></div>' +
+    '<div class="field" style="flex:1"><label>Last purchase date</label><input type="date" data-draft-field="fechaUltimaCompra" value="' + (d.fechaUltimaCompra || "") + '"></div>' +
+    "</div>" +
+    aviso +
+    '<div class="field"><label>Notes</label><textarea rows="2" data-draft-field="notas" placeholder="Remarks...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-socio">Save</button>' +
+    deleteBtn +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-socio">Cancel</button>' +
     "</div></div>"
   );
 }

@@ -240,6 +240,7 @@ const App = {
       case "lema": mainHtml = renderLema(state, ui); break;
       case "contactos": mainHtml = renderContactos(state, ui); break;
       case "arbol": mainHtml = renderArbolGenealogico(state, ui); break;
+      case "socios": mainHtml = renderMisSocios(state); break;
       case "sos": mainHtml = renderLlamadasSOS(state, ui); break;
       case "eventos": mainHtml = renderContactosEventos(state, ui); break;
       case "plan6": mainHtml = ui.activeDay ? renderDiaDetalle(state, ui, ui.activeDay) : renderPathMap(state); break;
@@ -284,6 +285,7 @@ const App = {
     else if (ui.personaEnfoqueDraft) modalHtml = renderPersonaEnfoqueModal(ui);
     else if (ui.ascendenteDraft) modalHtml = renderAscendenteModal(ui);
     else if (ui.sosDraft) modalHtml = renderSOSModal(ui);
+    else if (ui.socioDraft) modalHtml = renderSocioModal(ui);
     else if (ui.contactoEventoDraft) modalHtml = renderContactoEventoModal(ui);
     else if (ui.carteleraOpen) modalHtml = renderCarteleraModal();
     else if (ui.bellOpen) modalHtml = renderBellPanel(state);
@@ -328,10 +330,11 @@ const App = {
         }
         setPath(this.state, el.dataset.field, value);
         this.persist();
-      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft)) {
-        // forms with a draft (contact / agenda activity / zoom / Focus Meeting person / ancestor / S.O.S. / event contact / sponsor from the FAB): also skip re-rendering, so focus isn't lost
-        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft;
-        setPath(draft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft)) {
+        // forms with a draft (contact / agenda activity / zoom / Focus Meeting person / ancestor / S.O.S. / event contact / sponsor from the FAB / partner): also skip re-rendering, so focus isn't lost
+        const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft;
+        const value = el.dataset.draftField === "pvp" ? (Number(el.value) || 0) : el.value;
+        setPath(draft, el.dataset.draftField, value);
       } else if (el.dataset && el.dataset.rosterField) {
         const lista = getListaEnfoque(this.state, el.dataset.qn);
         const arr = lista[el.dataset.linea] || [];
@@ -1179,6 +1182,30 @@ const Actions = {
     App.render();
   },
 
+  // Logs a call or message made to a List of 250 contact: adds to the daily
+  // counter (Weekly Report → "Today"), advances the contact to "Contacted" if
+  // it was still "To contact", and if it had a pending follow-up marks it done.
+  // This way real work on the list actually shows up in the report you share.
+  "registrar-contacto": function (arg, el) {
+    const tipo = el.dataset.tipo === "mensaje" ? "mensajes" : "llamadas";
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c) return;
+    const dia = getRegistroDia(App.state, hoyISO());
+    dia[tipo] = (Number(dia[tipo]) || 0) + 1;
+    if (c.estado === "To contact") {
+      c.estado = "Contacted";
+      c.estadoFecha = hoyISO();
+    }
+    if (c.proximoSeguimiento) {
+      if (!Array.isArray(c.seguimientosRealizados)) c.seguimientosRealizados = [];
+      c.seguimientosRealizados.push(hoyISO());
+      c.proximoSeguimiento = null;
+    }
+    App.persist(true);
+    App.showToast(tipo === "mensajes" ? "Message logged" : "Call logged");
+    App.render();
+  },
+
   "marcar-seguimiento-hecho": function (arg) {
     const c = App.state.contactos.find((x) => x.id === arg);
     if (!c) return;
@@ -1624,7 +1651,7 @@ const Actions = {
   /* -------- S.O.S. Calls -------- */
 
   "add-sos": function () {
-    App.ui.sosDraft = { id: null, nombre: "", telefono: "", nota: "" };
+    App.ui.sosDraft = { id: null, nombre: "", telefono: "", zoomId: "", nota: "" };
     App.ui.confirmDeleteSOS = null;
     App.render();
   },
@@ -1651,10 +1678,11 @@ const Actions = {
       if (s) {
         s.nombre = d.nombre;
         s.telefono = d.telefono;
+        s.zoomId = d.zoomId;
         s.nota = d.nota;
       }
     } else {
-      App.state.llamadasSOS.push(Object.assign(nuevaLlamadaSOS(), { nombre: d.nombre, telefono: d.telefono, nota: d.nota }));
+      App.state.llamadasSOS.push(Object.assign(nuevaLlamadaSOS(), { nombre: d.nombre, telefono: d.telefono, zoomId: d.zoomId, nota: d.nota }));
     }
     App.ui.sosDraft = null;
     App.persist(true);
@@ -1673,6 +1701,66 @@ const Actions = {
     App.ui.sosDraft = null;
     App.persist(true);
     App.showToast("Contact deleted");
+    App.render();
+  },
+
+  /* -------- My Partners -------- */
+
+  "add-socio": function (arg) {
+    App.ui.socioDraft = Object.assign(nuevoSocio(), { linea: arg });
+    App.ui.socioDraft.id = null;
+    App.ui.confirmDeleteSocio = null;
+    App.render();
+  },
+
+  "edit-socio": function (arg, el) {
+    const linea = el.dataset.linea;
+    const s = ((App.state.misSocios && App.state.misSocios[linea]) || []).find((x) => x.id === arg);
+    if (!s) return;
+    App.ui.socioDraft = Object.assign({}, s, { linea: linea });
+    App.ui.confirmDeleteSocio = null;
+    App.render();
+  },
+
+  "cancel-socio": function () {
+    App.ui.socioDraft = null;
+    App.ui.confirmDeleteSocio = null;
+    App.render();
+  },
+
+  "save-socio": function () {
+    const d = App.ui.socioDraft;
+    if (!d || !d.nombre || !d.nombre.trim()) return;
+    const linea = d.linea === "derecha" ? "derecha" : "izquierda";
+    if (!App.state.misSocios) App.state.misSocios = emptyMisSocios();
+    if (!Array.isArray(App.state.misSocios[linea])) App.state.misSocios[linea] = [];
+    const campos = { nombre: d.nombre, atomyId: d.atomyId, contrasena: d.contrasena, telefono: d.telefono, zoomId: d.zoomId, pvp: Number(d.pvp) || 0, fechaCumpleanos: d.fechaCumpleanos, fechaUltimaCompra: d.fechaUltimaCompra, notas: d.notas };
+    if (d.id) {
+      const idx = App.state.misSocios[linea].findIndex((x) => x.id === d.id);
+      if (idx !== -1) Object.assign(App.state.misSocios[linea][idx], campos);
+    } else {
+      App.state.misSocios[linea].push(Object.assign(nuevoSocio(), campos));
+    }
+    App.ui.socioDraft = null;
+    App.persist(true);
+    App.showToast("Partner saved");
+    App.render();
+  },
+
+  "delete-socio": function (arg) {
+    if (App.ui.confirmDeleteSocio !== arg) {
+      App.ui.confirmDeleteSocio = arg;
+      App.render();
+      return;
+    }
+    const linea = App.ui.socioDraft && App.ui.socioDraft.linea;
+    if (linea && App.state.misSocios && Array.isArray(App.state.misSocios[linea])) {
+      App.state.misSocios[linea] = App.state.misSocios[linea].filter((x) => x.id !== arg);
+    }
+    App.ui.confirmDeleteSocio = null;
+    App.ui.socioDraft = null;
+    App.persist(true);
+    App.showToast("Partner deleted");
     App.render();
   },
 
