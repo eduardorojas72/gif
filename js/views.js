@@ -360,6 +360,8 @@ function renderHome(state) {
 
     escenarioVidaHomeCardHTML(state) +
 
+    enlacesUtilesHomeCardHTML() +
+
     proximosHtml +
 
     mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
@@ -373,6 +375,24 @@ function renderHome(state) {
     (cumbreLograda
       ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' Tu as atteint le Sommet ! Voir le succès</button>'
       : "")
+  );
+}
+
+function enlacesUtilesHomeCardHTML() {
+  return (
+    '<div class="card">' +
+    '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Avant tout, ceci</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Garde à portée de main les applications et les pages dont tu auras besoin dans ton quotidien avec Atomy.</p>' +
+    '<div class="view-stack" style="margin-top:6px;gap:0">' +
+    ENLACES_UTILES.map(function (e) {
+      return (
+        '<a class="row between" href="' + e.url + '" target="_blank" rel="noreferrer" style="padding:9px 2px;border-top:1px solid var(--border-soft)">' +
+        '<span class="small" style="font-weight:600">' + escapeHtml(e.nombre) + "</span>" +
+        Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) +
+        "</a>"
+      );
+    }).join("") +
+    "</div></div>"
   );
 }
 
@@ -2230,6 +2250,8 @@ function renderArbolGenealogico(state, ui) {
     '<div class="field" style="flex:1"><label>Mot de passe Zoom</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomContrasena" value="' + escapeHtml(p.zoomContrasena) + '" placeholder="Facultatif"></div>' +
     "</div>" +
     '<div class="field"><label>Horaires à ne pas appeler</label><input type="text" data-field="arbolGenealogico.patrocinador.horarioNoLlamar" value="' + escapeHtml(p.horarioNoLlamar) + '" placeholder="Ex. Après 20h, ni le dimanche"></div>' +
+    '<div class="field"><label>Groupe WhatsApp de soutien</label><input type="text" data-field="arbolGenealogico.patrocinador.grupoWhatsapp" value="' + escapeHtml(p.grupoWhatsapp || "") + '" placeholder="Colle ici le lien d\'invitation au groupe"></div>' +
+    '<p class="muted small" style="line-height:1.4;margin-top:-4px">Si tu l\'ajoutes, un bouton flottant apparaîtra pour que tes nouveaux partenaires puissent y écrire quand ils ont des questions en dehors de tes horaires ou de l\'heure de contrôle convenue avec toi.</p>' +
     "</div></div>" +
 
     '<div class="card">' +

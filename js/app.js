@@ -226,6 +226,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     const hayCumpleanosHoy = isAuth && cumpleanosHoy(state.clientes).length > 0;
+    const grupoWhatsapp = state.arbolGenealogico && state.arbolGenealogico.patrocinador && state.arbolGenealogico.patrocinador.grupoWhatsapp;
     document.getElementById("fab-slot").innerHTML = isAuth
       ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
@@ -233,6 +234,9 @@ const App = {
           : "") +
         (hayCumpleanosHoy
           ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Anniversaires du jour">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
+          : "") +
+        (grupoWhatsapp && grupoWhatsapp.trim()
+          ? '<button class="fab-whatsapp-group" data-action="abrir-whatsapp-grupo-fab" title="Groupe WhatsApp de soutien">' + Icon("users", { size: 20, color: "#fff" }) + "</button>"
           : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
@@ -549,6 +553,11 @@ const Actions = {
       telefono: "",
     };
     App.render();
+  },
+
+  "abrir-whatsapp-grupo-fab": function () {
+    const grupo = App.state.arbolGenealogico && App.state.arbolGenealogico.patrocinador && App.state.arbolGenealogico.patrocinador.grupoWhatsapp;
+    if (grupo && grupo.trim()) window.open(grupo.trim(), "_blank", "noreferrer");
   },
 
   "cancelar-patrocinador-fab": function () {

@@ -190,6 +190,20 @@ const ESCENARIO_VIDEOS = [
   { titulo: "Objectifs Clairs, Vie Claire", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
 ];
 
+const ENLACES_UTILES = [
+  { nombre: "Application Atomy pour Android", url: "https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es" },
+  { nombre: "Application Atomy pour iPhone", url: "https://apps.apple.com/es/app/official-atomy-shop/id1637879180" },
+  { nombre: "Klarna", url: "https://www.klarna.com/es/" },
+  { nombre: "PayPal", url: "https://www.paypal.com/es/home" },
+  { nombre: "Site officiel d'Atomy", url: "https://eu.atomy.com/main" },
+  { nombre: "CH Atomy", url: "https://ch.atomy.com/eu" },
+  { nombre: "YouTube Atomy Europe", url: "https://www.youtube.com/@atomyeuropeofficial" },
+  { nombre: "YouTube Atomy Mexique", url: "https://www.youtube.com/@AtomyM%C3%A9xicoOficial" },
+  { nombre: "YouTube Atomy Colombie", url: "https://www.youtube.com/@AtomyColombiaOficial" },
+  { nombre: "Canva", url: "https://www.canva.com/" },
+  { nombre: "CapCut", url: "https://www.capcut.com/my-edit?from_page=landing_page&start_tab=video" },
+];
+
 const RECURSOS_AUDIOVISUALES = [
   {
     id: "inicio",
