@@ -383,12 +383,12 @@ function enlacesUtilesHomeCardHTML() {
     '<div class="card">' +
     '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Antes que nada, esto</span></div>' +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Guarda a mano las apps y páginas que vas a necesitar en tu día a día con Atomy.</p>' +
-    '<div class="view-stack" style="margin-top:6px;gap:0">' +
+    '<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
     ENLACES_UTILES.map(function (e) {
       return (
-        '<a class="row between" href="' + e.url + '" target="_blank" rel="noreferrer" style="padding:9px 2px;border-top:1px solid var(--border-soft)">' +
-        '<span class="small" style="font-weight:600">' + escapeHtml(e.nombre) + "</span>" +
-        Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) +
+        '<a class="row between" href="' + e.url + '" target="_blank" rel="noreferrer" style="padding:9px 8px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,0.03)">' +
+        '<span class="small" style="font-weight:600;line-height:1.3">' + escapeHtml(e.nombre) + "</span>" +
+        Icon("chevron-right", { size: 14, color: "var(--text-soft)" }) +
         "</a>"
       );
     }).join("") +
