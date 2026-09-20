@@ -661,7 +661,7 @@ function videoRowHTML(v) {
 }
 
 function videoListCardHTML(videos) {
-  return '<div class="view-stack gap-sm">' + videos.map(videoRowHTML).join("") + "</div>";
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' + videos.map(videoRowHTML).join("") + "</div>";
 }
 
 function documentRowHTML(d) {
@@ -675,7 +675,7 @@ function documentRowHTML(d) {
 }
 
 function documentListCardHTML(documentos) {
-  return '<div class="view-stack gap-sm">' + documentos.map(documentRowHTML).join("") + "</div>";
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' + documentos.map(documentRowHTML).join("") + "</div>";
 }
 
 function renderRecursosAudiovisuales(state, ui) {
