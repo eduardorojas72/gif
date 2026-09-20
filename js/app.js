@@ -227,6 +227,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     const hayCumpleanosHoy = isAuth && cumpleanosHoy(state.clientes).length > 0;
+    const grupoWhatsapp = state.arbolGenealogico && state.arbolGenealogico.patrocinador && state.arbolGenealogico.patrocinador.grupoWhatsapp;
     document.getElementById("fab-slot").innerHTML = isAuth
       ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escrever para seu(sua) patrocinador(a)">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
@@ -234,6 +235,9 @@ const App = {
           : "") +
         (hayCumpleanosHoy
           ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Aniversários de hoje">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
+          : "") +
+        (grupoWhatsapp && grupoWhatsapp.trim()
+          ? '<button class="fab-whatsapp-group" data-action="abrir-whatsapp-grupo-fab" title="Grupo de WhatsApp de suporte">' + Icon("users", { size: 20, color: "#fff" }) + "</button>"
           : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
@@ -550,6 +554,15 @@ const Actions = {
       telefono: "",
     };
     App.render();
+  },
+
+  // Grupo de WhatsApp de suporte do(a) patrocinador(a) — diferente do chat
+  // direto: serve para que um(a) novo(a) sócio(a) peça ajuda ali quando já
+  // passou seu horário de controle combinado e seu(sua) patrocinador(a) não
+  // está disponível na hora.
+  "abrir-whatsapp-grupo-fab": function () {
+    const grupo = App.state.arbolGenealogico && App.state.arbolGenealogico.patrocinador && App.state.arbolGenealogico.patrocinador.grupoWhatsapp;
+    if (grupo && grupo.trim()) window.open(grupo.trim(), "_blank", "noreferrer");
   },
 
   "cancelar-patrocinador-fab": function () {
