@@ -2230,6 +2230,7 @@ function renderArbolGenealogico(state, ui) {
     '<div class="view-stack gap-sm" style="margin-top:10px">' +
     '<div class="field"><label>ID Atomy</label><input type="text" data-field="arbolGenealogico.yo.atomyId" value="' + escapeHtml(yo.atomyId) + '" placeholder="Ex. 93248238"></div>' +
     '<div class="field"><label>Mot de passe</label><input type="text" data-field="arbolGenealogico.yo.contrasena" value="' + escapeHtml(yo.contrasena) + '" placeholder="Ton mot de passe Atomy"></div>' +
+    '<div class="field"><label>Date de naissance</label><input type="date" data-field="arbolGenealogico.yo.fechaNacimiento" value="' + escapeHtml(yo.fechaNacimiento || "") + '"></div>' +
     "</div></div>" +
 
     '<div class="card">' +
