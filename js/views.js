@@ -2241,6 +2241,7 @@ function renderArbolGenealogico(state, ui) {
     '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-field="arbolGenealogico.patrocinador.atomyId" value="' + escapeHtml(p.atomyId) + '" placeholder="Es. 93248238"></div>' +
     '<div class="field" style="flex:1"><label>Rango</label><input type="text" data-field="arbolGenealogico.patrocinador.rango" value="' + escapeHtml(p.rango) + '" placeholder="Es. Sales Master"></div>' +
     "</div>" +
+    '<div class="field"><label>Data di nascita</label><input type="date" data-field="arbolGenealogico.patrocinador.fechaNacimiento" value="' + escapeHtml(p.fechaNacimiento || "") + '"></div>' +
     '<div class="row gap-2">' +
     '<div class="field" style="flex:1"><label>Paese</label><input type="text" data-field="arbolGenealogico.patrocinador.pais" value="' + escapeHtml(p.pais) + '" placeholder="Es. Colombia"></div>' +
     '<div class="field" style="flex:1"><label>Telefono</label><input type="text" inputmode="tel" data-field="arbolGenealogico.patrocinador.telefono" value="' + escapeHtml(p.telefono) + '" placeholder="+57 300 000 0000"></div>' +
