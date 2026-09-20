@@ -147,7 +147,7 @@ function nuevaPersonaAscendente() {
 function emptyArbolGenealogico() {
   return {
     yo: { atomyId: "", contrasena: "" },
-    patrocinador: { nombre: "", atomyId: "", rango: "", pais: "", telefono: "", zoomId: "", zoomContrasena: "", horarioNoLlamar: "", grupoWhatsapp: "" },
+    patrocinador: { nombre: "", atomyId: "", rango: "", pais: "", telefono: "", zoomId: "", zoomContrasena: "", horarioNoLlamar: "", grupoWhatsapp: "", fechaNacimiento: "" },
     ascendentes: [],
   };
 }
@@ -719,7 +719,7 @@ function hydrateState(parsed) {
   merged.arbolGenealogico = {
     yo: Object.assign({ atomyId: "", contrasena: "" }, arbolGuardado.yo || {}),
     patrocinador: Object.assign(
-      { nombre: "", atomyId: "", rango: "", pais: "", telefono: "", zoomId: "", zoomContrasena: "", horarioNoLlamar: "", grupoWhatsapp: "" },
+      { nombre: "", atomyId: "", rango: "", pais: "", telefono: "", zoomId: "", zoomContrasena: "", horarioNoLlamar: "", grupoWhatsapp: "", fechaNacimiento: "" },
       arbolGuardado.patrocinador || {}
     ),
     ascendentes: Array.isArray(arbolGuardado.ascendentes)
