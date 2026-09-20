@@ -190,6 +190,20 @@ const ESCENARIO_VIDEOS = [
   { titulo: "Clear Goals, Clear Life", url: "https://ch.atomy.com/eu/878?categoryId=84&listType=100&page=1&tags=&orderType=FILMING" },
 ];
 
+const ENLACES_UTILES = [
+  { nombre: "Atomy app for Android", url: "https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es" },
+  { nombre: "Atomy app for iPhone", url: "https://apps.apple.com/es/app/official-atomy-shop/id1637879180" },
+  { nombre: "Klarna", url: "https://www.klarna.com/es/" },
+  { nombre: "PayPal", url: "https://www.paypal.com/es/home" },
+  { nombre: "Official Atomy site", url: "https://eu.atomy.com/main" },
+  { nombre: "CH Atomy", url: "https://ch.atomy.com/eu" },
+  { nombre: "YouTube Atomy Europe", url: "https://www.youtube.com/@atomyeuropeofficial" },
+  { nombre: "YouTube Atomy Mexico", url: "https://www.youtube.com/@AtomyM%C3%A9xicoOficial" },
+  { nombre: "YouTube Atomy Colombia", url: "https://www.youtube.com/@AtomyColombiaOficial" },
+  { nombre: "Canva", url: "https://www.canva.com/" },
+  { nombre: "CapCut", url: "https://www.capcut.com/my-edit?from_page=landing_page&start_tab=video" },
+];
+
 const RECURSOS_AUDIOVISUALES = [
   {
     id: "inicio",
