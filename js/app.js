@@ -226,6 +226,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     const hayCumpleanosHoy = isAuth && cumpleanosHoy(state.clientes).length > 0;
+    const grupoWhatsapp = state.arbolGenealogico && state.arbolGenealogico.patrocinador && state.arbolGenealogico.patrocinador.grupoWhatsapp;
     document.getElementById("fab-slot").innerHTML = isAuth
       ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Scrie-i sponsorului tău">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
@@ -233,6 +234,9 @@ const App = {
           : "") +
         (hayCumpleanosHoy
           ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Zile de naștere azi">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
+          : "") +
+        (grupoWhatsapp && grupoWhatsapp.trim()
+          ? '<button class="fab-whatsapp-group" data-action="abrir-whatsapp-grupo-fab" title="Grup de WhatsApp de suport">' + Icon("users", { size: 20, color: "#fff" }) + "</button>"
           : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
@@ -549,6 +553,14 @@ const Actions = {
       telefono: "",
     };
     App.render();
+  },
+
+  // Grupul de WhatsApp de suport al sponsorului — diferit de chatul direct:
+  // îi ajută pe partenerii noi să ceară ajutor acolo atunci când a trecut deja
+  // ora lor de control stabilită și sponsorul nu e disponibil pe moment.
+  "abrir-whatsapp-grupo-fab": function () {
+    const grupo = App.state.arbolGenealogico && App.state.arbolGenealogico.patrocinador && App.state.arbolGenealogico.patrocinador.grupoWhatsapp;
+    if (grupo && grupo.trim()) window.open(grupo.trim(), "_blank", "noreferrer");
   },
 
   "cancelar-patrocinador-fab": function () {

@@ -360,6 +360,8 @@ function renderHome(state) {
 
     escenarioVidaHomeCardHTML(state) +
 
+    enlacesUtilesHomeCardHTML() +
+
     proximosHtml +
 
     mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
@@ -373,6 +375,24 @@ function renderHome(state) {
     (cumbreLograda
       ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' Ai ajuns pe Culme! Vezi realizarea</button>'
       : "")
+  );
+}
+
+function enlacesUtilesHomeCardHTML() {
+  return (
+    '<div class="card">' +
+    '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Înainte de toate, asta</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Ai mereu la îndemână aplicațiile și paginile de care ai nevoie în activitatea ta zilnică cu Atomy.</p>' +
+    '<div class="view-stack" style="margin-top:6px;gap:0">' +
+    ENLACES_UTILES.map(function (e) {
+      return (
+        '<a class="row between" href="' + e.url + '" target="_blank" rel="noreferrer" style="padding:9px 2px;border-top:1px solid var(--border-soft)">' +
+        '<span class="small" style="font-weight:600">' + escapeHtml(e.nombre) + "</span>" +
+        Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) +
+        "</a>"
+      );
+    }).join("") +
+    "</div></div>"
   );
 }
 
@@ -2230,6 +2250,8 @@ function renderArbolGenealogico(state, ui) {
     '<div class="field" style="flex:1"><label>Parolă de Zoom</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomContrasena" value="' + escapeHtml(p.zoomContrasena) + '" placeholder="Opțional"></div>' +
     "</div>" +
     '<div class="field"><label>Orele în care nu trebuie sunat</label><input type="text" data-field="arbolGenealogico.patrocinador.horarioNoLlamar" value="' + escapeHtml(p.horarioNoLlamar) + '" placeholder="Ex. După ora 20:00, și nici duminica"></div>' +
+    '<div class="field"><label>Grup de WhatsApp de suport</label><input type="text" data-field="arbolGenealogico.patrocinador.grupoWhatsapp" value="' + escapeHtml(p.grupoWhatsapp || "") + '" placeholder="Lipește aici linkul de invitație la grup"></div>' +
+    '<p class="muted small" style="line-height:1.4;margin-top:-4px">Dacă îl adaugi, va apărea un buton flotant ca noii tăi parteneri să poată scrie acolo când au întrebări în afara orelor tale sau a orei de control stabilite cu tine.</p>' +
     "</div></div>" +
 
     '<div class="card">' +

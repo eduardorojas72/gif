@@ -633,6 +633,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .fab-birthday { right: max(24px, calc((100vw - 560px) / 2 - 40px)); }
 }
 
+/* buton flotant al grupului de WhatsApp de suport al sponsorului — violet, deliberat
+   diferit de butonul verde de chat direct (.fab-whatsapp), ca să se observe
+   că duc spre destinații diferite. */
+.fab-whatsapp-group {
+  position: fixed; bottom: 200px; right: max(16px, calc((100vw - var(--max-w)) / 2 + 16px));
+  width: 46px; height: 46px; border-radius: 999px; background: linear-gradient(160deg, #B79AFB, #7C5CFC);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 10px 24px -6px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.15); z-index: 25;
+}
+@media (min-width: 900px) {
+  .fab-whatsapp-group { right: max(24px, calc((100vw - 560px) / 2 - 40px)); }
+}
+
 /* modal de "logro conseguido" — texto dorado sobre fondo azul, para compartir */
 .logro-modal {
   background: linear-gradient(165deg, #0A1B33, #163A62 55%, #0A1B33);
