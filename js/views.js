@@ -25,6 +25,15 @@ const MENU_ITEMS = [
   { id: "ajustes", label: "Settings", icon: "settings" },
 ];
 
+// Orden del menu lateral de escritorio, en 2 columnas: la primera agrupa el
+// recorrido del negocio (entrenamiento y medios), la segunda el resto
+// (perfil, contactos/equipo y ajustes). El menu movil (menu sheet) usa
+// MENU_ITEMS en su orden original, sin verse afectado por esto.
+const SIDEBAR_COLUMNAS = [
+  ["home", "pasos", "plan6", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
+  ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
+];
+
 const TOUR_PASOS = [
   { icon: "compass", titulo: "Welcome to Cumbre 90!", texto: "This quick tour shows you what you can do in each section of the app. It takes less than 2 minutes and you can skip it anytime." },
   { icon: "home", titulo: "Home", texto: "Here you'll see your overall progress, your streak of active days, and quick access to what matters most." },
@@ -129,7 +138,9 @@ function renderHeader(state, ui) {
 }
 
 function renderSidebar(ui) {
-  const items = MENU_ITEMS.map(function (it) {
+  const ordenIds = SIDEBAR_COLUMNAS[0].concat(SIDEBAR_COLUMNAS[1]);
+  const items = ordenIds.map(function (id) {
+    const it = MENU_ITEMS.find(function (m) { return m.id === id; });
     const active = ui.view === it.id;
     return (
       '<button class="sidebar-item' + (active ? " active" : "") + '" data-action="goto" data-arg="' + it.id + '">' +
@@ -140,8 +151,7 @@ function renderSidebar(ui) {
   return (
     '<div class="sidebar">' +
     '<div class="sidebar-logo">' + mountainMarkHTML(26, true) + "</div>" +
-    items + salir +
-    '<div class="sidebar-spacer"></div>' +
+    '<div class="sidebar-grid">' + items + salir + "</div>" +
     "</div>"
   );
 }
