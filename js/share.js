@@ -174,7 +174,7 @@ function downloadDiaCard(state, diaId) {
     '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Drumul spre succes cu Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "Avansez în Planul meu de 6 Zile cu Atomy! 🚀");
+  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "Avansez în Planul meu de 9 Zile cu Atomy! 🚀");
 }
 
 function wrapText(str, max) {

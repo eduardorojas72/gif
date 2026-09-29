@@ -10,7 +10,7 @@
 const LICENCIA_TITULAR = "";
 
 /* ---------------------------------------------------------------
-   CONȚINUT — Cei 8 Pași, Planul de 6 Zile, Planul de 90 de Zile
+   CONȚINUT — Cei 8 Pași, Planul de 9 Zile, Planul de 90 de Zile
 --------------------------------------------------------------- */
 
 const OCHO_PASOS = [
@@ -579,6 +579,18 @@ const DIAS = [
           "Video ajutător — Cum se face o achiziție: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
+      {
+        h: "Provocarea 7×7 — Ziua 1: Definește-ți obiectivul și pregătește-te",
+        body: [
+          "Din ziua de astăzi începi și Provocarea 7×7, care te va acompania zi de zi până în Ziua 9. „Dacă nu am o țintă, nu am o direcție.”",
+          "1. Definește-ți obiectivul pentru următoarele 7 zile (câte conversații, prezentări sau înregistrări vrei să obții).",
+          "2. Fă o listă cu 30 de persoane.",
+          "3. Clasifică-ți contactele: potențiali clienți, persoane interesate de wellness, persoane interesate să genereze venituri.",
+          "4. Alege-ți primele 10 contacte cu care să începi mâine.",
+          "Încă nu vinde nimic: mai întâi construim lista.",
+          "Misiunea zilei: 30 de nume înainte de a te culca.",
+        ],
+      },
     ],
     campos: [
       { key: "rec1", label: "Recomandarea 1 — nume și produs" },
@@ -592,11 +604,18 @@ const DIAS = [
       "Mi-am făcut lista cu 5 prieteni/rude și produsele care i-ar putea ajuta.",
       "Am publicat postarea/story-ul meu de expectativă pe rețelele sociale.",
       "Am văzut videoul despre Produs/Masstige pe CH.ATOMY Europa.",
+      "Provocarea 7×7 (Ziua 1): mi-am definit obiectivul pentru următoarele 7 zile.",
+      "Provocarea 7×7 (Ziua 1): mi-am făcut lista cu 30 de persoane și mi-am clasificat contactele.",
+      "Provocarea 7×7 (Ziua 1): mi-am ales primele 10 contacte — misiune: 30 de nume înainte de culcare.",
     ],
     quiz: {
-      pregunta: "Câte recomandări de wellness identifici astăzi?",
-      opciones: ["3", "5", "10"],
-      correcta: 1,
+      pregunta: "De ce este important să-ți faci prima comandă chiar acum?",
+      opciones: [
+        "Pentru a cunoaște calitatea produselor și a putea vorbi cu propriile cuvinte despre ele",
+        "Pentru a îndeplini o cotă obligatorie a companiei",
+        "Pentru că, dacă nu cumpăr, îmi pierd contul",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -644,6 +663,16 @@ const DIAS = [
           "Video ajutător — Cum te înregistrezi ca membru global: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
+      {
+        h: "Provocarea 7×7 — Ziua 2: Deschide conversații",
+        body: [
+          "„10 conversații reale.” Contactează personal 10 persoane din lista ta. Nu trimite un catalog de la început: mai întâi conversează.",
+          "Exemplu de script: „Salut, particip la o provocare de 7 zile pentru a-mi dezvolta proiectul de wellness și venituri. Caut câteva persoane cărora să le arăt cum funcționează. Ți-ar plăcea să-ți povestesc?”",
+          "Dacă răspunde afirmativ: „Perfect 😊. Îți fac o explicație foarte scurtă și tu îmi spui dacă te-ar putea interesa.”",
+          "Regula de aur: întreabă → ascultă → identifică nevoia → prezintă.",
+          "Misiunea zilei: 10 conversații.",
+        ],
+      },
     ],
     campos: [
       { key: "hist1", label: "1. Situația ta anterioară (unde erai?)" },
@@ -656,6 +685,8 @@ const DIAS = [
       "Mi-am clasificat primele 30 de nume în Lista de 250.",
       "Am făcut primele mele 5 invitații sincere.",
       "Am văzut cel puțin un video legat de Compania Atomy.",
+      "Provocarea 7×7 (Ziua 2): am contactat personal 10 persoane din lista mea.",
+      "Provocarea 7×7 (Ziua 2): am folosit scriptul de conversație în loc să trimit direct un catalog.",
     ],
     quiz: {
       pregunta: "Câți pași are povestea ta personală (storytelling)?",
@@ -681,6 +712,15 @@ const DIAS = [
           "💡 Sfat: un proiect constant de 3 ore pe săptămână dă de 100 de ori mai mult rezultat decât un maraton de o singură zi. Fă-o în ritmul tău.",
         ],
       },
+      {
+        h: "Provocarea 7×7 — Ziua 3: Recomandă",
+        body: [
+          "„Nu vând produse. Descopăr nevoi.” Astăzi conversezi pentru a descoperi: ce produs folosesc în prezent?, ce nevoie vor să rezolve?, ce produse cumpără în mod regulat?, sunt interesați să cunoască o alternativă de cumpărare?",
+          "După ce ai ascultat, urmează secvența: Recomandă → Explică → Invită.",
+          "Exemplu: „Spune-mi, ce produse folosești de obicei pentru îngrijirea personală sau wellness?” După ce ai ascultat: „Chiar am o alternativă care te-ar putea interesa. Vrei să-ți arăt cum funcționează?”",
+          "Misiunea zilei: prezintă produse persoanelor cu o nevoie reală.",
+        ],
+      },
     ],
     campos: [
       { key: "meta30", label: "Obiectiv la 30 de zile" },
@@ -692,6 +732,8 @@ const DIAS = [
       "Mi-am blocat orele de lucru săptămânale.",
       "Mi-am coordonat apelul săptămânal cu mentorul.",
       "Am văzut 1 video al Companiei pe CH.ATOMY Europa.",
+      "Provocarea 7×7 (Ziua 3): am conversat pentru a descoperi nevoi reale, fără să vând la întâmplare.",
+      "Provocarea 7×7 (Ziua 3): am prezentat produse persoanelor la care am detectat o nevoie reală.",
     ],
     quiz: {
       pregunta: "Ce programezi astăzi cu mentorul tău?",
@@ -704,7 +746,7 @@ const DIAS = [
     etapa: "Impactul",
     icono: "trending-up",
     titulo: "Leadership Etic și Duplicare",
-    objetivo: "Închide-ți prima săptămână cu baze solide și pregătit să duplici.",
+    objetivo: "Pune baze etice solide în timp ce îți prezinți oportunitatea unor persoane noi.",
     contenido: [
       {
         h: "Angajament etic",
@@ -721,14 +763,21 @@ const DIAS = [
       {
         h: "Învață să duplici",
         body: [
-          "Acest proces de 6 zile să nu-l ții doar pentru tine: când îți înregistrezi primul partener, acompaniază-l să parcurgă exact același start.",
+          "Acest proces de start să nu-l ții doar pentru tine: când îți înregistrezi primul partener, acompaniază-l să parcurgă exact același drum.",
         ],
       },
       {
-        h: "Videoul tău de final",
+        h: "Videoul tău de astăzi",
         body: [
           "Intră pe ch.atomy.com/eu (CH.ATOMY Europa) → meniul Companie, și caută un video despre Cultura Atomy sau Filosofia Fondatorului Han-Gill Park: onestitate și servicii pentru client.",
-          "Cu asta îți completezi prima săptămână de instruire! Nu urmărim să vindem cu disperare, ci să educăm un consumator satisfăcut și să-i acompaniem pe alții să-și atingă obiectivele cu onestitate.",
+        ],
+      },
+      {
+        h: "Provocarea 7×7 — Ziua 4: Prezintă oportunitatea",
+        body: [
+          "„Nu toți vor să cumpere. Unii vor să construiască.” Caută persoane care vor: să genereze venituri adiționale, să cumpere inteligent, să recomande produse sau să construiască o afacere.",
+          "Mini-prezentare în 4 întrebări: Ce este Atomy? O companie internațională de vânzare directă. Ce găsim? Produse din categorii diferite. Cum funcționează? Consumă → Recomandă → Dezvoltă clienți și echipă. Ce căutăm? Să construim o afacere printr-un sistem pe care să-l putem repeta și preda altora.",
+          "Misiunea zilei: prezintă oportunitatea la minimum 3 persoane.",
         ],
       },
     ],
@@ -736,12 +785,111 @@ const DIAS = [
     checklist: [
       "Mi-am asumat angajamentul etic: zero presiune, transparență totală, coerență consumând ceea ce recomand.",
       "Am marcat în agenda mea o zi pe lună pentru a-mi revizui echipa.",
-      "Am la îndemână acest plan de 6 zile pentru a-mi ghida primul partener.",
+      "Am la îndemână acest plan de 9 zile pentru a-mi ghida primul partener.",
       "Am văzut un video despre Cultura Atomy sau despre Filosofia Fondatorului.",
+      "Provocarea 7×7 (Ziua 4): am prezentat oportunitatea de afaceri la minimum 3 persoane.",
     ],
     quiz: {
       pregunta: "Care este unul dintre cei 3 piloni ai angajamentului etic?",
       opciones: ["Să vinzi rapid fără să explici", "Zero presiune și transparență totală", "Să presezi consumatorul"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 7,
+    etapa: "Urmărirea",
+    icono: "phone-call",
+    titulo: "Provocarea 7×7 — Averea Este în Urmărire",
+    objetivo: "Redeschide fiecare conversație rămasă deschisă înainte să se răcească.",
+    contenido: [
+      {
+        h: "Provocarea 7×7 — Ziua 5: Urmărire",
+        body: [
+          "Astăzi recontactezi: persoanele care au întrebat, persoanele care au văzut prezentarea, persoanele care au spus „lasă-mă să mă gândesc”, persoanele care au arătat interes.",
+          "Exemplu — reluarea contactului: „Salut 😊. Voiam să știu ce părere ai despre ce am discutat zilele trecute. A fost ceva care ți-a atras atenția în mod special?”",
+          "Exemplu — dacă spune „mă mai gândesc”: „Sigur, nu te grăbi. La ce parte vrei să te gândești: la produs, la investiție sau la cum funcționează afacerea?”",
+          "Exemplu — dacă spune „nu am bani”: „Te înțeleg. Nu vreau să faci ceva ce nu-ți permit posibilitățile. Putem începe discutând despre model și despre cum să valorifici achizițiile pe care le faci deja de obicei.”",
+          "Un mesaj trimis la timp poate deschide o mare oportunitate.",
+          "Misiunea zilei: fă urmărire pentru toate conversațiile rămase deschise.",
+        ],
+      },
+    ],
+    campos: [{ key: "seguimientos", label: "Persoanele cărora le-am făcut urmărire astăzi" }],
+    checklist: [
+      "Provocarea 7×7 (Ziua 5): am făcut urmărire pentru toate conversațiile mele rămase deschise.",
+      "Provocarea 7×7 (Ziua 5): am reluat contactul cu cei care au spus „lasă-mă să mă gândesc”.",
+      "Provocarea 7×7 (Ziua 5): am reluat contactul cu cei care au arătat interes sau au văzut prezentarea mea.",
+    ],
+    quiz: {
+      pregunta: "Potrivit Provocării 7×7, unde se află averea?",
+      opciones: ["În a vorbi doar cu oameni noi", "În urmărire", "În a trimite pur și simplu un catalog"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 8,
+    etapa: "Duplicarea",
+    icono: "repeat",
+    titulo: "Provocarea 7×7 — Nu o Face Singur",
+    objetivo: "Începe să duplici: du o altă persoană cu tine pe același drum.",
+    contenido: [
+      {
+        h: "Provocarea 7×7 — Ziua 6: Duplică",
+        body: [
+          "„Nu o face singur.” Ciclul duplicării: Eu o fac → Te învăț → Tu o faci → Tu îi înveți pe alții.",
+          "Invită o persoană interesată să realizeze împreună cu tine: lista ei de contacte, primele ei conversații, prima ei prezentare, prima ei urmărire.",
+          "Fiecare acțiune contează. Provocarea nu se termină: începe ciclul! Împreună ajungem mai departe.",
+          "Misiunea zilei: ajută o persoană să înceapă procesul.",
+        ],
+      },
+    ],
+    campos: [{ key: "duplicado", label: "Persoana pe care am ajutat-o să înceapă procesul" }],
+    checklist: [
+      "Provocarea 7×7 (Ziua 6): am invitat o persoană interesată să parcurgă procesul împreună cu mine.",
+      "Provocarea 7×7 (Ziua 6): am ajutat-o pe acea persoană să-și înceapă propria listă, conversații, prezentare sau urmărire.",
+    ],
+    quiz: {
+      pregunta: "Care este ciclul duplicării în Provocarea 7×7?",
+      opciones: [
+        "Eu o fac → Te învăț → Tu o faci → Tu îi înveți pe alții",
+        "Eu vând → Tu cumperi → Final",
+        "Eu decid → Tu te supui",
+      ],
+      correcta: 0,
+    },
+  },
+  {
+    id: 9,
+    etapa: "Finalul",
+    icono: "check",
+    titulo: "Provocarea 7×7 — Evaluează, Încheie și Repetă",
+    objetivo: "Măsoară-ți rezultatele și încheie-ți Planul de Start de 9 zile.",
+    contenido: [
+      {
+        h: "Provocarea 7×7 — Ziua 7: Evaluează, încheie și repetă",
+        body: [
+          "„Rezultatele se măsoară.” Astăzi revizuim: câte persoane am contactat?, câte au răspuns?, câte prezentări am făcut?, câte vânzări am obținut?, câte persoane sunt interesate de afacere?, pe cine trebuie să continui să acompaniez?",
+          "Provocarea nu se termină aici: începe ciclul! Contactează → Prezintă → Recomandă → Urmărește → Încheie → Duplică → Repetă.",
+          "Ce s-ar întâmpla cu afacerea ta dacă, în următoarele 90 de zile, ai repeta acest proces din nou și din nou? Nu trebuie să-l faci perfect. Trebuie să-l faci.",
+        ],
+      },
+      {
+        h: "Videoul tău de final",
+        body: [
+          "Intră pe ch.atomy.com/eu (CH.ATOMY Europa) → meniul Companie, și caută un video despre Cultura Atomy sau Filosofia Fondatorului Han-Gill Park: onestitate și servicii pentru client.",
+          "Cu asta îți completezi Planul de Start de 9 zile! Nu urmărim să vindem cu disperare, ci să educăm un consumator satisfăcut și să-i acompaniem pe alții să-și atingă obiectivele cu onestitate.",
+        ],
+      },
+    ],
+    campos: [{ key: "resultados", label: "Rezumat: contacte, răspunsuri, prezentări, vânzări și persoane interesate" }],
+    checklist: [
+      "Provocarea 7×7 (Ziua 7): am numărat câte persoane am contactat, câte au răspuns și câte prezentări am făcut.",
+      "Provocarea 7×7 (Ziua 7): am identificat pe cine trebuie să continui să acompaniez.",
+      "Am înțeles că ciclul Contactează → Prezintă → Recomandă → Urmărește → Încheie → Duplică → Repetă nu se termină, ci se repetă.",
+    ],
+    quiz: {
+      pregunta: "La finalul Provocării 7×7, ce este de făcut?",
+      opciones: ["Să te oprești, s-a terminat", "Să repeți ciclul", "Să aștepți ca alții să te contacteze pe tine"],
       correcta: 1,
     },
   },
@@ -776,7 +924,7 @@ const SEMANAS = [
       "Înregistrează sau scrie 1 mărturie personală despre produs.",
       "Înregistrează 5 parteneri noi (cer ajutorul sponsorului meu pentru acest pas).",
       "Înregistrează primii parteneri pe liniile Stânga și Dreapta.",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă o urmărire riguroasă în primele 48 de ore pentru toate contactele prezentate.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
@@ -788,7 +936,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -799,7 +947,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -810,7 +958,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -822,7 +970,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -834,7 +982,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -845,7 +993,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -856,7 +1004,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -868,7 +1016,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -880,7 +1028,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -891,7 +1039,7 @@ const SEMANAS = [
       "Realizează minimum 10 apeluri sau mesaje de invitație, aplicând regula minții proprii.",
       "Înregistrează 10 parteneri noi.",
       "Ajută la plasarea acestor parteneri pe liniile Stânga și Dreapta (cer ajutorul sponsorului meu pentru acest pas).",
-      "Ghidează-i pe partenerii noi să completeze modulul celor 6 Zile de Start.",
+      "Ghidează-i pe partenerii noi să completeze modulul celor 9 Zile de Start.",
       "Fă-ți reuniunea de focalizare cu partenerii tăi.",
     ],
   },
@@ -914,7 +1062,7 @@ const AGENDA_TIPOS = [
   { id: "registro", label: "Înregistrare partener nou", icon: "user-badge" },
   { id: "formacion", label: "Formare", icon: "book-open" },
   { id: "video-rrss", label: "Videoclipuri de produs (RRSS)", icon: "video" },
-  { id: "plan6", label: "Întâlnirea Planului de 6 Zile", icon: "footprints" },
+  { id: "plan6", label: "Întâlnirea Planului de 9 Zile", icon: "footprints" },
 ];
 
 const BUCKET_LIST_EJEMPLOS = [

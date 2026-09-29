@@ -7,7 +7,7 @@ const MENU_ITEMS = [
   { id: "home", label: "Acasă", icon: "home" },
   { id: "perfil", label: "Profilul meu", icon: "user-badge" },
   { id: "pasos", label: "Cei 8 Pași", icon: "footprints" },
-  { id: "plan6", label: "Plan 6 Zile", icon: "trail-map" },
+  { id: "plan6", label: "Plan 9 Zile", icon: "trail-map" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "clientes", label: "Clienți", icon: "package" },
   { id: "agenda", label: "Agenda Săptămânală", icon: "calendar" },
@@ -39,7 +39,7 @@ const TOUR_PASOS = [
   { icon: "home", titulo: "Acasă", texto: "Aici îți vezi progresul general, seria ta de zile active și acces rapid la lucrurile cele mai importante." },
   { icon: "user-badge", titulo: "Profilul meu", texto: "Datele tale, rangul tău actual în Atomy și fotografia ta." },
   { icon: "footprints", titulo: "Cei 8 Pași", texto: "Baza afacerii explicată pas cu pas, cu activități practice pentru a aplica fiecare pas." },
-  { icon: "trail-map", titulo: "Planul de 6 Zile", texto: "Instruirea ta inițială, zi de zi, cu misiuni zilnice — inclusiv cea de a descărca aplicația oficială Atomy pe telefon." },
+  { icon: "trail-map", titulo: "Planul de 9 Zile", texto: "Instruirea ta inițială, zi de zi, cu misiuni zilnice — inclusiv cea de a descărca aplicația oficială Atomy pe telefon." },
   { icon: "users", titulo: "Lista de 250", texto: "Notează fiecare contact (nume, telefon, stadiu) și urmărește-ți Lista de 250." },
   { icon: "package", titulo: "Clienți", texto: "Înregistrează-i pe cei care au cumpărat deja: datele lor, istoricul fiecărei comenzi cu valoarea și PV-ul ei, și dă-le urmărire cu recordatoare de la 1 săptămână până la 11 luni." },
   { icon: "calendar", titulo: "Agenda Săptămânală", texto: "Programează-ți apelurile, întâlnirile și Zoom-urile, cu recordatoare ca să nu le uiți." },
@@ -361,7 +361,7 @@ function renderHome(state) {
     '<div class="card">' +
     '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
     '<div style="font-size:17px;font-weight:700;margin-top:2px">Bine ai venit în Cumbre 90</div>' +
-    '<div class="muted small" style="margin-top:4px">6 Etape · 6 Tabere · Acces nelimitat</div>' +
+    '<div class="muted small" style="margin-top:4px">9 Etape · 6 Tabere · Acces nelimitat</div>' +
     '<div class="chip-row" style="margin-top:16px">' + chips + "</div>" +
     '<div class="row between" style="margin-top:16px"><span class="muted small">' + (etapasHechas + campamentosHechos) + "/" + totalPasos + ' etape finalizate</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
     '<div class="progressbar" style="margin-top:8px"><div style="width:' + pctGeneral + '%"></div></div>' +
@@ -376,11 +376,11 @@ function renderHome(state) {
 
     mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
 
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Cei 8 Pași ai Succesului</div><div class="nc-desc">Referința ta permanentă</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">Deviza Atomy</div><div class="nc-desc">Filosofie și cod etic</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 de Contacte</div><div class="nc-desc">' + (state.contactos || []).length + ' înregistrate · programează urmăriri</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Start — 6 Zile</div><div class="nc-desc">Parcurge-ți harta zi de zi</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premiile sponsorului tău</div><div class="nc-desc">Vezi ce poți câștiga</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Cei 8 Pași ai Succesului</div><div class="nc-desc">Referința ta permanentă</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">Deviza Atomy</div><div class="nc-desc">Filosofie și cod etic</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 de Contacte</div><div class="nc-desc">' + (state.contactos || []).length + ' înregistrate · programează urmăriri</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Start — 9 Zile</div><div class="nc-desc">Parcurge-ți harta zi de zi</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premiile sponsorului tău</div><div class="nc-desc">Vezi ce poți câștiga</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
 
     (cumbreLograda
       ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' Ai ajuns pe Culme! Vezi realizarea</button>'
@@ -491,7 +491,7 @@ function bucketListSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-bucket-list">' +
     '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Lista de 100 — visurile mele</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Notează până la 100 de lucruri pe care ai vrea să le realizezi, să le ai sau să le trăiești — cu data și „de ce”-ul tău. Nu trebuie completată în ordine, nici dintr-o singură dată.</p>' +
     '<div class="muted small" style="margin-top:4px">' + escritas + " scrise · " + cumplidas + " îndeplinite</div>" +
@@ -537,7 +537,7 @@ function granPlanSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Marele Plan 3 — proiecție pe 3 ani</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + total + " repere salvate</div>" +
     (open
@@ -559,7 +559,7 @@ function diarioFuturoSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Jurnalul eu-lui meu viitor</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     (open
       ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
@@ -956,10 +956,10 @@ function lemaFocoHTML(state) {
   );
 }
 
-/* Contenido de SMART/OKR — vive como fuente única en el pilar 2 de El Lema
-   de Atomy, pero se reutiliza (con su propio botón de Compartir) en Etapa 5
-   del Plan 6 Días y en el Paso 1 de Los 8 Pasos, donde el socio realmente
-   define sus objetivos. */
+/* Conținutul SMART/OKR — trăiește ca sursă unică în pilonul 2 al Devizei
+   Atomy, dar se reutilizează (cu propriul buton de Partajare) în Etapa 5
+   a Planului de 9 Zile și în Pasul 1 al Celor 8 Pași, unde partenerul își
+   definește cu adevărat obiectivele. */
 function smartOkrShareText() {
   const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
   return "Cum să-ți creezi obiective clare:\n\n" + marcos.map(function (m) {
@@ -1098,12 +1098,14 @@ function renderLema(state, ui) {
     lemaFocoHTML(state);
 }
 
-/* ---------------- Plan 6 días — mapa ---------------- */
+/* ---------------- Planul de 9 zile — harta ---------------- */
 
-const TRAIL_POSITIONS = [
-  { x: 22, y: 92 }, { x: 74, y: 77 }, { x: 22, y: 62 },
-  { x: 74, y: 47 }, { x: 22, y: 30 }, { x: 74, y: 13 },
-];
+// Zigzag ascendent (22%/74% pe x, alternat) repartizat uniform
+// între y=92 (bază) și y=13 (vârf), pentru orice număr de zile.
+const TRAIL_POSITIONS = DIAS.map(function (_, i) {
+  const t = DIAS.length > 1 ? i / (DIAS.length - 1) : 0;
+  return { x: i % 2 === 0 ? 22 : 74, y: Math.round((92 - t * (92 - 13)) * 10) / 10 };
+});
 
 function renderPathMap(state) {
   const pathD = "M" + TRAIL_POSITIONS.map(function (p) { return p.x + "," + p.y; }).join(" L");
@@ -1133,8 +1135,109 @@ function renderPathMap(state) {
     '<path d="' + pathD + '" fill="none" stroke="#F0C468" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="0.5 3" stroke-linecap="round"/></svg>' +
     nodes;
 
-  return sectionHeaderHTML("Plan de Start — 6 Zile", "Urcă pe hartă și cucerește fiecare etapă.", "trail-map") +
+  return sectionHeaderHTML("Plan de Start — 9 Zile", "Urcă pe hartă și cucerește fiecare etapă.", "trail-map") +
     heroMountainHTML(overlay);
+}
+
+/* ---------------- Provocarea 7x7 — tabelul de 10 contacte și evaluarea săptămânală ----------------
+   Componente reutilizabile: tabelul „Primele mele 10 contacte” și panoul de
+   evaluare de 7 zile se folosesc atât în Planul de 9 Zile (o singură instanță
+   partajată între zilele 3 și 9) cât și în fiecare dintre cele 12 săptămâni ale
+   Planului de 90 de Zile (o instanță proprie pe săptămână) — astfel partenerul
+   continuă să exerseze acest obicei săptămână de săptămână, pe termen indefinit. */
+
+function clicaAquiBadgeHTML(open, color) {
+  const cls = color === "accent" ? "blue" : "gold";
+  return (
+    '<span class="badge ' + cls + '" style="flex-shrink:0">Apasă aici' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' +
+    Icon("chevron-right", { size: 11, color: color === "accent" ? "var(--accent)" : "#1B1338" }) +
+    "</span></span>"
+  );
+}
+
+function contactos10FilaHTML(pathPrefix, i, fila) {
+  const inputStyle = "width:100%;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 8px;font-size:12.5px;outline:none";
+  return (
+    "<tr>" +
+    '<td style="padding:4px 6px;font-size:11px;color:var(--text-soft);text-align:center">' + (i + 1) + "</td>" +
+    '<td style="padding:4px"><input type="text" placeholder="Nume" value="' + escapeHtml(fila.nombre) + '" data-field="' + pathPrefix + "." + i + '.nombre" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" inputmode="tel" placeholder="Telefon" value="' + escapeHtml(fila.telefono) + '" data-field="' + pathPrefix + "." + i + '.telefono" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" placeholder="Observații / urmărire" value="' + escapeHtml(fila.observaciones) + '" data-field="' + pathPrefix + "." + i + '.observaciones" style="' + inputStyle + '"></td>' +
+    "</tr>"
+  );
+}
+
+function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
+  const llenos = rows.filter(function (r) { return (r.nombre || "").trim(); }).length;
+  const filas = rows.map(function (r, i) { return contactos10FilaHTML(pathPrefix, i, r); }).join("");
+  const thStyle = "text-align:left;font-size:11px;color:var(--text-soft);padding:4px;font-weight:600";
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
+    '<div class="row gap-2">' + Icon("phone-call", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Primele mele 10 contacte</span></div>' +
+    clicaAquiBadgeHTML(open, "gold") +
+    "</button>" +
+    '<div class="muted small" style="margin-top:4px">' + llenos + " din 10 cu nume înregistrat</div>" +
+    (open
+      ? '<div style="overflow-x:auto;margin-top:10px">' +
+        '<table style="border-collapse:collapse;width:100%">' +
+        "<thead><tr><th></th><th style=\"" + thStyle + "\">Nume</th><th style=\"" + thStyle + "\">Telefon</th><th style=\"" + thStyle + "\">Observații</th></tr></thead>" +
+        "<tbody>" + filas + "</tbody>" +
+        "</table></div>"
+      : "") +
+    "</div>"
+  );
+}
+
+function evaluacion7x7ResumenTexto(ev, periodoLabel) {
+  return (
+    "📊 " + periodoLabel + " — Provocarea 7×7 (Cumbre 90):\n" +
+    "• Persoane contactate: " + (ev.contactados || "0") + "\n" +
+    "• Au răspuns: " + (ev.respondieron || "0") + "\n" +
+    "• Prezentări făcute: " + (ev.presentaciones || "0") + "\n" +
+    "• Vânzări obținute: " + (ev.compras || "0") + "\n" +
+    "• Persoane interesate de afacere: " + (ev.interesados || "0") + "\n" +
+    "• Pe cine trebuie să continui să acompaniez: " + (ev.seguimiento || "—") +
+    "\n\nMă ajuți să revizuiesc asta?"
+  );
+}
+
+function evaluacion7x7PanelHTML(state, pathPrefix, ev, open, toggleAction, toggleArg, periodoLabel) {
+  const campo = function (key, label, placeholder) {
+    return (
+      '<div class="field" style="flex:1;min-width:110px"><label>' + label + "</label>" +
+      '<input type="text" inputmode="numeric" placeholder="' + placeholder + '" value="' + escapeHtml(ev[key]) + '" data-field="' + pathPrefix + "." + key + '"></div>'
+    );
+  };
+  const compartir = state.whatsapp && state.whatsapp.trim()
+    ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, evaluacion7x7ResumenTexto(ev, periodoLabel)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Împarte cu sponsorul meu</a>"
+    : '<p class="muted small" style="margin-top:10px">Adaugă WhatsApp-ul sponsorului tău în Setări pentru a putea împărți asta.</p>';
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
+    '<div class="row gap-2">' + Icon("target", { size: 15, color: "var(--accent)" }) + '<span style="font-weight:700;font-size:14px">Rezultatele mele din această săptămână</span></div>' +
+    clicaAquiBadgeHTML(open, "accent") +
+    "</button>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Înregistrează asta la fiecare 7 zile și împarte-o cu sponsorul tău — aceasta este munca de mereu pentru a-ți crește afacerea.</p>' +
+    (open
+      ? '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+        campo("contactados", "Persoane contactate", "0") +
+        campo("respondieron", "Au răspuns", "0") +
+        "</div>" +
+        '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
+        campo("presentaciones", "Prezentări făcute", "0") +
+        campo("compras", "Vânzări obținute", "0") +
+        "</div>" +
+        '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
+        campo("interesados", "Persoane interesate de afacere", "0") +
+        "</div>" +
+        '<div class="field" style="margin-top:8px"><label>Pe cine trebuie să continui să acompaniez?</label>' +
+        '<textarea rows="2" data-field="' + pathPrefix + '.seguimiento">' + escapeHtml(ev.seguimiento) + "</textarea></div>" +
+        compartir
+      : "") +
+    "</div>"
+  );
 }
 
 function renderDiaDetalle(state, ui, diaId) {
@@ -1153,7 +1256,7 @@ function renderDiaDetalle(state, ui, diaId) {
         const headerHtml = isEscenario
           ? '<button class="row between" style="width:100%;text-align:left;margin-bottom:8px" data-action="toggle-escenario-inline">' +
             '<div style="font-weight:700;font-size:14px;color:var(--gold-light)">' + escapeHtml(sec.h) + "</div>" +
-            '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (escenarioAbierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+            clicaAquiBadgeHTML(escenarioAbierto, "gold") +
             "</button>"
           : '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>";
         const card =
@@ -1212,6 +1315,15 @@ function renderDiaDetalle(state, ui, diaId) {
   const finishStyle = est.done ? "background:var(--success)" : (allChecked ? "" : "background:var(--border);opacity:.55");
   const finishDisabled = !allChecked || est.done;
 
+  // Provocarea 7x7: același tabel de 10 contacte acompaniază toate zilele active
+  // ale provocării (3 până la 9); panoul de evaluare încheie ciclul inițial în Ziua 9.
+  const contactos10Card = diaId >= 3 && diaId <= 9
+    ? contactos10TablaHTML("primeros10Contactos", state.primeros10Contactos, !!ui.contactos10Open, "toggle-contactos10", null)
+    : "";
+  const evaluacionCard = diaId === 9
+    ? evaluacion7x7PanelHTML(state, "evaluacion7x7Inicial", state.evaluacion7x7Inicial, !!ui.evaluacion7x7InicialOpen, "toggle-evaluacion7x7-inicial", null, "Încheierea Provocării 7×7 inițiale")
+    : "";
+
   const nextDia = DIAS.find(function (d) { return d.id === diaId + 1; });
   const nextDayBtn = nextDia
     ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + nextDia.id + '">Ziua următoare ' + Icon("chevron-right", { size: 16 }) + "</button>"
@@ -1228,7 +1340,7 @@ function renderDiaDetalle(state, ui, diaId) {
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(dia.titulo) + "</p>" +
     '<p class="muted" style="font-size:13.5px;margin-top:6px;font-style:italic">' + escapeHtml(dia.objetivo) + "</p>" +
     "</div>" +
-    nota + contenido + smartOkr + campos +
+    nota + contenido + contactos10Card + evaluacionCard + smartOkr + campos +
     '<div class="card">' +
     '<div class="row gap-2" style="font-weight:600;font-size:14px;margin-bottom:12px">' + Icon("sparkles", { size: 15, color: "var(--gold)" }) + " Întrebare rapidă de recapitulare</div>" +
     '<div style="font-size:14px;margin-bottom:12px">' + escapeHtml(dia.quiz.pregunta) + "</div>" +
@@ -1339,7 +1451,7 @@ function historialComprasHTML(state, ui, catalogo) {
     '<div class="card" style="margin-top:10px">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-historial-compras">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Istoric de achiziții</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(abierto, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + pedidos.length + " din " + catalogo.length + " produse pe care le cunoști deja · " + (catalogo.length - pedidos.length) + " de descoperit" + "</div>" +
     (abierto
@@ -1590,7 +1702,7 @@ function productosCalculadoraHTML(state, ui, qn) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-calculadora-productos">' +
     '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Calculator de produse</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Marchează ce produse ai testat deja, și câte plănuiești să cumperi în această quincenă — astfel afli câte PV reprezintă și cât vei plăti, pentru întâlnirea ta de focalizare.</p>' +
     '<div class="muted small" style="margin-top:10px">Țară / catalog</div>' +
@@ -1641,6 +1753,8 @@ function renderQuincenaDetalle(state, ui, qn) {
     }).join("");
     const finishLabel = est.done ? "Săptămână finalizată " + Icon("check", { size: 16, color: "#fff" }) : "Marchează săptămâna ca finalizată";
     const finishStyle = est.done ? "background:var(--success)" : (allChecked ? "" : "background:var(--border);opacity:.55");
+    const contactos10Open = !!(ui.semanaContactos10Open && ui.semanaContactos10Open[s.n]);
+    const evaluacionOpen = !!(ui.semanaEvaluacionOpen && ui.semanaEvaluacionOpen[s.n]);
     return (
       '<div class="card">' +
       '<div class="row between"><span style="font-weight:700;font-size:14px">Săptămâna ' + s.n + "</span>" + (est.done ? '<span class="badge success">Finalizată</span>' : "") + "</div>" +
@@ -1649,6 +1763,8 @@ function renderQuincenaDetalle(state, ui, qn) {
       '<div class="muted small" style="margin-top:2px;font-style:italic">' + escapeHtml(s.paso) + "</div>" +
       '<div style="margin-top:12px">' + checklist + "</div>" +
       '<button class="btn-primary" style="margin-top:14px;' + finishStyle + '" ' + (!allChecked || est.done ? "disabled" : "") + ' data-action="finish-semana" data-arg="' + s.n + '">' + finishLabel + "</button>" +
+      '<div style="margin-top:12px">' + contactos10TablaHTML("semanas." + s.n + ".contactos10", est.contactos10, contactos10Open, "toggle-semana-contactos10", s.n) + "</div>" +
+      '<div style="margin-top:10px">' + evaluacion7x7PanelHTML(state, "semanas." + s.n + ".evaluacion7x7", est.evaluacion7x7, evaluacionOpen, "toggle-semana-evaluacion", s.n, "Săptămâna " + s.n) + "</div>" +
       "</div>"
     );
   }).join("");
@@ -1796,7 +1912,7 @@ function renderLogros(state) {
   const premios = state.premios.map(function (p, i) { return logroChipHTML(p.premio, !!quincenasMap[i + 1], "gift", p.imagen); }).join("");
 
   return sectionHeaderHTML("Panoul de Realizări", logrosHechos + " din " + totalLogros + " etape cucerite", "award") +
-    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapele Planului de 6 Zile</div><div class="grid-3">' + etapas + "</div></div>" +
+    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapele Planului de 9 Zile</div><div class="grid-3">' + etapas + "</div></div>" +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Taberele Planului de 90 de Zile</div><div class="grid-3">' + camps + "</div></div>" +
     (state.premios.length ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Premiile sponsorului tău</div><div class="grid-3">' + premios + "</div></div>" : "") +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Realizarea finală</div><div class="grid-3">' + logroChipHTML("Sales Master — Culmea", cumbreLograda, "mountain-flag", "img/logro-cumbre.png") + "</div></div>";
@@ -2172,8 +2288,7 @@ function renderCumpleanosPanel(state) {
 function renderAgenda6Modal(ui) {
   const d = ui.agenda6Draft;
   if (!d) return "";
-  const filas = Array.from({ length: 6 }, function (_, i) {
-    const diaInfo = DIAS.find(function (x) { return x.id === i + 1; });
+  const filas = DIAS.map(function (diaInfo, i) {
     const hora = (d.dias[i] && d.dias[i].hora) || "";
     return (
       '<div class="field">' +
@@ -2187,9 +2302,9 @@ function renderAgenda6Modal(ui) {
     '<div class="modal-backdrop" data-action="cancel-agenda6"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
     '<div class="row gap-2">' + Icon("footprints", { size: 18, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:15px">' + escapeHtml(d.contactoNombre) + " este un partener nou!</span></div>" +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programează aici cele 6 întâlniri ale Planului de 6 Zile cu ' + escapeHtml(d.contactoNombre) + " — vor fi salvate în Agenda ta Săptămânală, în ziua care îi corespunde fiecăreia. Lasă necompletată ora zilei pe care încă nu vrei să o programezi.</p>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programează aici cele ' + DIAS.length + " întâlniri ale Planului de " + DIAS.length + " Zile cu " + escapeHtml(d.contactoNombre) + " — vor fi salvate în Agenda ta Săptămânală, în ziua care îi corespunde fiecăreia. Lasă necompletată ora zilei pe care încă nu vrei să o programezi.</p>" +
     '<div class="view-stack gap-sm" style="margin-top:10px">' + filas + "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Creează agenda de 6 zile</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Creează agenda de ' + DIAS.length + ' zile</button>' +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-agenda6">Nu acum</button>' +
     "</div></div>"
   );
@@ -2828,7 +2943,7 @@ function renderResumenQuincenaHTML(state, ui) {
     '<div class="card" style="margin-top:12px">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-quincena-resumen">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Rezumat pe quincenă</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(abierto, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px">Apelurile, mesajele, comenzile, contactele și urmăririle tale, grupate pe quincenă de calendar (1–15 și 16–finalul fiecărei luni).</p>';
 
