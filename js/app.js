@@ -392,7 +392,7 @@ const App = {
       }
     });
 
-    // montaña hero (Plan de 6 días): revelado tipo "linterna" que sigue al cursor
+    // montaña hero (Plan de 9 días): revelado tipo "linterna" que sigue al cursor
     root.addEventListener("pointermove", (e) => {
       const hero = e.target.closest && e.target.closest(".hero-mountain");
       if (!hero) return;
@@ -693,7 +693,7 @@ const Actions = {
     const dia = DIAS.find((d) => d.id === dayId);
     App.addActividad("Completaste la Etapa: " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 6 Días conquistada.", tipo: "generic" };
+    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 9 Días conquistada.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
@@ -1143,7 +1143,7 @@ const Actions = {
     App.persist(true);
     App.showToast("Contacto guardado");
     if (quedoComoSocio) {
-      App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: 6 }, () => ({ hora: "" })) };
+      App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: DIAS.length }, () => ({ hora: "" })) };
     }
     App.render();
   },
@@ -1266,7 +1266,7 @@ const Actions = {
     const d = App.ui.agenda6Draft;
     if (!d) return;
     const mapDow = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < DIAS.length; i++) {
       const fecha = new Date(Date.now() + i * 86400000);
       const weekdayId = mapDow[fecha.getDay()];
       const diaInfo = DIAS.find((x) => x.id === i + 1);
@@ -1284,7 +1284,7 @@ const Actions = {
     }
     App.ui.agenda6Draft = null;
     App.persist(true);
-    App.showToast("Agenda del Plan de 6 Días creada con " + d.contactoNombre);
+    App.showToast("Agenda del Plan de " + DIAS.length + " Días creada con " + d.contactoNombre);
     App.render();
   },
 

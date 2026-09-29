@@ -174,7 +174,7 @@ function downloadDiaCard(state, diaId) {
     '<text x="60" y="' + (height - 40) + '" font-family="Arial" font-size="12" fill="' + t.textSoft + '">Recorrido hacia el éxito con Atomy · ' + safeXml(state.nombre || "") + "</text>" +
     "</svg>";
 
-  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "¡Avanzando en mi Plan de 6 Días con Atomy! 🚀");
+  svgToPngShare(svg, width, height, "Cumbre90-Etapa" + dia.id + "-" + slugFile(dia.etapa) + ".png", "¡Avanzando en mi Plan de 9 Días con Atomy! 🚀");
 }
 
 function wrapText(str, max) {

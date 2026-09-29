@@ -7,7 +7,7 @@ const MENU_ITEMS = [
   { id: "home", label: "Inicio", icon: "home" },
   { id: "perfil", label: "Mi Perfil", icon: "user-badge" },
   { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
-  { id: "plan6", label: "Plan 6 Días", icon: "trail-map" },
+  { id: "plan6", label: "Plan 9 Días", icon: "trail-map" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "clientes", label: "Clientes", icon: "package" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
@@ -39,7 +39,7 @@ const TOUR_PASOS = [
   { icon: "home", titulo: "Inicio", texto: "Aquí ves tu progreso general, tu racha de días activos y accesos rápidos a lo más importante." },
   { icon: "user-badge", titulo: "Mi Perfil", texto: "Tus datos, tu rango actual en Atomy y tu foto." },
   { icon: "footprints", titulo: "Los 8 Pasos", texto: "La base del negocio explicada paso a paso, con actividades prácticas para aplicar cada uno." },
-  { icon: "trail-map", titulo: "Plan de 6 Días", texto: "Tu entrenamiento inicial día por día, con misiones diarias — incluida la de descargar la app oficial de Atomy en tu teléfono." },
+  { icon: "trail-map", titulo: "Plan de 9 Días", texto: "Tu entrenamiento inicial día por día, con misiones diarias — incluida la de descargar la app oficial de Atomy en tu teléfono." },
   { icon: "users", titulo: "Lista de 250", texto: "Anota cada contacto (nombre, teléfono, estado) y da seguimiento a tu Lista de 250." },
   { icon: "package", titulo: "Clientes", texto: "Registra a quienes ya compraron: sus datos, el histórico de cada pedido con su valor y PV, y da seguimiento con recordatorios de 1 semana hasta 11 meses." },
   { icon: "calendar", titulo: "Agenda Semanal", texto: "Programa tus llamadas, reuniones y Zooms, con recordatorios para no olvidarlos." },
@@ -361,7 +361,7 @@ function renderHome(state) {
     '<div class="card">' +
     '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
     '<div style="font-size:17px;font-weight:700;margin-top:2px">Bienvenid@ a Cumbre 90</div>' +
-    '<div class="muted small" style="margin-top:4px">6 Etapas · 6 Campamentos · Acceso ilimitado</div>' +
+    '<div class="muted small" style="margin-top:4px">9 Etapas · 6 Campamentos · Acceso ilimitado</div>' +
     '<div class="chip-row" style="margin-top:16px">' + chips + "</div>" +
     '<div class="row between" style="margin-top:16px"><span class="muted small">' + (etapasHechas + campamentosHechos) + "/" + totalPasos + ' hitos completados</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
     '<div class="progressbar" style="margin-top:8px"><div style="width:' + pctGeneral + '%"></div></div>' +
@@ -379,7 +379,7 @@ function renderHome(state) {
     '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Los 8 Pasos al Éxito</div><div class="nc-desc">Tu referencia permanente</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">El Lema de Atomy</div><div class="nc-desc">Filosofía y código de ética</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 Contactos</div><div class="nc-desc">' + (state.contactos || []).length + ' registrados · agenda seguimientos</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Arranque — 6 Días</div><div class="nc-desc">Recorre tu mapa día a día</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Arranque — 9 Días</div><div class="nc-desc">Recorre tu mapa día a día</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premios de tu patrocinador</div><div class="nc-desc">Consulta lo que puedes ganar</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
 
     (cumbreLograda
@@ -958,7 +958,7 @@ function lemaFocoHTML(state) {
 
 /* Contenido de SMART/OKR — vive como fuente única en el pilar 2 de El Lema
    de Atomy, pero se reutiliza (con su propio botón de Compartir) en Etapa 5
-   del Plan 6 Días y en el Paso 1 de Los 8 Pasos, donde el socio realmente
+   del Plan 9 Días y en el Paso 1 de Los 8 Pasos, donde el socio realmente
    define sus objetivos. */
 function smartOkrShareText() {
   const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
@@ -1098,12 +1098,14 @@ function renderLema(state, ui) {
     lemaFocoHTML(state);
 }
 
-/* ---------------- Plan 6 días — mapa ---------------- */
+/* ---------------- Plan de 9 días — mapa ---------------- */
 
-const TRAIL_POSITIONS = [
-  { x: 22, y: 92 }, { x: 74, y: 77 }, { x: 22, y: 62 },
-  { x: 74, y: 47 }, { x: 22, y: 30 }, { x: 74, y: 13 },
-];
+// Zigzag ascendente (22%/74% de x, alternado) repartido de forma pareja
+// entre y=92 (base) e y=13 (cumbre), para cualquier cantidad de días.
+const TRAIL_POSITIONS = DIAS.map(function (_, i) {
+  const t = DIAS.length > 1 ? i / (DIAS.length - 1) : 0;
+  return { x: i % 2 === 0 ? 22 : 74, y: Math.round((92 - t * (92 - 13)) * 10) / 10 };
+});
 
 function renderPathMap(state) {
   const pathD = "M" + TRAIL_POSITIONS.map(function (p) { return p.x + "," + p.y; }).join(" L");
@@ -1133,7 +1135,7 @@ function renderPathMap(state) {
     '<path d="' + pathD + '" fill="none" stroke="#F0C468" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="0.5 3" stroke-linecap="round"/></svg>' +
     nodes;
 
-  return sectionHeaderHTML("Plan de Arranque — 6 Días", "Asciende el mapa y conquista cada etapa.", "trail-map") +
+  return sectionHeaderHTML("Plan de Arranque — 9 Días", "Asciende el mapa y conquista cada etapa.", "trail-map") +
     heroMountainHTML(overlay);
 }
 
@@ -1796,7 +1798,7 @@ function renderLogros(state) {
   const premios = state.premios.map(function (p, i) { return logroChipHTML(p.premio, !!quincenasMap[i + 1], "gift", p.imagen); }).join("");
 
   return sectionHeaderHTML("Panel de Logros", logrosHechos + " de " + totalLogros + " hitos conquistados", "award") +
-    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapas del Plan de 6 Días</div><div class="grid-3">' + etapas + "</div></div>" +
+    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapas del Plan de 9 Días</div><div class="grid-3">' + etapas + "</div></div>" +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Campamentos del Plan de 90 Días</div><div class="grid-3">' + camps + "</div></div>" +
     (state.premios.length ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Premios de tu patrocinador</div><div class="grid-3">' + premios + "</div></div>" : "") +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Logro final</div><div class="grid-3">' + logroChipHTML("Sales Master — la Cumbre", cumbreLograda, "mountain-flag", "img/logro-cumbre.png") + "</div></div>";
@@ -2172,8 +2174,7 @@ function renderCumpleanosPanel(state) {
 function renderAgenda6Modal(ui) {
   const d = ui.agenda6Draft;
   if (!d) return "";
-  const filas = Array.from({ length: 6 }, function (_, i) {
-    const diaInfo = DIAS.find(function (x) { return x.id === i + 1; });
+  const filas = DIAS.map(function (diaInfo, i) {
     const hora = (d.dias[i] && d.dias[i].hora) || "";
     return (
       '<div class="field">' +
@@ -2187,9 +2188,9 @@ function renderAgenda6Modal(ui) {
     '<div class="modal-backdrop" data-action="cancel-agenda6"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
     '<div class="row gap-2">' + Icon("footprints", { size: 18, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:15px">¡' + escapeHtml(d.contactoNombre) + " es un nuevo socio!</span></div>" +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programa aquí las 6 reuniones del Plan de 6 Días con ' + escapeHtml(d.contactoNombre) + " — quedarán guardadas en tu Agenda Semanal, en el día que le corresponda a cada una. Deja en blanco la hora del día que aún no vayas a agendar.</p>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programa aquí las ' + DIAS.length + " reuniones del Plan de " + DIAS.length + " Días con " + escapeHtml(d.contactoNombre) + " — quedarán guardadas en tu Agenda Semanal, en el día que le corresponda a cada una. Deja en blanco la hora del día que aún no vayas a agendar.</p>" +
     '<div class="view-stack gap-sm" style="margin-top:10px">' + filas + "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Crear agenda de 6 días</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Crear agenda de ' + DIAS.length + ' días</button>' +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-agenda6">Ahora no</button>' +
     "</div></div>"
   );
