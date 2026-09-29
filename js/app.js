@@ -48,6 +48,10 @@ const App = {
     menuOpen: false,
     activeDay: null,
     escenarioAbierto: false,
+    contactos10Open: false,
+    evaluacion7x7InicialOpen: false,
+    semanaContactos10Open: {},
+    semanaEvaluacionOpen: {},
     activeQuincena: null,
     enfoqueQuincena: null,
     bellOpen: false,
@@ -393,7 +397,7 @@ const App = {
       }
     });
 
-    // montaña hero (Plan de 6 días): revelado tipo "linterna" que sigue al cursor
+    // hero della montagna (Piano di 9 Giorni): rivelazione tipo "torcia" che segue il cursore
     root.addEventListener("pointermove", (e) => {
       const hero = e.target.closest && e.target.closest(".hero-mountain");
       if (!hero) return;
@@ -667,6 +671,28 @@ const Actions = {
     App.render();
   },
 
+  "toggle-contactos10": function () {
+    App.ui.contactos10Open = !App.ui.contactos10Open;
+    App.render();
+  },
+
+  "toggle-evaluacion7x7-inicial": function () {
+    App.ui.evaluacion7x7InicialOpen = !App.ui.evaluacion7x7InicialOpen;
+    App.render();
+  },
+
+  "toggle-semana-contactos10": function (arg) {
+    const weekN = Number(arg);
+    App.ui.semanaContactos10Open[weekN] = !App.ui.semanaContactos10Open[weekN];
+    App.render();
+  },
+
+  "toggle-semana-evaluacion": function (arg) {
+    const weekN = Number(arg);
+    App.ui.semanaEvaluacionOpen[weekN] = !App.ui.semanaEvaluacionOpen[weekN];
+    App.render();
+  },
+
   "answer-quiz": function (arg, el) {
     const dayId = Number(el.dataset.day);
     const idx = Number(arg);
@@ -695,7 +721,7 @@ const Actions = {
     const dia = DIAS.find((d) => d.id === dayId);
     App.addActividad("Hai completato la Tappa: " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Tappa " + dia.id + " del Piano di Avvio — 6 Giorni conquistata.", tipo: "generic" };
+    App.ui.logro = { titulo: dia.etapa, sub: "Tappa " + dia.id + " del Piano di Avvio — 9 Giorni conquistata.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
@@ -1145,7 +1171,7 @@ const Actions = {
     App.persist(true);
     App.showToast("Contatto salvato");
     if (quedoComoSocio) {
-      App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: 6 }, () => ({ hora: "" })) };
+      App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: DIAS.length }, () => ({ hora: "" })) };
     }
     App.render();
   },
@@ -1268,7 +1294,7 @@ const Actions = {
     const d = App.ui.agenda6Draft;
     if (!d) return;
     const mapDow = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < DIAS.length; i++) {
       const fecha = new Date(Date.now() + i * 86400000);
       const weekdayId = mapDow[fecha.getDay()];
       const diaInfo = DIAS.find((x) => x.id === i + 1);
@@ -1286,7 +1312,7 @@ const Actions = {
     }
     App.ui.agenda6Draft = null;
     App.persist(true);
-    App.showToast("Agenda del Piano di 6 Giorni creata con " + d.contactoNombre);
+    App.showToast("Agenda del Piano di " + DIAS.length + " Giorni creata con " + d.contactoNombre);
     App.render();
   },
 

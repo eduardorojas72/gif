@@ -423,6 +423,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .badge.soft { background: var(--accent-soft); color: var(--gold-light); }
 .badge.success { background: var(--success-soft); color: var(--success); }
 .badge.warn { background: var(--warn-soft); color: var(--warn); }
+.badge.blue { background: var(--accent-soft); color: var(--accent); }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
@@ -487,7 +488,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .trail-node .label { font-size: 12px; font-weight: 700; text-align: center; line-height: 1.25; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
 .trail-node .label.dim { color: rgba(255,255,255,0.7); opacity: .85; }
 
-/* --------- montaña ilustrada con revelado tipo "linterna" (Plan 6 Días) --------- */
+/* --------- montagna illustrata con rivelazione tipo "torcia" (Piano di 9 Giorni) --------- */
 .hero-mountain {
   position: relative; border-radius: var(--radius-lg); overflow: hidden;
   border: 1px solid var(--border); box-shadow: var(--shadow);
