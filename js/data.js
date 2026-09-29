@@ -11,7 +11,7 @@
 const LICENCIA_TITULAR = "";
 
 /* ---------------------------------------------------------------
-   CONTENU — Les 8 Étapes, le Plan de 6 Jours, le Plan de 90 Jours
+   CONTENU — Les 8 Étapes, le Plan de 9 Jours, le Plan de 90 Jours
 --------------------------------------------------------------- */
 
 const OCHO_PASOS = [
@@ -580,6 +580,18 @@ const DIAS = [
           "Vidéo d'aide — Comment passer une commande : https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
+      {
+        h: "Défi 7×7 — Jour 1 : Définis-toi et prépare-toi",
+        body: [
+          "À partir d'aujourd'hui, tu démarres aussi le Défi 7×7, qui t'accompagnera jour après jour jusqu'au Jour 9. « Si je n'ai pas d'objectif, je n'ai pas de direction. »",
+          "1. Définis ton objectif pour les 7 prochains jours (combien de conversations, de présentations ou d'inscriptions tu veux atteindre).",
+          "2. Fais une liste de 30 personnes.",
+          "3. Classe tes contacts : clients potentiels, personnes intéressées par le bien-être, personnes intéressées par générer des revenus.",
+          "4. Choisis tes 10 premiers contacts pour commencer demain.",
+          "Ne vends encore rien : d'abord, on construit la liste.",
+          "Mission du jour : 30 noms avant de dormir.",
+        ],
+      },
     ],
     campos: [
       { key: "rec1", label: "Recommandation 1 — nom et produit" },
@@ -593,11 +605,18 @@ const DIAS = [
       "J'ai fait ma liste de 5 amis/proches et des produits qui pourraient les aider.",
       "J'ai publié mon post/story d'anticipation sur les réseaux sociaux.",
       "J'ai regardé la vidéo sur le Produit/Masstige sur CH.ATOMY Europe.",
+      "Défi 7×7 (Jour 1) : j'ai défini mon objectif pour les 7 prochains jours.",
+      "Défi 7×7 (Jour 1) : j'ai fait ma liste de 30 personnes et classé mes contacts.",
+      "Défi 7×7 (Jour 1) : j'ai choisi mes 10 premiers contacts — mission : 30 noms avant de dormir.",
     ],
     quiz: {
-      pregunta: "Combien de recommandations bien-être identifies-tu aujourd'hui ?",
-      opciones: ["3", "5", "10"],
-      correcta: 1,
+      pregunta: "Pourquoi est-il important de passer ta première commande dès maintenant ?",
+      opciones: [
+        "Pour reconnaître la qualité des produits et pouvoir en parler avec assurance",
+        "Pour remplir un quota obligatoire de l'entreprise",
+        "Parce que si je n'achète pas, je perds mon compte",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -645,6 +664,16 @@ const DIAS = [
           "Vidéo d'aide — Comment s'inscrire comme membre global : https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
+      {
+        h: "Défi 7×7 — Jour 2 : Ouvrir des conversations",
+        body: [
+          "« 10 vraies conversations. » Contacte personnellement 10 personnes de ta liste. N'envoie pas de catalogue d'entrée de jeu : commence par discuter.",
+          "Exemple de script : « Salut, je participe à un défi de 7 jours pour développer mon projet de bien-être et de revenus. Je cherche quelques personnes à qui montrer comment ça fonctionne. Ça te dirait que je t'en parle ? »",
+          "Si la réponse est oui : « Parfait 😊. Je te fais une explication très courte et tu me dis si ça peut t'intéresser. »",
+          "Règle d'or : questionne → écoute → identifie le besoin → présente.",
+          "Mission du jour : 10 conversations.",
+        ],
+      },
     ],
     campos: [
       { key: "hist1", label: "1. Ton point de départ (où en étais-tu ?)" },
@@ -657,6 +686,8 @@ const DIAS = [
       "J'ai classé mes 30 premiers noms dans la Liste de 250.",
       "J'ai fait mes 5 premières invitations sincères.",
       "J'ai regardé au moins une vidéo sur l'entreprise Atomy.",
+      "Défi 7×7 (Jour 2) : j'ai contacté personnellement 10 personnes de ma liste.",
+      "Défi 7×7 (Jour 2) : j'ai utilisé le script de conversation au lieu d'envoyer directement un catalogue.",
     ],
     quiz: {
       pregunta: "Combien d'étapes comporte ton histoire personnelle (storytelling) ?",
@@ -682,6 +713,15 @@ const DIAS = [
           "💡 Conseil : un projet constant de 3 heures par semaine donne 100 fois plus de résultats qu'un marathon d'une seule journée. Fais-le à ton rythme.",
         ],
       },
+      {
+        h: "Défi 7×7 — Jour 3 : Recommander",
+        body: [
+          "« Je ne vends pas de produits. Je découvre des besoins. » Aujourd'hui, tu discutes pour découvrir : quel produit utilisent-ils actuellement ? quel besoin veulent-ils satisfaire ? quels produits achètent-ils régulièrement ? seraient-ils intéressés de découvrir une autre façon d'acheter ?",
+          "Après avoir écouté, suis la séquence : Recommande → Explique → Invite.",
+          "Exemple : « Dis-moi, quels produits utilises-tu habituellement pour tes soins personnels ou ton bien-être ? » Après avoir écouté : « J'ai justement une alternative qui pourrait t'intéresser. Tu veux que je te montre comment ça fonctionne ? »",
+          "Mission du jour : présenter des produits à des personnes ayant un besoin réel.",
+        ],
+      },
     ],
     campos: [
       { key: "meta30", label: "Objectif à 30 jours" },
@@ -693,6 +733,8 @@ const DIAS = [
       "J'ai bloqué mes heures de travail hebdomadaires.",
       "J'ai fixé mon appel hebdomadaire avec mon mentor.",
       "J'ai regardé 1 vidéo de l'Entreprise sur CH.ATOMY Europe.",
+      "Défi 7×7 (Jour 3) : j'ai discuté pour découvrir de vrais besoins, sans vendre à l'aveugle.",
+      "Défi 7×7 (Jour 3) : j'ai présenté des produits à des personnes chez qui j'ai détecté un besoin réel.",
     ],
     quiz: {
       pregunta: "Que planifies-tu aujourd'hui avec ton mentor ?",
@@ -705,7 +747,7 @@ const DIAS = [
     etapa: "L'Impact",
     icono: "trending-up",
     titulo: "Leadership Éthique et Duplication",
-    objetivo: "Termine ta première semaine sur des bases solides, prêt à te dupliquer.",
+    objetivo: "Pose des bases éthiques solides tout en présentant ton opportunité à de nouvelles personnes.",
     contenido: [
       {
         h: "Engagement éthique",
@@ -722,14 +764,21 @@ const DIAS = [
       {
         h: "Apprends à te dupliquer",
         body: [
-          "Ne garde pas ce processus de 6 jours pour toi seul : quand tu inscris ton premier partenaire, accompagne-le exactement dans ce même parcours de démarrage.",
+          "Ne garde pas ce processus de démarrage pour toi seul : quand tu inscris ton premier partenaire, accompagne-le exactement dans ce même parcours.",
         ],
       },
       {
-        h: "Ta vidéo de clôture",
+        h: "Ta vidéo du jour",
         body: [
           "Sur CH.ATOMY Europe → menu Entreprise, cherche une vidéo sur la Culture Atomy ou la Philosophie du Fondateur Han-Gill Park : honnêteté et service client.",
-          "Avec ceci, tu termines ta première semaine de formation ! Nous ne cherchons pas à vendre à tout prix, mais à éduquer un consommateur satisfait et à accompagner d'autres personnes vers leurs objectifs, en toute honnêteté.",
+        ],
+      },
+      {
+        h: "Défi 7×7 — Jour 4 : Présenter l'opportunité",
+        body: [
+          "« Tout le monde ne veut pas acheter. Certains veulent construire. » Cherche des personnes qui veulent : générer des revenus complémentaires, acheter intelligemment, recommander des produits ou construire une entreprise.",
+          "Mini-présentation en 4 questions : Qu'est-ce qu'Atomy ? Une entreprise internationale de vente directe. Que trouve-t-on ? Des produits de différentes catégories. Comment ça fonctionne ? Consommer → Recommander → Développer des clients et une équipe. Que recherchons-nous ? Construire une entreprise grâce à un système que nous pouvons répéter et enseigner.",
+          "Mission du jour : présenter l'opportunité à au moins 3 personnes.",
         ],
       },
     ],
@@ -737,12 +786,111 @@ const DIAS = [
     checklist: [
       "J'ai adopté l'engagement éthique : zéro pression, transparence totale, cohérence en consommant ce que je recommande.",
       "J'ai marqué dans mon agenda un jour par mois pour faire le point sur mon équipe.",
-      "J'ai ce plan de 6 jours sous la main pour guider mon premier partenaire.",
+      "J'ai ce plan de 9 jours sous la main pour guider mon premier partenaire.",
       "J'ai regardé une vidéo sur la Culture Atomy ou la Philosophie du Fondateur.",
+      "Défi 7×7 (Jour 4) : j'ai présenté l'opportunité d'affaires à au moins 3 personnes.",
     ],
     quiz: {
       pregunta: "Quel est l'un des 3 piliers de l'engagement éthique ?",
       opciones: ["Vendre vite sans expliquer", "Zéro pression et transparence totale", "Mettre le consommateur sous pression"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 7,
+    etapa: "Le Suivi",
+    icono: "phone-call",
+    titulo: "Défi 7×7 — La Fortune Est dans le Suivi",
+    objetivo: "Reprendre chaque conversation ouverte avant qu'elle ne se refroidisse.",
+    contenido: [
+      {
+        h: "Défi 7×7 — Jour 5 : Suivi",
+        body: [
+          "Aujourd'hui, tu recontactes : les personnes qui ont posé des questions, celles qui ont vu la présentation, celles qui ont dit « laisse-moi y réfléchir », celles qui ont montré de l'intérêt.",
+          "Exemple — reprendre le contact : « Salut 😊. Je voulais savoir ce que tu as pensé de ce dont on a parlé l'autre jour. Il y a eu quelque chose qui t'a particulièrement marqué ? »",
+          "Exemple — si la personne dit « je vais y réfléchir » : « Bien sûr, prends ton temps. Qu'est-ce que tu veux réfléchir exactement : le produit, l'investissement ou le fonctionnement de l'entreprise ? »",
+          "Exemple — si la personne dit « je n'ai pas d'argent » : « Je comprends. Je ne veux pas que tu fasses quelque chose qui dépasse tes possibilités. On peut commencer par discuter du modèle et de comment tirer parti des achats que tu fais déjà habituellement. »",
+          "Un message envoyé au bon moment peut ouvrir une grande opportunité.",
+          "Mission du jour : faire un suivi de toutes les conversations ouvertes.",
+        ],
+      },
+    ],
+    campos: [{ key: "seguimientos", label: "Personnes que j'ai suivies aujourd'hui" }],
+    checklist: [
+      "Défi 7×7 (Jour 5) : j'ai fait un suivi de toutes mes conversations ouvertes.",
+      "Défi 7×7 (Jour 5) : j'ai recontacté ceux qui ont dit « laisse-moi y réfléchir ».",
+      "Défi 7×7 (Jour 5) : j'ai recontacté ceux qui ont montré de l'intérêt ou vu ma présentation.",
+    ],
+    quiz: {
+      pregunta: "Selon le Défi 7×7, où se trouve la fortune ?",
+      opciones: ["Dans le fait de parler seulement à de nouvelles personnes", "Dans le suivi", "Dans le simple envoi d'un catalogue"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 8,
+    etapa: "La Duplication",
+    icono: "repeat",
+    titulo: "Défi 7×7 — Ne le Fais pas Seul",
+    objetivo: "Commencer à te dupliquer : emmener une autre personne avec toi sur le même chemin.",
+    contenido: [
+      {
+        h: "Défi 7×7 — Jour 6 : Dupliquer",
+        body: [
+          "« Ne le fais pas seul. » Le cycle de la duplication : Je le fais → Je t'apprends → Tu le fais → Tu l'apprends à ton tour.",
+          "Invite une personne intéressée à réaliser avec toi : sa liste de contacts, ses premières conversations, sa première présentation, son premier suivi.",
+          "Chaque action compte. Le défi ne se termine pas : le cycle commence ! Ensemble, on va plus loin.",
+          "Mission du jour : aider une personne à démarrer le processus.",
+        ],
+      },
+    ],
+    campos: [{ key: "duplicado", label: "Personne que j'ai aidée à démarrer le processus" }],
+    checklist: [
+      "Défi 7×7 (Jour 6) : j'ai invité une personne intéressée à parcourir le processus avec moi.",
+      "Défi 7×7 (Jour 6) : j'ai aidé cette personne à démarrer sa propre liste, ses conversations, sa présentation ou son suivi.",
+    ],
+    quiz: {
+      pregunta: "Quel est le cycle de la duplication du Défi 7×7 ?",
+      opciones: [
+        "Je le fais → Je t'apprends → Tu le fais → Tu l'apprends à ton tour",
+        "Je vends → Tu achètes → Fin",
+        "Je décide → Tu obéis",
+      ],
+      correcta: 0,
+    },
+  },
+  {
+    id: 9,
+    etapa: "La Clôture",
+    icono: "check",
+    titulo: "Défi 7×7 — Évaluer, Clôturer et Répéter",
+    objetivo: "Mesurer tes résultats et compléter ton Plan de Démarrage de 9 jours.",
+    contenido: [
+      {
+        h: "Défi 7×7 — Jour 7 : Évaluer, clôturer et répéter",
+        body: [
+          "« Les résultats se mesurent. » Aujourd'hui, on fait le point : combien de personnes ai-je contactées ? combien ont répondu ? combien de présentations ai-je faites ? combien de commandes ai-je obtenues ? combien de personnes sont intéressées par l'entreprise ? qui dois-je continuer à accompagner ?",
+          "Le défi ne se termine pas ici : le cycle commence ! Contacter → Présenter → Recommander → Suivre → Clôturer → Dupliquer → Répéter.",
+          "Que se passerait-il avec ton entreprise si, pendant les 90 prochains jours, tu répétais ce processus encore et encore ? Tu n'as pas besoin de le faire parfaitement. Tu as besoin de le faire.",
+        ],
+      },
+      {
+        h: "Ta vidéo de clôture",
+        body: [
+          "Rends-toi sur ch.atomy.com/eu (CH.ATOMY Europe) → menu Entreprise, et cherche une vidéo sur la Culture Atomy ou la Philosophie du Fondateur Han-Gill Park : honnêteté et service client.",
+          "Avec ceci, tu termines ton Plan de Démarrage de 9 jours ! Nous ne cherchons pas à vendre à tout prix, mais à éduquer un consommateur satisfait et à accompagner d'autres personnes vers leurs objectifs, en toute honnêteté.",
+        ],
+      },
+    ],
+    campos: [{ key: "resultados", label: "Résumé : contacts, réponses, présentations, commandes et personnes intéressées" }],
+    checklist: [
+      "Défi 7×7 (Jour 7) : j'ai compté combien de personnes j'ai contactées, combien ont répondu et combien de présentations j'ai faites.",
+      "Défi 7×7 (Jour 7) : j'ai identifié qui je dois continuer à accompagner.",
+      "J'ai compris que le cycle Contacter → Présenter → Recommander → Suivre → Clôturer → Dupliquer → Répéter ne se termine pas, il se répète.",
+    ],
+    quiz: {
+      pregunta: "À la fin du Défi 7×7, que convient-il de faire ?",
+      opciones: ["S'arrêter, c'est fini", "Répéter le cycle", "Attendre que d'autres te contactent"],
       correcta: 1,
     },
   },
@@ -777,7 +925,7 @@ const SEMANAS = [
       "Enregistrer ou rédiger 1 témoignage personnel sur un produit.",
       "Inscrire 5 nouveaux partenaires (je demande l'aide de mon parrain pour cette étape).",
       "Inscrire les premiers partenaires dans les lignes Gauche et Droite.",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Assurer un suivi rigoureux dans les 48 heures avec toutes les personnes à qui la présentation a été faite.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
@@ -789,7 +937,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -800,7 +948,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -811,7 +959,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -823,7 +971,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -835,7 +983,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -846,7 +994,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -857,7 +1005,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -869,7 +1017,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -881,7 +1029,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -892,7 +1040,7 @@ const SEMANAS = [
       "Faire au moins 10 appels ou messages d'invitation en appliquant la règle du libre arbitre.",
       "Inscrire 10 nouveaux partenaires.",
       "Aider à placer ces partenaires dans les lignes Gauche et Droite (je demande l'aide de mon parrain pour cette étape).",
-      "Guider les nouveaux partenaires pour qu'ils complètent le module des 6 Jours de Démarrage.",
+      "Guider les nouveaux partenaires pour qu'ils complètent le module des 9 Jours de Démarrage.",
       "Faire ma Réunion de Mise au Point avec mes partenaires.",
     ],
   },
@@ -915,7 +1063,7 @@ const AGENDA_TIPOS = [
   { id: "registro", label: "Inscription d'un nouveau partenaire", icon: "user-badge" },
   { id: "formacion", label: "Formation", icon: "book-open" },
   { id: "video-rrss", label: "Vidéos produit (réseaux sociaux)", icon: "video" },
-  { id: "plan6", label: "Réunion du Plan 6 Jours", icon: "footprints" },
+  { id: "plan6", label: "Réunion du Plan 9 Jours", icon: "footprints" },
 ];
 
 const BUCKET_LIST_EJEMPLOS = [
