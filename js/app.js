@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi camino hacia Imperial Master");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Salut, am o întrebare despre drumul meu spre Imperial Master");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cuántos puntos vas a pedir esta quincena y en qué fecha?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Salut" + (nombre ? " " + nombre : "") + "! Câte puncte vei comanda în această quincenă și la ce dată?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He alcanzado el rango de \"" + titulo + "\" en mi camino hacia Imperial Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 Am atins rangul de \"" + titulo + "\" pe drumul meu spre Imperial Master cu Atomy! 🚀 Dacă ești curios, întreabă-mă despre ce este vorba.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,14 +25,14 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Distribuie</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
     '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiază</span></button>" +
     "</div>"
   );
 }
@@ -133,10 +133,10 @@ const App = {
 
     (dia.actividades || []).forEach((a) => {
       const tipo = agendaTipoInfo(a.tipo);
-      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Ai programat asta la ora " + a.hora + ".");
     });
     (dia.zooms || []).forEach((z) => {
-      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Întâlnire"), "Începe la ora " + z.hora + ".");
     });
   },
 
@@ -151,8 +151,8 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre Master — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre Master — Reamintire", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " în plus)" : primero.text,
       });
     } catch (e) {
       /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
@@ -212,7 +212,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Scrie-i sponsorului tău">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
 
@@ -335,17 +335,17 @@ const App = {
           try {
             parsed = JSON.parse(reader.result);
           } catch (e) {
-            this.showToast("Ese archivo no es un respaldo válido de Cumbre Master.");
+            this.showToast("Acest fișier nu este o copie de siguranță validă a Cumbre Master.");
             return;
           }
-          if (!window.confirm("Esto reemplazará todos tus datos actuales (Reunión de Enfoque, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          if (!window.confirm("Aceasta va înlocui toate datele tale actuale (Întâlnirea de Focalizare, Arborele Genealogic, progresul) cu cele din fișierul de rezervă. Continui?")) return;
           const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
           this.state = hydrateState(parsed);
           this.state.racha = rh.racha;
           this.state.ultimaFecha = rh.ultimaFecha;
           this.persist(true);
           this.render();
-          this.showToast("Datos restaurados correctamente ✨");
+          this.showToast("Date restaurate cu succes ✨");
         };
         reader.readAsText(file);
         return;
@@ -453,7 +453,7 @@ const Actions = {
     App.ui.menuOpen = false;
     App.render();
     window.close();
-    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+    App.showToast("Dacă nu s-a închis singură, poți închide această filă sau te poți întoarce.");
   },
 
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
@@ -539,7 +539,7 @@ const Actions = {
     }
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Persoană salvată");
     App.render();
   },
 
@@ -556,7 +556,7 @@ const Actions = {
     App.ui.confirmDeletePersona = null;
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Persoană ștearsă");
     App.render();
   },
 
@@ -618,7 +618,7 @@ const Actions = {
     }
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Persoană salvată");
     App.render();
   },
 
@@ -632,7 +632,7 @@ const Actions = {
     App.ui.confirmDeleteAscendente = null;
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Persoană ștearsă");
     App.render();
   },
 
@@ -673,7 +673,7 @@ const Actions = {
     }
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact salvat");
     App.render();
   },
 
@@ -687,7 +687,7 @@ const Actions = {
     App.ui.confirmDeleteSOS = null;
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact șters");
     App.render();
   },
 
@@ -729,7 +729,7 @@ const Actions = {
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact salvat");
     App.render();
   },
 
@@ -743,7 +743,7 @@ const Actions = {
     App.ui.confirmDeleteContactoEvento = null;
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact șters");
     App.render();
   },
 
@@ -789,7 +789,7 @@ const Actions = {
   },
   "add-producto": function () {
     const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
-    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    catalogo.push(nuevoProductoCatalogo({ categoria: "Produsele mele" }));
     App.persist(true);
     App.render();
   },
@@ -836,8 +836,8 @@ const Actions = {
     App.state.rangoActualIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nuevo rango de Maestría alcanzado en Atomy." };
-      App.addActividad("Alcanzaste el rango: " + RANGOS_MASTER[i].nombre);
+      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Rang nou de Măiestrie atins în Atomy." };
+      App.addActividad("Ai atins rangul: " + RANGOS_MASTER[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -856,11 +856,11 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Mesaj copiat — lipește-l oriunde vrei!"),
+        () => App.showToast("Nu s-a putut copia mesajul")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Nu s-a putut copia mesajul");
     }
   },
 
@@ -868,7 +868,7 @@ const Actions = {
     const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
     const fecha = hoyISO();
     downloadBlobCumbre(blob, "Cumbre-Master-Respaldo-" + slugFileCumbre(App.state.nombre || "lider") + "-" + fecha + ".json");
-    App.showToast("Copia de seguridad descargada");
+    App.showToast("Copie de siguranță descărcată");
   },
 
   "reset-progress": function () {
@@ -887,7 +887,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.agendaDia = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progres resetat");
     App.render();
   },
 
@@ -932,7 +932,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad guardada");
+    App.showToast("Activitate salvată");
     App.render();
   },
 
@@ -948,7 +948,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad eliminada");
+    App.showToast("Activitate ștearsă");
     App.render();
   },
 
@@ -997,7 +997,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión guardada");
+    App.showToast("Întâlnire salvată");
     App.render();
   },
 
@@ -1013,18 +1013,18 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión eliminada");
+    App.showToast("Întâlnire ștearsă");
     App.render();
   },
 
   "copy-zoom-link": function (arg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(arg).then(
-        () => App.showToast("Enlace copiado"),
-        () => App.showToast("No se pudo copiar el enlace")
+        () => App.showToast("Link copiat"),
+        () => App.showToast("Nu s-a putut copia linkul")
       );
     } else {
-      App.showToast("No se pudo copiar el enlace");
+      App.showToast("Nu s-a putut copia linkul");
     }
   },
 
@@ -1228,7 +1228,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Activează permisiunile de notificare din setările browserului tău.");
     }
   },
 };

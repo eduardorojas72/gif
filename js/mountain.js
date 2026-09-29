@@ -47,7 +47,7 @@ function fontFaceDefsSVG() {
 }
 
 function cardNameFontSize(nombre) {
-  const len = (nombre || "Tu nombre").length;
+  const len = (nombre || "Numele tău").length;
   if (len <= 13) return 70;
   if (len <= 18) return 58;
   if (len <= 24) return 48;
@@ -164,14 +164,14 @@ function cardLaurelSVG(cx, cy, side, color) {
 function cardFooterSVG(cx, y) {
   return (
     '<line x1="' + (cx - 60) + '" y1="' + (y - 26) + '" x2="' + (cx + 60) + '" y2="' + (y - 26) + '" stroke="' + CARD_GOLD + '" stroke-width="1" opacity="0.45"/>' +
-    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Camino de Maestría con Atomy</text>'
+    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Drumul spre Măiestrie cu Atomy</text>'
   );
 }
 
 function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
   const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
   const W = 800, H = 1000, cx = 400;
-  const name = nombre || "Tu nombre";
+  const name = nombre || "Numele tău";
   const nameSize = cardNameFontSize(name);
   const defs =
     "<defs>" +
@@ -274,7 +274,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardGlyphSVG("crown", cx, 518, 60, CARD_GOLD, 1.8) +
       '<text x="' + cx + '" y="' + 640 + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + nameSize + '" fill="' + CARD_CREAM + '">' + escapeHtml(name) + "</text>" +
       cardRibbonSVG(cx, 735, 440, 84, "#0A0F1E", CARD_GOLD_LIGHT, 3, rango.nombre, CARD_GOLD_LIGHT, 28) +
-      '<text x="' + cx + '" y="850" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.55)">MIEMBRO DE LA REALEZA ATOMY</text>' +
+      '<text x="' + cx + '" y="850" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.55)">MEMBRU REGAL ATOMY</text>' +
       footer;
   } else if (rangoIndex === 5) {
     /* Crown Master: corona más grande + laureles a los lados + brillo violeta-dorado. */
@@ -291,7 +291,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardGlyphSVG("crown", cx, 518, 76, CARD_GOLD, 1.8) +
       '<text x="' + cx + '" y="' + 655 + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 6) + '" fill="' + CARD_CREAM + '">' + escapeHtml(name) + "</text>" +
       cardRibbonSVG(cx, 752, 460, 88, "#080512", CARD_GOLD_LIGHT, 3.5, rango.nombre, CARD_GOLD_LIGHT, 30) +
-      '<text x="' + cx + '" y="865" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.6)">CLUB DE LÍDERES CROWN</text>' +
+      '<text x="' + cx + '" y="865" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.6)">CLUBUL LIDERILOR CROWN</text>' +
       footer;
   } else {
     /* Imperial Master: medallón alado + trofeo + sol dorado, la tarjeta más ornamentada. */
@@ -307,7 +307,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardWingedMedallionSVG(cx, 555, 1.05, "trophy") +
       '<text x="' + cx + '" y="' + 665 + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 10) + '" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(name) + "</text>" +
       cardRibbonSVG(cx, 762, 480, 92, "#0A0712", CARD_GOLD_LIGHT, 4, rango.nombre, CARD_GOLD, 32) +
-      '<text x="' + cx + '" y="880" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="3.5" fill="rgba(255,255,255,0.65)">EL RANGO MÁS ALTO DEL PLAN</text>' +
+      '<text x="' + cx + '" y="880" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="3.5" fill="rgba(255,255,255,0.65)">CEL MAI ÎNALT RANG AL PLANULUI</text>' +
       footer;
   }
 
@@ -361,7 +361,7 @@ function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
     URL.revokeObjectURL(url);
     canvas.toBlob(function (blob) {
       if (!blob) {
-        if (typeof App !== "undefined") App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+        if (typeof App !== "undefined") App.showToast("Nu s-a putut genera imaginea. Încearcă din nou.");
         return;
       }
       const file = new File([blob], filename, { type: "image/png" });
@@ -369,17 +369,17 @@ function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
         navigator.share({ files: [file], title: "Cumbre Master", text: shareText }).catch(function (err) {
           if (err && err.name === "AbortError") return;
           downloadBlobCumbre(blob, filename);
-          if (typeof App !== "undefined") App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+          if (typeof App !== "undefined") App.showToast("Nu s-a putut deschide panoul de partajare — imaginea a fost descărcată.");
         });
         return;
       }
       downloadBlobCumbre(blob, filename);
-      if (typeof App !== "undefined") App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+      if (typeof App !== "undefined") App.showToast("Imaginea a fost descărcată — o poți atașa acum oriunde vrei să o distribui.");
     }, "image/png");
   };
   img.onerror = function () {
     URL.revokeObjectURL(url);
-    if (typeof App !== "undefined") App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+    if (typeof App !== "undefined") App.showToast("Nu s-a putut genera imaginea. Încearcă din nou.");
   };
   img.src = url;
 }
@@ -387,7 +387,7 @@ function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
 function downloadRangoCard(state, rangoIndex) {
   const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
   const svg = rangoCardSVGMarkup(state.nombre, state.foto, rangoIndex);
-  svgToPngShareCumbre(svg, 800, 1000, "Cumbre-Master-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png", "¡Mi rango en Atomy: " + rango.nombre + "! 🚀");
+  svgToPngShareCumbre(svg, 800, 1000, "Cumbre-Master-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png", "Rangul meu în Atomy: " + rango.nombre + "! 🚀");
 }
 
 /* ---------------------------------------------------------------
@@ -424,14 +424,14 @@ function rangoHistoriaSVGMarkup(nombre, foto, rangoIndex) {
 
   const headline =
     '<text x="' + cx + '" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" letter-spacing="6" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE MASTER</text>' +
-    '<text x="' + cx + '" y="212" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="54" fill="' + CARD_CREAM + '">¡Nuevo rango alcanzado!</text>' +
+    '<text x="' + cx + '" y="212" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="54" fill="' + CARD_CREAM + '">Rang nou atins!</text>' +
     '<text x="' + cx + '" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(rango.nombre) + "</text>";
 
   const captionY1 = cardBottom + 150;
   const captionY2 = captionY1 + 46;
   const caption =
-    '<text x="' + cx + '" y="' + captionY1 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="rgba(245,239,225,0.9)">Comparte tu logro y cuéntales cómo lo lograste 🎉</text>' +
-    '<text x="' + cx + '" y="' + captionY2 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="3.5" fill="rgba(232,185,78,0.8)">RECORRIDO HACIA EL ÉXITO CON ATOMY</text>';
+    '<text x="' + cx + '" y="' + captionY1 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="rgba(245,239,225,0.9)">Distribuie realizarea ta și povestește-le cum ai reușit 🎉</text>' +
+    '<text x="' + cx + '" y="' + captionY2 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="3.5" fill="rgba(232,185,78,0.8)">DRUMUL SPRE SUCCES CU ATOMY</text>';
 
   return (
     '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
@@ -453,7 +453,7 @@ function downloadRangoHistoria(state, rangoIndex) {
   svgToPngShareCumbre(
     svg, 1080, 1920,
     "Cumbre-Master-Historia-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png",
-    "¡Nuevo rango alcanzado: " + rango.nombre + "! 🎉 Mi camino con Atomy sigue creciendo."
+    "Rang nou atins: " + rango.nombre + "! 🎉 Drumul meu cu Atomy continuă să crească."
   );
 }
 
