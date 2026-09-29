@@ -11,7 +11,7 @@
 const LICENCIA_TITULAR = "";
 
 /* ---------------------------------------------------------------
-   CONTENT — 8 Steps, 6-Day Plan, 90-Day Plan
+   CONTENT — 8 Steps, 9-Day Plan, 90-Day Plan
 --------------------------------------------------------------- */
 
 const OCHO_PASOS = [
@@ -580,6 +580,18 @@ const DIAS = [
           "Help video — How to Place an Order: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
+      {
+        h: "7×7 Challenge — Day 1: Define and prepare",
+        body: [
+          "Starting today you also kick off the 7×7 Challenge, which will walk with you day by day through Day 9. “If I don't have a goal, I don't have direction.”",
+          "1. Define your goal for the next 7 days (how many conversations, presentations, or sign-ups you want to reach).",
+          "2. Make a list of 30 people.",
+          "3. Sort your contacts: potential customers, people interested in wellness, people interested in generating income.",
+          "4. Pick your first 10 contacts to start with tomorrow.",
+          "Don't sell anything yet: first we build the list.",
+          "Today's mission: 30 names before you go to sleep.",
+        ],
+      },
     ],
     campos: [
       { key: "rec1", label: "Recommendation 1 — name and product" },
@@ -593,11 +605,18 @@ const DIAS = [
       "I made my list of 5 friends/family members and the products that could help them.",
       "I posted my anticipation post/story on social media.",
       "I watched the video on Product/Masstige on CH.ATOMY Europe.",
+      "7×7 Challenge (Day 1): I defined my goal for the next 7 days.",
+      "7×7 Challenge (Day 1): I made my list of 30 people and sorted my contacts.",
+      "7×7 Challenge (Day 1): I picked my first 10 contacts — mission: 30 names before bed.",
     ],
     quiz: {
-      pregunta: "How many wellness recommendations do you identify today?",
-      opciones: ["3", "5", "10"],
-      correcta: 1,
+      pregunta: "Why is it important to place your first order now?",
+      opciones: [
+        "To experience the quality of the products and speak about them with authority",
+        "To meet a mandatory company quota",
+        "Because I'll lose my account if I don't buy",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -645,6 +664,16 @@ const DIAS = [
           "Help video — How to register as a global member: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
+      {
+        h: "7×7 Challenge — Day 2: Open conversations",
+        body: [
+          "“10 real conversations.” Personally reach out to 10 people from your list. Don't lead with a catalog: talk first.",
+          "Sample script: “Hi, I'm taking part in a 7-day challenge to grow my wellness and income project. I'm looking for a few people I could show how it works. Would you like me to tell you about it?”",
+          "If they say yes: “Perfect 😊. I'll give you a really short explanation and you tell me if it could be interesting for you.”",
+          "Golden rule: ask → listen → identify the need → present.",
+          "Today's mission: 10 conversations.",
+        ],
+      },
     ],
     campos: [
       { key: "hist1", label: "1. Your backstory (where were you?)" },
@@ -657,6 +686,8 @@ const DIAS = [
       "I sorted my first 30 names in the List of 250.",
       "I made my first 5 sincere invitations.",
       "I watched at least one video about the Atomy Company.",
+      "7×7 Challenge (Day 2): I personally contacted 10 people from my list.",
+      "7×7 Challenge (Day 2): I used the conversation script instead of leading with a catalog.",
     ],
     quiz: {
       pregunta: "How many steps does your personal story (storytelling) have?",
@@ -682,6 +713,15 @@ const DIAS = [
           "💡 Tip: a steady 3-hour-a-week project delivers 100 times more results than a one-day marathon. Do it at your own pace.",
         ],
       },
+      {
+        h: "7×7 Challenge — Day 3: Recommend",
+        body: [
+          "“I don't sell products. I uncover needs.” Today you talk to discover: what product do they currently use?, what need do they want to address?, what products do they buy regularly?, are they interested in a buying alternative?",
+          "After listening, follow the sequence: Recommend → Explain → Invite.",
+          "Example: “Tell me, what products do you normally use for personal care or wellness?” After listening: “I actually have an alternative that might interest you. Want me to show you how it works?”",
+          "Today's mission: present products to people with a real need.",
+        ],
+      },
     ],
     campos: [
       { key: "meta30", label: "30-day goal" },
@@ -693,6 +733,8 @@ const DIAS = [
       "I blocked my weekly working hours.",
       "I set up my weekly call with my mentor.",
       "I watched 1 Company video on CH.ATOMY Europe.",
+      "7×7 Challenge (Day 3): I talked to uncover real needs, instead of selling blindly.",
+      "7×7 Challenge (Day 3): I presented products to people with a real need I identified.",
     ],
     quiz: {
       pregunta: "What do you schedule today with your mentor?",
@@ -705,7 +747,7 @@ const DIAS = [
     etapa: "The Impact",
     icono: "trending-up",
     titulo: "Ethical Leadership and Duplication",
-    objetivo: "Close your first week on solid footing, ready to duplicate.",
+    objetivo: "Lay firm ethical foundations while you present your opportunity to new people.",
     contenido: [
       {
         h: "Ethical commitment",
@@ -722,14 +764,21 @@ const DIAS = [
       {
         h: "Learn to duplicate",
         body: [
-          "Don't keep this 6-day process to yourself: when you sign up your first partner, walk them through this exact same start.",
+          "Don't keep this startup process to yourself: when you sign up your first partner, walk them through this exact same path.",
         ],
       },
       {
-        h: "Your closing video",
+        h: "Your video today",
         body: [
           "Go to ch.atomy.com/eu (CH.ATOMY Europe) → Company menu, and look for a video on Atomy Culture or Founder Han-Gill Park's Philosophy: honesty and customer service.",
-          "With this you complete your first training week! We're not aiming to sell desperately, but to educate a satisfied consumer and help others reach their goals honestly.",
+        ],
+      },
+      {
+        h: "7×7 Challenge — Day 4: Present the opportunity",
+        body: [
+          "“Not everyone wants to buy. Some want to build.” Look for people who want to: generate extra income, shop smarter, recommend products, or build a business.",
+          "4-question mini presentation: What is Atomy? An international direct-sales company. What do we find? Products across different categories. How does it work? Consume → Recommend → Develop customers and team. What are we after? Building a business through a system we can repeat and teach.",
+          "Today's mission: present the opportunity to at least 3 people.",
         ],
       },
     ],
@@ -737,12 +786,111 @@ const DIAS = [
     checklist: [
       "I embraced the ethical commitment: zero pressure, total transparency, consistency by consuming what I recommend.",
       "I marked a day each month on my calendar to review my team.",
-      "I have this 6-day plan on hand to guide my first partner.",
+      "I have this 9-day plan on hand to guide my first partner.",
       "I watched a video on Atomy Culture or the Founder's Philosophy.",
+      "7×7 Challenge (Day 4): I presented the business opportunity to at least 3 people.",
     ],
     quiz: {
       pregunta: "What is one of the 3 pillars of the ethical commitment?",
       opciones: ["Sell fast without explaining", "Zero pressure and total transparency", "Pressure the consumer"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 7,
+    etapa: "The Follow-up",
+    icono: "phone-call",
+    titulo: "7×7 Challenge — Fortune Is in the Follow-up",
+    objetivo: "Reopen every pending conversation before it goes cold.",
+    contenido: [
+      {
+        h: "7×7 Challenge — Day 5: Follow-up",
+        body: [
+          "Today you reach back out to: people who asked questions, people who saw the presentation, people who said “let me think about it,” people who showed interest.",
+          "Example — reopening contact: “Hi 😊. I wanted to know what you thought about what we talked about the other day. Was there anything that especially caught your attention?”",
+          "Example — if they say “I'll think about it”: “Of course, take your time. Which part do you want to think over: the product, the investment, or how the business works?”",
+          "Example — if they say “I don't have the money”: “I understand. I don't want you to do anything outside your means. We could start by talking about the model and about how to make the most of purchases you already make regularly.”",
+          "A well-timed message can open up a big opportunity.",
+          "Today's mission: follow up on every open conversation.",
+        ],
+      },
+    ],
+    campos: [{ key: "seguimientos", label: "People I followed up with today" }],
+    checklist: [
+      "7×7 Challenge (Day 5): I followed up on every one of my open conversations.",
+      "7×7 Challenge (Day 5): I reopened contact with everyone who said “let me think about it.”",
+      "7×7 Challenge (Day 5): I reopened contact with everyone who showed interest or saw my presentation.",
+    ],
+    quiz: {
+      pregunta: "According to the 7×7 Challenge, where's the fortune?",
+      opciones: ["In only talking to new people", "In the follow-up", "In just sending a catalog and nothing else"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 8,
+    etapa: "Duplication",
+    icono: "repeat",
+    titulo: "7×7 Challenge — Don't Do It Alone",
+    objetivo: "Start duplicating: bring someone else with you down the same path.",
+    contenido: [
+      {
+        h: "7×7 Challenge — Day 6: Duplicate",
+        body: [
+          "“Don't do it alone.” The duplication cycle: I do it → I teach you → You do it → You teach it.",
+          "Invite an interested person to work alongside you on: their contact list, their first conversations, their first presentation, their first follow-up.",
+          "Every action counts. The challenge doesn't end: the cycle begins! Together we go further.",
+          "Today's mission: help one person start the process.",
+        ],
+      },
+    ],
+    campos: [{ key: "duplicado", label: "Person I helped start the process" }],
+    checklist: [
+      "7×7 Challenge (Day 6): I invited an interested person to walk the process with me.",
+      "7×7 Challenge (Day 6): I helped that person start their own list, conversations, presentation, or follow-up.",
+    ],
+    quiz: {
+      pregunta: "What is the 7×7 Challenge's duplication cycle?",
+      opciones: [
+        "I do it → I teach you → You do it → You teach it",
+        "I sell → You buy → The end",
+        "I decide → You obey",
+      ],
+      correcta: 0,
+    },
+  },
+  {
+    id: 9,
+    etapa: "The Close",
+    icono: "check",
+    titulo: "7×7 Challenge — Evaluate, Close, and Repeat",
+    objetivo: "Measure your results and complete your 9-day Startup Plan.",
+    contenido: [
+      {
+        h: "7×7 Challenge — Day 7: Evaluate, close, and repeat",
+        body: [
+          "“Results get measured.” Today we review: how many people did I contact?, how many responded?, how many presentations did I make?, how many sales did I close?, how many people are interested in the business?, who should I keep following up with?",
+          "The challenge doesn't end here: the cycle begins! Contact → Present → Recommend → Follow up → Close → Duplicate → Repeat.",
+          "What would happen to your business if you did this process over and over for the next 90 days? You don't need to do it perfectly. You need to do it.",
+        ],
+      },
+      {
+        h: "Your closing video",
+        body: [
+          "Go to ch.atomy.com/eu (CH.ATOMY Europe) → Company menu, and look for a video on Atomy Culture or Founder Han-Gill Park's Philosophy: honesty and customer service.",
+          "With this you complete your 9-day Startup Plan! We're not aiming to sell desperately, but to educate a satisfied consumer and help others reach their goals honestly.",
+        ],
+      },
+    ],
+    campos: [{ key: "resultados", label: "Summary: contacts, responses, presentations, sales, and interested people" }],
+    checklist: [
+      "7×7 Challenge (Day 7): I counted how many people I contacted, how many responded, and how many presentations I made.",
+      "7×7 Challenge (Day 7): I identified who I should keep following up with.",
+      "I understood that the Contact → Present → Recommend → Follow up → Close → Duplicate → Repeat cycle never ends, it repeats.",
+    ],
+    quiz: {
+      pregunta: "When the 7×7 Challenge ends, what should you do?",
+      opciones: ["Stop, it's over", "Repeat the cycle", "Wait for others to reach out to you"],
       correcta: 1,
     },
   },
@@ -777,7 +925,7 @@ const SEMANAS = [
       "Record or write 1 personal product testimonial.",
       "Sign up 5 new partners (I'll ask my sponsor for help with this step).",
       "Register the first partners in the Left and Right lines.",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Follow up rigorously within 48 hours with everyone who was presented to.",
       "Hold my focus meeting with my partners.",
     ],
@@ -789,7 +937,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -800,7 +948,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -811,7 +959,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -823,7 +971,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -835,7 +983,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -846,7 +994,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -857,7 +1005,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -869,7 +1017,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -881,7 +1029,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -892,7 +1040,7 @@ const SEMANAS = [
       "Make at least 10 invitation calls or messages applying the own-mind rule.",
       "Sign up 10 new partners.",
       "Help place these partners in the Left and Right lines (I'll ask my sponsor for help with this step).",
-      "Guide new partners to complete the 6-Day Startup module.",
+      "Guide new partners to complete the 9-Day Startup module.",
       "Hold my focus meeting with my partners.",
     ],
   },
@@ -915,7 +1063,7 @@ const AGENDA_TIPOS = [
   { id: "registro", label: "New partner registration", icon: "user-badge" },
   { id: "formacion", label: "Training", icon: "book-open" },
   { id: "video-rrss", label: "Product videos (social media)", icon: "video" },
-  { id: "plan6", label: "6-Day Plan meeting", icon: "footprints" },
+  { id: "plan6", label: "9-Day Plan meeting", icon: "footprints" },
 ];
 
 const BUCKET_LIST_EJEMPLOS = [
