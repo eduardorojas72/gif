@@ -75,6 +75,10 @@ const App = {
     mesPlanComercial: null,
     confirmDeleteMetaPlan: null,
     confirmDeleteAccionPlan: null,
+    reto7x7SemanaOpen: {},
+    reto7x7DiaOpen: {},
+    reto7x7Contactos10Open: {},
+    reto7x7EvaluacionOpen: {},
   },
   saveTimer: null,
   toastTimer: null,
@@ -220,6 +224,7 @@ const App = {
       case "plan": mainHtml = renderPlanCompensacion(ui, state); break;
       case "planeador": mainHtml = renderPlaneador(state, ui); break;
       case "listas": mainHtml = renderListas(state, ui); break;
+      case "reto7x7": mainHtml = renderReto7x7(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "informe": mainHtml = renderInformeSemanal(state, ui); break;
       case "arbol": mainHtml = renderArbolGenealogico(state, ui); break;
@@ -1074,6 +1079,45 @@ const Actions = {
 
   "toggle-diario-futuro": function () {
     App.ui.diarioFuturoOpen = !App.ui.diarioFuturoOpen;
+    App.render();
+  },
+
+  /* -------- Reto 7×7 -------- */
+
+  "toggle-reto7x7-semana": function (arg) {
+    const semN = Number(arg);
+    App.ui.reto7x7SemanaOpen[semN] = !App.ui.reto7x7SemanaOpen[semN];
+    App.render();
+  },
+
+  "toggle-reto7x7-dia": function (arg, el) {
+    const semN = Number(el.dataset.week);
+    const diaId = Number(arg);
+    const key = semN + "-" + diaId;
+    App.ui.reto7x7DiaOpen[key] = !App.ui.reto7x7DiaOpen[key];
+    App.render();
+  },
+
+  "toggle-reto7x7-check": function (arg, el) {
+    const semN = Number(el.dataset.week);
+    const parts = arg.split("|");
+    const diaId = Number(parts[0]);
+    const idx = Number(parts[1]);
+    const est = App.state.reto7x7[semN].dias[diaId];
+    est.checks[idx] = !est.checks[idx];
+    App.persist(true);
+    App.render();
+  },
+
+  "toggle-reto7x7-contactos10": function (arg) {
+    const semN = Number(arg);
+    App.ui.reto7x7Contactos10Open[semN] = !App.ui.reto7x7Contactos10Open[semN];
+    App.render();
+  },
+
+  "toggle-reto7x7-evaluacion": function (arg) {
+    const semN = Number(arg);
+    App.ui.reto7x7EvaluacionOpen[semN] = !App.ui.reto7x7EvaluacionOpen[semN];
     App.render();
   },
 

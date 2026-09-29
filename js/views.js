@@ -8,6 +8,7 @@ const MENU_ITEMS = [
   { id: "plan", label: "Plan de Compensación", icon: "book-open" },
   { id: "planeador", label: "Planeador de Quincena", icon: "target" },
   { id: "listas", label: "Reunión de Enfoque", icon: "users" },
+  { id: "reto7x7", label: "Reto 7×7", icon: "flame" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
   { id: "informe", label: "Informe Semanal", icon: "trending-up" },
   { id: "arbol", label: "Mi Árbol Genealógico", icon: "crown" },
@@ -254,9 +255,9 @@ function renderHome(state, ui) {
         "</div>"
       : '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-weight:600">🏆 ¡Ya alcanzaste Imperial Master, el rango más alto del plan!</div>') +
 
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="planeador">' + medallionHTML("target", 44) + '<div class="nc-body"><div class="nc-title">Planeador de Quincena</div><div class="nc-desc">Cuánto falta y a qué ritmo</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="listas">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Reunión de Enfoque</div><div class="nc-desc">Planea con tu equipo, línea por línea</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan">' + medallionHTML("book-open", 44) + '<div class="nc-body"><div class="nc-title">Plan de Compensación</div><div class="nc-desc">Cómo funciona, explicado simple</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>"
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="planeador">' + medallionHTML("target", 44) + '<div class="nc-body"><div class="nc-title">Planeador de Quincena</div><div class="nc-desc">Cuánto falta y a qué ritmo</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="listas">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Reunión de Enfoque</div><div class="nc-desc">Planea con tu equipo, línea por línea</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan">' + medallionHTML("book-open", 44) + '<div class="nc-body"><div class="nc-title">Plan de Compensación</div><div class="nc-desc">Cómo funciona, explicado simple</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>"
   );
 }
 
@@ -392,7 +393,7 @@ function granPlanSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Gran Plan 3 — proyección a 3 años</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + total + " hitos guardados</div>" +
     (open
@@ -414,7 +415,7 @@ function diarioFuturoSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Diario de mi yo futuro</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "accent") +
     "</button>" +
     (open
       ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
@@ -612,6 +613,104 @@ function formatMoneda(valor, paisInfo) {
   }
 }
 
+/* ---------------- "Clica aquí" — badge reutilizable para toggles y navegación ---------------- */
+
+function clicaAquiBadgeHTML(open, color) {
+  const cls = color === "accent" ? "blue" : "gold";
+  return (
+    '<span class="badge ' + cls + '" style="flex-shrink:0">Clica aquí' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' +
+    Icon("chevron-right", { size: 11, color: color === "accent" ? "var(--accent)" : "#1B1338" }) +
+    "</span></span>"
+  );
+}
+
+/* ---------------- Reto 7×7 — tabla de 10 contactos y evaluación semanal ---------------- */
+
+function contactos10FilaHTML(pathPrefix, i, fila) {
+  const inputStyle = "width:100%;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 8px;font-size:12.5px;outline:none";
+  return (
+    "<tr>" +
+    '<td style="padding:4px 6px;font-size:11px;color:var(--text-soft);text-align:center">' + (i + 1) + "</td>" +
+    '<td style="padding:4px"><input type="text" placeholder="Nombre" value="' + escapeHtml(fila.nombre) + '" data-field="' + pathPrefix + "." + i + '.nombre" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" inputmode="tel" placeholder="Teléfono" value="' + escapeHtml(fila.telefono) + '" data-field="' + pathPrefix + "." + i + '.telefono" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" placeholder="Observaciones / seguimiento" value="' + escapeHtml(fila.observaciones) + '" data-field="' + pathPrefix + "." + i + '.observaciones" style="' + inputStyle + '"></td>' +
+    "</tr>"
+  );
+}
+
+function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
+  const llenos = rows.filter(function (r) { return (r.nombre || "").trim(); }).length;
+  const filas = rows.map(function (r, i) { return contactos10FilaHTML(pathPrefix, i, r); }).join("");
+  const thStyle = "text-align:left;font-size:11px;color:var(--text-soft);padding:4px;font-weight:600";
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
+    '<div class="row gap-2">' + Icon("phone-call", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Mis primeros 10 contactos</span></div>' +
+    clicaAquiBadgeHTML(open, "gold") +
+    "</button>" +
+    '<div class="muted small" style="margin-top:4px">' + llenos + " de 10 con nombre registrado</div>" +
+    (open
+      ? '<div style="overflow-x:auto;margin-top:10px">' +
+        '<table style="border-collapse:collapse;width:100%">' +
+        "<thead><tr><th></th><th style=\"" + thStyle + "\">Nombre</th><th style=\"" + thStyle + "\">Teléfono</th><th style=\"" + thStyle + "\">Observaciones</th></tr></thead>" +
+        "<tbody>" + filas + "</tbody>" +
+        "</table></div>"
+      : "") +
+    "</div>"
+  );
+}
+
+function evaluacion7x7ResumenTexto(ev, periodoLabel) {
+  return (
+    "📊 " + periodoLabel + " — Reto 7×7 (Cumbre Master):\n" +
+    "• Personas contactadas: " + (ev.contactados || "0") + "\n" +
+    "• Respondieron: " + (ev.respondieron || "0") + "\n" +
+    "• Presentaciones hechas: " + (ev.presentaciones || "0") + "\n" +
+    "• Compras conseguidas: " + (ev.compras || "0") + "\n" +
+    "• Personas interesadas en el negocio: " + (ev.interesados || "0") + "\n" +
+    "• A quién debo seguir acompañando: " + (ev.seguimiento || "—") +
+    "\n\n¿Me ayudas a revisarlo?"
+  );
+}
+
+function evaluacion7x7PanelHTML(state, pathPrefix, ev, open, toggleAction, toggleArg, periodoLabel) {
+  const campo = function (key, label, placeholder) {
+    return (
+      '<div class="field" style="flex:1;min-width:110px"><label>' + label + "</label>" +
+      '<input type="text" inputmode="numeric" placeholder="' + placeholder + '" value="' + escapeHtml(ev[key]) + '" data-field="' + pathPrefix + "." + key + '"></div>'
+    );
+  };
+  const compartir = state.whatsapp && state.whatsapp.trim()
+    ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, evaluacion7x7ResumenTexto(ev, periodoLabel)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
+    : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir esto.</p>';
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
+    '<div class="row gap-2">' + Icon("target", { size: 15, color: "var(--accent)" }) + '<span style="font-weight:700;font-size:14px">Mis logros de esta semana</span></div>' +
+    clicaAquiBadgeHTML(open, "accent") +
+    "</button>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Regístralo cada 7 días y compártelo con tu patrocinador — esta es la labor de siempre para hacer crecer tu negocio.</p>' +
+    (open
+      ? '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+        campo("contactados", "Personas contactadas", "0") +
+        campo("respondieron", "Respondieron", "0") +
+        "</div>" +
+        '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
+        campo("presentaciones", "Presentaciones hechas", "0") +
+        campo("compras", "Compras conseguidas", "0") +
+        "</div>" +
+        '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
+        campo("interesados", "Personas interesadas en el negocio", "0") +
+        "</div>" +
+        '<div class="field" style="margin-top:8px"><label>¿A quién debo seguir acompañando?</label>' +
+        '<textarea rows="2" data-field="' + pathPrefix + '.seguimiento">' + escapeHtml(ev.seguimiento) + "</textarea></div>" +
+        compartir
+      : "") +
+    "</div>"
+  );
+}
+
 /* Convierte un monto oficial en COP (RANGOS_MASTER.montos) a la moneda del
    país activo y lo formatea con el prefijo "aprox." — ver TASAS_COP_POR_MONEDA
    en data.js para el porqué de la conversión aproximada. */
@@ -693,7 +792,7 @@ function productosCalculadoraHTML(state, ui, qKey, q) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-calculadora-productos">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Calculadora de productos</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Marca qué productos ya probaste, y cuántos planea cada uno comprar esta quincena — así sabes cuántos PV representa y cuánto vas a pagar, para tu reunión de enfoque.</p>' +
     '<div class="muted small" style="margin-top:10px">País / catálogo</div>' +
@@ -779,6 +878,72 @@ function resumenEnfoqueTexto(state, qKey) {
     lineaTexto("Derecha", "derecha") +
     "\n\n" + (q.reunionHecha ? "✅ Ya hice mi reunión de enfoque con mis socios." : "⏳ Aún no he hecho mi reunión de enfoque con mis socios.") +
     "\n\n¿Me ayudas a revisarlo para planear mi quincena?"
+  );
+}
+
+/* ---------------- Reto 7×7 ---------------- */
+
+function renderReto7x7(state, ui) {
+  const totalChecks = RETO_7X7_DIAS.reduce(function (sum, d) { return sum + d.checklist.length; }, 0);
+
+  const semanasHtml = [1, 2, 3, 4].map(function (semN) {
+    const est = state.reto7x7[semN];
+    const doneCount = RETO_7X7_DIAS.reduce(function (sum, d) { return sum + est.dias[d.id].checks.filter(Boolean).length; }, 0);
+    const open = !!(ui.reto7x7SemanaOpen && ui.reto7x7SemanaOpen[semN]);
+    const contactos10Open = !!(ui.reto7x7Contactos10Open && ui.reto7x7Contactos10Open[semN]);
+    const evaluacionOpen = !!(ui.reto7x7EvaluacionOpen && ui.reto7x7EvaluacionOpen[semN]);
+
+    const diasHtml = !open ? "" : RETO_7X7_DIAS.map(function (d) {
+      const diaEst = est.dias[d.id];
+      const diaKey = semN + "-" + d.id;
+      const diaOpen = !!(ui.reto7x7DiaOpen && ui.reto7x7DiaOpen[diaKey]);
+      const contenidoHtml = d.contenido.map(function (p) {
+        return '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(p) + "</p>";
+      }).join("");
+      const checklistHtml = d.checklist.map(function (item, i) {
+        const on = diaEst.checks[i];
+        return (
+          '<div class="check-row" style="padding-bottom:2px">' +
+          (i < d.checklist.length - 1 ? '<div class="line' + (on ? " on" : "") + '"></div>' : "") +
+          '<button class="check-dot' + (on ? " on" : "") + '" data-action="toggle-reto7x7-check" data-week="' + semN + '" data-arg="' + d.id + "|" + i + '">' + (on ? Icon("check", { size: 15, color: "#fff" }) : (i + 1)) + "</button>" +
+          '<button class="check-label' + (on ? " on" : "") + '" data-action="toggle-reto7x7-check" data-week="' + semN + '" data-arg="' + d.id + "|" + i + '">' + escapeHtml(item) + "</button>" +
+          "</div>"
+        );
+      }).join("");
+      return (
+        '<div class="card" style="margin-top:8px">' +
+        '<button class="row between" style="width:100%;text-align:left" data-action="toggle-reto7x7-dia" data-week="' + semN + '" data-arg="' + d.id + '">' +
+        '<div class="row gap-2">' + Icon(d.icono, { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13.5px">Día ' + d.id + " — " + escapeHtml(d.titulo) + "</span></div>" +
+        clicaAquiBadgeHTML(diaOpen, "gold") +
+        "</button>" +
+        (diaOpen
+          ? '<p class="muted small" style="margin-top:6px;font-style:italic">' + escapeHtml(d.frase) + "</p>" +
+            contenidoHtml +
+            '<div style="margin-top:10px">' + checklistHtml + "</div>"
+          : '<div class="muted small" style="margin-top:4px">' + diaEst.checks.filter(Boolean).length + " de " + d.checklist.length + " tareas hechas</div>") +
+        "</div>"
+      );
+    }).join("");
+
+    return (
+      '<div class="card" style="margin-top:12px">' +
+      '<button class="row between" style="width:100%;text-align:left" data-action="toggle-reto7x7-semana" data-arg="' + semN + '">' +
+      '<div class="row gap-2">' + Icon("flame", { size: 16, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:15px">Semana ' + semN + " — Reto 7×7</span></div>" +
+      clicaAquiBadgeHTML(open, "gold") +
+      "</button>" +
+      '<div class="muted small" style="margin-top:4px">' + doneCount + " de " + totalChecks + " tareas completadas</div>" +
+      (open
+        ? diasHtml +
+          contactos10TablaHTML("reto7x7." + semN + ".contactos10", est.contactos10, contactos10Open, "toggle-reto7x7-contactos10", semN) +
+          evaluacion7x7PanelHTML(state, "reto7x7." + semN + ".evaluacion", est.evaluacion, evaluacionOpen, "toggle-reto7x7-evaluacion", semN, "Semana " + semN)
+        : "") +
+      "</div>"
+    );
+  }).join("");
+
+  return (
+    sectionHeaderHTML("Reto 7×7", RETO_7X7_INTRO, "flame") +
+    semanasHtml
   );
 }
 
@@ -1468,7 +1633,7 @@ function detalleRangoHTML(state, ui) {
     return (
       '<button class="card row between" style="width:100%;text-align:left" data-action="toggle-detalle-rango">' +
       '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detalle, meta y tarjeta de reconocimiento</span></div>' +
-      Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+      clicaAquiBadgeHTML(false, "gold") +
       "</button>"
     );
   }
@@ -1500,7 +1665,7 @@ function detalleRangoHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-detalle-rango">' +
     '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detalle, meta y tarjeta de reconocimiento</span></div>' +
-    '<span style="display:inline-flex;transform:rotate(90deg)">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(true, "gold") +
     "</button>" +
 
     '<div class="muted small" style="margin-top:10px">Elige el rango que quieres ver:</div>' +

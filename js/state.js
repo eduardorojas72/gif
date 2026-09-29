@@ -31,7 +31,39 @@ function defaultState() {
     diarioFuturo: emptyDiarioFuturo(),
     evaluacion8Pasos: {},
     planComercialMensual: {},
+    reto7x7: emptyReto7x7(),
   };
+}
+
+/* ---------------- Reto 7×7 — tabla de 10 contactos, evaluación semanal y checklist por día ---------------- */
+
+function nuevaFilaContacto10() {
+  return { nombre: "", telefono: "", observaciones: "" };
+}
+
+function nuevaTabla10Contactos() {
+  return Array.from({ length: 10 }, nuevaFilaContacto10);
+}
+
+function nuevaEvaluacion7x7() {
+  return { contactados: "", respondieron: "", presentaciones: "", compras: "", interesados: "", seguimiento: "" };
+}
+
+function emptyReto7x7Dia(diaId) {
+  const dia = RETO_7X7_DIAS.find(function (d) { return d.id === diaId; });
+  return { checks: dia.checklist.map(function () { return false; }) };
+}
+
+function emptyReto7x7Semana() {
+  return {
+    dias: RETO_7X7_DIAS.reduce(function (acc, d) { acc[d.id] = emptyReto7x7Dia(d.id); return acc; }, {}),
+    contactos10: nuevaTabla10Contactos(),
+    evaluacion: nuevaEvaluacion7x7(),
+  };
+}
+
+function emptyReto7x7() {
+  return { 1: emptyReto7x7Semana(), 2: emptyReto7x7Semana(), 3: emptyReto7x7Semana(), 4: emptyReto7x7Semana() };
 }
 
 /* ---------------- Metas de rango (fecha objetivo por rango de Maestría) ---------------- */
@@ -457,6 +489,28 @@ function hydrateState(parsed) {
         ? saved.quincenas.map(function (q) { return { ingresos: Number(q.ingresos) || 0, pv: Number(q.pv) || 0, nivel: q.nivel || "" }; })
         : base.quincenas,
     };
+    return acc;
+  }, {});
+
+  const reto7x7Guardado = parsed.reto7x7 && typeof parsed.reto7x7 === "object" ? parsed.reto7x7 : {};
+  merged.reto7x7 = [1, 2, 3, 4].reduce(function (acc, semN) {
+    const saved = reto7x7Guardado[semN] || {};
+    const diasGuardados = saved.dias && typeof saved.dias === "object" ? saved.dias : {};
+    const dias = RETO_7X7_DIAS.reduce(function (dacc, d) {
+      const savedDia = diasGuardados[d.id] || {};
+      const base = emptyReto7x7Dia(d.id);
+      dacc[d.id] = {
+        checks: Array.isArray(savedDia.checks) && savedDia.checks.length === base.checks.length
+          ? savedDia.checks.map(Boolean)
+          : base.checks,
+      };
+      return dacc;
+    }, {});
+    const contactos10 = Array.isArray(saved.contactos10) && saved.contactos10.length === 10
+      ? saved.contactos10.map(function (f) { return Object.assign(nuevaFilaContacto10(), f); })
+      : nuevaTabla10Contactos();
+    const evaluacion = Object.assign(nuevaEvaluacion7x7(), saved.evaluacion && typeof saved.evaluacion === "object" ? saved.evaluacion : {});
+    acc[semN] = { dias: dias, contactos10: contactos10, evaluacion: evaluacion };
     return acc;
   }, {});
 

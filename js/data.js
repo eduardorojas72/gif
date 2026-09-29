@@ -1019,6 +1019,172 @@ const EVALUACION_8PASOS_CATEGORIAS = [
   { id: "replicacion", label: "Replicación", pregunta: "¿Aprendió sobre el éxito de su patrocinador y compartió su propio conocimiento con sus socios?" },
 ];
 
+/* ---------------------------------------------------------------
+   RETO 7×7 — ciclo semanal de 7 días para desarrollar el negocio
+   (contactar → presentar → recomendar → seguir → cerrar → duplicar → repetir)
+--------------------------------------------------------------- */
+
+const RETO_7X7_INTRO =
+  "El Reto 7×7 es tu labor diaria para hacer crecer el negocio: 7 días, un ciclo completo. Complétalo cada semana, durante estas 4 semanas, y luego repítelo para siempre — esa es la clave de la duplicación.";
+
+const RETO_7X7_DIAS = [
+  {
+    id: 1,
+    icono: "flame",
+    titulo: "Define y prepárate",
+    frase: "“Si no tengo una meta, no tengo dirección.”",
+    contenido: [
+      "1. Define tu meta de los próximos 7 días (cuántas conversaciones, presentaciones o registros quieres lograr).",
+      "2. Haz una lista de 30 personas.",
+      "3. Clasifica tus contactos: clientes potenciales, personas interesadas en bienestar, personas interesadas en generar ingresos.",
+      "4. Elige tus primeros 10 contactos para empezar mañana.",
+      "Todavía no vendas nada: primero construimos la lista.",
+      "Misión del día: 30 nombres antes de dormir.",
+    ],
+    checklist: [
+      "Definí mi meta de los próximos 7 días.",
+      "Hice mi lista de 30 personas y clasifiqué mis contactos.",
+      "Elegí mis primeros 10 contactos — misión: 30 nombres antes de dormir.",
+    ],
+    quiz: {
+      pregunta: "¿Cuántos nombres es la misión de hoy, antes de dormir?",
+      opciones: ["10", "30", "100"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 2,
+    icono: "phone-call",
+    titulo: "Abrir conversaciones",
+    frase: "“10 conversaciones reales.”",
+    contenido: [
+      "Contacta personalmente a 10 personas de tu lista. No envíes un catálogo de entrada: primero conversa.",
+      "Ejemplo de guion: “Hola, estoy participando en un reto de 7 días para desarrollar mi proyecto de bienestar y economía. Estoy buscando a algunas personas a quienes pueda mostrarles cómo funciona. ¿Te gustaría que te cuente?”",
+      "Si responde que sí: “Perfecto 😊. Te hago una explicación muy corta y tú me dices si puede ser interesante para ti.”",
+      "Regla de oro: pregunta → escucha → identifica necesidad → presenta.",
+      "Misión del día: 10 conversaciones.",
+    ],
+    checklist: [
+      "Contacté personalmente a 10 personas de mi lista.",
+      "Usé el guion de conversación en lugar de enviar un catálogo directo.",
+    ],
+    quiz: {
+      pregunta: "Antes de presentar productos o el negocio, ¿qué debes hacer primero?",
+      opciones: ["Enviar un catálogo", "Conversar y escuchar", "Nada, ir directo a la venta"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 3,
+    icono: "presentation",
+    titulo: "Recomendar",
+    frase: "“No vendo productos. Descubro necesidades.”",
+    contenido: [
+      "Hoy conversas para descubrir: ¿qué producto utilizan actualmente?, ¿qué necesidad quieren atender?, ¿qué productos compran regularmente?, ¿les interesa conocer una alternativa de compra?",
+      "Después de escuchar, sigue la secuencia: Recomienda → Explica → Invita.",
+      "Ejemplo: “Cuéntame, ¿qué productos utilizas normalmente para el cuidado personal o bienestar?” Después de escuchar: “Precisamente tengo una alternativa que podría interesarte. ¿Quieres que te muestre cómo funciona?”",
+      "Misión del día: presentar productos a personas con una necesidad real.",
+    ],
+    checklist: [
+      "Conversé para descubrir necesidades reales, sin vender a ciegas.",
+      "Presenté productos a personas con una necesidad real detectada.",
+    ],
+    quiz: {
+      pregunta: "¿Cuál es la secuencia correcta del Día 3?",
+      opciones: ["Recomienda → Explica → Invita", "Vende → Cobra → Despacha", "Invita → Vende → Olvida"],
+      correcta: 0,
+    },
+  },
+  {
+    id: 4,
+    icono: "users",
+    titulo: "Presentar la oportunidad",
+    frase: "“No todos quieren comprar. Algunos quieren construir.”",
+    contenido: [
+      "Busca personas que quieran: generar ingresos adicionales, comprar inteligentemente, recomendar productos o construir un negocio.",
+      "Mini presentación en 4 preguntas: ¿Qué es Atomy? Una empresa internacional de venta directa. ¿Qué encontramos? Productos de diferentes categorías. ¿Cómo funciona? Consumir → Recomendar → Desarrollar clientes y equipo. ¿Qué buscamos? Construir un negocio mediante un sistema que podamos repetir y enseñar.",
+      "Misión del día: presentar la oportunidad a mínimo 3 personas.",
+    ],
+    checklist: ["Presenté la oportunidad de negocio a mínimo 3 personas."],
+    quiz: {
+      pregunta: "¿Qué buscamos según la mini presentación en 4 preguntas?",
+      opciones: ["Vender lo más rápido posible", "Construir un negocio con un sistema que podamos repetir y enseñar", "Convencer sin escuchar"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 5,
+    icono: "clipboard-list",
+    titulo: "Seguimiento",
+    frase: "La fortuna está en el seguimiento.",
+    contenido: [
+      "Hoy vuelves a contactar a: personas que preguntaron, personas que vieron la presentación, personas que dijeron “déjame pensarlo”, personas que mostraron interés.",
+      "Ejemplo — retomar el contacto: “Hola 😊. Quería saber qué te pareció lo que hablamos el otro día. ¿Hubo algo que te llamó especialmente la atención?”",
+      "Ejemplo — si dice “lo voy a pensar”: “Claro, tómate tu tiempo. ¿Qué parte es la que quieres pensar: el producto, la inversión o cómo funciona el negocio?”",
+      "Ejemplo — si dice “no tengo dinero”: “Te entiendo. No quiero que hagas algo que no esté dentro de tus posibilidades. Podemos comenzar conversando sobre el modelo y sobre cómo aprovechar las compras que ya haces habitualmente.”",
+      "Un mensaje a tiempo puede abrir una gran oportunidad.",
+      "Misión del día: dar seguimiento a todas las conversaciones abiertas.",
+    ],
+    checklist: [
+      "Di seguimiento a todas mis conversaciones abiertas.",
+      "Retomé contacto con quienes dijeron “déjame pensarlo”.",
+      "Retomé contacto con quienes mostraron interés o vieron mi presentación.",
+    ],
+    quiz: {
+      pregunta: "Según el Reto 7×7, ¿dónde está la fortuna?",
+      opciones: ["En hablar solo con gente nueva", "En el seguimiento", "En enviar un catálogo sin más"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 6,
+    icono: "repeat",
+    titulo: "Duplicar",
+    frase: "“No lo hagas solo.”",
+    contenido: [
+      "El ciclo de la duplicación: Yo lo hago → Te enseño → Tú lo haces → Tú lo enseñas.",
+      "Invita a una persona interesada a realizar contigo: su lista de contactos, sus primeras conversaciones, su primera presentación, su primer seguimiento.",
+      "Cada acción cuenta. El reto no termina: ¡comienza el ciclo! Juntos llegamos más lejos.",
+      "Misión del día: ayudar a una persona a comenzar el proceso.",
+    ],
+    checklist: [
+      "Invité a una persona interesada a recorrer el proceso conmigo.",
+      "Ayudé a esa persona a comenzar su propia lista, conversaciones, presentación o seguimiento.",
+    ],
+    quiz: {
+      pregunta: "¿Cuál es el ciclo de la duplicación del Reto 7×7?",
+      opciones: [
+        "Yo lo hago → Te enseño → Tú lo haces → Tú lo enseñas",
+        "Yo vendo → Tú compras → Fin",
+        "Yo decido → Tú obedeces",
+      ],
+      correcta: 0,
+    },
+  },
+  {
+    id: 7,
+    icono: "check",
+    titulo: "Evaluar, cerrar y repetir",
+    frase: "“Los resultados se miden.”",
+    contenido: [
+      "Hoy revisamos: ¿cuántas personas contacté?, ¿cuántas respondieron?, ¿cuántas presentaciones hice?, ¿cuántas compras conseguí?, ¿cuántas personas están interesadas en el negocio?, ¿a quién debo seguir acompañando?",
+      "El reto no termina aquí: ¡comienza el ciclo! Contactar → Presentar → Recomendar → Seguir → Cerrar → Duplicar → Repetir.",
+      "¿Qué pasaría con tu negocio si durante las próximas semanas hicieras este proceso una y otra vez? No necesitas hacerlo perfecto. Necesitas hacerlo.",
+      "Registra tus logros de la semana abajo y compártelos con tu patrocinador.",
+    ],
+    checklist: [
+      "Conté cuántas personas contacté, cuántas respondieron y cuántas presentaciones hice.",
+      "Identifiqué a quién debo seguir acompañando.",
+      "Entendí que el ciclo Contactar → Presentar → Recomendar → Seguir → Cerrar → Duplicar → Repetir no termina, se repite.",
+    ],
+    quiz: {
+      pregunta: "Al terminar el Reto 7×7, ¿qué corresponde hacer?",
+      opciones: ["Detenerse, ya se acabó", "Repetir el ciclo", "Esperar a que otros te contacten a ti"],
+      correcta: 1,
+    },
+  },
+];
+
 const EVALUACION_8PASOS_BANDAS = [
   { min: 0, max: 10, texto: "Apenas está comenzando. Vea los videos de capacitación sobre los ocho pasos hacia el éxito a medida que avanza." },
   { min: 11, max: 20, texto: "Es posible que su negocio avance lentamente. Intente aumentar su pasión y esfuerzo." },

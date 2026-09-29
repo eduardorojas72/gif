@@ -384,6 +384,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
 }
 .badge.gold { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #1B1338; }
+.badge.blue { background: var(--accent-soft); color: var(--accent); }
 .badge.dark { background: rgba(0,0,0,0.45); color: #fff; }
 .badge.soft { background: var(--accent-soft); color: var(--gold-light); }
 .badge.success { background: var(--success-soft); color: var(--success); }
