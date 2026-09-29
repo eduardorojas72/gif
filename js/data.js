@@ -609,9 +609,13 @@ const DIAS = [
       "Reto 7×7 (Día 1): elegí mis primeros 10 contactos — misión: 30 nombres antes de dormir.",
     ],
     quiz: {
-      pregunta: "¿Cuántas recomendaciones de bienestar identificas hoy?",
-      opciones: ["3", "5", "10"],
-      correcta: 1,
+      pregunta: "¿Por qué es importante hacer tu primer pedido ahora?",
+      opciones: [
+        "Para reconocer la calidad de los productos y hablar con propiedad de ellos",
+        "Para cumplir una cuota obligatoria de la empresa",
+        "Porque si no compro pierdo mi cuenta",
+      ],
+      correcta: 0,
     },
   },
   {
