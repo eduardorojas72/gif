@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------
-   ESTADO Y PERSISTENCIA — 100% local (localStorage), sin backend
+   STATE AND PERSISTENCE — 100% local (localStorage), no backend
 --------------------------------------------------------------- */
 
 const STORAGE_KEY = "cumbre-master-estado-v1";
@@ -22,7 +22,7 @@ function defaultState() {
     notifOn: true,
     notifUltimoAviso: null,
     registroDiario: {},
-    idiomaInforme: "es",
+    idiomaInforme: "en",
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
     contactosEventos: [],
@@ -35,7 +35,7 @@ function defaultState() {
   };
 }
 
-/* ---------------- Reto 7×7 — tabla de 10 contactos, evaluación semanal y checklist por día ---------------- */
+/* ---------------- 7×7 Challenge — table of 10 contacts, weekly evaluation, and per-day checklist ---------------- */
 
 function nuevaFilaContacto10() {
   return { nombre: "", telefono: "", observaciones: "" };
@@ -66,21 +66,21 @@ function emptyReto7x7() {
   return { 1: emptyReto7x7Semana(), 2: emptyReto7x7Semana(), 3: emptyReto7x7Semana(), 4: emptyReto7x7Semana() };
 }
 
-/* ---------------- Metas de rango (fecha objetivo por rango de Maestría) ---------------- */
+/* ---------------- Rank goals (target date per Mastery rank) ---------------- */
 
 function emptyMetaRango() {
   return { fecha: null };
 }
 
-/* Lee (y crea si falta) la meta de un rango — se usa dentro de las vistas
-   antes de dibujar el campo de fecha, para que setPath() encuentre el objeto. */
+/* Reads (and creates if missing) a rank's goal — used inside the views
+   before drawing the date field, so setPath() can find the object. */
 function getMetaRango(state, idx) {
   const key = String(idx);
   if (!state.metasRango[key]) state.metasRango[key] = emptyMetaRango();
   return state.metasRango[key];
 }
 
-/* Días enteros que faltan hasta una fecha ISO (yyyy-mm-dd). Negativo si ya pasó. */
+/* Whole days remaining until an ISO date (yyyy-mm-dd). Negative if it already passed. */
 function diasHasta(fechaISO) {
   if (!fechaISO) return null;
   const hoy = new Date();
@@ -90,7 +90,7 @@ function diasHasta(fechaISO) {
   return Math.round((meta - hoy) / 86400000);
 }
 
-/* ---------------- Gran Plan 3 — proyección de rango/PV/ingresos a 3 años ---------------- */
+/* ---------------- Gran Plan 3 (Big 3-Year Plan) — rank/PV/income projection over 3 years ---------------- */
 
 function nuevoHitoGranPlan() {
   return { id: "gp" + Math.random().toString(36).slice(2, 9), fecha: "", nivel: "", pvGrupal: "", ingresos: "" };
@@ -100,15 +100,15 @@ function emptyGranPlan3() {
   return { anio1: [], anio2: [], anio3: [] };
 }
 
-/* ---------------- Diario de mi yo futuro ---------------- */
+/* ---------------- Future-Self Journal ---------------- */
 
 function emptyDiarioFuturo() {
   return { texto: "" };
 }
 
-/* ---------------- Evaluación mensual de Los 8 Pasos + Plan comercial mensual ----------------
-   Ambas se guardan por mes de calendario ("YYYY-MM"), con el mismo formato de
-   navegación mes a mes (independiente de las "quincenas" de Reunión de Enfoque). */
+/* ---------------- Monthly Evaluation of the 8 Steps + Monthly Business Plan ----------------
+   Both are saved per calendar month ("YYYY-MM"), with the same month-by-month
+   navigation format (independent of the "pay periods" of the Focus Meeting). */
 
 function mesActualKey() {
   return hoyISO().slice(0, 7);
@@ -160,7 +160,7 @@ function getPlanComercialMensual(state, mesKey) {
   return state.planComercialMensual[mesKey];
 }
 
-/* ---------------- Informe Semanal — registro diario de acciones ---------------- */
+/* ---------------- Weekly Report — daily log of actions ---------------- */
 
 function emptyRegistroDia() {
   return { llamadas: 0, mensajes: 0, presentaciones: 0, reuniones: 0 };
@@ -171,7 +171,7 @@ function getRegistroDia(state, fechaISO) {
   return state.registroDiario[fechaISO];
 }
 
-/* Últimos 7 días (incluye hoy), del más antiguo al más reciente. */
+/* Last 7 days (includes today), from oldest to most recent. */
 function ultimos7Dias() {
   const out = [];
   for (let i = 6; i >= 0; i--) {
@@ -219,9 +219,9 @@ function hoyISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-/* ---------------- quincenas (1–15 y 16–fin de mes) ---------------- */
+/* ---------------- pay periods (1st–15th and 16th–end of month) ---------------- */
 
-const MESES_ES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const MESES_ES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 function quincenaKeyFromDate(d) {
   const y = d.getFullYear();
@@ -250,7 +250,7 @@ function quincenaBounds(key) {
 
 function quincenaLabel(key) {
   const { year, month, half } = parseQuincenaKey(key);
-  return (half === 1 ? "1–15" : "16–fin") + " de " + MESES_ES[month - 1] + " " + year;
+  return MESES_ES[month - 1] + " " + (half === 1 ? "1–15" : "16–end") + ", " + year;
 }
 
 function quincenaAdyacente(key, delta) {
@@ -272,7 +272,7 @@ function esQuincenaActual(key) {
   return key === quincenaActualKey();
 }
 
-/* ---------------- listas Izquierda / Derecha por quincena ---------------- */
+/* ---------------- Left / Right lists per pay period ---------------- */
 
 function nuevaPersona() {
   return { id: "p" + Math.random().toString(36).slice(2, 9), nombre: "", telefono: "", pais: "CO", atomyId: "", contrasena: "", pvp: 0, puntos: 0, fecha: null, verificado: false, notas: "" };
@@ -286,7 +286,7 @@ function nuevoProductoCatalogo(seed) {
   seed = seed || {};
   return {
     id: seed.id || "prod" + Math.random().toString(36).slice(2, 9),
-    categoria: seed.categoria || "Mis productos",
+    categoria: seed.categoria || "My products",
     nombre: seed.nombre || "",
     pv: seed.pv || 0,
     precio: seed.precio || 0,
@@ -304,7 +304,7 @@ function emptyCatalogoProductosPais(paisId) {
     return nuevoProductoCatalogo({ id: paisId + "-prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
   });
   const lineasLibres = Array.from({ length: 20 }, function (_, i) {
-    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Mis productos" });
+    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "My products" });
   });
   return productos.concat(lineasLibres);
 }
@@ -319,7 +319,7 @@ function getQuincena(state, key) {
   return state.quincenas[key];
 }
 
-/* Lectura sin mutar el estado (para usar dentro de las vistas). */
+/* Read without mutating state (for use inside the views). */
 function peekQuincena(state, key) {
   return state.quincenas[key] || emptyQuincena();
 }
@@ -333,7 +333,7 @@ function sumaLinea(quincena, linea, soloVerificado) {
   }, base);
 }
 
-/* ---------------- Mi Árbol Genealógico, Llamadas S.O.S. y Lista de Contactos (eventos) ---------------- */
+/* ---------------- My Genealogy Tree, S.O.S. Calls, and Contacts List (events) ---------------- */
 
 function nuevaPersonaAscendente() {
   return { id: "a" + Math.random().toString(36).slice(2, 9), nombre: "", rango: "", pais: "", telefono: "", horarioNoMolestar: "" };
@@ -355,7 +355,7 @@ function nuevoContactoEvento() {
   return { id: "e" + Math.random().toString(36).slice(2, 9), nombre: "", pais: "", telefono: "", observaciones: "" };
 }
 
-/* ---------------- rachas / utilidades compartidas ---------------- */
+/* ---------------- streaks / shared utilities ---------------- */
 
 function calcularRacha(racha, ultimaFecha) {
   const hoy = hoyISO();
@@ -395,7 +395,7 @@ function hydrateState(parsed) {
   merged.pais = PAISES_CATALOGO.some(function (p) { return p.id === parsed.pais; }) ? parsed.pais : "CO";
 
   const catalogosGuardados = Array.isArray(parsed.catalogoProductos)
-    ? { CO: parsed.catalogoProductos } // formato antiguo (un solo país): se migra a Colombia
+    ? { CO: parsed.catalogoProductos } // old format (single country): migrated to Colombia
     : parsed.catalogoProductos && typeof parsed.catalogoProductos === "object"
     ? parsed.catalogoProductos
     : {};
@@ -417,7 +417,7 @@ function hydrateState(parsed) {
       }, {})
     : {};
 
-  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "es";
+  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "en";
 
   const arbolGuardado = parsed.arbolGenealogico && typeof parsed.arbolGenealogico === "object" ? parsed.arbolGenealogico : {};
   merged.arbolGenealogico = {
@@ -549,7 +549,7 @@ const Storage = {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
-      /* almacenamiento lleno o no disponible: se ignora silenciosamente */
+      /* storage full or unavailable: silently ignored */
     }
   },
   clear() {

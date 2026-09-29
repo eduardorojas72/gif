@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------
-   CONTROLADOR DE LA APP — estado, render loop, eventos
+   APP CONTROLLER — state, render loop, events
 --------------------------------------------------------------- */
 
 function applyTheme(dark) {
@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi camino hacia Imperial Master");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hi, I have a question about my path to Imperial Master");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cuántos puntos vas a pedir esta quincena y en qué fecha?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hi" + (nombre ? " " + nombre : "") + "! How many points are you going to order this pay period, and on what date?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He alcanzado el rango de \"" + titulo + "\" en mi camino hacia Imperial Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 I've reached the \"" + titulo + "\" rank on my path to Imperial Master with Atomy! 🚀 If you're curious, ask me what it's about.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,14 +25,14 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Share</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
     '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copy</span></button>" +
     "</div>"
   );
 }
@@ -125,7 +125,7 @@ const App = {
       try {
         new Notification(titulo, { body: cuerpo });
       } catch (e) {
-        /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+        /* some browsers restrict Notification outside a user gesture: ignored */
       }
       item.ultimoAviso = hoy;
       this.persist(true);
@@ -133,10 +133,10 @@ const App = {
 
     (dia.actividades || []).forEach((a) => {
       const tipo = agendaTipoInfo(a.tipo);
-      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "You have this scheduled at " + a.hora + ".");
     });
     (dia.zooms || []).forEach((z) => {
-      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Meeting"), "Starts at " + z.hora + ".");
     });
   },
 
@@ -151,11 +151,11 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre Master — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre Master — Reminder", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " more)" : primero.text,
       });
     } catch (e) {
-      /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
+      /* some browsers restrict Notification outside a user gesture: ignored */
     }
   },
 
@@ -200,8 +200,8 @@ const App = {
     const state = this.state, ui = this.ui;
     const isAuth = ui.view !== "welcome" && ui.view !== "onboarding";
 
-    // Garantiza que la quincena que se va a mostrar/editar ya exista en el estado
-    // (los campos data-field de "otros puntos" necesitan el objeto creado de antemano).
+    // Ensures the pay period about to be shown/edited already exists in state
+    // (the "other points" data-field inputs need the object created beforehand).
     if (isAuth && (ui.view === "planeador" || ui.view === "listas")) {
       getQuincena(state, ui.quincenaKey || quincenaActualKey());
     }
@@ -212,7 +212,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Message your sponsor">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
 
@@ -280,8 +280,8 @@ const App = {
       if (handler) handler(arg, el);
     });
 
-    // campos de texto (data-field / data-draft-field / data-roster-field): actualizan
-    // estado sin re-render, para no perder el foco mientras se escribe.
+    // text fields (data-field / data-draft-field / data-roster-field): update
+    // state without a re-render, so focus isn't lost while typing.
     root.addEventListener("input", (e) => {
       const el = e.target;
       if (el.dataset && el.dataset.field) {
@@ -307,16 +307,16 @@ const App = {
       }
     });
 
-    // inputs de archivo (fotos): data-target apunta a una ruta del estado, o al prefijo especial __onboardingFoto
+    // file inputs (photos): data-target points to a state path, or the special __onboardingFoto prefix
     root.addEventListener("change", (e) => {
       const el = e.target;
       if (el.tagName === "INPUT" && el.type === "date" && el.dataset && el.dataset.field && el.dataset.field.indexOf("metasRango.") === 0) {
-        // recalcula la cuenta regresiva de la meta al elegir la fecha
+        // recalculate the goal countdown once the date is picked
         this.render();
         return;
       }
       if (el.tagName === "INPUT" && el.dataset && el.dataset.field && (el.dataset.field.indexOf("quincenas.") === 0 && el.dataset.field.indexOf(".compras.") !== -1 || el.dataset.field.indexOf("catalogoProductos.") === 0)) {
-        // recalcula los totales de la calculadora de productos al salir del campo (no en cada tecla, para no perder el foco)
+        // recalculate the product calculator's totals when leaving the field (not on every keystroke, to avoid losing focus)
         this.render();
         return;
       }
@@ -335,17 +335,17 @@ const App = {
           try {
             parsed = JSON.parse(reader.result);
           } catch (e) {
-            this.showToast("Ese archivo no es un respaldo válido de Cumbre Master.");
+            this.showToast("That file isn't a valid Cumbre Master backup.");
             return;
           }
-          if (!window.confirm("Esto reemplazará todos tus datos actuales (Reunión de Enfoque, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          if (!window.confirm("This will replace all your current data (Focus Meeting, Genealogy Tree, progress) with the backup file's data. Continue?")) return;
           const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
           this.state = hydrateState(parsed);
           this.state.racha = rh.racha;
           this.state.ultimaFecha = rh.ultimaFecha;
           this.persist(true);
           this.render();
-          this.showToast("Datos restaurados correctamente ✨");
+          this.showToast("Data restored successfully ✨");
         };
         reader.readAsText(file);
         return;
@@ -453,7 +453,7 @@ const Actions = {
     App.ui.menuOpen = false;
     App.render();
     window.close();
-    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+    App.showToast("If it didn't close on its own, you can now close this tab or go back.");
   },
 
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
@@ -539,7 +539,7 @@ const Actions = {
     }
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Person saved");
     App.render();
   },
 
@@ -556,7 +556,7 @@ const Actions = {
     App.ui.confirmDeletePersona = null;
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Person deleted");
     App.render();
   },
 
@@ -578,7 +578,7 @@ const Actions = {
     App.render();
   },
 
-  /* -------- Mi Árbol Genealógico — línea ascendente -------- */
+  /* -------- My Genealogy Tree — upline -------- */
 
   "add-ascendente": function () {
     App.ui.ascendenteDraft = { id: null, nombre: "", rango: "", pais: "", telefono: "", horarioNoMolestar: "" };
@@ -618,7 +618,7 @@ const Actions = {
     }
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Person saved");
     App.render();
   },
 
@@ -632,11 +632,11 @@ const Actions = {
     App.ui.confirmDeleteAscendente = null;
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Person deleted");
     App.render();
   },
 
-  /* -------- Llamadas S.O.S. -------- */
+  /* -------- S.O.S. Calls -------- */
 
   "add-sos": function () {
     App.ui.sosDraft = { id: null, nombre: "", telefono: "", nota: "" };
@@ -673,7 +673,7 @@ const Actions = {
     }
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact saved");
     App.render();
   },
 
@@ -687,11 +687,11 @@ const Actions = {
     App.ui.confirmDeleteSOS = null;
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact deleted");
     App.render();
   },
 
-  /* -------- Lista de Contactos (eventos en vivo) -------- */
+  /* -------- Contacts List (live events) -------- */
 
   "add-contacto-evento": function () {
     App.ui.contactoEventoDraft = { id: null, nombre: "", pais: "", telefono: "", observaciones: "" };
@@ -729,7 +729,7 @@ const Actions = {
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact saved");
     App.render();
   },
 
@@ -743,7 +743,7 @@ const Actions = {
     App.ui.confirmDeleteContactoEvento = null;
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact deleted");
     App.render();
   },
 
@@ -789,7 +789,7 @@ const Actions = {
   },
   "add-producto": function () {
     const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
-    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    catalogo.push(nuevoProductoCatalogo({ categoria: "My products" }));
     App.persist(true);
     App.render();
   },
@@ -836,8 +836,8 @@ const Actions = {
     App.state.rangoActualIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nuevo rango de Maestría alcanzado en Atomy." };
-      App.addActividad("Alcanzaste el rango: " + RANGOS_MASTER[i].nombre);
+      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "New Mastery rank reached at Atomy." };
+      App.addActividad("You reached the rank: " + RANGOS_MASTER[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -856,19 +856,19 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Message copied — paste it wherever you like!"),
+        () => App.showToast("Couldn't copy the message")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Couldn't copy the message");
     }
   },
 
   "descargar-respaldo": function () {
     const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
     const fecha = hoyISO();
-    downloadBlobCumbre(blob, "Cumbre-Master-Respaldo-" + slugFileCumbre(App.state.nombre || "lider") + "-" + fecha + ".json");
-    App.showToast("Copia de seguridad descargada");
+    downloadBlobCumbre(blob, "Cumbre-Master-Backup-" + slugFileCumbre(App.state.nombre || "leader") + "-" + fecha + ".json");
+    App.showToast("Backup downloaded");
   },
 
   "reset-progress": function () {
@@ -887,7 +887,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.agendaDia = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progress reset");
     App.render();
   },
 
@@ -932,7 +932,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad guardada");
+    App.showToast("Activity saved");
     App.render();
   },
 
@@ -948,7 +948,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad eliminada");
+    App.showToast("Activity deleted");
     App.render();
   },
 
@@ -997,7 +997,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión guardada");
+    App.showToast("Meeting saved");
     App.render();
   },
 
@@ -1013,18 +1013,18 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión eliminada");
+    App.showToast("Meeting deleted");
     App.render();
   },
 
   "copy-zoom-link": function (arg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(arg).then(
-        () => App.showToast("Enlace copiado"),
-        () => App.showToast("No se pudo copiar el enlace")
+        () => App.showToast("Link copied"),
+        () => App.showToast("Couldn't copy the link")
       );
     } else {
-      App.showToast("No se pudo copiar el enlace");
+      App.showToast("Couldn't copy the link");
     }
   },
 
@@ -1046,7 +1046,7 @@ const Actions = {
     App.render();
   },
 
-  /* -------- Gran Plan 3 -------- */
+  /* -------- Gran Plan 3 (Big 3-Year Plan) -------- */
 
   "toggle-granplan": function () {
     App.ui.granPlanOpen = !App.ui.granPlanOpen;
@@ -1075,14 +1075,14 @@ const Actions = {
     App.render();
   },
 
-  /* -------- Diario de mi yo futuro -------- */
+  /* -------- Future-Self Journal -------- */
 
   "toggle-diario-futuro": function () {
     App.ui.diarioFuturoOpen = !App.ui.diarioFuturoOpen;
     App.render();
   },
 
-  /* -------- Reto 7×7 -------- */
+  /* -------- 7×7 Challenge -------- */
 
   "toggle-reto7x7-semana": function (arg) {
     const semN = Number(arg);
@@ -1121,7 +1121,7 @@ const Actions = {
     App.render();
   },
 
-  /* -------- Evaluación mensual de Los 8 Pasos -------- */
+  /* -------- Monthly Evaluation of the 8 Steps -------- */
 
   "eval8pasos-mes-anterior": function () {
     App.ui.mesEvaluacion8Pasos = mesAdyacente(App.ui.mesEvaluacion8Pasos || mesActualKey(), -1);
@@ -1143,7 +1143,7 @@ const Actions = {
     App.render();
   },
 
-  /* -------- Plan comercial mensual -------- */
+  /* -------- Monthly Business Plan -------- */
 
   "planmensual-mes-anterior": function () {
     App.ui.mesPlanComercial = mesAdyacente(App.ui.mesPlanComercial || mesActualKey(), -1);
@@ -1228,7 +1228,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Turn on notification permissions from your browser settings.");
     }
   },
 };

@@ -1,81 +1,81 @@
 /* ---------------------------------------------------------------
-   VISTAS — Cumbre Master: cada función devuelve un string HTML
-   para #view-container (o para las regiones fijas: header, menú, modales)
+   VIEWS — Cumbre Master: each function returns an HTML string
+   for #view-container (or for the fixed regions: header, menu, modals)
 --------------------------------------------------------------- */
 
 const MENU_ITEMS = [
-  { id: "home", label: "Inicio", icon: "home" },
-  { id: "plan", label: "Plan de Compensación", icon: "book-open" },
-  { id: "planeador", label: "Planeador de Quincena", icon: "target" },
-  { id: "listas", label: "Reunión de Enfoque", icon: "users" },
-  { id: "reto7x7", label: "Reto 7×7", icon: "flame" },
-  { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
-  { id: "informe", label: "Informe Semanal", icon: "trending-up" },
-  { id: "arbol", label: "Mi Árbol Genealógico", icon: "crown" },
-  { id: "sos", label: "Llamadas S.O.S.", icon: "bell" },
-  { id: "eventos", label: "Lista de Contactos", icon: "users" },
-  { id: "perfil", label: "Mi Rango", icon: "user-badge" },
-  { id: "ajustes", label: "Ajustes", icon: "settings" },
+  { id: "home", label: "Home", icon: "home" },
+  { id: "plan", label: "Compensation Plan", icon: "book-open" },
+  { id: "planeador", label: "Pay Period Planner", icon: "target" },
+  { id: "listas", label: "Focus Meeting", icon: "users" },
+  { id: "reto7x7", label: "7×7 Challenge", icon: "flame" },
+  { id: "agenda", label: "Weekly Agenda", icon: "calendar" },
+  { id: "informe", label: "Weekly Report", icon: "trending-up" },
+  { id: "arbol", label: "My Genealogy Tree", icon: "crown" },
+  { id: "sos", label: "S.O.S. Calls", icon: "bell" },
+  { id: "eventos", label: "Contacts List", icon: "users" },
+  { id: "perfil", label: "My Rank", icon: "user-badge" },
+  { id: "ajustes", label: "Settings", icon: "settings" },
 ];
 
 function saludoHora() {
   const h = new Date().getHours();
-  if (h < 12) return "Buenos días";
-  if (h < 20) return "Buenas tardes";
-  return "Buenas noches";
+  if (h < 12) return "Good morning";
+  if (h < 20) return "Good afternoon";
+  return "Good evening";
 }
 
-/* ---------------- Bienvenida / Onboarding ---------------- */
+/* ---------------- Welcome / Onboarding ---------------- */
 
 function renderWelcome() {
   return (
     '<div class="center-screen cover-screen">' +
     Icon("gem", { size: 64, color: "var(--gold)" }) +
     '<h1 style="margin-top:22px;font-size:28px;font-weight:700;letter-spacing:-.02em">Cumbre Master</h1>' +
-    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">De Sales Master a Imperial Master</p>' +
+    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">From Sales Master to Imperial Master</p>' +
     '<p class="muted" style="margin-top:22px;max-width:300px;font-size:15px;line-height:1.6">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
-    '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Comenzar ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
-    (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copia con licencia exclusiva para ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
+    '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Get started ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Exclusive licensed copy for ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"
   );
 }
 
 function renderOnboarding(ui) {
   const foto = ui.onboardingFoto;
-  const avatarInner = foto ? '<img src="' + foto + '" alt="Tu foto"/>' : Icon("camera", { size: 26 });
+  const avatarInner = foto ? '<img src="' + foto + '" alt="Your photo"/>' : Icon("camera", { size: 26 });
   return (
     '<div class="center-screen" style="justify-content:center">' +
     '<div style="display:flex;flex-direction:column;align-items:center">' +
     '<button class="photo-picker" data-action="trigger-file" data-arg="onboarding-file">' + avatarInner + "</button>" +
     '<input id="onboarding-file" type="file" accept="image/*" class="hidden" data-target="__onboardingFoto">' +
-    '<span class="link-btn" style="margin-top:8px;font-size:12px">' + (foto ? "Cambiar foto" : "Añadir foto (opcional)") + "</span>" +
+    '<span class="link-btn" style="margin-top:8px;font-size:12px">' + (foto ? "Change photo" : "Add photo (optional)") + "</span>" +
     "</div>" +
-    '<h2 style="margin-top:22px;font-size:20px;font-weight:700">¿Cómo te llamas?</h2>' +
-    '<p class="muted small" style="margin-top:4px">Así personalizamos tu panel de líder.</p>' +
-    '<input id="onboarding-name-input" type="text" placeholder="Tu nombre" autofocus ' +
+    '<h2 style="margin-top:22px;font-size:20px;font-weight:700">What\'s your name?</h2>' +
+    '<p class="muted small" style="margin-top:4px">This helps us personalize your leader dashboard.</p>' +
+    '<input id="onboarding-name-input" type="text" placeholder="Your name" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<div style="width:100%;max-width:320px;margin-top:26px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
-    '<h3 style="font-size:14px;font-weight:700">Tus datos de Atomy <span class="muted" style="font-weight:400">(opcional)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">Los dejamos anotados en tu Árbol Genealógico, así ya no tienes que buscarlos ni volver a pedirlos.</p>' +
-    '<input id="onboarding-atomy-id-input" type="text" placeholder="Tu ID de Atomy" ' +
+    '<h3 style="font-size:14px;font-weight:700">Your Atomy details <span class="muted" style="font-weight:400">(optional)</span></h3>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">We\'ll save them in your Genealogy Tree, so you never have to look them up or enter them again.</p>' +
+    '<input id="onboarding-atomy-id-input" type="text" placeholder="Your Atomy ID" ' +
     'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    '<input id="onboarding-atomy-pass-input" type="text" placeholder="Tu contraseña de Atomy" ' +
+    '<input id="onboarding-atomy-pass-input" type="text" placeholder="Your Atomy password" ' +
     'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     "</div>" +
     '<div style="width:100%;max-width:320px;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
-    '<h3 style="font-size:14px;font-weight:700">Tu patrocinador/a <span class="muted" style="font-weight:400">(opcional)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">Así activamos de una vez el botón de WhatsApp para escribirle y lo dejamos anotado en tu Árbol Genealógico. Puedes saltarte esto y completarlo después.</p>' +
-    '<input id="onboarding-sponsor-name-input" type="text" placeholder="Nombre de tu patrocinador/a" ' +
+    '<h3 style="font-size:14px;font-weight:700">Your sponsor <span class="muted" style="font-weight:400">(optional)</span></h3>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">This turns on the WhatsApp button to message them right away, and saves it in your Genealogy Tree. You can skip this and fill it in later.</p>' +
+    '<input id="onboarding-sponsor-name-input" type="text" placeholder="Your sponsor\'s name" ' +
     'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="Su WhatsApp, ej. 34600000000" ' +
+    '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="Their WhatsApp, e.g. 34600000000" ' +
     'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     "</div>" +
-    '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Empezar ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Get started ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     "</div>"
   );
 }
 
-/* ---------------- Header / Menú ---------------- */
+/* ---------------- Header / Menu ---------------- */
 
 function renderHeader(state, ui) {
   const hasReminders = getReminders(state).length > 0;
@@ -100,7 +100,7 @@ function renderSidebar(ui) {
       Icon(it.icon, { size: 20 }) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
-  const salir = '<button class="sidebar-item" style="color:var(--warn)" data-action="salir-app">' + Icon("log-out", { size: 20 }) + "<span>Salir</span></button>";
+  const salir = '<button class="sidebar-item" style="color:var(--warn)" data-action="salir-app">' + Icon("log-out", { size: 20 }) + "<span>Exit</span></button>";
   return (
     '<div class="sidebar">' +
     '<div class="sidebar-logo">' + Icon("gem", { size: 22, color: "var(--gold)" }) + "</div>" +
@@ -119,7 +119,7 @@ function renderMenuSheet(ui) {
       medallionHTML(it.icon, 34) + "<span>" + it.label + "</span></button>"
     );
   }).join("");
-  const salir = '<button class="menu-item" style="color:var(--warn)" data-action="salir-app">' + medallionHTML("log-out", 34) + "<span>Salir</span></button>";
+  const salir = '<button class="menu-item" style="color:var(--warn)" data-action="salir-app">' + medallionHTML("log-out", 34) + "<span>Exit</span></button>";
   return (
     '<div class="menu-overlay">' +
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
@@ -128,12 +128,12 @@ function renderMenuSheet(ui) {
     '<div class="menu-head"><div class="row gap-2">' + Icon("gem", { size: 18, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">CUMBRE MASTER</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
     '<div class="menu-list">' + items + salir + "</div>" +
-    (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licencia exclusiva: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
+    (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Exclusive license: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
     "</div></div>"
   );
 }
 
-/* ---------------- recordatorios / campana ---------------- */
+/* ---------------- reminders / bell ---------------- */
 
 function getReminders(state) {
   const out = [];
@@ -142,12 +142,12 @@ function getReminders(state) {
   if (!q) return out;
   const dias = diasRestantesQuincena(key);
   if (dias <= 0) return out;
-  [["izquierda", "Izquierda"], ["derecha", "Derecha"]].forEach(function (par) {
+  [["izquierda", "Left"], ["derecha", "Right"]].forEach(function (par) {
     const verificado = sumaLinea(q, par[0], true);
     const faltante = Math.max(0, META_PV_QUINCENA - verificado);
     if (faltante > 0) {
       const ritmo = Math.ceil(faltante / dias);
-      out.push({ text: "Pierna " + par[1] + ": faltan " + faltante.toLocaleString("es") + " PV verificados. Ritmo necesario: " + ritmo.toLocaleString("es") + " PV/día." });
+      out.push({ text: par[1] + " leg: " + faltante.toLocaleString("en") + " verified PV still needed. Required pace: " + ritmo.toLocaleString("en") + " PV/day." });
     }
   });
   return out;
@@ -164,12 +164,12 @@ function renderBellPanel(state) {
           "</div>"
         );
       }).join("")
-    : '<p class="muted small" style="margin-top:8px">Vas al día — no tienes alertas de ritmo pendientes.</p>';
+    : '<p class="muted small" style="margin-top:8px">You\'re on track — no pending pace alerts.</p>';
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="close-modal"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">Alertas de esta quincena</span>' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Alerts for this pay period</span>' +
     '<button class="icon-btn" data-action="close-modal">' + Icon("x", { size: 18 }) + "</button></div>" +
     body +
     "</div></div>"
@@ -184,27 +184,27 @@ function renderLogroModal(state, ui) {
     '<div class="modal-backdrop" data-action="close-modal"></div>' +
     '<div class="modal-card logro-modal">' +
     Icon("award", { size: 46, color: "var(--gold)" }) +
-    '<div class="logro-modal-eyebrow">¡Nuevo rango alcanzado!</div>' +
+    '<div class="logro-modal-eyebrow">New rank reached!</div>' +
     '<div class="logro-modal-title">' + escapeHtml(logro.titulo) + "</div>" +
     (logro.sub ? '<div class="logro-modal-sub">' + escapeHtml(logro.sub) + "</div>" : "") +
-    '<div class="muted small" style="margin-top:12px;line-height:1.5">Compártelo con tu equipo — el ejemplo duplica más que cualquier discurso 👇</div>' +
+    '<div class="muted small" style="margin-top:12px;line-height:1.5">Share it with your team — leading by example duplicates more than any speech 👇</div>' +
     shareLogroLinksHTML(logro.titulo) +
-    '<button class="link-btn small" style="margin-top:8px" data-action="close-modal">Genial, seguir</button>' +
+    '<button class="link-btn small" style="margin-top:8px" data-action="close-modal">Great, continue</button>' +
     "</div></div>"
   );
 }
 
-/* ---------------- Inicio ---------------- */
+/* ---------------- Home ---------------- */
 
 function quincenaNavHTML(qKey) {
   const actual = esQuincenaActual(qKey);
   return (
     '<div class="quincena-nav">' +
     '<button class="icon-btn" data-action="nav-quincena" data-arg="-1">' + Icon("chevron-left", { size: 18 }) + "</button>" +
-    '<div class="qn-label">' + escapeHtml(quincenaLabel(qKey)) + (actual ? ' <span class="badge gold" style="margin-left:6px">Actual</span>' : "") + "</div>" +
+    '<div class="qn-label">' + escapeHtml(quincenaLabel(qKey)) + (actual ? ' <span class="badge gold" style="margin-left:6px">Current</span>' : "") + "</div>" +
     '<button class="icon-btn" data-action="nav-quincena" data-arg="1">' + Icon("chevron-right", { size: 18 }) + "</button>" +
     "</div>" +
-    (actual ? '<div class="muted small" style="text-align:center;margin-top:-4px">' + diasRestantesQuincena(qKey) + " días restantes en esta quincena</div>" : "")
+    (actual ? '<div class="muted small" style="text-align:center;margin-top:-4px">' + diasRestantesQuincena(qKey) + " days left in this pay period</div>" : "")
   );
 }
 
@@ -215,13 +215,13 @@ function resumenLineasHTML(planIzq, verIzq, planDer, verDer) {
     return (
       '<div class="card">' +
       '<div class="rl-label">' + nombre + "</div>" +
-      '<div class="rl-value">' + ver.toLocaleString("es") + ' <span class="muted small" style="font-weight:400">/ ' + META_PV_QUINCENA.toLocaleString("es") + " PV</span></div>" +
+      '<div class="rl-value">' + ver.toLocaleString("en") + ' <span class="muted small" style="font-weight:400">/ ' + META_PV_QUINCENA.toLocaleString("en") + " PV</span></div>" +
       '<div class="progressbar gold thin" style="margin-top:8px"><div style="width:' + Math.max(pct, 3) + '%"></div></div>' +
-      '<div class="rl-sub">Verificado ' + pct + "% · Planificado sin verificar: " + plan.toLocaleString("es") + " PV</div>" +
+      '<div class="rl-sub">Verified ' + pct + "% · Planned, not yet verified: " + plan.toLocaleString("en") + " PV</div>" +
       "</div>"
     );
   }
-  return '<div class="resumen-linea">' + bloque("Izquierda", planIzq, verIzq, pctIzq) + bloque("Derecha", planDer, verDer, pctDer) + "</div>";
+  return '<div class="resumen-linea">' + bloque("Left", planIzq, verIzq, pctIzq) + bloque("Right", planDer, verDer, pctDer) + "</div>";
 }
 
 function renderHome(state, ui) {
@@ -231,37 +231,37 @@ function renderHome(state, ui) {
   const q = peekQuincena(state, key);
   const planIzq = sumaLinea(q, "izquierda", false), verIzq = sumaLinea(q, "izquierda", true);
   const planDer = sumaLinea(q, "derecha", false), verDer = sumaLinea(q, "derecha", true);
-  const avatarInner = state.foto ? '<img src="' + state.foto + '" alt="Tu foto"/>' : Icon("user-badge", { size: 20, color: "var(--accent)" });
+  const avatarInner = state.foto ? '<img src="' + state.foto + '" alt="Your photo"/>' : Icon("user-badge", { size: 20, color: "var(--accent)" });
 
   return (
     '<button class="row gap-3" style="text-align:left;width:100%" data-action="goto" data-arg="perfil">' +
     '<div style="width:48px;height:48px;border-radius:999px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:var(--card)">' + avatarInner + "</div>" +
     '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(rango.nombre) + '</div>' +
-    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Hola, ' + escapeHtml(state.nombre || "líder") + ' 👋</h1></div>' +
+    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Hi, ' + escapeHtml(state.nombre || "leader") + ' 👋</h1></div>' +
     "</button>" +
 
     '<div class="card">' +
     '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
-    '<div style="font-size:17px;font-weight:700;margin-top:2px">Tu quincena actual</div>' +
-    '<div class="muted small" style="margin-top:4px">' + escapeHtml(quincenaLabel(key)) + " · " + diasRestantesQuincena(key) + " días restantes</div>" +
+    '<div style="font-size:17px;font-weight:700;margin-top:2px">Your current pay period</div>' +
+    '<div class="muted small" style="margin-top:4px">' + escapeHtml(quincenaLabel(key)) + " · " + diasRestantesQuincena(key) + " days left</div>" +
     "</div>" +
 
     resumenLineasHTML(planIzq, verIzq, planDer, verDer) +
 
     (siguiente
-      ? '<div class="card"><div class="row gap-2">' + Icon("target", { size: 14, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Tu siguiente meta</span></div>' +
+      ? '<div class="card"><div class="row gap-2">' + Icon("target", { size: 14, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Your next goal</span></div>' +
         '<div style="font-size:15px;font-weight:700;margin-top:6px">' + escapeHtml(siguiente.nombre) + "</div>" +
         '<div class="muted small" style="margin-top:2px;line-height:1.5">' + escapeHtml(siguiente.prerrequisito) + "</div>" +
         "</div>"
-      : '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-weight:600">🏆 ¡Ya alcanzaste Imperial Master, el rango más alto del plan!</div>') +
+      : '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-weight:600">🏆 You already reached Imperial Master, the highest rank in the plan!</div>') +
 
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="planeador">' + medallionHTML("target", 44) + '<div class="nc-body"><div class="nc-title">Planeador de Quincena</div><div class="nc-desc">Cuánto falta y a qué ritmo</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="listas">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Reunión de Enfoque</div><div class="nc-desc">Planea con tu equipo, línea por línea</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan">' + medallionHTML("book-open", 44) + '<div class="nc-body"><div class="nc-title">Plan de Compensación</div><div class="nc-desc">Cómo funciona, explicado simple</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>"
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="planeador">' + medallionHTML("target", 44) + '<div class="nc-body"><div class="nc-title">Pay Period Planner</div><div class="nc-desc">How much is left and at what pace</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="listas">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Focus Meeting</div><div class="nc-desc">Plan with your team, line by line</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan">' + medallionHTML("book-open", 44) + '<div class="nc-body"><div class="nc-title">Compensation Plan</div><div class="nc-desc">How it works, explained simply</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>"
   );
 }
 
-/* ---------------- Plan de Compensación (teoría) ---------------- */
+/* ---------------- Compensation Plan (theory) ---------------- */
 
 function renderPlanCompensacion(ui, state) {
   const vueltos = ui.rangosVueltos || {};
@@ -286,23 +286,23 @@ function renderPlanCompensacion(ui, state) {
     const front =
       '<div class="flip-face flip-front">' +
       medallionHTML(r.icon, 64) +
-      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">' + (r.n === 0 ? "Rango logrado" : "Rango " + (r.n + 1)) + "</div>" +
+      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">' + (r.n === 0 ? "Rank achieved" : "Rank " + (r.n + 1)) + "</div>" +
       '<div style="font-size:16px;font-weight:700;margin-top:2px">' + escapeHtml(r.nombre) + "</div>" +
-      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Toca para ver los detalles</span></div>' +
+      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Tap to see the details</span></div>' +
       "</div>";
     const back =
       '<div class="flip-face flip-back">' +
       '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + escapeHtml(r.nombre) + "</div>" +
-      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Prerrequisito</div>' +
+      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Prerequisite</div>' +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.prerrequisito) + "</p>" +
-      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Comisión de Maestría</div>' +
+      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Mastery Commission</div>' +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.comisionMaestria) + "</p>" +
-      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Bono al ascender</div>' +
+      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Bonus on promotion</div>' +
       (r.montos || []).map(function (m) {
         return '<p style="font-size:13px;font-weight:700;line-height:1.5;margin-top:4px;color:var(--gold-light)">' + escapeHtml(m.etiqueta) + ": " + escapeHtml(formatMonedaAprox(m.cop, paisInfo)) + "</p>";
       }).join("") +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.promocion) + "</p>" +
-      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">Para ascender</div>' +
+      '<div style="font-weight:700;font-size:12px;color:var(--gold-light);margin-top:12px">To advance</div>' +
       '<p style="font-size:12.5px;line-height:1.5;margin-top:4px">' + escapeHtml(r.criterio) + "</p>" +
       "</div>";
     return (
@@ -314,13 +314,13 @@ function renderPlanCompensacion(ui, state) {
 
   const criterios = "<ul style=\"margin:0;padding-left:18px\">" + CRITERIOS_GENERALES.map(function (c) { return '<li class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(c) + "</li>"; }).join("") + "</ul>";
   const notas = NOTAS_VALORES.map(function (n) {
-    const texto = escapeHtml(n.etiqueta) + ": equivale a " + escapeHtml(formatMonedaAprox(n.cop, paisInfo)) + (n.sufijo ? " " + escapeHtml(n.sufijo) : "") + ".";
+    const texto = escapeHtml(n.etiqueta) + ": equivalent to " + escapeHtml(formatMonedaAprox(n.cop, paisInfo)) + (n.sufijo ? " " + escapeHtml(n.sufijo) : "") + ".";
     return '<p class="muted small" style="line-height:1.5;margin-top:6px">' + texto + "</p>";
   }).join("") + '<p class="muted small" style="line-height:1.5;margin-top:6px">' + escapeHtml(NOTA_MONEDA_APROX) + "</p>";
   const clubes = CLUBES_EXITO.map(function (c) {
-    const requisito = c.requisito || ("Haber logrado un ingreso anual de " + formatMonedaAprox(c.ingresoAnualCop, paisInfo) + ".");
+    const requisito = c.requisito || ("Have earned an annual income of " + formatMonedaAprox(c.ingresoAnualCop, paisInfo) + ".");
     const nota = c.ingresoCopMin
-      ? "Equivale a un ingreso " + formatMonedaRangoAprox(c.ingresoCopMin, c.ingresoCopMax, paisInfo) + " " + c.ingresoSufijo + "."
+      ? "Equivalent to an income " + formatMonedaRangoAprox(c.ingresoCopMin, c.ingresoCopMax, paisInfo) + " " + c.ingresoSufijo + "."
       : "";
     return (
       '<div class="row gap-3" style="padding:9px 0;border-top:1px solid var(--border-soft)">' +
@@ -332,44 +332,44 @@ function renderPlanCompensacion(ui, state) {
   }).join("");
 
   return (
-    sectionHeaderHTML("Plan de Compensación", "Cómo se reparten las comisiones, y el camino de Sales Master a Imperial Master.", "book-open") +
+    sectionHeaderHTML("Compensation Plan", "How commissions are split, and the path from Sales Master to Imperial Master.", "book-open") +
     '<div class="card">' +
     '<p class="small" style="line-height:1.6">' + escapeHtml(DISTRIBUCION.intro) + "</p>" +
     partes +
     '<p class="muted small" style="margin-top:10px;line-height:1.5">' + escapeHtml(DISTRIBUCION.notaPeriodo) + "</p>" +
     "</div>" +
     '<div class="card">' +
-    '<div style="font-weight:700;font-size:14px;margin-bottom:8px">Comisión General (44%)</div>' +
-    '<div class="table-simple"><table><thead><tr><th>Nivel</th><th>Puntos</th><th>Condición de miembro</th><th>Pierna débil</th></tr></thead><tbody>' + filasTabla + "</tbody></table></div>" +
+    '<div style="font-weight:700;font-size:14px;margin-bottom:8px">General Commission (44%)</div>' +
+    '<div class="table-simple"><table><thead><tr><th>Level</th><th>Points</th><th>Member condition</th><th>Weak leg</th></tr></thead><tbody>' + filasTabla + "</tbody></table></div>" +
     '<p class="muted small" style="margin-top:10px;line-height:1.5">' + escapeHtml(COMISION_GENERAL_NOTA) + "</p>" +
     "</div>" +
-    '<div style="font-size:14px;font-weight:700;margin-top:4px">Camino de Maestría — de Sales Master a Imperial Master</div>' +
-    '<div class="muted small" style="margin-top:2px">Toca una tarjeta para ver su bono aproximado en tu moneda (' + escapeHtml(paisInfo.label) + "). " + escapeHtml(NOTA_MONEDA_APROX) + "</div>" +
+    '<div style="font-size:14px;font-weight:700;margin-top:4px">Mastery Path — from Sales Master to Imperial Master</div>' +
+    '<div class="muted small" style="margin-top:2px">Tap a card to see its approximate bonus in your currency (' + escapeHtml(paisInfo.label) + "). " + escapeHtml(NOTA_MONEDA_APROX) + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
-    '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">Reglas generales de ascenso</div>' + criterios + "</div>" +
-    '<div class="card"><div class="row gap-2" style="font-weight:700;font-size:14px">' + Icon("trophy", { size: 15, color: "var(--gold)" }) + " Clubes del Éxito</div>" +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">Reconocimientos adicionales por ingresos sostenidos, más allá del rango de Maestría alcanzado.</p>' +
+    '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">General rules for advancing</div>' + criterios + "</div>" +
+    '<div class="card"><div class="row gap-2" style="font-weight:700;font-size:14px">' + Icon("trophy", { size: 15, color: "var(--gold)" }) + " Success Clubs</div>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Additional recognitions for sustained income, beyond the Mastery rank reached.</p>' +
     clubes + "</div>" +
     '<div class="card">' + notas + "</div>"
   );
 }
 
-/* ---------------- Planeador de Quincena ---------------- */
+/* ---------------- Pay Period Planner ---------------- */
 
-/* ---------------- Gran Plan 3 — proyección a 3 años ---------------- */
+/* ---------------- Gran Plan 3 (Big 3-Year Plan) — 3-year projection ---------------- */
 
 function granPlanHitoRowHTML(anio, i, h, confirmKey) {
   const key = anio + "|" + i;
   return (
     '<div class="card" style="padding:10px 12px">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' +
-    '<input type="text" placeholder="Fecha (ej. 08/2026)" value="' + escapeHtml(h.fecha) + '" data-field="granPlan3.' + anio + "." + i + '.fecha" style="flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
-    '<input type="text" placeholder="Nivel de maestría" value="' + escapeHtml(h.nivel) + '" data-field="granPlan3.' + anio + "." + i + '.nivel" style="flex:1.4;min-width:130px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Date (e.g. 08/2026)" value="' + escapeHtml(h.fecha) + '" data-field="granPlan3.' + anio + "." + i + '.fecha" style="flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Mastery level" value="' + escapeHtml(h.nivel) + '" data-field="granPlan3.' + anio + "." + i + '.nivel" style="flex:1.4;min-width:130px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
     "</div>" +
     '<div class="row gap-2" style="margin-top:6px;align-items:center;flex-wrap:wrap">' +
-    '<input type="text" placeholder="PV grupal" value="' + escapeHtml(h.pvGrupal) + '" data-field="granPlan3.' + anio + "." + i + '.pvGrupal" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
-    '<input type="text" placeholder="Ingresos" value="' + escapeHtml(h.ingresos) + '" data-field="granPlan3.' + anio + "." + i + '.ingresos" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
-    '<div data-action="delete-hito-granplan" data-arg="' + key + '" style="cursor:pointer;color:var(--warn);font-size:11px;padding:4px;flex-shrink:0">' + (confirmKey === key ? "¿Eliminar?" : Icon("x", { size: 14 })) + "</div>" +
+    '<input type="text" placeholder="Group PV" value="' + escapeHtml(h.pvGrupal) + '" data-field="granPlan3.' + anio + "." + i + '.pvGrupal" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<input type="text" placeholder="Income" value="' + escapeHtml(h.ingresos) + '" data-field="granPlan3.' + anio + "." + i + '.ingresos" style="flex:1;min-width:90px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 9px;font-size:12.5px;outline:none">' +
+    '<div data-action="delete-hito-granplan" data-arg="' + key + '" style="cursor:pointer;color:var(--warn);font-size:11px;padding:4px;flex-shrink:0">' + (confirmKey === key ? "Delete?" : Icon("x", { size: 14 })) + "</div>" +
     "</div></div>"
   );
 }
@@ -380,7 +380,7 @@ function granPlanAnioHTML(anio, label, hitos, ui) {
     '<div style="margin-top:14px">' +
     '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light)">' + escapeHtml(label) + "</div>" +
     '<div class="view-stack gap-sm" style="margin-top:6px">' + rows + "</div>" +
-    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-hito-granplan" data-arg="' + anio + '">+ Agregar hito</div>' +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-hito-granplan" data-arg="' + anio + '">+ Add milestone</div>' +
     "</div>"
   );
 }
@@ -392,21 +392,21 @@ function granPlanSectionHTML(state, ui) {
   return (
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
-    '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Gran Plan 3 — proyección a 3 años</span></div>' +
+    '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Gran Plan 3 — 3-year projection</span></div>' +
     clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
-    '<div class="muted small" style="margin-top:4px">' + total + " hitos guardados</div>" +
+    '<div class="muted small" style="margin-top:4px">' + total + " milestones saved</div>" +
     (open
       ? '<p class="muted small" style="margin-top:8px;line-height:1.5">' + escapeHtml(GRAN_PLAN_3_INTRO) + "</p>" +
-        granPlanAnioHTML("anio1", "Año 1", gp.anio1, ui) +
-        granPlanAnioHTML("anio2", "Año 2", gp.anio2, ui) +
-        granPlanAnioHTML("anio3", "Año 3", gp.anio3, ui)
+        granPlanAnioHTML("anio1", "Year 1", gp.anio1, ui) +
+        granPlanAnioHTML("anio2", "Year 2", gp.anio2, ui) +
+        granPlanAnioHTML("anio3", "Year 3", gp.anio3, ui)
       : "") +
     "</div>"
   );
 }
 
-/* ---------------- Diario de mi yo futuro ---------------- */
+/* ---------------- Future-Self Journal ---------------- */
 
 function diarioFuturoSectionHTML(state, ui) {
   const open = !!ui.diarioFuturoOpen;
@@ -414,18 +414,18 @@ function diarioFuturoSectionHTML(state, ui) {
   return (
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
-    '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Diario de mi yo futuro</span></div>' +
+    '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Future-Self Journal</span></div>' +
     clicaAquiBadgeHTML(open, "accent") +
     "</button>" +
     (open
       ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
         '<textarea rows="8" placeholder="' + escapeHtml(DIARIO_FUTURO_EJEMPLO) + '" data-field="diarioFuturo.texto" style="margin-top:8px;width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;font-size:13px;outline:none;resize:vertical;font-family:inherit;line-height:1.5">' + escapeHtml(texto) + "</textarea>"
-      : '<p class="muted small" style="margin-top:6px">' + (texto ? "Ya escribiste tu carta — toca para verla o editarla." : "Aún no la has escrito.") + "</p>") +
+      : '<p class="muted small" style="margin-top:6px">' + (texto ? "You've already written your letter — tap to view or edit it." : "You haven't written it yet.") + "</p>") +
     "</div>"
   );
 }
 
-/* ---------------- Plan comercial mensual ---------------- */
+/* ---------------- Monthly Business Plan ---------------- */
 
 function planComercialMensualHTML(state, ui) {
   const mesKey = ui.mesPlanComercial || mesActualKey();
@@ -435,7 +435,7 @@ function planComercialMensualHTML(state, ui) {
     return (
       '<div class="row gap-2" style="align-items:center;margin-top:6px">' +
       '<div class="avance-dot' + (m.hecha ? " on" : "") + '" style="cursor:pointer;flex-shrink:0" data-action="toggle-meta-planmensual" data-arg="' + m.id + '"></div>' +
-      '<input type="text" placeholder="Ej. Ganar 3000 USD al mes" value="' + escapeHtml(m.texto) + '" data-field="planComercialMensual.' + mesKey + ".metas." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (m.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
+      '<input type="text" placeholder="E.g. Earn 3000 USD a month" value="' + escapeHtml(m.texto) + '" data-field="planComercialMensual.' + mesKey + ".metas." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (m.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
       '<div data-action="delete-meta-planmensual" data-arg="' + m.id + '" style="cursor:pointer;color:var(--warn);flex-shrink:0">' + (ui.confirmDeleteMetaPlan === m.id ? Icon("check", { size: 13, color: "var(--warn)" }) : Icon("x", { size: 13 })) + "</div>" +
       "</div>"
     );
@@ -445,46 +445,46 @@ function planComercialMensualHTML(state, ui) {
     return (
       '<div class="row gap-2" style="align-items:center;margin-top:6px">' +
       '<div class="avance-dot' + (a.hecha ? " on" : "") + '" style="cursor:pointer;flex-shrink:0" data-action="toggle-accion-planmensual" data-arg="' + a.id + '"></div>' +
-      '<input type="text" placeholder="Ej. Llamar a 10 personas al día" value="' + escapeHtml(a.texto) + '" data-field="planComercialMensual.' + mesKey + ".acciones." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (a.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
+      '<input type="text" placeholder="E.g. Call 10 people a day" value="' + escapeHtml(a.texto) + '" data-field="planComercialMensual.' + mesKey + ".acciones." + i + '.texto" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);' + (a.hecha ? "text-decoration:line-through;opacity:.6;" : "") + 'font-size:13px;padding:4px 2px;outline:none">' +
       '<div data-action="delete-accion-planmensual" data-arg="' + a.id + '" style="cursor:pointer;color:var(--warn);flex-shrink:0">' + (ui.confirmDeleteAccionPlan === a.id ? Icon("check", { size: 13, color: "var(--warn)" }) : Icon("x", { size: 13 })) + "</div>" +
       "</div>"
     );
   }).join("");
 
   const quincenasHtml = plan.quincenas.map(function (q, i) {
-    const label = i === 0 ? "Primera quincena del mes" : "Segunda mitad del mes";
+    const label = i === 0 ? "First half of the month" : "Second half of the month";
     return (
       '<div class="card" style="padding:10px 12px;margin-top:8px">' +
       '<div class="muted small" style="font-weight:600">' + label + "</div>" +
       '<div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">' +
-      '<div style="flex:1;min-width:80px"><label class="muted small">Ingresos</label><input type="number" value="' + (Number(q.ingresos) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.ingresos" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
-      '<div style="flex:1;min-width:80px"><label class="muted small">PV de ventas</label><input type="number" value="' + (Number(q.pv) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
-      '<div style="flex:1;min-width:100px"><label class="muted small">Nivel de maestría</label><input type="text" value="' + escapeHtml(q.nivel) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.nivel" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:80px"><label class="muted small">Income</label><input type="number" value="' + (Number(q.ingresos) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.ingresos" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:80px"><label class="muted small">Sales PV</label><input type="number" value="' + (Number(q.pv) || 0) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+      '<div style="flex:1;min-width:100px"><label class="muted small">Mastery level</label><input type="text" value="' + escapeHtml(q.nivel) + '" data-field="planComercialMensual.' + mesKey + ".quincenas." + i + '.nivel" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
       "</div></div>"
     );
   }).join("");
 
   return (
     '<div class="card">' +
-    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("target", { size: 13, color: "var(--gold)" }) + " Plan comercial mensual</div>" +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("target", { size: 13, color: "var(--gold)" }) + " Monthly Business Plan</div>" +
     '<div class="row between" style="margin-top:8px;align-items:center">' +
     '<div data-action="planmensual-mes-anterior" style="cursor:pointer;padding:4px">' + Icon("chevron-left", { size: 16 }) + "</div>" +
     '<div style="font-weight:700;font-size:13px;text-transform:capitalize">' + escapeHtml(mesLabel(mesKey)) + "</div>" +
     '<div data-action="planmensual-mes-siguiente" style="cursor:pointer;padding:4px">' + Icon("chevron-right", { size: 16 }) + "</div>" +
     "</div>" +
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Metas</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Goals</div>' +
     metasHtml +
-    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-meta-planmensual">+ Agregar meta</div>' +
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Plan de acciones</div>' +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-meta-planmensual">+ Add goal</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Action plan</div>' +
     accionesHtml +
-    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-accion-planmensual">+ Agregar acción</div>' +
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Ingresos por quincena</div>' +
+    '<div class="btn-secondary" style="margin-top:8px;width:fit-content;cursor:pointer;padding:7px 12px;font-size:12.5px" data-action="add-accion-planmensual">+ Add action</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Income per pay period</div>' +
     quincenasHtml +
     "</div>"
   );
 }
 
-/* ---------------- Evaluación mensual de Los 8 Pasos ---------------- */
+/* ---------------- Monthly Evaluation of the 8 Steps ---------------- */
 
 function evaluacion8PasosHTML(state, ui) {
   const mesKey = ui.mesEvaluacion8Pasos || mesActualKey();
@@ -510,7 +510,7 @@ function evaluacion8PasosHTML(state, ui) {
 
   return (
     '<div class="card">' +
-    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + " Evaluación mensual de Los 8 Pasos</div>" +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + " Monthly Evaluation of the 8 Steps</div>" +
     '<div class="row between" style="margin-top:8px;align-items:center">' +
     '<div data-action="eval8pasos-mes-anterior" style="cursor:pointer;padding:4px">' + Icon("chevron-left", { size: 16 }) + "</div>" +
     '<div style="font-weight:700;font-size:13px;text-transform:capitalize">' + escapeHtml(mesLabel(mesKey)) + "</div>" +
@@ -518,20 +518,20 @@ function evaluacion8PasosHTML(state, ui) {
     "</div>" +
     filas +
     '<div class="card" style="margin-top:14px;background:var(--accent-soft);border-color:var(--gold)">' +
-    '<div class="row between"><span style="font-weight:700;font-size:13px">Su puntuación este mes</span><span style="font-weight:700;font-size:18px;color:var(--gold)">' + total + "</span></div>" +
+    '<div class="row between"><span style="font-weight:700;font-size:13px">Your score this month</span><span style="font-weight:700;font-size:18px;color:var(--gold)">' + total + "</span></div>" +
     '<p class="small" style="margin-top:6px;line-height:1.5">' + escapeHtml(banda.texto) + "</p>" +
     "</div>" +
-    '<div class="field" style="margin-top:12px"><label>Puntos de alabanza</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.alabanza" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.alabanza) + "</textarea></div>" +
-    '<div class="field" style="margin-top:8px"><label>Puntos de reflexión</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.reflexion" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.reflexion) + "</textarea></div>" +
-    '<div class="field" style="margin-top:8px"><label>Comentarios del patrocinador</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.comentarioPatrocinador" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.comentarioPatrocinador) + "</textarea></div>" +
+    '<div class="field" style="margin-top:12px"><label>Points of praise</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.alabanza" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.alabanza) + "</textarea></div>" +
+    '<div class="field" style="margin-top:8px"><label>Points for reflection</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.reflexion" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.reflexion) + "</textarea></div>" +
+    '<div class="field" style="margin-top:8px"><label>Sponsor comments</label><textarea rows="2" data-field="evaluacion8Pasos.' + mesKey + '.comentarioPatrocinador" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit">' + escapeHtml(ev.comentarioPatrocinador) + "</textarea></div>" +
     "</div>"
   );
 }
 
 const OCHO_CORE_NOTA_HTML =
   '<div class="card" style="background:var(--accent-soft);border:none">' +
-  '<div class="row gap-2" style="font-weight:700;font-size:13px">' + Icon("check-circle", { size: 15, color: "var(--accent)" }) + " Tu 8 Core diario/mensual</div>" +
-  '<p class="muted small" style="margin-top:6px;line-height:1.55">Ese control diario (Lectura, Ver VOD, Asistencia a reuniones, Uso del producto, Mostrar el plan, Entrega al consumidor, Consulta de patrocinador, Generando confianza) ya lo llevas en tu página oficial de Atomy — entra a <b>Sigue al Éxito → Mi 8 Core mensual</b> y márcalo ahí día a día.</p>' +
+  '<div class="row gap-2" style="font-weight:700;font-size:13px">' + Icon("check-circle", { size: 15, color: "var(--accent)" }) + " Your daily/monthly 8 Core</div>" +
+  '<p class="muted small" style="margin-top:6px;line-height:1.55">You already track this daily checklist (Reading, Watching VOD, Meeting attendance, Product use, Showing the plan, Delivery to the customer, Sponsor consultation, Building trust) on your official Atomy page — go to <b>Follow to Success → My Monthly 8 Core</b> and check it off there day by day.</p>' +
   "</div>";
 
 function renderPlaneador(state, ui) {
@@ -548,14 +548,14 @@ function renderPlaneador(state, ui) {
 
   let alerta = "";
   if (faltIzq === 0 && faltDer === 0) {
-    alerta = '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-weight:600">🏆 ¡Ya completaste los 2.500.000 PV en ambas piernas esta quincena!</div>';
+    alerta = '<div class="card" style="background:var(--success-soft);border-color:var(--success);text-align:center;font-weight:600">🏆 You already completed 2,500,000 PV in both legs this pay period!</div>';
   } else if (desequilibrio > META_PV_QUINCENA * 0.4) {
-    const adelantada = verIzq > verDer ? "Izquierda" : "Derecha";
-    const atrasada = verIzq > verDer ? "Derecha" : "Izquierda";
+    const adelantada = verIzq > verDer ? "Left" : "Right";
+    const atrasada = verIzq > verDer ? "Right" : "Left";
     alerta =
       '<div class="card" style="border-color:var(--warn);background:var(--warn-soft)">' +
-      '<div class="row gap-2" style="font-weight:700;color:var(--warn)">' + Icon("triangle-alert", { size: 16, color: "var(--warn)" }) + " Piernas desequilibradas</div>" +
-      '<p class="small" style="margin-top:6px;line-height:1.5">Tu pierna ' + adelantada + " va muy por delante de tu pierna " + atrasada + ". Los puntos que sobran en " + adelantada + " no ciclan si " + atrasada + " no llega al mismo nivel — activa más pedidos en " + atrasada + " antes de que termine la quincena.</p>" +
+      '<div class="row gap-2" style="font-weight:700;color:var(--warn)">' + Icon("triangle-alert", { size: 16, color: "var(--warn)" }) + " Unbalanced legs</div>" +
+      '<p class="small" style="margin-top:6px;line-height:1.5">Your ' + adelantada + " leg is way ahead of your " + atrasada + " leg. The extra points in " + adelantada + " won't cycle if " + atrasada + " doesn't reach the same level — activate more orders in " + atrasada + " before the pay period ends.</p>" +
       "</div>";
   }
 
@@ -564,19 +564,19 @@ function renderPlaneador(state, ui) {
       '<div class="card">' +
       '<div class="rl-label">' + nombre + "</div>" +
       (falt > 0
-        ? '<div class="rl-value">' + falt.toLocaleString("es") + ' <span class="muted small" style="font-weight:400">PV faltantes</span></div>' +
-          '<div class="rl-sub">Ritmo necesario: ' + ritmo.toLocaleString("es") + " PV/día durante " + dias + (dias === 1 ? " día" : " días") + "</div>"
-        : '<div class="rl-value" style="color:var(--success)">Completado ✓</div>') +
+        ? '<div class="rl-value">' + falt.toLocaleString("en") + ' <span class="muted small" style="font-weight:400">PV remaining</span></div>' +
+          '<div class="rl-sub">Required pace: ' + ritmo.toLocaleString("en") + " PV/day for " + dias + (dias === 1 ? " day" : " days") + "</div>"
+        : '<div class="rl-value" style="color:var(--success)">Completed ✓</div>') +
       "</div>"
     );
   }
 
   return (
-    sectionHeaderHTML("Planeador de Quincena", "Cuánto falta y a qué ritmo, para no perder ciclaje.", "target") +
+    sectionHeaderHTML("Pay Period Planner", "How much is left and at what pace, so you don't miss any cycling.", "target") +
     quincenaNavHTML(qKey) +
     alerta +
-    '<div class="resumen-linea">' + bloqueCalc("Izquierda", faltIzq, ritmoIzq) + bloqueCalc("Derecha", faltDer, ritmoDer) + "</div>" +
-    '<button class="btn-secondary" data-action="goto" data-arg="listas">' + Icon("users", { size: 15 }) + " Ir a Reunión de Enfoque</button>" +
+    '<div class="resumen-linea">' + bloqueCalc("Left", faltIzq, ritmoIzq) + bloqueCalc("Right", faltDer, ritmoDer) + "</div>" +
+    '<button class="btn-secondary" data-action="goto" data-arg="listas">' + Icon("users", { size: 15 }) + " Go to Focus Meeting</button>" +
     granPlanSectionHTML(state, ui) +
     diarioFuturoSectionHTML(state, ui) +
     planComercialMensualHTML(state, ui) +
@@ -585,19 +585,19 @@ function renderPlaneador(state, ui) {
   );
 }
 
-/* ---------------- Reunión de Enfoque (listas Izquierda/Derecha) ---------------- */
+/* ---------------- Focus Meeting (Left/Right lists) ---------------- */
 
 function pedidoResumenTexto(catalogo, compras, paisInfo, totalPV, totalPrecio, appName) {
   const items = catalogo.filter(function (p) { return (Number(compras[p.id]) || 0) > 0; });
   const lineas = items.map(function (p) {
     const cant = Number(compras[p.id]) || 0;
-    return "• " + (p.nombre || "(sin nombre)") + " x" + cant + " (" + ((Number(p.pv) || 0) * cant).toLocaleString(paisInfo.locale) + " PV)";
+    return "• " + (p.nombre || "(no name)") + " x" + cant + " (" + ((Number(p.pv) || 0) * cant).toLocaleString(paisInfo.locale) + " PV)";
   });
   return (
-    "📦 Mi plan de compra de esta quincena (" + appName + "):\n" +
+    "📦 My purchase plan for this pay period (" + appName + "):\n" +
     lineas.join("\n") +
     "\n\nTotal: " + totalPV.toLocaleString(paisInfo.locale) + " PV · " + formatMoneda(totalPrecio, paisInfo) +
-    "\n\n¿Me ayudas a verificarlo?"
+    "\n\nCan you help me verify it?"
   );
 }
 
@@ -613,28 +613,28 @@ function formatMoneda(valor, paisInfo) {
   }
 }
 
-/* ---------------- "Clica aquí" — badge reutilizable para toggles y navegación ---------------- */
+/* ---------------- "Tap here" — reusable badge for toggles and navigation ---------------- */
 
 function clicaAquiBadgeHTML(open, color) {
   const cls = color === "accent" ? "blue" : "gold";
   return (
-    '<span class="badge ' + cls + '" style="flex-shrink:0">Clica aquí' +
+    '<span class="badge ' + cls + '" style="flex-shrink:0">Tap here' +
     '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' +
     Icon("chevron-right", { size: 11, color: color === "accent" ? "var(--accent)" : "#1B1338" }) +
     "</span></span>"
   );
 }
 
-/* ---------------- Reto 7×7 — tabla de 10 contactos y evaluación semanal ---------------- */
+/* ---------------- 7×7 Challenge — 10-contact table and weekly evaluation ---------------- */
 
 function contactos10FilaHTML(pathPrefix, i, fila) {
   const inputStyle = "width:100%;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 8px;font-size:12.5px;outline:none";
   return (
     "<tr>" +
     '<td style="padding:4px 6px;font-size:11px;color:var(--text-soft);text-align:center">' + (i + 1) + "</td>" +
-    '<td style="padding:4px"><input type="text" placeholder="Nombre" value="' + escapeHtml(fila.nombre) + '" data-field="' + pathPrefix + "." + i + '.nombre" style="' + inputStyle + '"></td>' +
-    '<td style="padding:4px"><input type="text" inputmode="tel" placeholder="Teléfono" value="' + escapeHtml(fila.telefono) + '" data-field="' + pathPrefix + "." + i + '.telefono" style="' + inputStyle + '"></td>' +
-    '<td style="padding:4px"><input type="text" placeholder="Observaciones / seguimiento" value="' + escapeHtml(fila.observaciones) + '" data-field="' + pathPrefix + "." + i + '.observaciones" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" placeholder="Name" value="' + escapeHtml(fila.nombre) + '" data-field="' + pathPrefix + "." + i + '.nombre" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" inputmode="tel" placeholder="Phone" value="' + escapeHtml(fila.telefono) + '" data-field="' + pathPrefix + "." + i + '.telefono" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" placeholder="Notes / follow-up" value="' + escapeHtml(fila.observaciones) + '" data-field="' + pathPrefix + "." + i + '.observaciones" style="' + inputStyle + '"></td>' +
     "</tr>"
   );
 }
@@ -646,14 +646,14 @@ function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
   return (
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
-    '<div class="row gap-2">' + Icon("phone-call", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Mis primeros 10 contactos</span></div>' +
+    '<div class="row gap-2">' + Icon("phone-call", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">My first 10 contacts</span></div>' +
     clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
-    '<div class="muted small" style="margin-top:4px">' + llenos + " de 10 con nombre registrado</div>" +
+    '<div class="muted small" style="margin-top:4px">' + llenos + " of 10 have a name recorded</div>" +
     (open
       ? '<div style="overflow-x:auto;margin-top:10px">' +
         '<table style="border-collapse:collapse;width:100%">' +
-        "<thead><tr><th></th><th style=\"" + thStyle + "\">Nombre</th><th style=\"" + thStyle + "\">Teléfono</th><th style=\"" + thStyle + "\">Observaciones</th></tr></thead>" +
+        "<thead><tr><th></th><th style=\"" + thStyle + "\">Name</th><th style=\"" + thStyle + "\">Phone</th><th style=\"" + thStyle + "\">Notes</th></tr></thead>" +
         "<tbody>" + filas + "</tbody>" +
         "</table></div>"
       : "") +
@@ -663,14 +663,14 @@ function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
 
 function evaluacion7x7ResumenTexto(ev, periodoLabel) {
   return (
-    "📊 " + periodoLabel + " — Reto 7×7 (Cumbre Master):\n" +
-    "• Personas contactadas: " + (ev.contactados || "0") + "\n" +
-    "• Respondieron: " + (ev.respondieron || "0") + "\n" +
-    "• Presentaciones hechas: " + (ev.presentaciones || "0") + "\n" +
-    "• Compras conseguidas: " + (ev.compras || "0") + "\n" +
-    "• Personas interesadas en el negocio: " + (ev.interesados || "0") + "\n" +
-    "• A quién debo seguir acompañando: " + (ev.seguimiento || "—") +
-    "\n\n¿Me ayudas a revisarlo?"
+    "📊 " + periodoLabel + " — 7×7 Challenge (Cumbre Master):\n" +
+    "• People contacted: " + (ev.contactados || "0") + "\n" +
+    "• Responded: " + (ev.respondieron || "0") + "\n" +
+    "• Presentations given: " + (ev.presentaciones || "0") + "\n" +
+    "• Purchases secured: " + (ev.compras || "0") + "\n" +
+    "• People interested in the business: " + (ev.interesados || "0") + "\n" +
+    "• Who I need to keep following up with: " + (ev.seguimiento || "—") +
+    "\n\nCan you help me review it?"
   );
 }
 
@@ -682,28 +682,28 @@ function evaluacion7x7PanelHTML(state, pathPrefix, ev, open, toggleAction, toggl
     );
   };
   const compartir = state.whatsapp && state.whatsapp.trim()
-    ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, evaluacion7x7ResumenTexto(ev, periodoLabel)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
-    : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir esto.</p>';
+    ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, evaluacion7x7ResumenTexto(ev, periodoLabel)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Share with my sponsor</a>"
+    : '<p class="muted small" style="margin-top:10px">Add your sponsor\'s WhatsApp in Settings so you can share this.</p>';
   return (
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
-    '<div class="row gap-2">' + Icon("target", { size: 15, color: "var(--accent)" }) + '<span style="font-weight:700;font-size:14px">Mis logros de esta semana</span></div>' +
+    '<div class="row gap-2">' + Icon("target", { size: 15, color: "var(--accent)" }) + '<span style="font-weight:700;font-size:14px">My achievements this week</span></div>' +
     clicaAquiBadgeHTML(open, "accent") +
     "</button>" +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">Regístralo cada 7 días y compártelo con tu patrocinador — esta es la labor de siempre para hacer crecer tu negocio.</p>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Log it every 7 days and share it with your sponsor — this is the ongoing work of growing your business.</p>' +
     (open
       ? '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
-        campo("contactados", "Personas contactadas", "0") +
-        campo("respondieron", "Respondieron", "0") +
+        campo("contactados", "People contacted", "0") +
+        campo("respondieron", "Responded", "0") +
         "</div>" +
         '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
-        campo("presentaciones", "Presentaciones hechas", "0") +
-        campo("compras", "Compras conseguidas", "0") +
+        campo("presentaciones", "Presentations given", "0") +
+        campo("compras", "Purchases secured", "0") +
         "</div>" +
         '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
-        campo("interesados", "Personas interesadas en el negocio", "0") +
+        campo("interesados", "People interested in the business", "0") +
         "</div>" +
-        '<div class="field" style="margin-top:8px"><label>¿A quién debo seguir acompañando?</label>' +
+        '<div class="field" style="margin-top:8px"><label>Who do I need to keep following up with?</label>' +
         '<textarea rows="2" data-field="' + pathPrefix + '.seguimiento">' + escapeHtml(ev.seguimiento) + "</textarea></div>" +
         compartir
       : "") +
@@ -711,20 +711,20 @@ function evaluacion7x7PanelHTML(state, pathPrefix, ev, open, toggleAction, toggl
   );
 }
 
-/* Convierte un monto oficial en COP (RANGOS_MASTER.montos) a la moneda del
-   país activo y lo formatea con el prefijo "aprox." — ver TASAS_COP_POR_MONEDA
-   en data.js para el porqué de la conversión aproximada. */
+/* Converts an official COP amount (RANGOS_MASTER.montos) to the active
+   country's currency and formats it with the "approx." prefix — see
+   TASAS_COP_POR_MONEDA in data.js for why the conversion is approximate. */
 function formatMonedaAprox(montoCOP, paisInfo) {
   const valor = convertirDesdeCOP(montoCOP, paisInfo.moneda);
-  return "aprox. " + formatMoneda(valor, paisInfo);
+  return "approx. " + formatMoneda(valor, paisInfo);
 }
 
-/* Igual que formatMonedaAprox pero para un rango (ej. "aprox. $X a $Y") — el
-   prefijo "aprox." aparece una sola vez, no repetido en cada extremo. */
+/* Same as formatMonedaAprox but for a range (e.g. "approx. $X to $Y") — the
+   "approx." prefix appears once, not repeated at each end. */
 function formatMonedaRangoAprox(copMin, copMax, paisInfo) {
   const min = formatMoneda(convertirDesdeCOP(copMin, paisInfo.moneda), paisInfo);
   const max = formatMoneda(convertirDesdeCOP(copMax, paisInfo.moneda), paisInfo);
-  return "aprox. " + min + " a " + max;
+  return "approx. " + min + " to " + max;
 }
 
 function paisSelectorHTML(state) {
@@ -743,16 +743,16 @@ function productoRowHTML(paisId, qKey, compras, p, i, paisInfo) {
   return (
     '<div class="card" style="padding:10px 12px">' +
     '<div class="row gap-2" style="align-items:center">' +
-    '<input type="text" placeholder="Nombre del producto" value="' + escapeHtml(p.nombre) + '" data-field="catalogoProductos.' + paisId + "." + i + '.nombre" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);font-size:13.5px;padding:4px 2px;outline:none">' +
-    '<button class="roster-check' + (p.probado ? " on" : "") + '" style="margin-top:0" data-action="toggle-producto-probado" data-arg="' + i + '" title="Marcar como probado">' +
+    '<input type="text" placeholder="Product name" value="' + escapeHtml(p.nombre) + '" data-field="catalogoProductos.' + paisId + "." + i + '.nombre" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--border-soft);color:var(--text);font-size:13.5px;padding:4px 2px;outline:none">' +
+    '<button class="roster-check' + (p.probado ? " on" : "") + '" style="margin-top:0" data-action="toggle-producto-probado" data-arg="' + i + '" title="Mark as tried">' +
     '<div class="box" style="width:22px;height:22px">' + (p.probado ? Icon("check", { size: 12, color: "#1B1338" }) : "") + "</div>" +
     "</button>" +
     '<button class="icon-btn" style="flex-shrink:0" data-action="delete-producto" data-arg="' + i + '">' + Icon("x", { size: 14 }) + "</button>" +
     "</div>" +
     '<div class="row gap-2" style="margin-top:6px;flex-wrap:wrap">' +
     '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">PV</label><input type="number" min="0" value="' + (Number(p.pv) || 0) + '" data-field="catalogoProductos.' + paisId + "." + i + '.pv" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
-    '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">Precio (' + paisInfo.moneda + ")</label><input type=\"number\" min=\"0\" value=\"" + (Number(p.precio) || 0) + '" data-field="catalogoProductos.' + paisId + "." + i + '.precio" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
-    '<div style="flex:1;min-width:90px"><label class="muted small" style="display:block">Esta quincena</label><input type="number" min="0" value="' + cantidad + '" data-field="quincenas.' + qKey + ".compras." + p.id + '" style="width:100%;background:var(--bg);border:1px solid var(--gold-deep);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+    '<div style="flex:1;min-width:64px"><label class="muted small" style="display:block">Price (' + paisInfo.moneda + ")</label><input type=\"number\" min=\"0\" value=\"" + (Number(p.precio) || 0) + '" data-field="catalogoProductos.' + paisId + "." + i + '.precio" style="width:100%;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
+    '<div style="flex:1;min-width:90px"><label class="muted small" style="display:block">This pay period</label><input type="number" min="0" value="' + cantidad + '" data-field="quincenas.' + qKey + ".compras." + p.id + '" style="width:100%;background:var(--bg);border:1px solid var(--gold-deep);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;outline:none"></div>' +
     "</div></div>"
   );
 }
@@ -791,26 +791,26 @@ function productosCalculadoraHTML(state, ui, qKey, q) {
   return (
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-calculadora-productos">' +
-    '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Calculadora de productos</span></div>' +
+    '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Product Calculator</span></div>' +
     clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">Marca qué productos ya probaste, y cuántos planea cada uno comprar esta quincena — así sabes cuántos PV representa y cuánto vas a pagar, para tu reunión de enfoque.</p>' +
-    '<div class="muted small" style="margin-top:10px">País / catálogo</div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Mark which products you\'ve already tried, and how many each person plans to buy this pay period — so you know how much PV it represents and how much you\'ll pay, for your focus meeting.</p>' +
+    '<div class="muted small" style="margin-top:10px">Country / catalog</div>' +
     paisSelectorHTML(state) +
     '<div class="row gap-2" style="margin-top:10px">' +
-    '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">PV planeados</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + totalPV.toLocaleString(paisInfo.locale) + "</div></div>" +
-    '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">Total a pagar</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + formatMoneda(totalPrecio, paisInfo) + "</div></div>" +
+    '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">Planned PV</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + totalPV.toLocaleString(paisInfo.locale) + "</div></div>" +
+    '<div class="card" style="flex:1;padding:10px;text-align:center"><div class="muted small">Total to pay</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + formatMoneda(totalPrecio, paisInfo) + "</div></div>" +
     "</div>" +
-    '<div class="muted small" style="margin-top:8px">' + probados + " de " + catalogo.length + " productos probados · " + planeados + " planeados esta quincena</div>" +
+    '<div class="muted small" style="margin-top:8px">' + probados + " of " + catalogo.length + " products tried · " + planeados + " planned this pay period</div>" +
     (planeados > 0
       ? (state.whatsapp && state.whatsapp.trim()
-          ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, pedidoResumenTexto(catalogo, compras, paisInfo, totalPV, totalPrecio, "Cumbre Master")) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
-          : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu pedido.</p>')
+          ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, pedidoResumenTexto(catalogo, compras, paisInfo, totalPV, totalPrecio, "Cumbre Master")) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Share with my sponsor</a>"
+          : '<p class="muted small" style="margin-top:10px">Add your sponsor\'s WhatsApp in Settings so you can share your order.</p>')
       : "") +
     (open
       ? '<p class="muted small" style="margin-top:10px;line-height:1.5;font-style:italic">' + escapeHtml(catalogo.length ? CATALOGO_PRODUCTOS_NOTA : CATALOGO_PRODUCTOS_NOTA_VACIO) + "</p>" +
         '<div class="view-stack gap-sm" style="margin-top:8px">' + rows + "</div>" +
-        '<button class="btn-secondary" style="margin-top:12px" data-action="add-producto">+ Añadir producto</button>'
+        '<button class="btn-secondary" style="margin-top:12px" data-action="add-producto">+ Add product</button>'
       : "") +
     "</div>"
   );
@@ -824,13 +824,13 @@ function personaRowHTML(qKey, linea, p) {
   return (
     '<div class="card roster-row" style="padding:13px">' +
     '<div class="row between" style="align-items:flex-start">' +
-    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(p.nombre || "Sin nombre") + "</div>" +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(p.nombre || "No name") + "</div>" +
     (p.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(p.telefono) + (p.pais ? " · " + escapeHtml(paisCatalogoInfo(p.pais).label) : "") + "</div>" : "") +
     (p.atomyId || p.contrasena
       ? '<div class="muted small" style="margin-top:2px">' +
         (p.atomyId ? "ID " + escapeHtml(p.atomyId) : "") +
         (p.atomyId && p.contrasena ? " · " : "") +
-        (p.contrasena ? "Contraseña " + escapeHtml(p.contrasena) : "") +
+        (p.contrasena ? "Password " + escapeHtml(p.contrasena) : "") +
         "</div>"
       : "") +
     "</div>" +
@@ -847,7 +847,7 @@ function personaRowHTML(qKey, linea, p) {
     '<div class="field" style="margin-top:8px"><label>Fecha planeada</label><input type="date" value="' + (p.fecha || "") + '" data-roster-field="fecha" data-qkey="' + qKey + '" data-linea="' + linea + '" data-id="' + p.id + '"></div>' +
     '<div class="roster-check' + verificadoClass + '" data-action="toggle-verificado" data-qkey="' + qKey + '" data-linea="' + linea + '" data-arg="' + p.id + '">' +
     '<div class="box">' + (p.verificado ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
-    '<span class="lbl">' + (p.verificado ? "Verificado — ya pidió sus puntos" : "Marcar como verificado") + "</span>" +
+    '<span class="lbl">' + (p.verificado ? "Verified — already ordered their points" : "Mark as verified") + "</span>" +
     "</div>" +
     "</div>"
   );
@@ -862,26 +862,26 @@ function resumenEnfoqueTexto(state, qKey) {
     const otros = Number(linea === "izquierda" ? q.otrosIzquierda : q.otrosDerecha) || 0;
     const personasTxt = arr.length
       ? arr.map(function (p) {
-          return "• " + (p.nombre || "(sin nombre)") + ": PVP " + (Number(p.pvp) || 0).toLocaleString("es") + " · PVG " + (Number(p.puntos) || 0).toLocaleString("es") + (p.verificado ? " ✅ verificado" : " (sin verificar)");
+          return "• " + (p.nombre || "(no name)") + ": PVP " + (Number(p.pvp) || 0).toLocaleString("en") + " · PVG " + (Number(p.puntos) || 0).toLocaleString("en") + (p.verificado ? " ✅ verified" : " (not verified)");
         }).join("\n")
-      : "  (sin personas registradas)";
+      : "  (no people registered)";
     return (
-      "*Línea " + nombre + "*\n" +
+      "*" + nombre + " leg*\n" +
       personasTxt +
-      (otros ? "\n• Fuera de la lista (consumo/otros): " + otros.toLocaleString("es") + " puntos" : "") +
-      "\nVerificado: " + ver.toLocaleString("es") + " puntos · Planificado sin verificar: " + plan.toLocaleString("es") + " puntos"
+      (otros ? "\n• Outside the list (personal consumption/other): " + otros.toLocaleString("en") + " points" : "") +
+      "\nVerified: " + ver.toLocaleString("en") + " points · Planned, not yet verified: " + plan.toLocaleString("en") + " points"
     );
   }
   return (
-    "🎯 Reunión de Enfoque — Quincena " + quincenaLabel(qKey) + ":\n\n" +
-    lineaTexto("Izquierda", "izquierda") + "\n\n" +
-    lineaTexto("Derecha", "derecha") +
-    "\n\n" + (q.reunionHecha ? "✅ Ya hice mi reunión de enfoque con mis socios." : "⏳ Aún no he hecho mi reunión de enfoque con mis socios.") +
-    "\n\n¿Me ayudas a revisarlo para planear mi quincena?"
+    "🎯 Focus Meeting — Pay period " + quincenaLabel(qKey) + ":\n\n" +
+    lineaTexto("Left", "izquierda") + "\n\n" +
+    lineaTexto("Right", "derecha") +
+    "\n\n" + (q.reunionHecha ? "✅ I've already had my focus meeting with my partners." : "⏳ I haven't had my focus meeting with my partners yet.") +
+    "\n\nCan you help me review it to plan my pay period?"
   );
 }
 
-/* ---------------- Reto 7×7 ---------------- */
+/* ---------------- 7×7 Challenge ---------------- */
 
 function renderReto7x7(state, ui) {
   const totalChecks = RETO_7X7_DIAS.reduce(function (sum, d) { return sum + d.checklist.length; }, 0);
@@ -913,14 +913,14 @@ function renderReto7x7(state, ui) {
       return (
         '<div class="card" style="margin-top:8px">' +
         '<button class="row between" style="width:100%;text-align:left" data-action="toggle-reto7x7-dia" data-week="' + semN + '" data-arg="' + d.id + '">' +
-        '<div class="row gap-2">' + Icon(d.icono, { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13.5px">Día ' + d.id + " — " + escapeHtml(d.titulo) + "</span></div>" +
+        '<div class="row gap-2">' + Icon(d.icono, { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13.5px">Day ' + d.id + " — " + escapeHtml(d.titulo) + "</span></div>" +
         clicaAquiBadgeHTML(diaOpen, "gold") +
         "</button>" +
         (diaOpen
           ? '<p class="muted small" style="margin-top:6px;font-style:italic">' + escapeHtml(d.frase) + "</p>" +
             contenidoHtml +
             '<div style="margin-top:10px">' + checklistHtml + "</div>"
-          : '<div class="muted small" style="margin-top:4px">' + diaEst.checks.filter(Boolean).length + " de " + d.checklist.length + " tareas hechas</div>") +
+          : '<div class="muted small" style="margin-top:4px">' + diaEst.checks.filter(Boolean).length + " of " + d.checklist.length + " tasks done</div>") +
         "</div>"
       );
     }).join("");
@@ -928,21 +928,21 @@ function renderReto7x7(state, ui) {
     return (
       '<div class="card" style="margin-top:12px">' +
       '<button class="row between" style="width:100%;text-align:left" data-action="toggle-reto7x7-semana" data-arg="' + semN + '">' +
-      '<div class="row gap-2">' + Icon("flame", { size: 16, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:15px">Semana ' + semN + " — Reto 7×7</span></div>" +
+      '<div class="row gap-2">' + Icon("flame", { size: 16, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:15px">Week ' + semN + " — 7×7 Challenge</span></div>" +
       clicaAquiBadgeHTML(open, "gold") +
       "</button>" +
-      '<div class="muted small" style="margin-top:4px">' + doneCount + " de " + totalChecks + " tareas completadas</div>" +
+      '<div class="muted small" style="margin-top:4px">' + doneCount + " of " + totalChecks + " tasks completed</div>" +
       (open
         ? diasHtml +
           contactos10TablaHTML("reto7x7." + semN + ".contactos10", est.contactos10, contactos10Open, "toggle-reto7x7-contactos10", semN) +
-          evaluacion7x7PanelHTML(state, "reto7x7." + semN + ".evaluacion", est.evaluacion, evaluacionOpen, "toggle-reto7x7-evaluacion", semN, "Semana " + semN)
+          evaluacion7x7PanelHTML(state, "reto7x7." + semN + ".evaluacion", est.evaluacion, evaluacionOpen, "toggle-reto7x7-evaluacion", semN, "Week " + semN)
         : "") +
       "</div>"
     );
   }).join("");
 
   return (
-    sectionHeaderHTML("Reto 7×7", RETO_7X7_INTRO, "flame") +
+    sectionHeaderHTML("7×7 Challenge", RETO_7X7_INTRO, "flame") +
     semanasHtml
   );
 }
@@ -957,26 +957,26 @@ function renderListas(state, ui) {
 
   const rows = lista.length
     ? lista.map(function (p) { return personaRowHTML(qKey, linea, p); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no has agregado a nadie en esta línea. Toca “+ Agregar persona” en tu reunión de planeación.</p>';
+    : '<p class="muted small" style="text-align:center;padding:24px 0">You haven\'t added anyone to this leg yet. Tap “+ Add person” during your planning meeting.</p>';
 
   return (
-    sectionHeaderHTML("Reunión de Enfoque", "Planea con tu equipo cuántos puntos pedirá cada persona, y en qué fecha de la quincena.", "users") +
+    sectionHeaderHTML("Focus Meeting", "Plan with your team how many points each person will order, and on what date of the pay period.", "users") +
     quincenaNavHTML(qKey) +
     '<div class="roster-check' + (q.reunionHecha ? " on" : "") + '" data-action="toggle-reunion-enfoque" data-qkey="' + qKey + '">' +
     '<div class="box">' + (q.reunionHecha ? Icon("check", { size: 13, color: "#1B1338" }) : "") + "</div>" +
-    '<span class="lbl">' + (q.reunionHecha ? "Reunión de enfoque hecha esta quincena" : "Marcar: hice mi reunión de enfoque a mis socios") + "</span>" +
+    '<span class="lbl">' + (q.reunionHecha ? "Focus meeting done this pay period" : "Mark: I had my focus meeting with my partners") + "</span>" +
     "</div>" +
     resumenLineasHTML(planIzq, verIzq, planDer, verDer) +
     (state.whatsapp && state.whatsapp.trim()
-      ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, resumenEnfoqueTexto(state, qKey)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir con mi patrocinador</a>"
-      : '<p class="muted small" style="margin-top:10px">Agrega el WhatsApp de tu patrocinador en Ajustes para poder compartir tu Reunión de Enfoque.</p>') +
+      ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, resumenEnfoqueTexto(state, qKey)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Share with my sponsor</a>"
+      : '<p class="muted small" style="margin-top:10px">Add your sponsor\'s WhatsApp in Settings so you can share your Focus Meeting.</p>') +
     '<div class="tabs">' +
-    '<button class="tab-btn' + (linea === "izquierda" ? " active" : "") + '" data-action="set-linea" data-arg="izquierda">Izquierda (' + (q.izquierda || []).length + ")</button>" +
-    '<button class="tab-btn' + (linea === "derecha" ? " active" : "") + '" data-action="set-linea" data-arg="derecha">Derecha (' + (q.derecha || []).length + ")</button>" +
+    '<button class="tab-btn' + (linea === "izquierda" ? " active" : "") + '" data-action="set-linea" data-arg="izquierda">Left (' + (q.izquierda || []).length + ")</button>" +
+    '<button class="tab-btn' + (linea === "derecha" ? " active" : "") + '" data-action="set-linea" data-arg="derecha">Right (' + (q.derecha || []).length + ")</button>" +
     "</div>" +
-    '<div class="field"><label>Puntos ya confirmados fuera de la lista (consumo personal u otros)</label>' +
+    '<div class="field"><label>Points already confirmed outside the list (personal consumption or other)</label>' +
     '<input type="number" min="0" step="10000" value="' + (linea === "izquierda" ? q.otrosIzquierda : q.otrosDerecha) + '" data-field="quincenas.' + qKey + "." + (linea === "izquierda" ? "otrosIzquierda" : "otrosDerecha") + '"></div>' +
-    '<button class="btn-primary" data-action="add-persona" data-arg="' + linea + '">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar persona</button>" +
+    '<button class="btn-primary" data-action="add-persona" data-arg="' + linea + '">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Add person</button>" +
     '<div class="view-stack gap-sm">' + rows + "</div>" +
     productosCalculadoraHTML(state, ui, qKey, q)
   );
@@ -988,7 +988,7 @@ function renderPersonaModal(ui) {
   const editing = !!d.id;
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-persona" data-linea="' + d.linea + '" data-arg="' + d.id + '">' +
-      (ui.confirmDeletePersona === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar persona") +
+      (ui.confirmDeletePersona === d.id ? "Are you sure? Tap again to delete" : "Delete person") +
       "</button>"
     : "";
   const paisInfo = paisCatalogoInfo(d.pais);
@@ -1003,27 +1003,27 @@ function renderPersonaModal(ui) {
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-persona"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar persona" : "Nueva persona — línea " + (d.linea === "izquierda" ? "Izquierda" : "Derecha")) + "</span>" +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit person" : "New person — " + (d.linea === "izquierda" ? "Left" : "Right") + " leg") + "</span>" +
     '<button class="icon-btn" data-action="cancel-persona">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
-    '<div class="field"><label>País</label>' + paisChips + "</div>" +
-    '<div class="field"><label>Teléfono (opcional)</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="' + escapeHtml(paisInfo.codigo) + ' 300 000 0000"></div>' +
+    '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Full name"></div>' +
+    '<div class="field"><label>Country</label>' + paisChips + "</div>" +
+    '<div class="field"><label>Phone (optional)</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="' + escapeHtml(paisInfo.codigo) + ' 300 000 0000"></div>' +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="Ej. 93248238"></div>' +
-    '<div class="field" style="flex:1"><label>Contraseña</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Opcional"></div>' +
+    '<div class="field" style="flex:1"><label>Atomy ID</label><input type="text" data-draft-field="atomyId" value="' + escapeHtml(d.atomyId || "") + '" placeholder="E.g. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Password</label><input type="text" data-draft-field="contrasena" value="' + escapeHtml(d.contrasena || "") + '" placeholder="Optional"></div>' +
     "</div>" +
-    '<p class="muted small" style="line-height:1.4;margin-top:-4px">La contraseña es opcional y solo para que el equipo pueda poner puntos por este socio si lo necesita — nadie está obligado a compartirla.</p>' +
-    '<div class="field"><label>Notas</label><textarea rows="2" data-draft-field="notas" placeholder="Observaciones...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
+    '<p class="muted small" style="line-height:1.4;margin-top:-4px">The password is optional and only so the team can enter points for this partner if needed — no one is required to share it.</p>' +
+    '<div class="field"><label>Notes</label><textarea rows="2" data-draft-field="notas" placeholder="Notes...">' + escapeHtml(d.notas || "") + "</textarea></div>" +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-persona">Guardar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-persona">Save</button>' +
     deleteBtn +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-persona">Cancelar</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-persona">Cancel</button>' +
     "</div></div>"
   );
 }
 
-/* ---------------- Agenda Semanal ---------------- */
+/* ---------------- Weekly Agenda ---------------- */
 
 function agendaTipoInfo(tipoId) {
   return AGENDA_TIPOS.find(function (t) { return t.id === tipoId; }) || AGENDA_TIPOS[0];
@@ -1031,7 +1031,7 @@ function agendaTipoInfo(tipoId) {
 
 function agendaFechaLabel(fecha) {
   try {
-    return new Date(fecha + "T00:00:00").toLocaleDateString("es-ES", { weekday: "short", day: "2-digit", month: "short" });
+    return new Date(fecha + "T00:00:00").toLocaleDateString("en-US", { weekday: "short", day: "2-digit", month: "short" });
   } catch (e) {
     return fecha;
   }
@@ -1065,9 +1065,9 @@ function zoomRowHTML(dia, z) {
     '<div class="card" style="padding:12px">' +
     '<div class="row between" style="align-items:flex-start">' +
     '<div class="row gap-2" style="min-width:0">' + Icon("video", { size: 14, color: "var(--gold-light)" }) +
-    '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Reunión sin título") + "</div>" +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:13.5px">' + escapeHtml(z.titulo || "Untitled meeting") + "</div>" +
     '<div class="row gap-2" style="margin-top:2px;flex-wrap:wrap">' +
-    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " Solo " + escapeHtml(agendaFechaLabel(z.fecha)) + "</span>" : '<span class="badge dark">Cada semana</span>') +
+    (puntual ? '<span class="badge soft">' + Icon("calendar", { size: 10 }) + " Only " + escapeHtml(agendaFechaLabel(z.fecha)) + "</span>" : '<span class="badge dark">Every week</span>') +
     (z.hora ? '<span class="muted small">' + escapeHtml(z.hora) + "</span>" : "") +
     (z.recordar ? Icon("bell", { size: 11, color: "var(--gold-light)" }) : "") +
     "</div></div></div>" +
@@ -1075,10 +1075,10 @@ function zoomRowHTML(dia, z) {
     "</div>" +
     (z.enlace
       ? '<div class="row gap-2" style="margin-top:10px">' +
-        '<a class="btn-secondary" style="flex:1;padding:8px;text-align:center" href="' + escapeHtml(z.enlace) + '" target="_blank" rel="noreferrer">' + Icon("video", { size: 14 }) + " Unirme</a>" +
+        '<a class="btn-secondary" style="flex:1;padding:8px;text-align:center" href="' + escapeHtml(z.enlace) + '" target="_blank" rel="noreferrer">' + Icon("video", { size: 14 }) + " Join</a>" +
         '<button class="icon-btn" data-action="copy-zoom-link" data-arg="' + escapeHtml(z.enlace) + '">' + Icon("copy", { size: 14 }) + "</button>" +
         "</div>"
-      : '<div class="muted small" style="margin-top:8px">Sin enlace guardado todavía — tócala para añadirlo.</div>') +
+      : '<div class="muted small" style="margin-top:8px">No link saved yet — tap it to add one.</div>') +
     "</div>"
   );
 }
@@ -1101,24 +1101,24 @@ function renderAgenda(state, ui) {
   const actividades = diaData.actividades.slice().sort(function (a, b) { return (a.hora || "99:99").localeCompare(b.hora || "99:99"); });
   const actividadesHtml = actividades.length
     ? actividades.map(function (a) { return actividadRowHTML(diaActivo, a); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:16px 0">Sin actividades para ' + escapeHtml(diaInfo.label) + ".</p>";
+    : '<p class="muted small" style="text-align:center;padding:16px 0">No activities for ' + escapeHtml(diaInfo.label) + ".</p>";
 
   const zoomsHtml = diaData.zooms.length
     ? diaData.zooms.map(function (z) { return zoomRowHTML(diaActivo, z); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:16px 0">Sin reuniones Zoom guardadas para este día.</p>';
+    : '<p class="muted small" style="text-align:center;padding:16px 0">No Zoom meetings saved for this day.</p>';
 
   return (
-    sectionHeaderHTML("Agenda Semanal", "Tu rutina de líder, día a día — llamadas, reuniones con afiliados, consultorías, formaciones y reuniones de líderes, más tus Zoom.", "calendar") +
+    sectionHeaderHTML("Weekly Agenda", "Your leader routine, day by day — calls, meetings with affiliates, consulting, trainings, and leaders meetings, plus your Zooms.", "calendar") +
     '<div class="row gap-2" style="flex-wrap:wrap">' + tabs + "</div>" +
     '<div>' +
-    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Actividades — ' + escapeHtml(diaInfo.label) + "</span>" +
-    '<button class="link-btn small" data-action="add-actividad" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
+    '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Activities — ' + escapeHtml(diaInfo.label) + "</span>" +
+    '<button class="link-btn small" data-action="add-actividad" data-arg="' + diaActivo + '">+ Add</button></div>' +
     '<div class="view-stack gap-sm" style="margin-top:8px">' + actividadesHtml + "</div>" +
     "</div>" +
     '<div>' +
     '<div class="row between" style="align-items:center"><span style="font-weight:700;font-size:14px">Zoom — ' + escapeHtml(diaInfo.label) + "</span>" +
-    '<button class="link-btn small" data-action="add-zoom" data-arg="' + diaActivo + '">+ Añadir</button></div>' +
-    '<div class="muted small" style="margin-top:2px">Guarda aquí tus Zoom recurrentes (el mismo enlace cada semana) o uno puntual apenas recibas la invitación — por ejemplo, si te avisan hoy de un Zoom para mañana, lo agregas aquí mismo con su fecha, hora y enlace.</div>' +
+    '<button class="link-btn small" data-action="add-zoom" data-arg="' + diaActivo + '">+ Add</button></div>' +
+    '<div class="muted small" style="margin-top:2px">Save your recurring Zooms here (the same link every week), or a one-time one as soon as you get the invite — for example, if you\'re told today about a Zoom for tomorrow, add it right here with its date, time, and link.</div>' +
     '<div class="view-stack gap-sm" style="margin-top:8px">' + zoomsHtml + "</div>" +
     "</div>"
   );
@@ -1127,18 +1127,18 @@ function renderAgenda(state, ui) {
 function recordatorioFieldHTML(d, toggleAction) {
   const on = !!d.recordar;
   const minOpts = [0, 10, 30, 60].map(function (m) {
-    const label = m === 0 ? "A esa hora" : m + " min antes";
+    const label = m === 0 ? "At that time" : m + " min before";
     return '<option value="' + m + '"' + (Number(d.recordarMin) === m ? " selected" : "") + ">" + label + "</option>";
   }).join("");
   return (
     '<div class="field">' +
     '<div class="row gap-2" style="align-items:center">' +
     '<button class="check-dot' + (on ? " on" : "") + '" data-action="' + toggleAction + '">' + (on ? Icon("check", { size: 13, color: "#1B1338" }) : Icon("bell", { size: 13 })) + "</button>" +
-    '<button class="check-label' + (on ? " on" : "") + '" style="padding:0;flex:1;text-align:left" data-action="' + toggleAction + '">Avisarme con una notificación</button>' +
+    '<button class="check-label' + (on ? " on" : "") + '" style="padding:0;flex:1;text-align:left" data-action="' + toggleAction + '">Notify me with a notification</button>' +
     "</div>" +
     (on
       ? '<select data-draft-field="recordarMin" style="width:100%;margin-top:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:9px 12px;font-size:13.5px;outline:none">' + minOpts + "</select>" +
-        '<p class="muted small" style="margin-top:4px">Solo avisa mientras tengas Cumbre Master abierto en el navegador o instalado, con las notificaciones activadas en Ajustes.</p>'
+        '<p class="muted small" style="margin-top:4px">This only notifies you while you have Cumbre Master open in the browser or installed, with notifications enabled in Settings.</p>'
       : "") +
     "</div>"
   );
@@ -1151,25 +1151,25 @@ function renderActividadModal(ui) {
   const tipoOpts = AGENDA_TIPOS.map(function (t) { return '<option value="' + t.id + '"' + (d.tipo === t.id ? " selected" : "") + ">" + t.label + "</option>"; }).join("");
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-actividad" data-dia="' + d.dia + '" data-arg="' + ui.actividadEditId + '">' +
-      (ui.confirmDeleteActividad === ui.actividadEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar actividad") +
+      (ui.confirmDeleteActividad === ui.actividadEditId ? "Are you sure? Tap again to delete" : "Delete activity") +
       "</button>"
     : "";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-actividad"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar actividad" : "Nueva actividad") + "</span>" +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit activity" : "New activity") + "</span>" +
     '<button class="icon-btn" data-action="cancel-actividad">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Tipo</label><select data-draft-field="tipo" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + tipoOpts + "</select></div>" +
-    '<div class="field"><label>Hora (opcional)</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
-    '<div class="field"><label>Fecha (opcional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Déjalo vacío si se repite todas las semanas ese día. Ponle fecha si es puntual — por ejemplo, una tarea de una sola vez.</p></div>' +
-    '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="Con quién, dónde, qué necesitas llevar...">' + escapeHtml(d.nota || "") + "</textarea></div>" +
+    '<div class="field"><label>Type</label><select data-draft-field="tipo" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + tipoOpts + "</select></div>" +
+    '<div class="field"><label>Time (optional)</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Date (optional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Leave it empty if it repeats every week on this day. Set a date if it\'s a one-off — for example, a one-time task.</p></div>' +
+    '<div class="field"><label>Note</label><textarea rows="2" data-draft-field="nota" placeholder="Who with, where, what you need to bring...">' + escapeHtml(d.nota || "") + "</textarea></div>" +
     recordatorioFieldHTML(d, "toggle-actividad-recordar") +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-actividad">Guardar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-actividad">Save</button>' +
     deleteBtn +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-actividad">Cancelar</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-actividad">Cancel</button>' +
     "</div></div>"
   );
 }
@@ -1181,15 +1181,15 @@ function renderPatrocinadorFabModal(ui) {
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancelar-patrocinador-fab"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">Registra a tu patrocinador/a</span>' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Register your sponsor</span>' +
     '<button class="icon-btn" data-action="cancelar-patrocinador-fab">' + Icon("x", { size: 18 }) + "</button></div>" +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">Aún no tienes anotado su WhatsApp. Regístralo una vez y este botón ya abrirá su chat directamente cada vez que lo toques.</p>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">You haven\'t saved their WhatsApp yet. Register it once and this button will open their chat directly every time you tap it.</p>' +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre || "") + '" placeholder="Nombre de tu patrocinador/a"></div>' +
-    '<div class="field"><label>WhatsApp</label><input type="text" inputmode="numeric" data-draft-field="telefono" value="' + escapeHtml(d.telefono || "") + '" placeholder="Ej. 34600000000"></div>' +
+    '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre || "") + '" placeholder="Your sponsor\'s name"></div>' +
+    '<div class="field"><label>WhatsApp</label><input type="text" inputmode="numeric" data-draft-field="telefono" value="' + escapeHtml(d.telefono || "") + '" placeholder="E.g. 34600000000"></div>' +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="guardar-patrocinador-fab">Guardar y escribirle</button>' +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancelar-patrocinador-fab">Cancelar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="guardar-patrocinador-fab">Save and message them</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancelar-patrocinador-fab">Cancel</button>' +
     "</div></div>"
   );
 }
@@ -1200,36 +1200,36 @@ function renderZoomModal(ui) {
   const editing = !!ui.zoomEditId;
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-zoom" data-dia="' + d.dia + '" data-arg="' + ui.zoomEditId + '">' +
-      (ui.confirmDeleteZoom === ui.zoomEditId ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar reunión") +
+      (ui.confirmDeleteZoom === ui.zoomEditId ? "Are you sure? Tap again to delete" : "Delete meeting") +
       "</button>"
     : "";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-zoom"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar reunión Zoom" : "Nueva reunión Zoom") + "</span>" +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit Zoom meeting" : "New Zoom meeting") + "</span>" +
     '<button class="icon-btn" data-action="cancel-zoom">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Título</label><input type="text" data-draft-field="titulo" value="' + escapeHtml(d.titulo || "") + '" placeholder="Ej. Formación semanal del equipo"></div>' +
-    '<div class="field"><label>Hora</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
-    '<div class="field"><label>Fecha (opcional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Déjalo vacío si es tu Zoom de todas las semanas. Ponle fecha si es una reunión puntual — por ejemplo, una que te acaban de invitar para mañana.</p></div>' +
-    '<div class="field"><label>Enlace de conexión</label><input type="text" inputmode="url" data-draft-field="enlace" value="' + escapeHtml(d.enlace || "") + '" placeholder="https://zoom.us/j/..."></div>' +
+    '<div class="field"><label>Title</label><input type="text" data-draft-field="titulo" value="' + escapeHtml(d.titulo || "") + '" placeholder="E.g. Weekly team training"></div>' +
+    '<div class="field"><label>Time</label><input type="time" data-draft-field="hora" value="' + (d.hora || "") + '"></div>' +
+    '<div class="field"><label>Date (optional)</label><input type="date" data-draft-field="fecha" value="' + (d.fecha || "") + '"><p class="muted small" style="margin-top:2px">Leave it empty if it\'s your every-week Zoom. Set a date if it\'s a one-off meeting — for example, one you were just invited to for tomorrow.</p></div>' +
+    '<div class="field"><label>Connection link</label><input type="text" inputmode="url" data-draft-field="enlace" value="' + escapeHtml(d.enlace || "") + '" placeholder="https://zoom.us/j/..."></div>' +
     recordatorioFieldHTML(d, "toggle-zoom-recordar") +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-zoom">Guardar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-zoom">Save</button>' +
     deleteBtn +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-zoom">Cancelar</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-zoom">Cancel</button>' +
     "</div></div>"
   );
 }
 
-/* ---------------- Informe Semanal ---------------- */
+/* ---------------- Weekly Report ---------------- */
 
 const REGISTRO_TIPOS = [
-  { id: "llamadas", label: "Llamadas", icon: "phone-call" },
-  { id: "mensajes", label: "Mensajes de invitación", icon: "message-circle" },
-  { id: "presentaciones", label: "Presentaciones (Show the Plan)", icon: "book-open" },
-  { id: "reuniones", label: "Reuniones / consultorías", icon: "users" },
+  { id: "llamadas", label: "Calls", icon: "phone-call" },
+  { id: "mensajes", label: "Invitation messages", icon: "message-circle" },
+  { id: "presentaciones", label: "Presentations (Show the Plan)", icon: "book-open" },
+  { id: "reuniones", label: "Meetings / consultations", icon: "users" },
 ];
 
 function contadorAccionHTML(tipo, label, icon, valorHoy) {
@@ -1264,7 +1264,7 @@ function informeSemanalTextoEquipo(equipo, idioma) {
     "• " + t.personasRed + ": " + equipo.total + "\n" +
     "• " + t.verificados + ": " + equipo.verificados + "\n" +
     "• " + t.pendientes + ": " + equipo.pendientes + "\n" +
-    "• " + t.pvPlaneado + ": " + equipo.pvPlaneado.toLocaleString("es") + " · " + t.pvVerificado + ": " + equipo.pvVerificado.toLocaleString("es") +
+    "• " + t.pvPlaneado + ": " + equipo.pvPlaneado.toLocaleString("en") + " · " + t.pvVerificado + ": " + equipo.pvVerificado.toLocaleString("en") +
     "\n\n" + t.cierreEquipo
   );
 }
@@ -1272,8 +1272,8 @@ function informeSemanalTextoEquipo(equipo, idioma) {
 function idiomaInformeSelectorHTML(state) {
   return (
     '<div class="card" style="margin-top:12px">' +
-    '<div class="row gap-2" style="align-items:center">' + Icon("compass", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:600;font-size:13px">Idioma del mensaje a compartir</span></div>' +
-    '<p class="muted small" style="margin-top:2px">Elige el idioma en el que tu patrocinador recibirá el informe (puede ser distinto al idioma de tu app).</p>' +
+    '<div class="row gap-2" style="align-items:center">' + Icon("compass", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:600;font-size:13px">Language of the message to share</span></div>' +
+    '<p class="muted small" style="margin-top:2px">Choose the language your sponsor will receive the report in (it can be different from your app\'s language).</p>' +
     '<div class="row gap-2" style="flex-wrap:wrap;margin-top:8px">' +
     IDIOMAS_INFORME.map(function (i) {
       const active = state.idiomaInforme === i.id;
@@ -1292,20 +1292,20 @@ function renderInformeSemanal(state, ui) {
 
   const resumenSemana =
     '<div class="card">' +
-    '<div style="font-weight:700;font-size:14px">Esta semana (últimos 7 días)</div>' +
+    '<div style="font-weight:700;font-size:14px">This week (last 7 days)</div>' +
     '<div class="grid-2" style="margin-top:10px;gap:10px">' +
     REGISTRO_TIPOS.map(function (t) {
       return '<div class="card" style="padding:10px;text-align:center"><div class="muted small">' + escapeHtml(t.label) + '</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + (semana[t.id] || 0) + "</div></div>";
     }).join("") +
     "</div></div>";
 
-  const idioma = state.idiomaInforme || "es";
+  const idioma = state.idiomaInforme || "en";
   const totalAcciones = semana.llamadas + semana.mensajes + semana.presentaciones + semana.reuniones;
   const compartirPersonal = totalAcciones > 0
     ? (state.whatsapp && state.whatsapp.trim()
-        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(semana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Compartir mi informe con mi patrocinador</a>"
-        : '<p class="muted small" style="margin-top:10px">Agrega tu WhatsApp en Ajustes para poder compartir tu informe.</p>')
-    : '<p class="muted small" style="margin-top:10px">Registra al menos una acción esta semana para poder compartir tu informe.</p>';
+        ? '<a class="btn-primary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoPersonal(semana, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 16, color: "#fff" }) + " Share my report with my sponsor</a>"
+        : '<p class="muted small" style="margin-top:10px">Add your WhatsApp in Settings so you can share your report.</p>')
+    : '<p class="muted small" style="margin-top:10px">Log at least one action this week so you can share your report.</p>';
   const idiomaSelector = totalAcciones > 0 ? idiomaInformeSelectorHTML(state) : "";
 
   const qKey = quincenaActualKey();
@@ -1320,22 +1320,22 @@ function renderInformeSemanal(state, ui) {
   };
   const equipoHtml =
     '<div class="card" style="margin-top:16px;border-color:var(--gold)">' +
-    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Informe de mis socios</span></div>' +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">El estado de tu red esta quincena — para asesorarlos, y para compartir con tu propio patrocinador.</p>' +
+    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Report on my partners</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">The status of your network this pay period — to coach them, and to share with your own sponsor.</p>' +
     '<div class="grid-2" style="margin-top:10px;gap:10px">' +
-    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Personas en mi red</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.total + "</div></div>" +
-    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Verificados</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.verificados + "</div></div>" +
-    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Pendientes por verificar</div><div style="font-size:18px;font-weight:700;color:' + (equipo.pendientes > 0 ? "var(--warn)" : "var(--gold-light)") + '">' + equipo.pendientes + "</div></div>" +
-    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">PV verificado</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.pvVerificado.toLocaleString("es") + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">People in my network</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.total + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Verified</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.verificados + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Pending verification</div><div style="font-size:18px;font-weight:700;color:' + (equipo.pendientes > 0 ? "var(--warn)" : "var(--gold-light)") + '">' + equipo.pendientes + "</div></div>" +
+    '<div class="card" style="padding:10px;text-align:center"><div class="muted small">Verified PV</div><div style="font-size:18px;font-weight:700;color:var(--gold-light)">' + equipo.pvVerificado.toLocaleString("en") + "</div></div>" +
     "</div>" +
     (state.whatsapp && state.whatsapp.trim()
-      ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(equipo, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartir informe de mi equipo</a>"
+      ? '<a class="btn-secondary" style="margin-top:12px" href="' + pedidoWhatsappHref(state.whatsapp, informeSemanalTextoEquipo(equipo, idioma)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Share my team's report</a>"
       : "") +
     "</div>";
 
   return (
-    sectionHeaderHTML("Informe Semanal", "Registra tus acciones día a día, y comparte tu progreso con tu propio patrocinador — así te ayuda a crecer.", "trending-up") +
-    '<div><div style="font-weight:700;font-size:14px;margin-bottom:8px">Hoy</div>' +
+    sectionHeaderHTML("Weekly Report", "Log your actions day by day, and share your progress with your own sponsor — that's how they help you grow.", "trending-up") +
+    '<div><div style="font-weight:700;font-size:14px;margin-bottom:8px">Today</div>' +
     '<div class="view-stack gap-sm">' + contadores + "</div></div>" +
     resumenSemana +
     idiomaSelector +
@@ -1344,7 +1344,7 @@ function renderInformeSemanal(state, ui) {
   );
 }
 
-/* ---------------- Mi Árbol Genealógico ---------------- */
+/* ---------------- My Genealogy Tree ---------------- */
 
 function ascendenteRowHTML(a) {
   const waLink = a.telefono
@@ -1354,7 +1354,7 @@ function ascendenteRowHTML(a) {
   return (
     '<div class="card roster-row" style="padding:13px">' +
     '<div class="row between" style="align-items:flex-start">' +
-    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(a.nombre || "Sin nombre") + "</div>" +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(a.nombre || "No name") + "</div>" +
     (subLinea ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(subLinea) + "</div>" : "") +
     (a.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(a.telefono) + "</div>" : "") +
     "</div>" +
@@ -1363,7 +1363,7 @@ function ascendenteRowHTML(a) {
     '<button class="icon-btn" data-action="edit-ascendente" data-arg="' + a.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
     '<button class="icon-btn" data-action="delete-ascendente" data-arg="' + a.id + '">' + Icon("x", { size: 14 }) + "</button>" +
     "</div></div>" +
-    (a.horarioNoMolestar ? '<div class="muted small" style="margin-top:6px;font-style:italic">No molestar: ' + escapeHtml(a.horarioNoMolestar) + "</div>" : "") +
+    (a.horarioNoMolestar ? '<div class="muted small" style="margin-top:6px;font-style:italic">Do not disturb: ' + escapeHtml(a.horarioNoMolestar) + "</div>" : "") +
     "</div>"
   );
 }
@@ -1378,43 +1378,43 @@ function renderArbolGenealogico(state, ui) {
   const ascendentes = arbol.ascendentes || [];
   const rows = ascendentes.length
     ? ascendentes.map(function (a) { return ascendenteRowHTML(a); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:20px 0">Aún no has agregado a nadie de tu línea ascendente.</p>';
+    : '<p class="muted small" style="text-align:center;padding:20px 0">You haven\'t added anyone from your upline yet.</p>';
 
   return (
-    sectionHeaderHTML("Mi Árbol Genealógico", "Tu ID, tu patrocinador y tu línea ascendente, siempre a la mano.", "crown") +
+    sectionHeaderHTML("My Genealogy Tree", "Your ID, your sponsor, and your upline, always at hand.", "crown") +
 
     '<div class="card">' +
-    '<div class="row gap-2">' + Icon("user-badge", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Yo</span></div>' +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">Así los líderes y afiliados de tu equipo pueden consultar tu ID y contraseña sin tener que preguntarte cada vez.</p>' +
+    '<div class="row gap-2">' + Icon("user-badge", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Me</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">This way your team\'s leaders and affiliates can look up your ID and password without having to ask you every time.</p>' +
     '<div class="view-stack gap-sm" style="margin-top:10px">' +
-    '<div class="field"><label>ID Atomy</label><input type="text" data-field="arbolGenealogico.yo.atomyId" value="' + escapeHtml(yo.atomyId) + '" placeholder="Ej. 93248238"></div>' +
-    '<div class="field"><label>Contraseña</label><input type="text" data-field="arbolGenealogico.yo.contrasena" value="' + escapeHtml(yo.contrasena) + '" placeholder="Tu contraseña de Atomy"></div>' +
+    '<div class="field"><label>Atomy ID</label><input type="text" data-field="arbolGenealogico.yo.atomyId" value="' + escapeHtml(yo.atomyId) + '" placeholder="E.g. 93248238"></div>' +
+    '<div class="field"><label>Password</label><input type="text" data-field="arbolGenealogico.yo.contrasena" value="' + escapeHtml(yo.contrasena) + '" placeholder="Your Atomy password"></div>' +
     "</div></div>" +
 
     '<div class="card">' +
-    '<div class="row between"><div class="row gap-2">' + Icon("crown", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Patrocinador</span></div>' + waPatrocinador + "</div>" +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">Sus datos de contacto y de Zoom — para pedirle ayuda o inscribirte a formaciones de la compañía, que suelen pedir el ID de tu patrocinador.</p>' +
+    '<div class="row between"><div class="row gap-2">' + Icon("crown", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Sponsor</span></div>' + waPatrocinador + "</div>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Their contact and Zoom details — for asking them for help or signing up for company trainings, which usually ask for your sponsor\'s ID.</p>' +
     '<div class="view-stack gap-sm" style="margin-top:10px">' +
-    '<div class="field"><label>Nombre</label><input type="text" data-field="arbolGenealogico.patrocinador.nombre" value="' + escapeHtml(p.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="field"><label>Name</label><input type="text" data-field="arbolGenealogico.patrocinador.nombre" value="' + escapeHtml(p.nombre) + '" placeholder="Full name"></div>' +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>ID Atomy</label><input type="text" data-field="arbolGenealogico.patrocinador.atomyId" value="' + escapeHtml(p.atomyId) + '" placeholder="Ej. 93248238"></div>' +
-    '<div class="field" style="flex:1"><label>Rango</label><input type="text" data-field="arbolGenealogico.patrocinador.rango" value="' + escapeHtml(p.rango) + '" placeholder="Ej. Diamond Master"></div>' +
+    '<div class="field" style="flex:1"><label>Atomy ID</label><input type="text" data-field="arbolGenealogico.patrocinador.atomyId" value="' + escapeHtml(p.atomyId) + '" placeholder="E.g. 93248238"></div>' +
+    '<div class="field" style="flex:1"><label>Rank</label><input type="text" data-field="arbolGenealogico.patrocinador.rango" value="' + escapeHtml(p.rango) + '" placeholder="E.g. Diamond Master"></div>' +
     "</div>" +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>País</label><input type="text" data-field="arbolGenealogico.patrocinador.pais" value="' + escapeHtml(p.pais) + '" placeholder="Ej. Colombia"></div>' +
-    '<div class="field" style="flex:1"><label>Teléfono</label><input type="text" inputmode="tel" data-field="arbolGenealogico.patrocinador.telefono" value="' + escapeHtml(p.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field" style="flex:1"><label>Country</label><input type="text" data-field="arbolGenealogico.patrocinador.pais" value="' + escapeHtml(p.pais) + '" placeholder="E.g. Colombia"></div>' +
+    '<div class="field" style="flex:1"><label>Phone</label><input type="text" inputmode="tel" data-field="arbolGenealogico.patrocinador.telefono" value="' + escapeHtml(p.telefono) + '" placeholder="+57 300 000 0000"></div>' +
     "</div>" +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>ID de Zoom</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomId" value="' + escapeHtml(p.zoomId) + '" placeholder="Opcional"></div>' +
-    '<div class="field" style="flex:1"><label>Contraseña de Zoom</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomContrasena" value="' + escapeHtml(p.zoomContrasena) + '" placeholder="Opcional"></div>' +
+    '<div class="field" style="flex:1"><label>Zoom ID</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomId" value="' + escapeHtml(p.zoomId) + '" placeholder="Optional"></div>' +
+    '<div class="field" style="flex:1"><label>Zoom password</label><input type="text" data-field="arbolGenealogico.patrocinador.zoomContrasena" value="' + escapeHtml(p.zoomContrasena) + '" placeholder="Optional"></div>' +
     "</div>" +
-    '<div class="field"><label>Horario en que no se debe llamar</label><input type="text" data-field="arbolGenealogico.patrocinador.horarioNoLlamar" value="' + escapeHtml(p.horarioNoLlamar) + '" placeholder="Ej. Después de las 8pm, ni domingos"></div>' +
+    '<div class="field"><label>Times not to call</label><input type="text" data-field="arbolGenealogico.patrocinador.horarioNoLlamar" value="' + escapeHtml(p.horarioNoLlamar) + '" placeholder="E.g. After 8pm, or Sundays"></div>' +
     "</div></div>" +
 
     '<div class="card">' +
-    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Línea ascendente</span></div>' +
-    '<p class="muted small" style="margin-top:4px;line-height:1.5">Las personas por encima de tu patrocinador directo — útil si necesitas su apoyo, o su ID para alguna formación.</p>' +
-    '<button class="btn-primary" style="margin-top:10px" data-action="add-ascendente">' + Icon("crown", { size: 16, color: "#fff" }) + " Agregar otro nivel arriba en la línea</button>" +
+    '<div class="row gap-2">' + Icon("users", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Upline</span></div>' +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">The people above your direct sponsor — useful if you need their support, or their ID for some training.</p>' +
+    '<button class="btn-primary" style="margin-top:10px" data-action="add-ascendente">' + Icon("crown", { size: 16, color: "#fff" }) + " Add another level up the line</button>" +
     '<div class="view-stack gap-sm" style="margin-top:10px">' + rows + "</div>" +
     "</div>"
   );
@@ -1426,32 +1426,32 @@ function renderAscendenteModal(ui) {
   const editing = !!d.id;
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-ascendente" data-arg="' + d.id + '">' +
-      (ui.confirmDeleteAscendente === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar persona") +
+      (ui.confirmDeleteAscendente === d.id ? "Are you sure? Tap again to delete" : "Delete person") +
       "</button>"
     : "";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-ascendente"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar persona" : "Nueva persona de la línea ascendente") + "</span>" +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit person" : "New person in the upline") + "</span>" +
     '<button class="icon-btn" data-action="cancel-ascendente">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Full name"></div>' +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>Rango</label><input type="text" data-draft-field="rango" value="' + escapeHtml(d.rango) + '" placeholder="Ej. Diamond Master"></div>' +
-    '<div class="field" style="flex:1"><label>País</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="Ej. Colombia"></div>' +
+    '<div class="field" style="flex:1"><label>Rank</label><input type="text" data-draft-field="rango" value="' + escapeHtml(d.rango) + '" placeholder="E.g. Diamond Master"></div>' +
+    '<div class="field" style="flex:1"><label>Country</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="E.g. Colombia"></div>' +
     "</div>" +
-    '<div class="field"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
-    '<div class="field"><label>Horario en que no se debe molestar</label><input type="text" data-draft-field="horarioNoMolestar" value="' + escapeHtml(d.horarioNoMolestar) + '" placeholder="Ej. Después de las 9pm"></div>' +
+    '<div class="field"><label>Phone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Times not to disturb</label><input type="text" data-draft-field="horarioNoMolestar" value="' + escapeHtml(d.horarioNoMolestar) + '" placeholder="E.g. After 9pm"></div>' +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-ascendente">Guardar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-ascendente">Save</button>' +
     deleteBtn +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-ascendente">Cancelar</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-ascendente">Cancel</button>' +
     "</div></div>"
   );
 }
 
-/* ---------------- Llamadas S.O.S. ---------------- */
+/* ---------------- S.O.S. Calls ---------------- */
 
 function sosRowHTML(s) {
   const waLink = s.telefono
@@ -1460,7 +1460,7 @@ function sosRowHTML(s) {
   return (
     '<div class="card roster-row" style="padding:13px">' +
     '<div class="row between" style="align-items:flex-start">' +
-    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(s.nombre || "Sin nombre") + "</div>" +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(s.nombre || "No name") + "</div>" +
     (s.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(s.telefono) + "</div>" : "") +
     "</div>" +
     '<div class="row gap-2">' +
@@ -1477,11 +1477,11 @@ function renderLlamadasSOS(state, ui) {
   const lista = state.llamadasSOS || [];
   const rows = lista.length
     ? lista.map(function (s) { return sosRowHTML(s); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos S.O.S. guardados.</p>';
+    : '<p class="muted small" style="text-align:center;padding:24px 0">You don\'t have any S.O.S. contacts saved yet.</p>';
   return (
-    sectionHeaderHTML("Llamadas S.O.S.", "Personas a las que puedes llamar en busca de apoyo, aunque no sean de tu propia línea.", "bell") +
-    '<div class="card"><p class="small" style="line-height:1.6">A veces la ayuda que necesitas no viene de tu genealogía directa — puede ser un mentor de otro equipo, un capacitador de la compañía, o alguien de confianza experto en algún tema. Guarda aquí a quién llamar en esos momentos.</p></div>' +
-    '<button class="btn-primary" data-action="add-sos">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar contacto</button>" +
+    sectionHeaderHTML("S.O.S. Calls", "People you can call for support, even if they're not in your own line.", "bell") +
+    '<div class="card"><p class="small" style="line-height:1.6">Sometimes the help you need doesn\'t come from your direct genealogy — it could be a mentor from another team, a company trainer, or someone trusted who\'s an expert on some topic. Save here who to call in those moments.</p></div>' +
+    '<button class="btn-primary" data-action="add-sos">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Add contact</button>" +
     '<div class="view-stack gap-sm">' + rows + "</div>"
   );
 }
@@ -1492,28 +1492,28 @@ function renderSOSModal(ui) {
   const editing = !!d.id;
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-sos" data-arg="' + d.id + '">' +
-      (ui.confirmDeleteSOS === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar contacto") +
+      (ui.confirmDeleteSOS === d.id ? "Are you sure? Tap again to delete" : "Delete contact") +
       "</button>"
     : "";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-sos"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar contacto" : "Nuevo contacto S.O.S.") + "</span>" +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit contact" : "New S.O.S. contact") + "</span>" +
     '<button class="icon-btn" data-action="cancel-sos">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
-    '<div class="field"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
-    '<div class="field"><label>Nota</label><textarea rows="2" data-draft-field="nota" placeholder="¿Por qué acudir a esta persona?">' + escapeHtml(d.nota || "") + "</textarea></div>" +
+    '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Full name"></div>' +
+    '<div class="field"><label>Phone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field"><label>Note</label><textarea rows="2" data-draft-field="nota" placeholder="Why go to this person?">' + escapeHtml(d.nota || "") + "</textarea></div>" +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-sos">Guardar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-sos">Save</button>' +
     deleteBtn +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-sos">Cancelar</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-sos">Cancel</button>' +
     "</div></div>"
   );
 }
 
-/* ---------------- Lista de Contactos (eventos en vivo) ---------------- */
+/* ---------------- Contacts List (live events) ---------------- */
 
 function contactoEventoRowHTML(c) {
   const waLink = c.telefono
@@ -1522,7 +1522,7 @@ function contactoEventoRowHTML(c) {
   return (
     '<div class="card" style="padding:13px">' +
     '<div class="row between" style="align-items:flex-start">' +
-    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "Sin nombre") +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "No name") +
     (c.pais ? ' <span class="badge soft" style="margin-left:4px">' + escapeHtml(c.pais) + "</span>" : "") + "</div>" +
     (c.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono) + "</div>" : "") +
     "</div>" +
@@ -1540,10 +1540,10 @@ function renderContactosEventos(state, ui) {
   const lista = state.contactosEventos || [];
   const rows = lista.length
     ? lista.map(function (c) { return contactoEventoRowHTML(c); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos de eventos guardados.</p>';
+    : '<p class="muted small" style="text-align:center;padding:24px 0">You don\'t have any event contacts saved yet.</p>';
   return (
-    sectionHeaderHTML("Lista de Contactos", "Personas que conociste en seminarios, convenciones u otros eventos en vivo — no siempre son prospectos todavía.", "users") +
-    '<button class="btn-primary" data-action="add-contacto-evento">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Agregar contacto</button>" +
+    sectionHeaderHTML("Contacts List", "People you met at seminars, conventions, or other live events — they're not always prospects yet.", "users") +
+    '<button class="btn-primary" data-action="add-contacto-evento">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Add contact</button>" +
     '<div class="view-stack gap-sm">' + rows + "</div>"
   );
 }
@@ -1554,31 +1554,31 @@ function renderContactoEventoModal(ui) {
   const editing = !!d.id;
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-contacto-evento" data-arg="' + d.id + '">' +
-      (ui.confirmDeleteContactoEvento === d.id ? "¿Seguro? Toca de nuevo para eliminar" : "Eliminar contacto") +
+      (ui.confirmDeleteContactoEvento === d.id ? "Are you sure? Tap again to delete" : "Delete contact") +
       "</button>"
     : "";
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-contacto-evento"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Editar contacto" : "Nuevo contacto") + "</span>" +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Edit contact" : "New contact") + "</span>" +
     '<button class="icon-btn" data-action="cancel-contacto-evento">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
-    '<div class="field"><label>Nombre</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nombre completo"></div>' +
+    '<div class="field"><label>Name</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Full name"></div>' +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>País</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="Ej. Colombia"></div>' +
-    '<div class="field" style="flex:1"><label>Teléfono</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field" style="flex:1"><label>Country</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="E.g. Colombia"></div>' +
+    '<div class="field" style="flex:1"><label>Phone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
     "</div>" +
-    '<div class="field"><label>Observaciones</label><textarea rows="2" data-draft-field="observaciones" placeholder="Dónde lo conociste, intereses...">' + escapeHtml(d.observaciones || "") + "</textarea></div>" +
+    '<div class="field"><label>Notes</label><textarea rows="2" data-draft-field="observaciones" placeholder="Where you met them, interests...">' + escapeHtml(d.observaciones || "") + "</textarea></div>" +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto-evento">Guardar</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto-evento">Save</button>' +
     deleteBtn +
-    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto-evento">Cancelar</button>' +
+    '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto-evento">Cancel</button>' +
     "</div></div>"
   );
 }
 
-/* ---------------- Mi Rango ---------------- */
+/* ---------------- My Rank ---------------- */
 
 function renderPerfil(state, ui) {
   const rango = RANGOS_MASTER[state.rangoActualIndex];
@@ -1595,7 +1595,7 @@ function renderPerfil(state, ui) {
   }).join("");
 
   const actividad = state.actividad.length
-    ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:8px">Actividad reciente</div><div class="card" style="padding:0;overflow:hidden">' +
+    ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:8px">Recent activity</div><div class="card" style="padding:0;overflow:hidden">' +
       state.actividad.map(function (a, i) {
         return '<div class="row gap-3" style="padding:12px 16px;' + (i > 0 ? "border-top:1px solid var(--border)" : "") + '">' +
           '<div style="width:28px;height:28px;border-radius:999px;background:var(--success-soft);color:var(--success);display:flex;align-items:center;justify-content:center;flex-shrink:0">' + Icon("check", { size: 14 }) + "</div>" +
@@ -1606,12 +1606,12 @@ function renderPerfil(state, ui) {
   return (
     '<div class="card" style="text-align:center;border:2px solid var(--gold)">' +
     medallionHTML(rango.icon, 84) +
-    '<div class="muted small" style="margin-top:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--gold)">Tu rango actual</div>' +
+    '<div class="muted small" style="margin-top:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--gold)">Your current rank</div>' +
     '<div style="font-size:20px;font-weight:700;margin-top:4px">' + escapeHtml(rango.nombre) + "</div>" +
     "</div>" +
     '<div>' +
-    '<div style="font-size:14px;font-weight:600;margin-bottom:2px">Camino de Maestría</div>' +
-    '<div class="muted small" style="margin-bottom:12px">Toca el siguiente rango cuando lo alcances.</div>' +
+    '<div style="font-size:14px;font-weight:600;margin-bottom:2px">Mastery Path</div>' +
+    '<div class="muted small" style="margin-bottom:12px">Tap the next rank when you reach it.</div>' +
     '<div class="grid-3">' + botones + "</div>" +
     "</div>" +
     detalleRangoHTML(state, ui) +
@@ -1619,7 +1619,7 @@ function renderPerfil(state, ui) {
   );
 }
 
-/* ---------------- Mi Rango: detalle, meta y tarjeta de reconocimiento ---------------- */
+/* ---------------- My Rank: detail, goal, and recognition card ---------------- */
 
 function detalleRangoHTML(state, ui) {
   const detalleIndex = ui.rangoDetalleIndex != null ? ui.rangoDetalleIndex : state.rangoActualIndex;
@@ -1632,7 +1632,7 @@ function detalleRangoHTML(state, ui) {
   if (!abierto) {
     return (
       '<button class="card row between" style="width:100%;text-align:left" data-action="toggle-detalle-rango">' +
-      '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detalle, meta y tarjeta de reconocimiento</span></div>' +
+      '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detail, goal, and recognition card</span></div>' +
       clicaAquiBadgeHTML(false, "gold") +
       "</button>"
     );
@@ -1654,87 +1654,87 @@ function detalleRangoHTML(state, ui) {
 
   let metaTexto = "";
   if (meta.fecha && dias != null) {
-    if (dias > 0) metaTexto = "Faltan " + dias + (dias === 1 ? " día" : " días") + " para tu meta de alcanzar " + detalle.nombre + ".";
-    else if (dias === 0) metaTexto = "¡Tu meta para alcanzar " + detalle.nombre + " es hoy!";
-    else metaTexto = "Tu meta para alcanzar " + detalle.nombre + " venció hace " + Math.abs(dias) + (Math.abs(dias) === 1 ? " día" : " días") + " — actualízala si quieres seguir usándola como recordatorio.";
+    if (dias > 0) metaTexto = dias + (dias === 1 ? " day" : " days") + " left until your goal of reaching " + detalle.nombre + ".";
+    else if (dias === 0) metaTexto = "Your goal of reaching " + detalle.nombre + " is today!";
+    else metaTexto = "Your goal of reaching " + detalle.nombre + " passed " + Math.abs(dias) + (Math.abs(dias) === 1 ? " day" : " days") + " ago — update it if you want to keep using it as a reminder.";
   }
 
-  const fotoInner = state.foto ? '<img src="' + escapeHtml(state.foto) + '" alt="Tu foto"/>' : Icon("camera", { size: 26 });
+  const fotoInner = state.foto ? '<img src="' + escapeHtml(state.foto) + '" alt="Your photo"/>' : Icon("camera", { size: 26 });
 
   return (
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-detalle-rango">' +
-    '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detalle, meta y tarjeta de reconocimiento</span></div>' +
+    '<div class="row gap-2">' + Icon("sparkles", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Detail, goal, and recognition card</span></div>' +
     clicaAquiBadgeHTML(true, "gold") +
     "</button>" +
 
-    '<div class="muted small" style="margin-top:10px">Elige el rango que quieres ver:</div>' +
+    '<div class="muted small" style="margin-top:10px">Choose the rank you want to view:</div>' +
     '<div class="row gap-2" style="flex-wrap:wrap;margin-top:6px">' + chipsDetalle + "</div>" +
 
     '<div style="text-align:center;margin-top:16px">' + medallionHTML(detalle.icon, 60) +
     '<div style="font-size:16px;font-weight:700;margin-top:8px">' + escapeHtml(detalle.nombre) + "</div>" +
-    '<div class="muted small">Rango ' + (detalleIndex + 1) + " de " + RANGOS_MASTER.length + "</div></div>" +
+    '<div class="muted small">Rank ' + (detalleIndex + 1) + " of " + RANGOS_MASTER.length + "</div></div>" +
 
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Para alcanzar este rango</div>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">To reach this rank</div>' +
     '<p class="small" style="line-height:1.5;margin-top:4px">' + escapeHtml(detalle.prerrequisito) + "</p>" +
     '<p class="muted small" style="line-height:1.5;margin-top:4px">' + escapeHtml(detalle.criterio) + "</p>" +
 
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Lo que ganas al alcanzarlo</div>' +
-    '<div class="muted small" style="margin-top:2px">En ' + escapeHtml(paisInfo.label) + " · " + escapeHtml(NOTA_MONEDA_APROX) + "</div>" +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">What you earn when you reach it</div>' +
+    '<div class="muted small" style="margin-top:2px">In ' + escapeHtml(paisInfo.label) + " · " + escapeHtml(NOTA_MONEDA_APROX) + "</div>" +
     montosHtml +
     paisSelectorHTML(state) +
 
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Tu meta para este rango</div>' +
-    '<div class="field" style="margin-top:6px"><label>Fecha en la que quieres alcanzarlo</label>' +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:16px">Your goal for this rank</div>' +
+    '<div class="field" style="margin-top:6px"><label>Date by which you want to reach it</label>' +
     '<input type="date" value="' + escapeHtml(meta.fecha || "") + '" data-field="metasRango.' + detalleIndex + '.fecha"></div>' +
     (metaTexto ? '<p class="small" style="margin-top:8px;font-weight:600;color:' + (dias != null && dias < 0 ? "var(--warn)" : "var(--gold-light)") + '">' + escapeHtml(metaTexto) + "</p>" : "") +
-    (meta.fecha ? '<button class="link-btn small" style="margin-top:6px" data-action="limpiar-meta-rango" data-arg="' + detalleIndex + '">Quitar esta meta</button>' : "") +
+    (meta.fecha ? '<button class="link-btn small" style="margin-top:6px" data-action="limpiar-meta-rango" data-arg="' + detalleIndex + '">Remove this goal</button>' : "") +
 
-    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:18px">Tarjeta de reconocimiento</div>' +
-    '<div class="muted small" style="margin-top:2px">Sube tu foto y descarga tu tarjeta de ' + escapeHtml(detalle.nombre) + " para compartirla.</div>" +
+    '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:18px">Recognition card</div>' +
+    '<div class="muted small" style="margin-top:2px">Upload your photo and download your ' + escapeHtml(detalle.nombre) + " card to share it.</div>" +
     '<div style="display:flex;flex-direction:column;align-items:center;margin-top:12px">' +
     '<button class="photo-picker" data-action="trigger-file" data-arg="rango-foto-input">' + fotoInner + "</button>" +
     '<input id="rango-foto-input" type="file" accept="image/*" class="hidden" data-target="foto">' +
-    '<span class="link-btn small" style="margin-top:6px">' + (state.foto ? "Cambiar foto" : "Añadir foto") + "</span>" +
+    '<span class="link-btn small" style="margin-top:6px">' + (state.foto ? "Change photo" : "Add photo") + "</span>" +
     "</div>" +
     '<div style="max-width:280px;margin:14px auto 0">' + rangoCardHTML(state.nombre, state.foto, detalleIndex) + "</div>" +
     '<div class="row gap-2" style="margin-top:14px">' +
-    '<button class="btn-secondary" style="flex:1" data-action="descargar-tarjeta-rango" data-arg="' + detalleIndex + '">' + Icon("share2", { size: 15 }) + " Compartir tarjeta</button>" +
-    '<button class="btn-primary" style="flex:1;color:#fff" data-action="compartir-historia-rango" data-arg="' + detalleIndex + '">' + Icon("sparkles", { size: 15, color: "#fff" }) + " Compartir como historia</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="descargar-tarjeta-rango" data-arg="' + detalleIndex + '">' + Icon("share2", { size: 15 }) + " Share card</button>" +
+    '<button class="btn-primary" style="flex:1;color:#fff" data-action="compartir-historia-rango" data-arg="' + detalleIndex + '">' + Icon("sparkles", { size: 15, color: "#fff" }) + " Share as a story</button>" +
     "</div>" +
-    '<p class="muted small" style="margin-top:8px;line-height:1.5">"Compartir como historia" genera una imagen vertical festiva, lista para Instagram/Facebook/WhatsApp Stories — una vez ahí, esas apps te dejan agregarle música, stickers o texto antes de publicar.</p>' +
+    '<p class="muted small" style="margin-top:8px;line-height:1.5">"Share as a story" generates a festive vertical image, ready for Instagram/Facebook/WhatsApp Stories — once there, those apps let you add music, stickers, or text before posting.</p>' +
     "</div>"
   );
 }
 
-/* ---------------- Ajustes ---------------- */
+/* ---------------- Settings ---------------- */
 
 function renderAjustes(state, ui) {
-  const resetLabel = ui.confirmReset ? "¿Seguro? Toca de nuevo para reiniciar" : "Reiniciar mi progreso";
+  const resetLabel = ui.confirmReset ? "Are you sure? Tap again to reset" : "Reset my progress";
   const licenciaCard = LICENCIA_TITULAR
     ? '<div class="card">' +
-      '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Licencia de esta copia</span></div>' +
-      '<p class="muted small" style="margin-top:6px;line-height:1.5">Esta copia de Cumbre Master está licenciada exclusivamente para <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> y su propio equipo. No está autorizada para compartirse con otros líderes o equipos.</p>' +
+      '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">License for this copy</span></div>' +
+      '<p class="muted small" style="margin-top:6px;line-height:1.5">This copy of Cumbre Master is licensed exclusively for <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> and their own team. It is not authorized to be shared with other leaders or teams.</p>' +
       "</div>"
     : "";
   const notifSupported = "Notification" in window;
   const notifRow = notifSupported
-    ? '<div class="card row between"><div><div style="font-size:14px;font-weight:600">Notificaciones del navegador</div><div class="muted small" style="margin-top:2px">Avisos de tu Agenda Semanal y del ritmo de PV</div></div><div class="toggle' + (state.notifOn && Notification.permission === "granted" ? " on" : "") + '" data-action="toggle-notif"><div class="knob"></div></div></div>'
+    ? '<div class="card row between"><div><div style="font-size:14px;font-weight:600">Browser notifications</div><div class="muted small" style="margin-top:2px">Alerts from your Weekly Agenda and PV pace</div></div><div class="toggle' + (state.notifOn && Notification.permission === "granted" ? " on" : "") + '" data-action="toggle-notif"><div class="knob"></div></div></div>'
     : "";
 
   return (
-    sectionHeaderHTML("Ajustes", "", "settings") +
+    sectionHeaderHTML("Settings", "", "settings") +
     licenciaCard +
-    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">WhatsApp de tu patrocinador/a</label>' +
-    '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">El botón verde flotante le escribe directo a este número.</p>' +
-    '<input type="text" inputmode="numeric" placeholder="Ej. 573000000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>' +
+    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Your sponsor\'s WhatsApp</label>' +
+    '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">The floating green button messages this number directly.</p>' +
+    '<input type="text" inputmode="numeric" placeholder="E.g. 573000000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>' +
     notifRow +
     '<div class="card">' +
-    '<div class="row gap-2">' + Icon("download", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Copia de seguridad</span></div>' +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">Todos tus datos (Reunión de Enfoque, Árbol Genealógico, tu progreso) viven solo en este dispositivo. Descarga un respaldo y guárdalo donde quieras (tu Google Drive, correo, etc.) — así no lo pierdes si cambias de celular o borras datos del navegador.</p>' +
+    '<div class="row gap-2">' + Icon("download", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Backup</span></div>' +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">All your data (Focus Meeting, Genealogy Tree, your progress) lives only on this device. Download a backup and save it wherever you want (your Google Drive, email, etc.) — that way you won\'t lose it if you switch phones or clear your browser data.</p>' +
     '<div class="row gap-2" style="margin-top:10px">' +
-    '<button class="btn-secondary" style="flex:1" data-action="descargar-respaldo">' + Icon("download", { size: 15 }) + " Descargar copia de seguridad</button>" +
-    '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="importar-respaldo-input">' + Icon("repeat", { size: 15 }) + " Restaurar desde archivo</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="descargar-respaldo">' + Icon("download", { size: 15 }) + " Download backup</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="importar-respaldo-input">' + Icon("repeat", { size: 15 }) + " Restore from file</button>" +
     "</div>" +
     '<input id="importar-respaldo-input" type="file" accept="application/json,.json" class="hidden" data-target="__importBackup">' +
     "</div>" +

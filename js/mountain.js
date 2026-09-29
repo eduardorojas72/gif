@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------
-   MEDALLONES Y DECORACIÓN — piezas visuales genéricas reutilizadas
-   en las tarjetas y cabeceras de Cumbre Master.
+   MEDALLIONS AND DECORATION — generic visual pieces reused across
+   Cumbre Master's cards and headers.
 --------------------------------------------------------------- */
 
 function medallionHTML(iconName, size, iconColor) {
@@ -20,16 +20,16 @@ function medallionHTML(iconName, size, iconColor) {
 }
 
 /* ---------------------------------------------------------------
-   TARJETA DE RECONOCIMIENTO — un generador SVG (800x1000) por rango de
-   Maestría, reutilizado tanto para la vista en pantalla como para la
-   exportación a PNG más abajo, así ambas quedan siempre idénticas.
-   Un diseño distinto por cada uno de los 7 rangos (Sales Master →
-   Imperial Master), con grandeza visual creciente: más ornamento, más
-   brillo y bordes más elaborados a medida que sube el rango. La paleta
-   reutiliza los mismos tonos de :root en css/styles.css (no son los
-   colores de otra app), y el nombre se escribe con una tipografía
-   script incrustada (js/fonts.js) para no depender de Google Fonts al
-   exportar la imagen.
+   RECOGNITION CARD — an SVG generator (800x1000) per Mastery rank,
+   reused for both the on-screen view and the PNG export below, so
+   both always stay identical.
+   A distinct design for each of the 7 ranks (Sales Master →
+   Imperial Master), with growing visual grandeur: more ornament, more
+   shine, and more elaborate borders as the rank goes up. The palette
+   reuses the same tones from :root in css/styles.css (they're not
+   another app's colors), and the name is written in an embedded
+   script typeface (js/fonts.js) so it doesn't depend on Google Fonts
+   when exporting the image.
 --------------------------------------------------------------- */
 
 const CARD_BG = "#0A1B33";
@@ -47,7 +47,7 @@ function fontFaceDefsSVG() {
 }
 
 function cardNameFontSize(nombre) {
-  const len = (nombre || "Tu nombre").length;
+  const len = (nombre || "Your name").length;
   if (len <= 13) return 70;
   if (len <= 18) return 58;
   if (len <= 24) return 48;
@@ -110,13 +110,13 @@ function cardRibbonSVG(cx, cy, w, h, fillColor, strokeColor, strokeW, text, text
   );
 }
 
-/* Coloca un ícono del set propio (js/icons.js) centrado en (cx,cy), del
-   tamaño dado. Los trazos de ICON_PATHS están definidos en un viewBox de
-   24x24 — en vez de anidar un <svg> (que en Chrome no escala de forma
-   fiable cuando la tarjeta completa ya viene reducida por su propio
-   viewBox, dejando el ícono enorme y descuadrado), se inserta el trazo
-   directamente y se reescala con transform="scale()", igual que el resto
-   de la decoración de la tarjeta. */
+/* Places an icon from our own set (js/icons.js) centered at (cx,cy), at
+   the given size. ICON_PATHS strokes are defined in a 24x24 viewBox —
+   instead of nesting an <svg> (which in Chrome doesn't scale reliably
+   when the whole card is already scaled down by its own viewBox,
+   leaving the icon huge and misaligned), the stroke is inserted
+   directly and rescaled with transform="scale()", just like the rest
+   of the card's decoration. */
 function cardGlyphSVG(iconName, cx, cy, size, color, stroke) {
   const body = ICON_PATHS[iconName] || "";
   const s = size / 24;
@@ -150,7 +150,7 @@ function cardWingedMedallionSVG(cx, cy, scale, iconName) {
   return out;
 }
 
-/* Ramas de laurel simples a cada lado (Crown / Imperial). */
+/* Simple laurel branches on each side (Crown / Imperial). */
 function cardLaurelSVG(cx, cy, side, color) {
   let out = "";
   for (let i = 0; i < 5; i++) {
@@ -164,14 +164,14 @@ function cardLaurelSVG(cx, cy, side, color) {
 function cardFooterSVG(cx, y) {
   return (
     '<line x1="' + (cx - 60) + '" y1="' + (y - 26) + '" x2="' + (cx + 60) + '" y2="' + (y - 26) + '" stroke="' + CARD_GOLD + '" stroke-width="1" opacity="0.45"/>' +
-    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Camino de Maestría con Atomy</text>'
+    '<text x="' + cx + '" y="' + y + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.55)">Mastery Journey with Atomy</text>'
   );
 }
 
 function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
   const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
   const W = 800, H = 1000, cx = 400;
-  const name = nombre || "Tu nombre";
+  const name = nombre || "Your name";
   const nameSize = cardNameFontSize(name);
   const defs =
     "<defs>" +
@@ -196,7 +196,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
   let body = "";
 
   if (rangoIndex === 0) {
-    /* Sales Master: ingreso a la Maestría — tarjeta sobria, azul, un solo borde dorado. */
+    /* Sales Master: entry into Mastery — sober card, blue, a single gold border. */
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#cardBg0)" rx="26"/>' +
       cardBokehSVG(cx, 300, 320, 220, 6, 5, [CARD_ACCENT, CARD_GOLD]) +
@@ -208,7 +208,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardRibbonSVG(cx, 730, 380, 70, "#0D1F38", CARD_GOLD, 2, rango.nombre, CARD_GOLD_LIGHT, 24) +
       footer;
   } else if (rangoIndex === 1) {
-    /* Diamond Master: brillo helado + gemas en las 4 esquinas. */
+    /* Diamond Master: icy shine + gems in the 4 corners. */
     const gems = [[70, 70], [W - 70, 70], [70, H - 70], [W - 70, H - 70]].map(function (p) {
       return '<rect x="' + (p[0] - 10) + '" y="' + (p[1] - 10) + '" width="20" height="20" rx="3" transform="rotate(45 ' + p[0] + " " + p[1] + ')" fill="' + CARD_GOLD + '" opacity="0.9"/>';
     }).join("");
@@ -225,7 +225,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardRibbonSVG(cx, 745, 400, 76, "#0D1F38", CARD_GOLD_LIGHT, 2.5, rango.nombre, CARD_GOLD_LIGHT, 26) +
       footer;
   } else if (rangoIndex === 2) {
-    /* Sharon Rose Master: oro + rosa, destellos. */
+    /* Sharon Rose Master: gold + rose, sparkles. */
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#cardBg2)" rx="28"/>' +
       '<circle cx="' + cx + '" cy="300" r="250" fill="url(#cardGlowRose)"/>' +
@@ -241,7 +241,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardRibbonSVG(cx, 758, 420, 80, "#2A1830", CARD_ROSE, 2.5, rango.nombre, CARD_GOLD_LIGHT, 27) +
       footer;
   } else if (rangoIndex === 3) {
-    /* Star Master: medallón estrella grande + rayos dorados. */
+    /* Star Master: large star medallion + gold rays. */
     let rayos = "";
     for (let i = 0; i < 16; i++) {
       const a = (i / 16) * Math.PI * 2;
@@ -262,7 +262,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardRibbonSVG(cx, 770, 440, 84, "#0D1526", CARD_GOLD_LIGHT, 3, rango.nombre, CARD_GOLD_LIGHT, 28) +
       footer;
   } else if (rangoIndex === 4) {
-    /* Royal Master: medallón corona sobre el nombre + doble borde. */
+    /* Royal Master: crown medallion above the name + double border. */
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#cardBg4)" rx="30"/>' +
       cardBokehSVG(cx, 300, 340, 240, 12, 41, [CARD_GOLD, "#8FB3E6"]) +
@@ -274,10 +274,10 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardGlyphSVG("crown", cx, 518, 60, CARD_GOLD, 1.8) +
       '<text x="' + cx + '" y="' + 640 + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + nameSize + '" fill="' + CARD_CREAM + '">' + escapeHtml(name) + "</text>" +
       cardRibbonSVG(cx, 735, 440, 84, "#0A0F1E", CARD_GOLD_LIGHT, 3, rango.nombre, CARD_GOLD_LIGHT, 28) +
-      '<text x="' + cx + '" y="850" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.55)">MIEMBRO DE LA REALEZA ATOMY</text>' +
+      '<text x="' + cx + '" y="850" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.55)">ATOMY ROYALTY MEMBER</text>' +
       footer;
   } else if (rangoIndex === 5) {
-    /* Crown Master: corona más grande + laureles a los lados + brillo violeta-dorado. */
+    /* Crown Master: larger crown + laurels on the sides + violet-gold glow. */
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#cardBg5)" rx="30"/>' +
       cardBokehSVG(cx, 300, 350, 250, 14, 53, [CARD_GOLD, CARD_ROSE]) +
@@ -291,10 +291,10 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardGlyphSVG("crown", cx, 518, 76, CARD_GOLD, 1.8) +
       '<text x="' + cx + '" y="' + 655 + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 6) + '" fill="' + CARD_CREAM + '">' + escapeHtml(name) + "</text>" +
       cardRibbonSVG(cx, 752, 460, 88, "#080512", CARD_GOLD_LIGHT, 3.5, rango.nombre, CARD_GOLD_LIGHT, 30) +
-      '<text x="' + cx + '" y="865" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.6)">CLUB DE LÍDERES CROWN</text>' +
+      '<text x="' + cx + '" y="865" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="3" fill="rgba(255,255,255,0.6)">CROWN LEADERS CLUB</text>' +
       footer;
   } else {
-    /* Imperial Master: medallón alado + trofeo + sol dorado, la tarjeta más ornamentada. */
+    /* Imperial Master: winged medallion + trophy + golden sun, the most ornate card. */
     body =
       '<rect width="' + W + '" height="' + H + '" fill="url(#cardBg6)" rx="30"/>' +
       '<circle cx="' + cx + '" cy="310" r="320" fill="url(#cardSunburst)"/>' +
@@ -307,7 +307,7 @@ function rangoCardSVGMarkup(nombre, foto, rangoIndex) {
       cardWingedMedallionSVG(cx, 555, 1.05, "trophy") +
       '<text x="' + cx + '" y="' + 665 + '" text-anchor="middle" font-family="\'Cumbre Script\', cursive" font-size="' + (nameSize + 10) + '" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(name) + "</text>" +
       cardRibbonSVG(cx, 762, 480, 92, "#0A0712", CARD_GOLD_LIGHT, 4, rango.nombre, CARD_GOLD, 32) +
-      '<text x="' + cx + '" y="880" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="3.5" fill="rgba(255,255,255,0.65)">EL RANGO MÁS ALTO DEL PLAN</text>' +
+      '<text x="' + cx + '" y="880" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="3.5" fill="rgba(255,255,255,0.65)">THE HIGHEST RANK IN THE PLAN</text>' +
       footer;
   }
 
@@ -319,9 +319,9 @@ function rangoCardHTML(nombre, foto, rangoIndex) {
 }
 
 /* ---------------------------------------------------------------
-   EXPORTACIÓN A PNG — SVG -> <img> -> <canvas> -> PNG, 100% en el cliente
-   (sin backend). Misma técnica que el resto de tarjetas de esta familia
-   de apps: se dibuja el SVG en un <canvas> oculto y se descarga como PNG.
+   PNG EXPORT — SVG -> <img> -> <canvas> -> PNG, 100% client-side
+   (no backend). Same technique as the rest of this app family's
+   cards: the SVG is drawn onto a hidden <canvas> and downloaded as PNG.
 --------------------------------------------------------------- */
 
 function slugFileCumbre(str) {
@@ -343,11 +343,11 @@ function downloadBlobCumbre(blob, filename) {
   URL.revokeObjectURL(dlUrl);
 }
 
-/* Genera el PNG y, si el dispositivo lo soporta (Web Share API con
-   archivos — la mayoría de móviles), abre directo el panel nativo de
-   "Compartir" (WhatsApp, Instagram, etc.) en vez de solo descargar la
-   imagen en silencio. Si no hay soporte (la mayoría de escritorio), cae
-   en la descarga normal con un aviso claro. */
+/* Generates the PNG and, if the device supports it (Web Share API with
+   files — most mobile devices), opens the native "Share" panel directly
+   (WhatsApp, Instagram, etc.) instead of just silently downloading the
+   image. If there's no support (most desktops), it falls back to a
+   normal download with a clear notice. */
 function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -361,7 +361,7 @@ function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
     URL.revokeObjectURL(url);
     canvas.toBlob(function (blob) {
       if (!blob) {
-        if (typeof App !== "undefined") App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+        if (typeof App !== "undefined") App.showToast("Couldn't generate the image. Please try again.");
         return;
       }
       const file = new File([blob], filename, { type: "image/png" });
@@ -369,17 +369,17 @@ function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
         navigator.share({ files: [file], title: "Cumbre Master", text: shareText }).catch(function (err) {
           if (err && err.name === "AbortError") return;
           downloadBlobCumbre(blob, filename);
-          if (typeof App !== "undefined") App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+          if (typeof App !== "undefined") App.showToast("Couldn't open the share panel — the image was downloaded instead.");
         });
         return;
       }
       downloadBlobCumbre(blob, filename);
-      if (typeof App !== "undefined") App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+      if (typeof App !== "undefined") App.showToast("Image downloaded — you can now attach it wherever you want to share it.");
     }, "image/png");
   };
   img.onerror = function () {
     URL.revokeObjectURL(url);
-    if (typeof App !== "undefined") App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+    if (typeof App !== "undefined") App.showToast("Couldn't generate the image. Please try again.");
   };
   img.src = url;
 }
@@ -387,17 +387,17 @@ function svgToPngShareCumbre(svgMarkup, width, height, filename, shareText) {
 function downloadRangoCard(state, rangoIndex) {
   const rango = RANGOS_MASTER[rangoIndex] || RANGOS_MASTER[0];
   const svg = rangoCardSVGMarkup(state.nombre, state.foto, rangoIndex);
-  svgToPngShareCumbre(svg, 800, 1000, "Cumbre-Master-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png", "¡Mi rango en Atomy: " + rango.nombre + "! 🚀");
+  svgToPngShareCumbre(svg, 800, 1000, "Cumbre-Master-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "leader") + ".png", "My rank at Atomy: " + rango.nombre + "! 🚀");
 }
 
 /* ---------------------------------------------------------------
-   HISTORIA (formato vertical 1080x1920) — la misma tarjeta de
-   reconocimiento, enmarcada dentro de un lienzo festivo pensado para
-   Instagram/Facebook/WhatsApp Stories. Una vez compartida vía el panel
-   nativo, cada red social ofrece su propio editor (música, stickers,
-   texto) sobre esta imagen — no reinventamos un editor de audio/video
-   aquí, solo entregamos una imagen con el formato y el ánimo correctos
-   para que ese editor externo se pueda usar de una vez.
+   STORY (vertical 1080x1920 format) — the same recognition card,
+   framed inside a festive canvas designed for Instagram/Facebook/
+   WhatsApp Stories. Once shared via the native panel, each social
+   network offers its own editor (music, stickers, text) on top of
+   this image — we don't reinvent an audio/video editor here, we just
+   deliver an image with the right format and mood so that external
+   editor can be used right away.
 --------------------------------------------------------------- */
 
 function rangoHistoriaSVGMarkup(nombre, foto, rangoIndex) {
@@ -424,14 +424,14 @@ function rangoHistoriaSVGMarkup(nombre, foto, rangoIndex) {
 
   const headline =
     '<text x="' + cx + '" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" letter-spacing="6" font-weight="700" fill="' + CARD_GOLD + '">CUMBRE MASTER</text>' +
-    '<text x="' + cx + '" y="212" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="54" fill="' + CARD_CREAM + '">¡Nuevo rango alcanzado!</text>' +
+    '<text x="' + cx + '" y="212" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="54" fill="' + CARD_CREAM + '">New rank reached!</text>' +
     '<text x="' + cx + '" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="' + CARD_GOLD_LIGHT + '">' + escapeHtml(rango.nombre) + "</text>";
 
   const captionY1 = cardBottom + 150;
   const captionY2 = captionY1 + 46;
   const caption =
-    '<text x="' + cx + '" y="' + captionY1 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="rgba(245,239,225,0.9)">Comparte tu logro y cuéntales cómo lo lograste 🎉</text>' +
-    '<text x="' + cx + '" y="' + captionY2 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="3.5" fill="rgba(232,185,78,0.8)">RECORRIDO HACIA EL ÉXITO CON ATOMY</text>';
+    '<text x="' + cx + '" y="' + captionY1 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="rgba(245,239,225,0.9)">Share your achievement and tell them how you got there 🎉</text>' +
+    '<text x="' + cx + '" y="' + captionY2 + '" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="3.5" fill="rgba(232,185,78,0.8)">JOURNEY TO SUCCESS WITH ATOMY</text>';
 
   return (
     '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
@@ -452,8 +452,8 @@ function downloadRangoHistoria(state, rangoIndex) {
   const svg = rangoHistoriaSVGMarkup(state.nombre, state.foto, rangoIndex);
   svgToPngShareCumbre(
     svg, 1080, 1920,
-    "Cumbre-Master-Historia-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "lider") + ".png",
-    "¡Nuevo rango alcanzado: " + rango.nombre + "! 🎉 Mi camino con Atomy sigue creciendo."
+    "Cumbre-Master-Story-" + slugFileCumbre(rango.nombre) + "-" + slugFileCumbre(state.nombre || "leader") + ".png",
+    "New rank reached: " + rango.nombre + "! 🎉 My journey with Atomy keeps growing."
   );
 }
 
