@@ -423,6 +423,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .badge.soft { background: var(--accent-soft); color: var(--gold-light); }
 .badge.success { background: var(--success-soft); color: var(--success); }
 .badge.warn { background: var(--warn-soft); color: var(--warn); }
+.badge.blue { background: var(--accent-soft); color: var(--accent); }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }

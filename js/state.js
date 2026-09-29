@@ -11,7 +11,21 @@ function emptyDayState(diaId) {
 
 function emptySemanaState(n) {
   const semana = SEMANAS.find((s) => s.n === n);
-  return { done: false, checks: semana.acciones.map(() => false) };
+  return { done: false, checks: semana.acciones.map(() => false), contactos10: nuevaTabla10Contactos(), evaluacion7x7: nuevaEvaluacion7x7() };
+}
+
+/* ---------------- Desafio 7x7 — tabela de 10 contatos e avaliação semanal ---------------- */
+
+function nuevaFilaContacto10() {
+  return { nombre: "", telefono: "", observaciones: "" };
+}
+
+function nuevaTabla10Contactos() {
+  return Array.from({ length: 10 }, nuevaFilaContacto10);
+}
+
+function nuevaEvaluacion7x7() {
+  return { contactados: "", respondieron: "", presentaciones: "", compras: "", interesados: "", seguimiento: "" };
 }
 
 function emptyPasoState(n) {
@@ -461,6 +475,8 @@ function defaultState() {
     dias: DIAS.reduce((acc, d) => ({ ...acc, [d.id]: emptyDayState(d.id) }), {}),
     semanas: SEMANAS.reduce((acc, s) => ({ ...acc, [s.n]: emptySemanaState(s.n) }), {}),
     pasos: OCHO_PASOS.reduce((acc, p) => ({ ...acc, [p.n]: emptyPasoState(p.n) }), {}),
+    primeros10Contactos: nuevaTabla10Contactos(),
+    evaluacion7x7Inicial: nuevaEvaluacion7x7(),
     contactos: [],
     escenarioVida: emptyEscenarioVida(),
     escenarioCompletado: false,
@@ -553,7 +569,12 @@ function hydrateState(parsed) {
       saved && Array.isArray(saved.checks) && saved.checks.length === s.acciones.length
         ? saved.checks
         : vacio.checks;
-    acc[s.n] = Object.assign({}, vacio, saved || {}, { checks });
+    const contactos10 =
+      saved && Array.isArray(saved.contactos10) && saved.contactos10.length === 10
+        ? saved.contactos10.map((f) => Object.assign(nuevaFilaContacto10(), f))
+        : vacio.contactos10;
+    const evaluacion7x7 = Object.assign(nuevaEvaluacion7x7(), (saved && saved.evaluacion7x7) || {});
+    acc[s.n] = Object.assign({}, vacio, saved || {}, { checks, contactos10, evaluacion7x7 });
     return acc;
   }, {});
 
@@ -571,6 +592,12 @@ function hydrateState(parsed) {
     acc[p.n] = { checks: checks, duplicaChecks: duplicaChecks };
     return acc;
   }, {});
+
+  merged.primeros10Contactos =
+    Array.isArray(parsed.primeros10Contactos) && parsed.primeros10Contactos.length === 10
+      ? parsed.primeros10Contactos.map((f) => Object.assign(nuevaFilaContacto10(), f))
+      : nuevaTabla10Contactos();
+  merged.evaluacion7x7Inicial = Object.assign(nuevaEvaluacion7x7(), parsed.evaluacion7x7Inicial || {});
 
   merged.contactos = Array.isArray(parsed.contactos)
     ? parsed.contactos.map((c) => {

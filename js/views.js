@@ -7,7 +7,7 @@ const MENU_ITEMS = [
   { id: "home", label: "Início", icon: "home" },
   { id: "perfil", label: "Meu Perfil", icon: "user-badge" },
   { id: "pasos", label: "Os 8 Passos", icon: "footprints" },
-  { id: "plan6", label: "Plano 6 Dias", icon: "trail-map" },
+  { id: "plan6", label: "Plano 9 Dias", icon: "trail-map" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "clientes", label: "Clientes", icon: "package" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
@@ -39,7 +39,7 @@ const TOUR_PASOS = [
   { icon: "home", titulo: "Início", texto: "Aqui você vê seu progresso geral, sua sequência de dias ativos e acessos rápidos ao mais importante." },
   { icon: "user-badge", titulo: "Meu Perfil", texto: "Seus dados, seu rank atual na Atomy e sua foto." },
   { icon: "footprints", titulo: "Os 8 Passos", texto: "A base do negócio explicada passo a passo, com atividades práticas para aplicar cada um." },
-  { icon: "trail-map", titulo: "Plano de 6 Dias", texto: "Seu treinamento inicial dia a dia, com missões diárias — incluindo baixar o aplicativo oficial da Atomy no seu celular." },
+  { icon: "trail-map", titulo: "Plano de 9 Dias", texto: "Seu treinamento inicial dia a dia, com missões diárias — incluindo baixar o aplicativo oficial da Atomy no seu celular." },
   { icon: "users", titulo: "Lista de 250", texto: "Anote cada contato (nome, telefone, status) e acompanhe sua Lista de 250." },
   { icon: "package", titulo: "Clientes", texto: "Cadastre quem já comprou: seus dados, o histórico de cada pedido com valor e PV, e faça o acompanhamento com lembretes de 1 semana até 11 meses." },
   { icon: "calendar", titulo: "Agenda Semanal", texto: "Programe suas ligações, reuniões e Zooms, com lembretes para não esquecer." },
@@ -361,7 +361,7 @@ function renderHome(state) {
     '<div class="card">' +
     '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
     '<div style="font-size:17px;font-weight:700;margin-top:2px">Bem-vindo(a) à Cumbre 90</div>' +
-    '<div class="muted small" style="margin-top:4px">6 Etapas · 6 Acampamentos · Acesso ilimitado</div>' +
+    '<div class="muted small" style="margin-top:4px">9 Etapas · 6 Acampamentos · Acesso ilimitado</div>' +
     '<div class="chip-row" style="margin-top:16px">' + chips + "</div>" +
     '<div class="row between" style="margin-top:16px"><span class="muted small">' + (etapasHechas + campamentosHechos) + "/" + totalPasos + ' marcos concluídos</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
     '<div class="progressbar" style="margin-top:8px"><div style="width:' + pctGeneral + '%"></div></div>' +
@@ -376,11 +376,11 @@ function renderHome(state) {
 
     mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
 
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Os 8 Passos para o Sucesso</div><div class="nc-desc">Sua referência permanente</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">O Lema da Atomy</div><div class="nc-desc">Filosofia e código de ética</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 Contatos</div><div class="nc-desc">' + (state.contactos || []).length + ' cadastrados · agende acompanhamentos</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plano de Arranque — 6 Dias</div><div class="nc-desc">Percorra seu mapa dia a dia</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Prêmios do(a) seu(sua) patrocinador(a)</div><div class="nc-desc">Confira o que você pode ganhar</div></div>' + Icon("chevron-right", { size: 18, color: "var(--text-soft)" }) + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Os 8 Passos para o Sucesso</div><div class="nc-desc">Sua referência permanente</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">O Lema da Atomy</div><div class="nc-desc">Filosofia e código de ética</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 Contatos</div><div class="nc-desc">' + (state.contactos || []).length + ' cadastrados · agende acompanhamentos</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plano de Arranque — 9 Dias</div><div class="nc-desc">Percorra seu mapa dia a dia</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Prêmios do(a) seu(sua) patrocinador(a)</div><div class="nc-desc">Confira o que você pode ganhar</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
 
     (cumbreLograda
       ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' Você chegou à Cumbre! Ver conquista</button>'
@@ -518,7 +518,7 @@ function granPlanSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Grande Plano 3 — projeção a 3 anos</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + total + " marcos salvos</div>" +
     (open
@@ -540,7 +540,7 @@ function diarioFuturoSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Diário do meu eu futuro</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     (open
       ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
@@ -619,7 +619,7 @@ function bucketListSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-bucket-list">' +
     '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Lista de 100 — meus sonhos</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Anote até 100 coisas que você gostaria de conquistar, ter ou viver — com data e o seu “por quê”. Não precisa preencher em ordem nem de uma vez só.</p>' +
     '<div class="muted small" style="margin-top:4px">' + escritas + " escritas · " + cumplidas + " cumpridas</div>" +
@@ -958,7 +958,7 @@ function lemaFocoHTML(state) {
 
 /* Conteúdo de SMART/OKR — vive como fonte única no pilar 2 de O Lema da
    Atomy, mas é reutilizado (com seu próprio botão de Compartilhar) na Etapa
-   5 do Plano 6 Dias e no Passo 1 de Os 8 Passos, onde o sócio de fato
+   5 do Plano 9 Dias e no Passo 1 de Os 8 Passos, onde o sócio de fato
    define seus objetivos. */
 function smartOkrShareText() {
   const marcos = (LEMA_ATOMY.pilares.find(function (p) { return p.n === 2; }) || {}).marcos || [];
@@ -1099,12 +1099,14 @@ function renderLema(state, ui) {
     lemaFocoHTML(state);
 }
 
-/* ---------------- Plan 6 días — mapa ---------------- */
+/* ---------------- Plano de 9 dias — mapa ---------------- */
 
-const TRAIL_POSITIONS = [
-  { x: 22, y: 92 }, { x: 74, y: 77 }, { x: 22, y: 62 },
-  { x: 74, y: 47 }, { x: 22, y: 30 }, { x: 74, y: 13 },
-];
+// Zigue-zague ascendente (22%/74% de x, alternado) distribuído de forma
+// uniforme entre y=92 (base) e y=13 (cume), para qualquer quantidade de dias.
+const TRAIL_POSITIONS = DIAS.map(function (_, i) {
+  const t = DIAS.length > 1 ? i / (DIAS.length - 1) : 0;
+  return { x: i % 2 === 0 ? 22 : 74, y: Math.round((92 - t * (92 - 13)) * 10) / 10 };
+});
 
 function renderPathMap(state) {
   const pathD = "M" + TRAIL_POSITIONS.map(function (p) { return p.x + "," + p.y; }).join(" L");
@@ -1134,8 +1136,109 @@ function renderPathMap(state) {
     '<path d="' + pathD + '" fill="none" stroke="#F0C468" stroke-opacity="0.65" stroke-width="1.4" stroke-dasharray="0.5 3" stroke-linecap="round"/></svg>' +
     nodes;
 
-  return sectionHeaderHTML("Plano de Arranque — 6 Dias", "Suba o mapa e conquiste cada etapa.", "trail-map") +
+  return sectionHeaderHTML("Plano de Arranque — 9 Dias", "Suba o mapa e conquiste cada etapa.", "trail-map") +
     heroMountainHTML(overlay);
+}
+
+/* ---------------- Desafio 7x7 — tabela de 10 contatos e avaliação semanal ----------------
+   Componentes reutilizáveis: a tabela de "Meus primeiros 10 contatos" e o painel de
+   avaliação de 7 dias são usados tanto no Plano de 9 Dias (uma única instância
+   compartilhada entre os dias 3 a 9) quanto em cada uma das 12 semanas do Plano de
+   90 Dias (uma instância própria por semana) — assim o sócio segue praticando esse
+   mesmo hábito semana a semana, de forma indefinida. */
+
+function clicaAquiBadgeHTML(open, color) {
+  const cls = color === "accent" ? "blue" : "gold";
+  return (
+    '<span class="badge ' + cls + '" style="flex-shrink:0">Toque aqui' +
+    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' +
+    Icon("chevron-right", { size: 11, color: color === "accent" ? "var(--accent)" : "#1B1338" }) +
+    "</span></span>"
+  );
+}
+
+function contactos10FilaHTML(pathPrefix, i, fila) {
+  const inputStyle = "width:100%;min-width:110px;background:var(--bg);border:1px solid var(--border-soft);color:var(--text);border-radius:8px;padding:6px 8px;font-size:12.5px;outline:none";
+  return (
+    "<tr>" +
+    '<td style="padding:4px 6px;font-size:11px;color:var(--text-soft);text-align:center">' + (i + 1) + "</td>" +
+    '<td style="padding:4px"><input type="text" placeholder="Nome" value="' + escapeHtml(fila.nombre) + '" data-field="' + pathPrefix + "." + i + '.nombre" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" inputmode="tel" placeholder="Telefone" value="' + escapeHtml(fila.telefono) + '" data-field="' + pathPrefix + "." + i + '.telefono" style="' + inputStyle + '"></td>' +
+    '<td style="padding:4px"><input type="text" placeholder="Observações / acompanhamento" value="' + escapeHtml(fila.observaciones) + '" data-field="' + pathPrefix + "." + i + '.observaciones" style="' + inputStyle + '"></td>' +
+    "</tr>"
+  );
+}
+
+function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
+  const llenos = rows.filter(function (r) { return (r.nombre || "").trim(); }).length;
+  const filas = rows.map(function (r, i) { return contactos10FilaHTML(pathPrefix, i, r); }).join("");
+  const thStyle = "text-align:left;font-size:11px;color:var(--text-soft);padding:4px;font-weight:600";
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
+    '<div class="row gap-2">' + Icon("phone-call", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Meus primeiros 10 contatos</span></div>' +
+    clicaAquiBadgeHTML(open, "gold") +
+    "</button>" +
+    '<div class="muted small" style="margin-top:4px">' + llenos + " de 10 com nome cadastrado</div>" +
+    (open
+      ? '<div style="overflow-x:auto;margin-top:10px">' +
+        '<table style="border-collapse:collapse;width:100%">' +
+        "<thead><tr><th></th><th style=\"" + thStyle + "\">Nome</th><th style=\"" + thStyle + "\">Telefone</th><th style=\"" + thStyle + "\">Observações</th></tr></thead>" +
+        "<tbody>" + filas + "</tbody>" +
+        "</table></div>"
+      : "") +
+    "</div>"
+  );
+}
+
+function evaluacion7x7ResumenTexto(ev, periodoLabel) {
+  return (
+    "📊 " + periodoLabel + " — Desafio 7×7 (Cumbre 90):\n" +
+    "• Pessoas contatadas: " + (ev.contactados || "0") + "\n" +
+    "• Responderam: " + (ev.respondieron || "0") + "\n" +
+    "• Apresentações feitas: " + (ev.presentaciones || "0") + "\n" +
+    "• Compras conseguidas: " + (ev.compras || "0") + "\n" +
+    "• Pessoas interessadas no negócio: " + (ev.interesados || "0") + "\n" +
+    "• A quem devo continuar acompanhando: " + (ev.seguimiento || "—") +
+    "\n\nMe ajuda a revisar isso?"
+  );
+}
+
+function evaluacion7x7PanelHTML(state, pathPrefix, ev, open, toggleAction, toggleArg, periodoLabel) {
+  const campo = function (key, label, placeholder) {
+    return (
+      '<div class="field" style="flex:1;min-width:110px"><label>' + label + "</label>" +
+      '<input type="text" inputmode="numeric" placeholder="' + placeholder + '" value="' + escapeHtml(ev[key]) + '" data-field="' + pathPrefix + "." + key + '"></div>'
+    );
+  };
+  const compartir = state.whatsapp && state.whatsapp.trim()
+    ? '<a class="btn-secondary" style="margin-top:10px" href="' + pedidoWhatsappHref(state.whatsapp, evaluacion7x7ResumenTexto(ev, periodoLabel)) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + " Compartilhar com meu(minha) patrocinador(a)</a>"
+    : '<p class="muted small" style="margin-top:10px">Adicione o WhatsApp do(a) seu(sua) patrocinador(a) em Ajustes para poder compartilhar isso.</p>';
+  return (
+    '<div class="card">' +
+    '<button class="row between" style="width:100%;text-align:left" data-action="' + toggleAction + '"' + (toggleArg != null ? ' data-arg="' + toggleArg + '"' : "") + '>' +
+    '<div class="row gap-2">' + Icon("target", { size: 15, color: "var(--accent)" }) + '<span style="font-weight:700;font-size:14px">Minhas conquistas desta semana</span></div>' +
+    clicaAquiBadgeHTML(open, "accent") +
+    "</button>" +
+    '<p class="muted small" style="margin-top:4px;line-height:1.5">Registre a cada 7 dias e compartilhe com seu(sua) patrocinador(a) — esse é o trabalho de sempre para fazer seu negócio crescer.</p>' +
+    (open
+      ? '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+        campo("contactados", "Pessoas contatadas", "0") +
+        campo("respondieron", "Responderam", "0") +
+        "</div>" +
+        '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
+        campo("presentaciones", "Apresentações feitas", "0") +
+        campo("compras", "Compras conseguidas", "0") +
+        "</div>" +
+        '<div class="row gap-2" style="margin-top:8px;flex-wrap:wrap">' +
+        campo("interesados", "Pessoas interessadas no negócio", "0") +
+        "</div>" +
+        '<div class="field" style="margin-top:8px"><label>A quem devo continuar acompanhando?</label>' +
+        '<textarea rows="2" data-field="' + pathPrefix + '.seguimiento">' + escapeHtml(ev.seguimiento) + "</textarea></div>" +
+        compartir
+      : "") +
+    "</div>"
+  );
 }
 
 function renderDiaDetalle(state, ui, diaId) {
@@ -1154,7 +1257,7 @@ function renderDiaDetalle(state, ui, diaId) {
         const headerHtml = isEscenario
           ? '<button class="row between" style="width:100%;text-align:left;margin-bottom:8px" data-action="toggle-escenario-inline">' +
             '<div style="font-weight:700;font-size:14px;color:var(--gold-light)">' + escapeHtml(sec.h) + "</div>" +
-            '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (escenarioAbierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+            clicaAquiBadgeHTML(escenarioAbierto, "gold") +
             "</button>"
           : '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>";
         const card =
@@ -1213,6 +1316,15 @@ function renderDiaDetalle(state, ui, diaId) {
   const finishStyle = est.done ? "background:var(--success)" : (allChecked ? "" : "background:var(--border);opacity:.55");
   const finishDisabled = !allChecked || est.done;
 
+  // Desafio 7x7: a mesma tabela de 10 contatos acompanha todos os dias ativos
+  // do desafio (3 a 9); o painel de avaliação encerra o ciclo inicial no Dia 9.
+  const contactos10Card = diaId >= 3 && diaId <= 9
+    ? contactos10TablaHTML("primeros10Contactos", state.primeros10Contactos, !!ui.contactos10Open, "toggle-contactos10", null)
+    : "";
+  const evaluacionCard = diaId === 9
+    ? evaluacion7x7PanelHTML(state, "evaluacion7x7Inicial", state.evaluacion7x7Inicial, !!ui.evaluacion7x7InicialOpen, "toggle-evaluacion7x7-inicial", null, "Encerramento do Desafio 7×7 inicial")
+    : "";
+
   const nextDia = DIAS.find(function (d) { return d.id === diaId + 1; });
   const nextDayBtn = nextDia
     ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + nextDia.id + '">Próximo dia ' + Icon("chevron-right", { size: 16 }) + "</button>"
@@ -1229,7 +1341,7 @@ function renderDiaDetalle(state, ui, diaId) {
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(dia.titulo) + "</p>" +
     '<p class="muted" style="font-size:13.5px;margin-top:6px;font-style:italic">' + escapeHtml(dia.objetivo) + "</p>" +
     "</div>" +
-    nota + contenido + smartOkr + campos +
+    nota + contenido + contactos10Card + evaluacionCard + smartOkr + campos +
     '<div class="card">' +
     '<div class="row gap-2" style="font-weight:600;font-size:14px;margin-bottom:12px">' + Icon("sparkles", { size: 15, color: "var(--gold)" }) + " Pergunta rápida de revisão</div>" +
     '<div style="font-size:14px;margin-bottom:12px">' + escapeHtml(dia.quiz.pregunta) + "</div>" +
@@ -1340,7 +1452,7 @@ function historialComprasHTML(state, ui, catalogo) {
     '<div class="card" style="margin-top:10px">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-historial-compras">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Histórico de compras</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(abierto, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + pedidos.length + " de " + catalogo.length + " produtos que você já conhece · " + (catalogo.length - pedidos.length) + " para descobrir" + "</div>" +
     (abierto
@@ -1591,7 +1703,7 @@ function productosCalculadoraHTML(state, ui, qn) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-calculadora-productos">' +
     '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Calculadora de produtos</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Marque quais produtos você já testou, e quantos planeja comprar nesta quinzena — assim você sabe quantos PV representa e quanto vai pagar, para sua reunião de foco.</p>' +
     '<div class="muted small" style="margin-top:10px">País / catálogo</div>' +
@@ -1642,6 +1754,8 @@ function renderQuincenaDetalle(state, ui, qn) {
     }).join("");
     const finishLabel = est.done ? "Semana conquistada " + Icon("check", { size: 16, color: "#fff" }) : "Marcar semana concluída";
     const finishStyle = est.done ? "background:var(--success)" : (allChecked ? "" : "background:var(--border);opacity:.55");
+    const contactos10Open = !!(ui.semanaContactos10Open && ui.semanaContactos10Open[s.n]);
+    const evaluacionOpen = !!(ui.semanaEvaluacionOpen && ui.semanaEvaluacionOpen[s.n]);
     return (
       '<div class="card">' +
       '<div class="row between"><span style="font-weight:700;font-size:14px">Semana ' + s.n + "</span>" + (est.done ? '<span class="badge success">Concluída</span>' : "") + "</div>" +
@@ -1650,6 +1764,8 @@ function renderQuincenaDetalle(state, ui, qn) {
       '<div class="muted small" style="margin-top:2px;font-style:italic">' + escapeHtml(s.paso) + "</div>" +
       '<div style="margin-top:12px">' + checklist + "</div>" +
       '<button class="btn-primary" style="margin-top:14px;' + finishStyle + '" ' + (!allChecked || est.done ? "disabled" : "") + ' data-action="finish-semana" data-arg="' + s.n + '">' + finishLabel + "</button>" +
+      '<div style="margin-top:12px">' + contactos10TablaHTML("semanas." + s.n + ".contactos10", est.contactos10, contactos10Open, "toggle-semana-contactos10", s.n) + "</div>" +
+      '<div style="margin-top:10px">' + evaluacion7x7PanelHTML(state, "semanas." + s.n + ".evaluacion7x7", est.evaluacion7x7, evaluacionOpen, "toggle-semana-evaluacion", s.n, "Semana " + s.n) + "</div>" +
       "</div>"
     );
   }).join("");
@@ -1797,7 +1913,7 @@ function renderLogros(state) {
   const premios = state.premios.map(function (p, i) { return logroChipHTML(p.premio, !!quincenasMap[i + 1], "gift", p.imagen); }).join("");
 
   return sectionHeaderHTML("Painel de Conquistas", logrosHechos + " de " + totalLogros + " marcos conquistados", "award") +
-    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapas do Plano de 6 Dias</div><div class="grid-3">' + etapas + "</div></div>" +
+    '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Etapas do Plano de 9 Dias</div><div class="grid-3">' + etapas + "</div></div>" +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Acampamentos do Plano de 90 Dias</div><div class="grid-3">' + camps + "</div></div>" +
     (state.premios.length ? '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Prêmios do(a) seu(sua) patrocinador(a)</div><div class="grid-3">' + premios + "</div></div>" : "") +
     '<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">Conquista final</div><div class="grid-3">' + logroChipHTML("Sales Master — a Cumbre", cumbreLograda, "mountain-flag", "img/logro-cumbre.png") + "</div></div>";
@@ -2174,8 +2290,7 @@ function renderCumpleanosPanel(state) {
 function renderAgenda6Modal(ui) {
   const d = ui.agenda6Draft;
   if (!d) return "";
-  const filas = Array.from({ length: 6 }, function (_, i) {
-    const diaInfo = DIAS.find(function (x) { return x.id === i + 1; });
+  const filas = DIAS.map(function (diaInfo, i) {
     const hora = (d.dias[i] && d.dias[i].hora) || "";
     return (
       '<div class="field">' +
@@ -2189,9 +2304,9 @@ function renderAgenda6Modal(ui) {
     '<div class="modal-backdrop" data-action="cancel-agenda6"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
     '<div class="row gap-2">' + Icon("footprints", { size: 18, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:15px">' + escapeHtml(d.contactoNombre) + " é um novo sócio!</span></div>" +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programe aqui as 6 reuniões do Plano de 6 Dias com ' + escapeHtml(d.contactoNombre) + " — elas vão ficar salvas na sua Agenda Semanal, no dia que corresponde a cada uma. Deixe em branco a hora do dia que ainda não for agendar.</p>" +
+    '<p class="muted small" style="margin-top:6px;line-height:1.5">Programe aqui as ' + DIAS.length + " reuniões do Plano de " + DIAS.length + " Dias com " + escapeHtml(d.contactoNombre) + " — elas vão ficar salvas na sua Agenda Semanal, no dia que corresponde a cada uma. Deixe em branco a hora do dia que ainda não for agendar.</p>" +
     '<div class="view-stack gap-sm" style="margin-top:10px">' + filas + "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Criar agenda de 6 dias</button>' +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-agenda6">Criar agenda de ' + DIAS.length + ' dias</button>' +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-agenda6">Agora não</button>' +
     "</div></div>"
   );
@@ -2830,7 +2945,7 @@ function renderResumenQuincenaHTML(state, ui) {
     '<div class="card" style="margin-top:12px">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-quincena-resumen">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Resumo por quinzena</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(abierto, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px">Suas ligações, mensagens, pedidos, contatos e acompanhamentos, agrupados por quinzena de calendário (1–15 e 16–fim de cada mês).</p>';
 

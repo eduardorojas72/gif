@@ -10,7 +10,7 @@
 const LICENCIA_TITULAR = "";
 
 /* ---------------------------------------------------------------
-   CONTENIDO — 8 Pasos, Plan de 6 Días, Plan de 90 Días
+   CONTENIDO — 8 Pasos, Plan de 9 Días, Plan de 90 Días
 --------------------------------------------------------------- */
 
 const OCHO_PASOS = [
@@ -579,6 +579,18 @@ const DIAS = [
           "Vídeo de ajuda — Como fazer uma compra: https://www.youtube.com/watch?v=onxu6h1FpKc",
         ],
       },
+      {
+        h: "Desafio 7×7 — Dia 1: Defina e prepare-se",
+        body: [
+          "A partir de hoje você também começa o Desafio 7×7, que vai te acompanhar dia após dia até o Dia 9. “Se eu não tenho uma meta, não tenho direção.”",
+          "1. Defina sua meta para os próximos 7 dias (quantas conversas, apresentações ou cadastros você quer alcançar).",
+          "2. Faça uma lista de 30 pessoas.",
+          "3. Classifique seus contatos: clientes em potencial, pessoas interessadas em bem-estar, pessoas interessadas em gerar renda.",
+          "4. Escolha seus primeiros 10 contatos para começar amanhã.",
+          "Ainda não venda nada: primeiro construímos a lista.",
+          "Missão do dia: 30 nomes antes de dormir.",
+        ],
+      },
     ],
     campos: [
       { key: "rec1", label: "Recomendação 1 — nome e produto" },
@@ -592,11 +604,18 @@ const DIAS = [
       "Fiz minha lista de 5 amigos/familiares e os produtos que poderiam ajudá-los.",
       "Publiquei meu post/story de expectativa nas redes sociais.",
       "Vi o vídeo sobre Produto/Masstige na CH.ATOMY Europa.",
+      "Desafio 7×7 (Dia 1): defini minha meta para os próximos 7 dias.",
+      "Desafio 7×7 (Dia 1): fiz minha lista de 30 pessoas e classifiquei meus contatos.",
+      "Desafio 7×7 (Dia 1): escolhi meus primeiros 10 contatos — missão: 30 nomes antes de dormir.",
     ],
     quiz: {
-      pregunta: "Quantas recomendações de bem-estar você identifica hoje?",
-      opciones: ["3", "5", "10"],
-      correcta: 1,
+      pregunta: "Por que é importante fazer seu primeiro pedido agora?",
+      opciones: [
+        "Para reconhecer a qualidade dos produtos e falar deles com propriedade",
+        "Para cumprir uma cota obrigatória da empresa",
+        "Porque se eu não comprar, perco minha conta",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -644,6 +663,16 @@ const DIAS = [
           "Vídeo de ajuda — Como se registrar como membro global: https://www.youtube.com/watch?v=tTuD_uoPaUA",
         ],
       },
+      {
+        h: "Desafio 7×7 — Dia 2: Abrir conversas",
+        body: [
+          "“10 conversas reais.” Contate pessoalmente 10 pessoas da sua lista. Não envie um catálogo de cara: primeiro converse.",
+          "Exemplo de roteiro: “Oi, estou participando de um desafio de 7 dias para desenvolver meu projeto de bem-estar e renda extra. Estou procurando algumas pessoas para mostrar como funciona. Você gostaria que eu te contasse?”",
+          "Se ela responder que sim: “Perfeito 😊. Vou te explicar bem rapidinho e você me diz se pode ser interessante para você.”",
+          "Regra de ouro: pergunte → escute → identifique a necessidade → apresente.",
+          "Missão do dia: 10 conversas.",
+        ],
+      },
     ],
     campos: [
       { key: "hist1", label: "1. Seu antecedente (onde você estava?)" },
@@ -656,6 +685,8 @@ const DIAS = [
       "Classifiquei meus primeiros 30 nomes na Lista de 250.",
       "Fiz meus primeiros 5 convites sinceros.",
       "Vi pelo menos um vídeo relacionado à Empresa Atomy.",
+      "Desafio 7×7 (Dia 2): contatei pessoalmente 10 pessoas da minha lista.",
+      "Desafio 7×7 (Dia 2): usei o roteiro de conversa em vez de enviar um catálogo direto.",
     ],
     quiz: {
       pregunta: "Quantos passos tem a sua história pessoal (storytelling)?",
@@ -681,6 +712,15 @@ const DIAS = [
           "💡 Dica: um projeto constante de 3 horas por semana dá 100 vezes mais resultado do que uma maratona de um único dia. Faça no seu ritmo.",
         ],
       },
+      {
+        h: "Desafio 7×7 — Dia 3: Recomendar",
+        body: [
+          "“Eu não vendo produtos. Eu descubro necessidades.” Hoje você conversa para descobrir: qual produto a pessoa usa atualmente?, que necessidade ela quer atender?, quais produtos ela compra regularmente?, ela tem interesse em conhecer uma alternativa de compra?",
+          "Depois de escutar, siga a sequência: Recomende → Explique → Convide.",
+          "Exemplo: “Me conta, quais produtos você costuma usar para cuidados pessoais ou bem-estar?” Depois de escutar: “Justamente tenho uma alternativa que pode te interessar. Quer que eu te mostre como funciona?”",
+          "Missão do dia: apresentar produtos a pessoas com uma necessidade real.",
+        ],
+      },
     ],
     campos: [
       { key: "meta30", label: "Meta de 30 dias" },
@@ -692,6 +732,8 @@ const DIAS = [
       "Bloqueei minhas horas de trabalho semanal.",
       "Combinei minha ligação semanal com meu mentor.",
       "Vi 1 vídeo da Empresa na CH.ATOMY Europa.",
+      "Desafio 7×7 (Dia 3): conversei para descobrir necessidades reais, sem vender no escuro.",
+      "Desafio 7×7 (Dia 3): apresentei produtos a pessoas com uma necessidade real identificada.",
     ],
     quiz: {
       pregunta: "O que você agenda hoje com seu mentor?",
@@ -704,7 +746,7 @@ const DIAS = [
     etapa: "O Impacto",
     icono: "trending-up",
     titulo: "Liderança Ética e Duplicação",
-    objetivo: "Encerrar sua primeira semana com bases firmes e prontas para duplicar.",
+    objetivo: "Firmar bases éticas sólidas enquanto você apresenta sua oportunidade a novas pessoas.",
     contenido: [
       {
         h: "Compromisso ético",
@@ -721,14 +763,21 @@ const DIAS = [
       {
         h: "Aprenda a duplicar",
         body: [
-          "Não guarde esse processo de 6 dias só para você: quando cadastrar seu primeiro sócio, acompanhe-o para percorrer exatamente o mesmo início.",
+          "Não guarde esse processo de início só para você: quando cadastrar seu primeiro sócio, acompanhe-o para percorrer exatamente o mesmo caminho.",
         ],
       },
       {
-        h: "Seu vídeo de encerramento",
+        h: "Seu vídeo de hoje",
         body: [
           "Entre em ch.atomy.com/eu (CH.ATOMY Europa) → menu Empresa, e procure um vídeo sobre a Cultura Atomy ou a Filosofia do Fundador Han-Gill Park: honestidade e atendimento ao cliente.",
-          "Com isso você completa sua primeira semana de treinamento! Não buscamos vender desesperadamente, mas educar um consumidor satisfeito e acompanhar outras pessoas a alcançar suas metas com honestidade.",
+        ],
+      },
+      {
+        h: "Desafio 7×7 — Dia 4: Apresentar a oportunidade",
+        body: [
+          "“Nem todos querem comprar. Alguns querem construir.” Procure pessoas que queiram: gerar renda extra, comprar de forma inteligente, recomendar produtos ou construir um negócio.",
+          "Mini apresentação em 4 perguntas: O que é a Atomy? Uma empresa internacional de venda direta. O que encontramos? Produtos de diferentes categorias. Como funciona? Consumir → Recomendar → Desenvolver clientes e equipe. O que buscamos? Construir um negócio por meio de um sistema que possamos repetir e ensinar.",
+          "Missão do dia: apresentar a oportunidade a pelo menos 3 pessoas.",
         ],
       },
     ],
@@ -736,12 +785,111 @@ const DIAS = [
     checklist: [
       "Assumi o compromisso ético: zero pressão, transparência total, coerência consumindo o que recomendo.",
       "Marquei na minha agenda um dia por mês para revisar minha equipe.",
-      "Tenho em mãos este plano de 6 dias para guiar meu primeiro sócio.",
+      "Tenho em mãos este plano de 9 dias para guiar meu primeiro sócio.",
       "Vi um vídeo sobre a Cultura Atomy ou a Filosofia do Fundador.",
+      "Desafio 7×7 (Dia 4): apresentei a oportunidade de negócio a pelo menos 3 pessoas.",
     ],
     quiz: {
       pregunta: "Qual é um dos 3 pilares do compromisso ético?",
       opciones: ["Vender rápido sem explicar", "Zero pressão e transparência total", "Pressionar o consumidor"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 7,
+    etapa: "O Acompanhamento",
+    icono: "phone-call",
+    titulo: "Desafio 7×7 — A Fortuna Está no Acompanhamento",
+    objetivo: "Retomar cada conversa em aberto antes que ela esfrie.",
+    contenido: [
+      {
+        h: "Desafio 7×7 — Dia 5: Acompanhamento",
+        body: [
+          "Hoje você volta a contatar: pessoas que perguntaram, pessoas que viram a apresentação, pessoas que disseram “deixa eu pensar”, pessoas que mostraram interesse.",
+          "Exemplo — retomar o contato: “Oi 😊. Queria saber o que você achou do que a gente conversou no outro dia. Teve algo que chamou sua atenção?”",
+          "Exemplo — se ela disser “vou pensar”: “Claro, pode levar seu tempo. Qual parte você quer pensar: o produto, o investimento ou como o negócio funciona?”",
+          "Exemplo — se ela disser “não tenho dinheiro”: “Entendo. Não quero que você faça algo que não esteja dentro das suas possibilidades. Podemos começar conversando sobre o modelo e sobre como aproveitar as compras que você já faz normalmente.”",
+          "Uma mensagem na hora certa pode abrir uma grande oportunidade.",
+          "Missão do dia: fazer o acompanhamento de todas as conversas em aberto.",
+        ],
+      },
+    ],
+    campos: [{ key: "seguimientos", label: "Pessoas que eu acompanhei hoje" }],
+    checklist: [
+      "Desafio 7×7 (Dia 5): fiz o acompanhamento de todas as minhas conversas em aberto.",
+      "Desafio 7×7 (Dia 5): retomei contato com quem disse “deixa eu pensar”.",
+      "Desafio 7×7 (Dia 5): retomei contato com quem mostrou interesse ou viu minha apresentação.",
+    ],
+    quiz: {
+      pregunta: "Segundo o Desafio 7×7, onde está a fortuna?",
+      opciones: ["Em falar só com gente nova", "No acompanhamento", "Em só enviar um catálogo"],
+      correcta: 1,
+    },
+  },
+  {
+    id: 8,
+    etapa: "A Duplicação",
+    icono: "repeat",
+    titulo: "Desafio 7×7 — Não Faça Sozinho",
+    objetivo: "Começar a duplicar: levar outra pessoa com você pelo mesmo caminho.",
+    contenido: [
+      {
+        h: "Desafio 7×7 — Dia 6: Duplicar",
+        body: [
+          "“Não faça sozinho.” O ciclo da duplicação: Eu faço → Eu te ensino → Você faz → Você ensina.",
+          "Convide uma pessoa interessada a fazer com você: a lista de contatos dela, as primeiras conversas dela, a primeira apresentação dela, o primeiro acompanhamento dela.",
+          "Cada ação conta. O desafio não termina: o ciclo começa! Juntos a gente chega mais longe.",
+          "Missão do dia: ajudar uma pessoa a começar o processo.",
+        ],
+      },
+    ],
+    campos: [{ key: "duplicado", label: "Pessoa que eu ajudei a começar o processo" }],
+    checklist: [
+      "Desafio 7×7 (Dia 6): convidei uma pessoa interessada a percorrer o processo comigo.",
+      "Desafio 7×7 (Dia 6): ajudei essa pessoa a começar sua própria lista, conversas, apresentação ou acompanhamento.",
+    ],
+    quiz: {
+      pregunta: "Qual é o ciclo da duplicação do Desafio 7×7?",
+      opciones: [
+        "Eu faço → Eu te ensino → Você faz → Você ensina",
+        "Eu vendo → Você compra → Fim",
+        "Eu decido → Você obedece",
+      ],
+      correcta: 0,
+    },
+  },
+  {
+    id: 9,
+    etapa: "O Fechamento",
+    icono: "check",
+    titulo: "Desafio 7×7 — Avaliar, Fechar e Repetir",
+    objetivo: "Medir seus resultados e concluir seu Plano de Arranque de 9 dias.",
+    contenido: [
+      {
+        h: "Desafio 7×7 — Dia 7: Avaliar, fechar e repetir",
+        body: [
+          "“Os resultados se medem.” Hoje revisamos: quantas pessoas eu contatei?, quantas responderam?, quantas apresentações eu fiz?, quantas compras eu consegui?, quantas pessoas estão interessadas no negócio?, a quem eu devo continuar acompanhando?",
+          "O desafio não termina aqui: o ciclo começa! Contatar → Apresentar → Recomendar → Acompanhar → Fechar → Duplicar → Repetir.",
+          "O que aconteceria com o seu negócio se, nos próximos 90 dias, você fizesse esse processo de novo e de novo? Você não precisa fazer perfeito. Precisa fazer.",
+        ],
+      },
+      {
+        h: "Seu vídeo de encerramento",
+        body: [
+          "Entre em ch.atomy.com/eu (CH.ATOMY Europa) → menu Empresa, e procure um vídeo sobre a Cultura Atomy ou a Filosofia do Fundador Han-Gill Park: honestidade e atendimento ao cliente.",
+          "Com isso você completa seu Plano de Arranque de 9 dias! Não buscamos vender desesperadamente, mas educar um consumidor satisfeito e acompanhar outras pessoas a alcançar suas metas com honestidade.",
+        ],
+      },
+    ],
+    campos: [{ key: "resultados", label: "Resumo: contatos, respostas, apresentações, compras e pessoas interessadas" }],
+    checklist: [
+      "Desafio 7×7 (Dia 7): contei quantas pessoas contatei, quantas responderam e quantas apresentações fiz.",
+      "Desafio 7×7 (Dia 7): identifiquei a quem devo continuar acompanhando.",
+      "Entendi que o ciclo Contatar → Apresentar → Recomendar → Acompanhar → Fechar → Duplicar → Repetir não termina, ele se repete.",
+    ],
+    quiz: {
+      pregunta: "Ao terminar o Desafio 7×7, o que é certo fazer?",
+      opciones: ["Parar, já acabou", "Repetir o ciclo", "Esperar que os outros te contatem"],
       correcta: 1,
     },
   },
@@ -776,7 +924,7 @@ const SEMANAS = [
       "Gravar ou redigir 1 depoimento pessoal de produto.",
       "Cadastrar 5 sócios novos (peço ajuda ao meu patrocinador para este passo).",
       "Cadastrar os primeiros sócios nas linhas Esquerda e Direita.",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer acompanhamento rigoroso dentro de 48 horas com todos os contatos apresentados.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
@@ -788,7 +936,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -799,7 +947,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -810,7 +958,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -822,7 +970,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -834,7 +982,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -845,7 +993,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -856,7 +1004,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -868,7 +1016,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -880,7 +1028,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -891,7 +1039,7 @@ const SEMANAS = [
       "Realizar no mínimo 10 ligações ou mensagens de convite aplicando a regra da mente própria.",
       "Cadastrar 10 sócios novos.",
       "Ajudar a posicionar esses sócios nas linhas Esquerda e Direita (peço ajuda ao meu patrocinador para este passo).",
-      "Guiar os sócios novos a completar o módulo dos 6 Dias de Arranque.",
+      "Guiar os sócios novos a completar o módulo dos 9 Dias de Arranque.",
       "Fazer minha reunião de foco com meus sócios.",
     ],
   },
@@ -914,7 +1062,7 @@ const AGENDA_TIPOS = [
   { id: "registro", label: "Cadastro de novo sócio", icon: "user-badge" },
   { id: "formacion", label: "Formação", icon: "book-open" },
   { id: "video-rrss", label: "Vídeos de produto (redes sociais)", icon: "video" },
-  { id: "plan6", label: "Reunião do Plano 6 Dias", icon: "footprints" },
+  { id: "plan6", label: "Reunião do Plano 9 Dias", icon: "footprints" },
 ];
 
 const BUCKET_LIST_EJEMPLOS = [
