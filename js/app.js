@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi camino hacia Imperial Master");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Ciao, ho un dubbio sul mio percorso verso Imperial Master");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cuántos puntos vas a pedir esta quincena y en qué fecha?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Ciao" + (nombre ? " " + nombre : "") + "! Quanti punti pensi di richiedere questa quindicina e in quale data?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He alcanzado el rango de \"" + titulo + "\" en mi camino hacia Imperial Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 Ho raggiunto il rango di \"" + titulo + "\" nel mio percorso verso Imperial Master con Atomy! 🚀 Se sei curioso, chiedimi di cosa si tratta.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,14 +25,14 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Condividi</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
     '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copia</span></button>" +
     "</div>"
   );
 }
@@ -133,10 +133,10 @@ const App = {
 
     (dia.actividades || []).forEach((a) => {
       const tipo = agendaTipoInfo(a.tipo);
-      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Hai questo programmato alle " + a.hora + ".");
     });
     (dia.zooms || []).forEach((z) => {
-      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Riunione"), "Inizia alle " + z.hora + ".");
     });
   },
 
@@ -151,8 +151,8 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre Master — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre Master — Promemoria", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " altri)" : primero.text,
       });
     } catch (e) {
       /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
@@ -212,7 +212,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Scrivi al tuo sponsor">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
 
@@ -335,17 +335,17 @@ const App = {
           try {
             parsed = JSON.parse(reader.result);
           } catch (e) {
-            this.showToast("Ese archivo no es un respaldo válido de Cumbre Master.");
+            this.showToast("Questo file non è un backup valido di Cumbre Master.");
             return;
           }
-          if (!window.confirm("Esto reemplazará todos tus datos actuales (Reunión de Enfoque, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          if (!window.confirm("Questo sostituirà tutti i tuoi dati attuali (Riunione di Focus, Albero Genealogico, progressi) con quelli del file di backup. Continuare?")) return;
           const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
           this.state = hydrateState(parsed);
           this.state.racha = rh.racha;
           this.state.ultimaFecha = rh.ultimaFecha;
           this.persist(true);
           this.render();
-          this.showToast("Datos restaurados correctamente ✨");
+          this.showToast("Dati ripristinati correttamente ✨");
         };
         reader.readAsText(file);
         return;
@@ -453,7 +453,7 @@ const Actions = {
     App.ui.menuOpen = false;
     App.render();
     window.close();
-    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+    App.showToast("Se non si è chiusa da sola, ora puoi chiudere questa scheda o tornare indietro.");
   },
 
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
@@ -539,7 +539,7 @@ const Actions = {
     }
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Persona salvata");
     App.render();
   },
 
@@ -556,7 +556,7 @@ const Actions = {
     App.ui.confirmDeletePersona = null;
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Persona eliminata");
     App.render();
   },
 
@@ -618,7 +618,7 @@ const Actions = {
     }
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Persona salvata");
     App.render();
   },
 
@@ -632,7 +632,7 @@ const Actions = {
     App.ui.confirmDeleteAscendente = null;
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Persona eliminata");
     App.render();
   },
 
@@ -673,7 +673,7 @@ const Actions = {
     }
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contatto salvato");
     App.render();
   },
 
@@ -687,7 +687,7 @@ const Actions = {
     App.ui.confirmDeleteSOS = null;
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contatto eliminato");
     App.render();
   },
 
@@ -729,7 +729,7 @@ const Actions = {
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contatto salvato");
     App.render();
   },
 
@@ -743,7 +743,7 @@ const Actions = {
     App.ui.confirmDeleteContactoEvento = null;
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contatto eliminato");
     App.render();
   },
 
@@ -789,7 +789,7 @@ const Actions = {
   },
   "add-producto": function () {
     const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
-    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    catalogo.push(nuevoProductoCatalogo({ categoria: "I miei prodotti" }));
     App.persist(true);
     App.render();
   },
@@ -836,8 +836,8 @@ const Actions = {
     App.state.rangoActualIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nuevo rango de Maestría alcanzado en Atomy." };
-      App.addActividad("Alcanzaste el rango: " + RANGOS_MASTER[i].nombre);
+      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nuovo rango di Maestria raggiunto in Atomy." };
+      App.addActividad("Hai raggiunto il rango: " + RANGOS_MASTER[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -856,19 +856,19 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Messaggio copiato — incollalo dove vuoi!"),
+        () => App.showToast("Non è stato possibile copiare il messaggio")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Non è stato possibile copiare il messaggio");
     }
   },
 
   "descargar-respaldo": function () {
     const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
     const fecha = hoyISO();
-    downloadBlobCumbre(blob, "Cumbre-Master-Respaldo-" + slugFileCumbre(App.state.nombre || "lider") + "-" + fecha + ".json");
-    App.showToast("Copia de seguridad descargada");
+    downloadBlobCumbre(blob, "Cumbre-Master-Respaldo-" + slugFileCumbre(App.state.nombre || "leader") + "-" + fecha + ".json");
+    App.showToast("Backup scaricato");
   },
 
   "reset-progress": function () {
@@ -887,7 +887,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.agendaDia = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progresso riavviato");
     App.render();
   },
 
@@ -932,7 +932,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad guardada");
+    App.showToast("Attività salvata");
     App.render();
   },
 
@@ -948,7 +948,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad eliminada");
+    App.showToast("Attività eliminata");
     App.render();
   },
 
@@ -997,7 +997,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión guardada");
+    App.showToast("Riunione salvata");
     App.render();
   },
 
@@ -1013,18 +1013,18 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión eliminada");
+    App.showToast("Riunione eliminata");
     App.render();
   },
 
   "copy-zoom-link": function (arg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(arg).then(
-        () => App.showToast("Enlace copiado"),
-        () => App.showToast("No se pudo copiar el enlace")
+        () => App.showToast("Link copiato"),
+        () => App.showToast("Non è stato possibile copiare il link")
       );
     } else {
-      App.showToast("No se pudo copiar el enlace");
+      App.showToast("Non è stato possibile copiare il link");
     }
   },
 
@@ -1228,7 +1228,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Attiva i permessi di notifica dalle impostazioni del tuo browser.");
     }
   },
 };

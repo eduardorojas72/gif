@@ -1,10 +1,10 @@
-/* Service worker de Cumbre Master — cachea los archivos estáticos para uso offline.
-   Estrategia "network-first": siempre intenta traer la versión más reciente
-   del servidor primero, y solo usa la copia en caché si no hay red. Así,
-   cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
-   vieja atascada en el caché del navegador. */
+/* Service worker di Cumbre Master — memorizza in cache i file statici per l'uso offline.
+   Strategia "network-first": prova sempre a ottenere prima la versione più recente
+   dal server, e usa la copia in cache solo se non c'è rete. Così, ogni nuovo
+   rilascio si vede immediatamente senza lasciare tracce di una versione
+   vecchia bloccata nella cache del browser. */
 
-const CACHE_NAME = "cumbre-master-cache-v4";
+const CACHE_NAME = "cumbre-master-cache-v5";
 const CORE_ASSETS = [
   "./",
   "./index.html",

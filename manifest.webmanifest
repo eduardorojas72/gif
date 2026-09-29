@@ -1,7 +1,7 @@
 {
-  "name": "Cumbre Master — De Sales Master a Imperial Master",
+  "name": "Cumbre Master — Da Sales Master a Imperial Master",
   "short_name": "Cumbre Master",
-  "description": "Entiende el plan de compensación de Atomy y planea quincena a quincena tu camino de Sales Master a Imperial Master.",
+  "description": "Capisci il piano di compensazione di Atomy e pianifica quindicina dopo quindicina il tuo percorso da Sales Master a Imperial Master.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
