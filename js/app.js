@@ -48,6 +48,10 @@ const App = {
     menuOpen: false,
     activeDay: null,
     escenarioAbierto: false,
+    contactos10Open: false,
+    evaluacion7x7InicialOpen: false,
+    semanaContactos10Open: {},
+    semanaEvaluacionOpen: {},
     activeQuincena: null,
     enfoqueQuincena: null,
     bellOpen: false,
@@ -662,6 +666,28 @@ const Actions = {
 
   "toggle-escenario-inline": function () {
     App.ui.escenarioAbierto = !App.ui.escenarioAbierto;
+    App.render();
+  },
+
+  "toggle-contactos10": function () {
+    App.ui.contactos10Open = !App.ui.contactos10Open;
+    App.render();
+  },
+
+  "toggle-evaluacion7x7-inicial": function () {
+    App.ui.evaluacion7x7InicialOpen = !App.ui.evaluacion7x7InicialOpen;
+    App.render();
+  },
+
+  "toggle-semana-contactos10": function (arg) {
+    const weekN = Number(arg);
+    App.ui.semanaContactos10Open[weekN] = !App.ui.semanaContactos10Open[weekN];
+    App.render();
+  },
+
+  "toggle-semana-evaluacion": function (arg) {
+    const weekN = Number(arg);
+    App.ui.semanaEvaluacionOpen[weekN] = !App.ui.semanaEvaluacionOpen[weekN];
     App.render();
   },
 
