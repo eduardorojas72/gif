@@ -491,7 +491,7 @@ function bucketListSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-bucket-list">' +
     '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Lista de 100 — mis sueños</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Apunta hasta 100 cosas que te gustaría lograr, tener o vivir — con fecha y tu “por qué”. No hace falta llenarla en orden ni de una sola vez.</p>' +
     '<div class="muted small" style="margin-top:4px">' + escritas + " escritas · " + cumplidas + " cumplidas</div>" +
@@ -537,7 +537,7 @@ function granPlanSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-granplan">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Gran Plan 3 — proyección a 3 años</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + total + " hitos guardados</div>" +
     (open
@@ -559,7 +559,7 @@ function diarioFuturoSectionHTML(state, ui) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-diario-futuro">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Diario de mi yo futuro</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     (open
       ? '<p class="muted small" style="margin-top:6px;line-height:1.5">' + escapeHtml(DIARIO_FUTURO_INTRO) + "</p>" +
@@ -1256,7 +1256,7 @@ function renderDiaDetalle(state, ui, diaId) {
         const headerHtml = isEscenario
           ? '<button class="row between" style="width:100%;text-align:left;margin-bottom:8px" data-action="toggle-escenario-inline">' +
             '<div style="font-weight:700;font-size:14px;color:var(--gold-light)">' + escapeHtml(sec.h) + "</div>" +
-            '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (escenarioAbierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+            clicaAquiBadgeHTML(escenarioAbierto, "gold") +
             "</button>"
           : '<div style="font-weight:700;font-size:14px;color:var(--gold-light);margin-bottom:8px">' + escapeHtml(sec.h) + "</div>";
         const card =
@@ -1451,7 +1451,7 @@ function historialComprasHTML(state, ui, catalogo) {
     '<div class="card" style="margin-top:10px">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-historial-compras">' +
     '<div class="row gap-2">' + Icon("book-open", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Historial de compras</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(abierto, "gold") +
     "</button>" +
     '<div class="muted small" style="margin-top:4px">' + pedidos.length + " de " + catalogo.length + " productos que ya conoces · " + (catalogo.length - pedidos.length) + " por descubrir" + "</div>" +
     (abierto
@@ -1702,7 +1702,7 @@ function productosCalculadoraHTML(state, ui, qn) {
     '<div class="card">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-calculadora-productos">' +
     '<div class="row gap-2">' + Icon("clipboard-list", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Calculadora de productos</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (open ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(open, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px;line-height:1.5">Marca qué productos ya probaste, y cuántos planeas comprar esta quincena — así sabes cuántos PV representa y cuánto vas a pagar, para tu reunión de enfoque.</p>' +
     '<div class="muted small" style="margin-top:10px">País / catálogo</div>' +
@@ -2943,7 +2943,7 @@ function renderResumenQuincenaHTML(state, ui) {
     '<div class="card" style="margin-top:12px">' +
     '<button class="row between" style="width:100%;text-align:left" data-action="toggle-quincena-resumen">' +
     '<div class="row gap-2">' + Icon("trending-up", { size: 14, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:13px">Resumen por quincena</span></div>' +
-    '<span style="display:inline-flex;transition:transform .2s ease;transform:rotate(' + (abierto ? "90deg" : "0deg") + ')">' + Icon("chevron-right", { size: 15, color: "var(--text-soft)" }) + "</span>" +
+    clicaAquiBadgeHTML(abierto, "gold") +
     "</button>" +
     '<p class="muted small" style="margin-top:4px">Tus llamadas, mensajes, pedidos, contactos y seguimientos, agrupados por quincena de calendario (1–15 y 16–fin de cada mes).</p>';
 
