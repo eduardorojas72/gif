@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi camino hacia Imperial Master");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Bonjour, j'ai une question sur mon chemin vers Imperial Master");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cuántos puntos vas a pedir esta quincena y en qué fecha?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Bonjour" + (nombre ? " " + nombre : "") + " ! Combien de points vas-tu commander cette quinzaine et à quelle date ?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He alcanzado el rango de \"" + titulo + "\" en mi camino hacia Imperial Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 J'ai atteint le rang \"" + titulo + "\" sur mon chemin vers Imperial Master avec Atomy ! 🚀 Si tu es curieux, demande-moi de quoi il s'agit.";
 }
 
 function shareLogroLinksHTML(titulo) {
@@ -25,14 +25,14 @@ function shareLogroLinksHTML(titulo) {
   const waUrl = "https://wa.me/?text=" + enc;
   const fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url || "https://atomy.com") + "&quote=" + encodeURIComponent(text);
   const xUrl = "https://twitter.com/intent/tweet?text=" + enc;
-  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Compartir</span></button>";
+  const nativeBtn = '<button class="share-chip" data-action="share-logro-native" data-arg="' + escapeHtml(titulo) + '">' + Icon("share2", { size: 15 }) + "<span>Partager</span></button>";
   return (
     '<div class="share-chip-row">' +
     nativeBtn +
     '<a class="share-chip" href="' + waUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "<span>WhatsApp</span></a>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("users", { size: 15 }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + xUrl + '" target="_blank" rel="noreferrer">' + Icon("hash", { size: 15 }) + "<span>X</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copier</span></button>" +
     "</div>"
   );
 }
@@ -133,10 +133,10 @@ const App = {
 
     (dia.actividades || []).forEach((a) => {
       const tipo = agendaTipoInfo(a.tipo);
-      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+      revisar(a, "Cumbre Master — " + tipo.label, a.nota || "Tu as ceci de prévu à " + a.hora + ".");
     });
     (dia.zooms || []).forEach((z) => {
-      revisar(z, "Cumbre Master — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+      revisar(z, "Cumbre Master — Zoom : " + (z.titulo || "Réunion"), "Commence à " + z.hora + ".");
     });
   },
 
@@ -151,8 +151,8 @@ const App = {
     this.persist(true);
     try {
       const primero = reminders[0];
-      new Notification("Cumbre Master — Recordatorio", {
-        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " más)" : primero.text,
+      new Notification("Cumbre Master — Rappel", {
+        body: reminders.length > 1 ? primero.text + " (+" + (reminders.length - 1) + " de plus)" : primero.text,
       });
     } catch (e) {
       /* algunos navegadores restringen Notification fuera de un gesto del usuario: se ignora */
@@ -212,7 +212,7 @@ const App = {
     document.getElementById("sidebar-slot").innerHTML = isAuth ? renderSidebar(ui) : "";
     document.getElementById("header-slot").innerHTML = isAuth ? renderHeader(state, ui) : "";
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Écrire à ton parrain/ta marraine">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>"
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
 
@@ -335,17 +335,17 @@ const App = {
           try {
             parsed = JSON.parse(reader.result);
           } catch (e) {
-            this.showToast("Ese archivo no es un respaldo válido de Cumbre Master.");
+            this.showToast("Ce fichier n'est pas une sauvegarde valide de Cumbre Master.");
             return;
           }
-          if (!window.confirm("Esto reemplazará todos tus datos actuales (Reunión de Enfoque, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          if (!window.confirm("Ceci remplacera toutes tes données actuelles (Réunion de Focus, Arbre Généalogique, progression) par celles du fichier de sauvegarde. Continuer ?")) return;
           const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
           this.state = hydrateState(parsed);
           this.state.racha = rh.racha;
           this.state.ultimaFecha = rh.ultimaFecha;
           this.persist(true);
           this.render();
-          this.showToast("Datos restaurados correctamente ✨");
+          this.showToast("Données restaurées avec succès ✨");
         };
         reader.readAsText(file);
         return;
@@ -453,7 +453,7 @@ const Actions = {
     App.ui.menuOpen = false;
     App.render();
     window.close();
-    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+    App.showToast("Si elle ne s'est pas fermée seule, tu peux fermer cet onglet ou revenir en arrière.");
   },
 
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
@@ -539,7 +539,7 @@ const Actions = {
     }
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Personne enregistrée");
     App.render();
   },
 
@@ -556,7 +556,7 @@ const Actions = {
     App.ui.confirmDeletePersona = null;
     App.ui.personaDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Personne supprimée");
     App.render();
   },
 
@@ -618,7 +618,7 @@ const Actions = {
     }
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Personne enregistrée");
     App.render();
   },
 
@@ -632,7 +632,7 @@ const Actions = {
     App.ui.confirmDeleteAscendente = null;
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Personne supprimée");
     App.render();
   },
 
@@ -673,7 +673,7 @@ const Actions = {
     }
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact enregistré");
     App.render();
   },
 
@@ -687,7 +687,7 @@ const Actions = {
     App.ui.confirmDeleteSOS = null;
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact supprimé");
     App.render();
   },
 
@@ -729,7 +729,7 @@ const Actions = {
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Contact enregistré");
     App.render();
   },
 
@@ -743,7 +743,7 @@ const Actions = {
     App.ui.confirmDeleteContactoEvento = null;
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Contact supprimé");
     App.render();
   },
 
@@ -789,7 +789,7 @@ const Actions = {
   },
   "add-producto": function () {
     const catalogo = getCatalogoProductos(App.state, App.state.pais || "CO");
-    catalogo.push(nuevoProductoCatalogo({ categoria: "Mis productos" }));
+    catalogo.push(nuevoProductoCatalogo({ categoria: "Mes produits" }));
     App.persist(true);
     App.render();
   },
@@ -836,8 +836,8 @@ const Actions = {
     App.state.rangoActualIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nuevo rango de Maestría alcanzado en Atomy." };
-      App.addActividad("Alcanzaste el rango: " + RANGOS_MASTER[i].nombre);
+      App.ui.logro = { titulo: RANGOS_MASTER[i].nombre, sub: "Nouveau rang de Maîtrise atteint chez Atomy." };
+      App.addActividad("Tu as atteint le rang : " + RANGOS_MASTER[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -856,19 +856,19 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Message copié — colle-le où tu veux !"),
+        () => App.showToast("Impossible de copier le message")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Impossible de copier le message");
     }
   },
 
   "descargar-respaldo": function () {
     const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
     const fecha = hoyISO();
-    downloadBlobCumbre(blob, "Cumbre-Master-Respaldo-" + slugFileCumbre(App.state.nombre || "lider") + "-" + fecha + ".json");
-    App.showToast("Copia de seguridad descargada");
+    downloadBlobCumbre(blob, "Cumbre-Master-Sauvegarde-" + slugFileCumbre(App.state.nombre || "lider") + "-" + fecha + ".json");
+    App.showToast("Copie de sauvegarde téléchargée");
   },
 
   "reset-progress": function () {
@@ -887,7 +887,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.agendaDia = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Progression réinitialisée");
     App.render();
   },
 
@@ -932,7 +932,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad guardada");
+    App.showToast("Activité enregistrée");
     App.render();
   },
 
@@ -948,7 +948,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad eliminada");
+    App.showToast("Activité supprimée");
     App.render();
   },
 
@@ -997,7 +997,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión guardada");
+    App.showToast("Réunion enregistrée");
     App.render();
   },
 
@@ -1013,18 +1013,18 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión eliminada");
+    App.showToast("Réunion supprimée");
     App.render();
   },
 
   "copy-zoom-link": function (arg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(arg).then(
-        () => App.showToast("Enlace copiado"),
-        () => App.showToast("No se pudo copiar el enlace")
+        () => App.showToast("Lien copié"),
+        () => App.showToast("Impossible de copier le lien")
       );
     } else {
-      App.showToast("No se pudo copiar el enlace");
+      App.showToast("Impossible de copier le lien");
     }
   },
 
@@ -1228,7 +1228,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Active les permissions de notification depuis les paramètres de ton navigateur.");
     }
   },
 };

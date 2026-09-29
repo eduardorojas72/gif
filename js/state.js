@@ -22,7 +22,7 @@ function defaultState() {
     notifOn: true,
     notifUltimoAviso: null,
     registroDiario: {},
-    idiomaInforme: "es",
+    idiomaInforme: "fr",
     arbolGenealogico: emptyArbolGenealogico(),
     llamadasSOS: [],
     contactosEventos: [],
@@ -221,7 +221,7 @@ function hoyISO() {
 
 /* ---------------- quincenas (1–15 y 16–fin de mes) ---------------- */
 
-const MESES_ES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const MESES_ES = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
 function quincenaKeyFromDate(d) {
   const y = d.getFullYear();
@@ -286,7 +286,7 @@ function nuevoProductoCatalogo(seed) {
   seed = seed || {};
   return {
     id: seed.id || "prod" + Math.random().toString(36).slice(2, 9),
-    categoria: seed.categoria || "Mis productos",
+    categoria: seed.categoria || "Mes produits",
     nombre: seed.nombre || "",
     pv: seed.pv || 0,
     precio: seed.precio || 0,
@@ -304,7 +304,7 @@ function emptyCatalogoProductosPais(paisId) {
     return nuevoProductoCatalogo({ id: paisId + "-prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
   });
   const lineasLibres = Array.from({ length: 20 }, function (_, i) {
-    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Mis productos" });
+    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Mes produits" });
   });
   return productos.concat(lineasLibres);
 }
@@ -417,7 +417,7 @@ function hydrateState(parsed) {
       }, {})
     : {};
 
-  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "es";
+  merged.idiomaInforme = IDIOMAS_INFORME.some(function (i) { return i.id === parsed.idiomaInforme; }) ? parsed.idiomaInforme : "fr";
 
   const arbolGuardado = parsed.arbolGenealogico && typeof parsed.arbolGenealogico === "object" ? parsed.arbolGenealogico : {};
   merged.arbolGenealogico = {
