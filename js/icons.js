@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------
-   ICONOS — set propio en SVG inline (sin dependencias externas)
+   ÍCONES — conjunto próprio em SVG inline (sem dependências externas)
    Uso: Icon("check", { size:16, color:"currentColor", stroke:1.8 })
 --------------------------------------------------------------- */
 

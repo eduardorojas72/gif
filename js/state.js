@@ -35,7 +35,7 @@ function defaultState() {
   };
 }
 
-/* ---------------- Reto 7×7 — tabla de 10 contactos, evaluación semanal y checklist por día ---------------- */
+/* ---------------- Desafio 7×7 — tabela de 10 contatos, avaliação semanal e checklist por dia ---------------- */
 
 function nuevaFilaContacto10() {
   return { nombre: "", telefono: "", observaciones: "" };
@@ -171,7 +171,7 @@ function getRegistroDia(state, fechaISO) {
   return state.registroDiario[fechaISO];
 }
 
-/* Últimos 7 días (incluye hoy), del más antiguo al más reciente. */
+/* Últimos 7 dias (incluindo hoje), do mais antigo ao mais recente. */
 function ultimos7Dias() {
   const out = [];
   for (let i = 6; i >= 0; i--) {
@@ -221,7 +221,7 @@ function hoyISO() {
 
 /* ---------------- quincenas (1–15 y 16–fin de mes) ---------------- */
 
-const MESES_ES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const MESES_ES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
 function quincenaKeyFromDate(d) {
   const y = d.getFullYear();
@@ -250,7 +250,7 @@ function quincenaBounds(key) {
 
 function quincenaLabel(key) {
   const { year, month, half } = parseQuincenaKey(key);
-  return (half === 1 ? "1–15" : "16–fin") + " de " + MESES_ES[month - 1] + " " + year;
+  return (half === 1 ? "1–15" : "16–fim") + " de " + MESES_ES[month - 1] + " " + year;
 }
 
 function quincenaAdyacente(key, delta) {
@@ -286,7 +286,7 @@ function nuevoProductoCatalogo(seed) {
   seed = seed || {};
   return {
     id: seed.id || "prod" + Math.random().toString(36).slice(2, 9),
-    categoria: seed.categoria || "Mis productos",
+    categoria: seed.categoria || "Meus produtos",
     nombre: seed.nombre || "",
     pv: seed.pv || 0,
     precio: seed.precio || 0,
@@ -304,7 +304,7 @@ function emptyCatalogoProductosPais(paisId) {
     return nuevoProductoCatalogo({ id: paisId + "-prod" + i, categoria: p.categoria, nombre: p.nombre, pv: p.pv, precio: p.precio });
   });
   const lineasLibres = Array.from({ length: 20 }, function (_, i) {
-    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Mis productos" });
+    return nuevoProductoCatalogo({ id: paisId + "-blank" + i, categoria: "Meus produtos" });
   });
   return productos.concat(lineasLibres);
 }
