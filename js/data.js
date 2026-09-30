@@ -1020,6 +1020,13 @@ const EVALUACION_8PASOS_CATEGORIAS = [
 ];
 
 /* ---------------------------------------------------------------
+   LISTA DE CONTATOS — nível de interesse e status (consumidor/sócio)
+--------------------------------------------------------------- */
+
+const CONTACTO_NIVELES = ["Quente", "Morno", "Frio"];
+const CONTACTO_ESTADOS = ["A contatar", "Contatado", "Apresentação", "Sócio", "Consumidor", "Descartado"];
+
+/* ---------------------------------------------------------------
    DESAFIO 7×7 — ciclo semanal de 7 dias para desenvolver o negócio
    (contatar → apresentar → recomendar → acompanhar → fechar → duplicar → repetir)
 --------------------------------------------------------------- */

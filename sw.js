@@ -4,7 +4,7 @@
    cada nova implantação aparece imediatamente, sem deixar rastros de uma versão
    antiga presa no cache do navegador. */
 
-const CACHE_NAME = "cumbre-master-cache-v5";
+const CACHE_NAME = "cumbre-master-cache-v6";
 const CORE_ASSETS = [
   "./",
   "./index.html",
