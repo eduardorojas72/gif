@@ -219,6 +219,12 @@ function hoyISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function addDiasISO(baseISO, dias) {
+  const d = new Date(baseISO + "T00:00:00");
+  d.setDate(d.getDate() + dias);
+  return d.toISOString().slice(0, 10);
+}
+
 /* ---------------- quincenas (1–15 y 16–fin de mes) ---------------- */
 
 const MESES_ES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
@@ -352,7 +358,13 @@ function nuevaLlamadaSOS() {
 }
 
 function nuevoContactoEvento() {
-  return { id: "e" + Math.random().toString(36).slice(2, 9), nombre: "", pais: "", telefono: "", observaciones: "" };
+  return {
+    id: "e" + Math.random().toString(36).slice(2, 9),
+    nombre: "", pais: "", telefono: "",
+    nivel: "Tibio", estado: "Por contactar",
+    observaciones: "", notaSeguimiento: "", proximoSeguimiento: null,
+    creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [],
+  };
 }
 
 /* ---------------- rachas / utilidades compartidas ---------------- */

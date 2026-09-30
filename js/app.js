@@ -79,6 +79,7 @@ const App = {
     reto7x7DiaOpen: {},
     reto7x7Contactos10Open: {},
     reto7x7EvaluacionOpen: {},
+    contactoEventoFiltro: "todos",
   },
   saveTimer: null,
   toastTimer: null,
@@ -304,6 +305,13 @@ const App = {
           persona[el.dataset.rosterField] = isNumeric ? Number(el.value) || 0 : el.value;
           this.persist();
         }
+      } else if (el.id === "contacto-evento-search") {
+        // filtro de búsqueda de la Lista de Contactos: se aplica directo al DOM, sin pasar por render()
+        const q = el.value.trim().toLowerCase();
+        document.querySelectorAll(".contact-row").forEach((row) => {
+          const match = !q || (row.dataset.search || "").indexOf(q) !== -1;
+          row.classList.toggle("hidden", !match);
+        });
       }
     });
 
@@ -691,10 +699,10 @@ const Actions = {
     App.render();
   },
 
-  /* -------- Lista de Contactos (eventos en vivo) -------- */
+  /* -------- Lista de Contactos -------- */
 
   "add-contacto-evento": function () {
-    App.ui.contactoEventoDraft = { id: null, nombre: "", pais: "", telefono: "", observaciones: "" };
+    App.ui.contactoEventoDraft = { id: null, nombre: "", pais: "", telefono: "", nivel: "Tibio", estado: "Por contactar", observaciones: "", notaSeguimiento: "", proximoSeguimiento: null };
     App.ui.confirmDeleteContactoEvento = null;
     App.render();
   },
@@ -716,16 +724,19 @@ const Actions = {
   "save-contacto-evento": function () {
     const d = App.ui.contactoEventoDraft;
     if (!d || !d.nombre || !d.nombre.trim()) return;
+    let estadoAnterior = null;
     if (d.id) {
-      const c = App.state.contactosEventos.find((x) => x.id === d.id);
-      if (c) {
-        c.nombre = d.nombre;
-        c.pais = d.pais;
-        c.telefono = d.telefono;
-        c.observaciones = d.observaciones;
+      const idx = App.state.contactosEventos.findIndex((x) => x.id === d.id);
+      if (idx !== -1) {
+        estadoAnterior = App.state.contactosEventos[idx].estado;
+        const actualizado = Object.assign({}, App.state.contactosEventos[idx], d);
+        if (estadoAnterior !== d.estado) actualizado.estadoFecha = hoyISO();
+        App.state.contactosEventos[idx] = actualizado;
       }
     } else {
-      App.state.contactosEventos.push(Object.assign(nuevoContactoEvento(), { nombre: d.nombre, pais: d.pais, telefono: d.telefono, observaciones: d.observaciones }));
+      const nuevo = Object.assign(nuevoContactoEvento(), d);
+      nuevo.id = "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      App.state.contactosEventos.push(nuevo);
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
@@ -744,6 +755,61 @@ const Actions = {
     App.ui.contactoEventoDraft = null;
     App.persist(true);
     App.showToast("Contacto eliminado");
+    App.render();
+  },
+
+  "filter-contactos-evento": function (arg) {
+    App.ui.contactoEventoFiltro = arg;
+    App.render();
+  },
+
+  "quick-seguimiento-contacto": function (arg, el) {
+    const dias = Number(el.dataset.days);
+    const c = (App.state.contactosEventos || []).find((x) => x.id === arg);
+    if (!c) return;
+    c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
+    App.persist(true);
+    App.showToast("Seguimiento programado");
+    App.render();
+  },
+
+  "quick-draft-seguimiento-evento": function (arg) {
+    if (!App.ui.contactoEventoDraft) return;
+    App.ui.contactoEventoDraft.proximoSeguimiento = addDiasISO(hoyISO(), Number(arg));
+    App.render();
+  },
+
+  "marcar-seguimiento-contacto-hecho": function (arg) {
+    const c = (App.state.contactosEventos || []).find((x) => x.id === arg);
+    if (!c) return;
+    if (!Array.isArray(c.seguimientosRealizados)) c.seguimientosRealizados = [];
+    c.seguimientosRealizados.push(hoyISO());
+    c.proximoSeguimiento = null;
+    App.persist(true);
+    App.showToast("Seguimiento marcado como hecho");
+    App.render();
+  },
+
+  // Registra una llamada o mensaje hecho a un contacto: suma al contador diario
+  // (Informe Semanal → "Hoy"), avanza el contacto a "Contactado" si seguía "Por
+  // contactar", y si tenía un seguimiento pendiente lo marca como hecho.
+  "registrar-contacto-evento": function (arg, el) {
+    const tipo = el.dataset.tipo === "mensaje" ? "mensajes" : "llamadas";
+    const c = (App.state.contactosEventos || []).find((x) => x.id === arg);
+    if (!c) return;
+    const dia = getRegistroDia(App.state, hoyISO());
+    dia[tipo] = (Number(dia[tipo]) || 0) + 1;
+    if (c.estado === "Por contactar") {
+      c.estado = "Contactado";
+      c.estadoFecha = hoyISO();
+    }
+    if (c.proximoSeguimiento) {
+      if (!Array.isArray(c.seguimientosRealizados)) c.seguimientosRealizados = [];
+      c.seguimientosRealizados.push(hoyISO());
+      c.proximoSeguimiento = null;
+    }
+    App.persist(true);
+    App.showToast(tipo === "mensajes" ? "Mensaje registrado" : "Llamada registrada");
     App.render();
   },
 
