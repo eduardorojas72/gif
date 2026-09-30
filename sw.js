@@ -4,7 +4,7 @@
    there is no network. That way, every new deployment shows up right
    away, without an old version getting stuck in the browser cache. */
 
-const CACHE_NAME = "cumbre-master-cache-v5";
+const CACHE_NAME = "cumbre-master-cache-v6";
 const CORE_ASSETS = [
   "./",
   "./index.html",

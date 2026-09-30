@@ -219,6 +219,12 @@ function hoyISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function addDiasISO(baseISO, dias) {
+  const d = new Date(baseISO + "T00:00:00");
+  d.setDate(d.getDate() + dias);
+  return d.toISOString().slice(0, 10);
+}
+
 /* ---------------- pay periods (1st–15th and 16th–end of month) ---------------- */
 
 const MESES_ES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -352,7 +358,13 @@ function nuevaLlamadaSOS() {
 }
 
 function nuevoContactoEvento() {
-  return { id: "e" + Math.random().toString(36).slice(2, 9), nombre: "", pais: "", telefono: "", observaciones: "" };
+  return {
+    id: "e" + Math.random().toString(36).slice(2, 9),
+    nombre: "", pais: "", telefono: "",
+    nivel: "Warm", estado: "To contact",
+    observaciones: "", notaSeguimiento: "", proximoSeguimiento: null,
+    creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [],
+  };
 }
 
 /* ---------------- streaks / shared utilities ---------------- */

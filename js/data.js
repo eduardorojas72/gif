@@ -1022,6 +1022,13 @@ const EVALUACION_8PASOS_CATEGORIAS = [
 ];
 
 /* ---------------------------------------------------------------
+   CONTACTS LIST — interest level and status (consumer/partner)
+--------------------------------------------------------------- */
+
+const CONTACTO_NIVELES = ["Hot", "Warm", "Cold"];
+const CONTACTO_ESTADOS = ["To contact", "Contacted", "Presented", "Partner", "Consumer", "Discarded"];
+
+/* ---------------------------------------------------------------
    7×7 CHALLENGE — weekly 7-day cycle to grow the business
    (contact → present → recommend → follow up → close → duplicate → repeat)
 --------------------------------------------------------------- */
