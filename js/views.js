@@ -139,15 +139,26 @@ function getReminders(state) {
   const out = [];
   const key = quincenaActualKey();
   const q = state.quincenas[key];
-  if (!q) return out;
   const dias = diasRestantesQuincena(key);
-  if (dias <= 0) return out;
-  [["izquierda", "Gauche"], ["derecha", "Droite"]].forEach(function (par) {
-    const verificado = sumaLinea(q, par[0], true);
-    const faltante = Math.max(0, META_PV_QUINCENA - verificado);
-    if (faltante > 0) {
-      const ritmo = Math.ceil(faltante / dias);
-      out.push({ text: "Jambe " + par[1] + " : il manque " + faltante.toLocaleString("fr") + " PV vérifiés. Rythme nécessaire : " + ritmo.toLocaleString("fr") + " PV/jour." });
+  if (q && dias > 0) {
+    [["izquierda", "Gauche"], ["derecha", "Droite"]].forEach(function (par) {
+      const verificado = sumaLinea(q, par[0], true);
+      const faltante = Math.max(0, META_PV_QUINCENA - verificado);
+      if (faltante > 0) {
+        const ritmo = Math.ceil(faltante / dias);
+        out.push({ text: "Jambe " + par[1] + " : il manque " + faltante.toLocaleString("fr") + " PV vérifiés. Rythme nécessaire : " + ritmo.toLocaleString("fr") + " PV/jour." });
+      }
+    });
+  }
+  const hoy = hoyISO();
+  (state.contactosEventos || []).forEach(function (c) {
+    if (c.proximoSeguimiento && c.proximoSeguimiento <= hoy && c.estado !== "Écarté") {
+      const vencido = c.proximoSeguimiento < hoy;
+      out.push({
+        text: (vencido ? "Suivi en retard : " : "Suivi aujourd'hui : ") + c.nombre + (c.notaSeguimiento ? " — " + c.notaSeguimiento : ""),
+        telefono: c.telefono,
+        contactoId: c.id,
+      });
     }
   });
   return out;
@@ -157,19 +168,30 @@ function renderBellPanel(state) {
   const reminders = getReminders(state);
   const body = reminders.length
     ? reminders.map(function (r) {
+        const waBtn = r.telefono
+          ? '<a class="icon-btn" style="flex-shrink:0" href="' + waHrefPersonal(r.telefono) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+          : "";
+        const hechoBtn = r.contactoId
+          ? '<div class="icon-btn" style="flex-shrink:0;cursor:pointer" data-action="marcar-seguimiento-contacto-hecho" data-arg="' + r.contactoId + '" title="Marquer le suivi comme fait">' + Icon("check-circle", { size: 14, color: "var(--success)" }) + "</div>"
+          : "";
         return (
           '<div class="row gap-2" style="align-items:flex-start;text-align:left;padding:10px 0;border-top:1px solid var(--border)">' +
           Icon("bell", { size: 15, color: "var(--accent)" }) +
           '<span class="small" style="color:var(--text);flex:1">' + escapeHtml(r.text) + "</span>" +
+          hechoBtn +
+          waBtn +
           "</div>"
         );
-      }).join("")
-    : '<p class="muted small" style="margin-top:8px">Tu es à jour — tu n\'as aucune alerte de rythme en attente.</p>';
+      }).join("") +
+      (reminders.some(function (r) { return r.contactoId; })
+        ? '<button class="link-btn small" style="margin-top:8px" data-action="goto" data-arg="eventos">Voir la Liste de Contacts →</button>'
+        : "")
+    : '<p class="muted small" style="margin-top:8px">Tu es à jour — tu n\'as aucune alerte ni aucun suivi en attente.</p>';
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="close-modal"></div>' +
     '<div class="modal-card" style="text-align:left;align-items:stretch">' +
-    '<div class="row between"><span style="font-weight:700;font-size:15px">Alertes de cette quinzaine</span>' +
+    '<div class="row between"><span style="font-weight:700;font-size:15px">Rappels</span>' +
     '<button class="icon-btn" data-action="close-modal">' + Icon("x", { size: 18 }) + "</button></div>" +
     body +
     "</div></div>"
@@ -1513,36 +1535,98 @@ function renderSOSModal(ui) {
   );
 }
 
-/* ---------------- Lista de Contactos (eventos en vivo) ---------------- */
+/* ---------------- Lista de Contactos ---------------- */
 
-function contactoEventoRowHTML(c) {
+function contactoEventoNivelBadge(nivel) {
+  const cls = nivel === "Chaud" ? "warn" : nivel === "Tiède" ? "gold" : "soft";
+  return '<span class="badge ' + cls + '">' + escapeHtml(nivel) + "</span>";
+}
+
+function contactoEventoRowHTML(c, hoy) {
+  const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
+  const esHoy = c.proximoSeguimiento === hoy;
+  const fechaTxt = c.proximoSeguimiento ? (vencido ? "En retard · " : esHoy ? "Aujourd'hui · " : "") + c.proximoSeguimiento : "Aucun suivi prévu";
+  const fechaColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
   const waLink = c.telefono
-    ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 14, color: "var(--success)" }) + "</a>"
+    ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
     : "";
   return (
-    '<div class="card" style="padding:13px">' +
+    '<div class="card contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
     '<div class="row between" style="align-items:flex-start">' +
-    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "Sans nom") +
-    (c.pais ? ' <span class="badge soft" style="margin-left:4px">' + escapeHtml(c.pais) + "</span>" : "") + "</div>" +
-    (c.telefono ? '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono) + "</div>" : "") +
+    '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre || "Sans nom") + "</div>" +
+    '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono || "Pas de téléphone") + (c.pais ? " · " + escapeHtml(c.pais) : "") + "</div></div>" +
+    contactoEventoNivelBadge(c.nivel) +
     "</div>" +
-    '<div class="row gap-2">' +
+    '<div class="row between" style="margin-top:10px;align-items:center">' +
+    '<span class="small" style="font-weight:600' + ((c.estado === "Partenaire" || c.estado === "Consommateur") ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
+    '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
+    "</div>" +
+    (c.observaciones ? '<div class="muted small" style="margin-top:4px;font-style:italic">« ' + escapeHtml(c.observaciones) + ' »</div>' : "") +
+    (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">« ' + escapeHtml(c.notaSeguimiento) + ' »</div>' : "") +
+    (c.proximoSeguimiento
+      ? '<div class="row gap-2" style="margin-top:6px;align-items:center;cursor:pointer" data-action="marcar-seguimiento-contacto-hecho" data-arg="' + c.id + '">' +
+        Icon("check-circle", { size: 13, color: "var(--success)" }) +
+        '<span class="small" style="color:var(--success);font-weight:600">Marquer le suivi comme fait</span></div>'
+      : "") +
+    '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento-contacto" data-arg="' + c.id + '" data-days="3">+3 jours</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento-contacto" data-arg="' + c.id + '" data-days="7">+1 sem.</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento-contacto" data-arg="' + c.id + '" data-days="30">+1 mois</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento-contacto" data-arg="' + c.id + '" data-days="60">+2 mois</button>' +
     waLink +
-    '<button class="icon-btn" data-action="edit-contacto-evento" data-arg="' + c.id + '">' + Icon("edit", { size: 14 }) + "</button>" +
-    '<button class="icon-btn" data-action="delete-contacto-evento" data-arg="' + c.id + '">' + Icon("x", { size: 14 }) + "</button>" +
-    "</div></div>" +
-    (c.observaciones ? '<div class="muted small" style="margin-top:6px">' + escapeHtml(c.observaciones) + "</div>" : "") +
+    '<button class="icon-btn" data-action="edit-contacto-evento" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
+    "</div>" +
+    '<div class="row gap-2" style="margin-top:6px">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto-evento" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 13 }) + " Appel</button>" +
+    '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto-evento" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 13 }) + " Message</button>" +
+    "</div>" +
     "</div>"
   );
 }
 
 function renderContactosEventos(state, ui) {
   const lista = state.contactosEventos || [];
-  const rows = lista.length
-    ? lista.map(function (c) { return contactoEventoRowHTML(c); }).join("")
-    : '<p class="muted small" style="text-align:center;padding:24px 0">Tu n\'as encore aucun contact d\'événement enregistré.</p>';
+  const filtro = ui.contactoEventoFiltro || "tous";
+  const hoy = hoyISO();
+
+  const counts = { Chaud: 0, Tiède: 0, Froid: 0 };
+  lista.forEach(function (c) { if (counts[c.nivel] != null) counts[c.nivel]++; });
+
+  const filterBtns = ["tous"].concat(CONTACTO_NIVELES).map(function (f) {
+    const active = filtro === f;
+    const label = f === "tous" ? "Tous · " + lista.length : f + " · " + counts[f];
+    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="filter-contactos-evento" data-arg="' + f + '">' + label + "</button>";
+  }).join(" ");
+
+  const filtered = filtro === "tous" ? lista : lista.filter(function (c) { return c.nivel === filtro; });
+  const sorted = filtered.slice().sort(function (a, b) {
+    if (filtro === "tous") {
+      const an = CONTACTO_NIVELES.indexOf(a.nivel), bn = CONTACTO_NIVELES.indexOf(b.nivel);
+      if (an !== bn) return an - bn;
+    }
+    const av = a.proximoSeguimiento || "9999-99-99";
+    const bv = b.proximoSeguimiento || "9999-99-99";
+    if (av !== bv) return av < bv ? -1 : 1;
+    return (a.nombre || "").localeCompare(b.nombre || "");
+  });
+
+  let lastNivel = null;
+  const rows = sorted.length
+    ? sorted.map(function (c) {
+        let nivelHeader = "";
+        if (filtro === "tous" && c.nivel !== lastNivel) {
+          lastNivel = c.nivel;
+          nivelHeader = '<div class="row gap-2" style="margin-top:16px;margin-bottom:2px;color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(c.nivel) + " · " + (counts[c.nivel] || 0) + "</div>";
+        }
+        return nivelHeader + contactoEventoRowHTML(c, hoy);
+      }).join("")
+    : '<p class="muted small" style="text-align:center;padding:24px 0">Tu n\'as encore aucun contact enregistré. Touche « Ajouter un contact » pour commencer ton suivi de contacts.</p>';
+
   return (
-    sectionHeaderHTML("Liste de Contacts", "Des personnes que tu as rencontrées lors de séminaires, conventions ou autres événements en direct — ce ne sont pas toujours encore des prospects.", "users") +
+    sectionHeaderHTML("Liste de Contacts", lista.length + " enregistrés — continue à les contacter, classe leur niveau d'intérêt et ne perds pas le fil du suivi.", "users") +
+    '<p class="muted small" style="margin-top:-4px">Touche « Appel » ou « Message » sur chaque contact pour que ça s\'enregistre dans ton Rapport Hebdomadaire.</p>' +
+    '<input id="contacto-evento-search" type="text" placeholder="Rechercher par nom ou téléphone..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
+    '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<button class="btn-primary" data-action="add-contacto-evento">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Ajouter un contact</button>" +
     '<div class="view-stack gap-sm">' + rows + "</div>"
   );
@@ -1552,6 +1636,8 @@ function renderContactoEventoModal(ui) {
   const d = ui.contactoEventoDraft;
   if (!d) return "";
   const editing = !!d.id;
+  const nivelOpts = CONTACTO_NIVELES.map(function (n) { return '<option value="' + n + '"' + (d.nivel === n ? " selected" : "") + ">" + n + "</option>"; }).join("");
+  const estadoOpts = CONTACTO_ESTADOS.map(function (s) { return '<option value="' + s + '"' + (d.estado === s ? " selected" : "") + ">" + s + "</option>"; }).join("");
   const deleteBtn = editing
     ? '<button class="btn-secondary" style="margin-top:8px;border-color:var(--warn);color:var(--warn)" data-action="delete-contacto-evento" data-arg="' + d.id + '">' +
       (ui.confirmDeleteContactoEvento === d.id ? "Sûr ? Touche à nouveau pour supprimer" : "Supprimer le contact") +
@@ -1560,18 +1646,30 @@ function renderContactoEventoModal(ui) {
   return (
     '<div class="modal-overlay">' +
     '<div class="modal-backdrop" data-action="cancel-contacto-evento"></div>' +
-    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:360px">' +
+    '<div class="modal-card" style="text-align:left;align-items:stretch;max-width:380px">' +
     '<div class="row between"><span style="font-weight:700;font-size:15px">' + (editing ? "Modifier le contact" : "Nouveau contact") + "</span>" +
     '<button class="icon-btn" data-action="cancel-contacto-evento">' + Icon("x", { size: 18 }) + "</button></div>" +
     '<div class="view-stack gap-sm" style="margin-top:8px">' +
     '<div class="field"><label>Nom</label><input type="text" data-draft-field="nombre" value="' + escapeHtml(d.nombre) + '" placeholder="Nom complet"></div>' +
     '<div class="row gap-2">' +
-    '<div class="field" style="flex:1"><label>Pays</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="Ex. Colombie"></div>' +
-    '<div class="field" style="flex:1"><label>Téléphone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+57 300 000 0000"></div>' +
+    '<div class="field" style="flex:1"><label>Téléphone</label><input type="text" inputmode="tel" data-draft-field="telefono" value="' + escapeHtml(d.telefono) + '" placeholder="+33 6 00 00 00 00"></div>' +
+    '<div class="field" style="flex:1"><label>Pays</label><input type="text" data-draft-field="pais" value="' + escapeHtml(d.pais) + '" placeholder="Ex. France"></div>' +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<div class="field" style="flex:1"><label>Niveau</label><select data-draft-field="nivel" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + nivelOpts + "</select></div>" +
+    '<div class="field" style="flex:1"><label>Statut</label><select data-draft-field="estado" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 13px;font-size:14px;outline:none">' + estadoOpts + "</select></div>" +
     "</div>" +
     '<div class="field"><label>Observations</label><textarea rows="2" data-draft-field="observaciones" placeholder="Où tu l\'as rencontré, ses intérêts...">' + escapeHtml(d.observaciones || "") + "</textarea></div>" +
+    '<div class="field"><label>Prochain suivi</label><input type="date" data-draft-field="proximoSeguimiento" value="' + (d.proximoSeguimiento || "") + '"></div>' +
+    '<div class="row gap-2">' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento-evento" data-arg="3">+3 jours</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento-evento" data-arg="7">+1 semaine</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento-evento" data-arg="30">+1 mois</button>' +
+    '<button class="btn-secondary" style="flex:1;padding:8px" data-action="quick-draft-seguimiento-evento" data-arg="60">+2 mois</button>' +
     "</div>" +
-    '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto-evento">Enregistrer</button>' +
+    '<div class="field"><label>Note de suivi</label><input type="text" data-draft-field="notaSeguimiento" value="' + escapeHtml(d.notaSeguimiento || "") + '" placeholder="Ex. Appeler pour connaître sa décision"></div>' +
+    "</div>" +
+    '<button class="btn-primary" style="margin-top:14px" data-action="save-contacto-evento">Enregistrer le contact</button>' +
     deleteBtn +
     '<button class="link-btn small" style="margin-top:6px" data-action="cancel-contacto-evento">Annuler</button>' +
     "</div></div>"

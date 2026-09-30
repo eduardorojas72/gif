@@ -4,7 +4,7 @@
    chaque nouveau déploiement se voit immédiatement sans laisser de traces d'une ancienne
    version bloquée dans le cache du navigateur. */
 
-const CACHE_NAME = "cumbre-master-cache-v5";
+const CACHE_NAME = "cumbre-master-cache-v6";
 const CORE_ASSETS = [
   "./",
   "./index.html",

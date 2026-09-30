@@ -1020,6 +1020,13 @@ const EVALUACION_8PASOS_CATEGORIAS = [
 ];
 
 /* ---------------------------------------------------------------
+   LISTA DE CONTACTOS — nivel de interés y estado (consumidor/socio)
+--------------------------------------------------------------- */
+
+const CONTACTO_NIVELES = ["Chaud", "Tiède", "Froid"];
+const CONTACTO_ESTADOS = ["À contacter", "Contacté", "Présentation", "Partenaire", "Consommateur", "Écarté"];
+
+/* ---------------------------------------------------------------
    RETO 7×7 — ciclo semanal de 7 días para desarrollar el negocio
    (contactar → presentar → recomendar → seguir → cerrar → duplicar → repetir)
 --------------------------------------------------------------- */
