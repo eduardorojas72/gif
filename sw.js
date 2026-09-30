@@ -4,7 +4,7 @@
    rilascio si vede immediatamente senza lasciare tracce di una versione
    vecchia bloccata nella cache del browser. */
 
-const CACHE_NAME = "cumbre-master-cache-v5";
+const CACHE_NAME = "cumbre-master-cache-v6";
 const CORE_ASSETS = [
   "./",
   "./index.html",
