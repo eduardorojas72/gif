@@ -202,6 +202,8 @@ const APP = {
           </div>
         </div>
 
+        <button type="button" class="btn btn-outline btn-block" id="share-result-btn">📤 Compartir mi resultado</button>
+
         <hr class="divider" />
 
         <div class="cta-card">
@@ -253,7 +255,27 @@ const APP = {
     );
 
     const waBtn = document.getElementById("whatsapp-btn");
-    if (waBtn) waBtn.href = this.whatsappLink(this.computeProfile());
+    const shareBtn = document.getElementById("share-result-btn");
+    if (waBtn || shareBtn) {
+      const profile = this.computeProfile();
+      if (waBtn) waBtn.href = this.whatsappLink(profile);
+      if (shareBtn) {
+        shareBtn.addEventListener("click", async () => {
+          const original = shareBtn.textContent;
+          shareBtn.disabled = true;
+          shareBtn.textContent = "Generando…";
+          try {
+            const dataURL = SHARE.buildResultCardDataURL(profile);
+            const text = "Acabo de hacer el test «¿Cómo está tu economía?» y mi resultado fue: "
+              + profile.label + ". Hazlo tú también en 2 minutos: https://" + SHARE.SITE_URL;
+            await SHARE.shareCard(dataURL, text);
+          } finally {
+            shareBtn.disabled = false;
+            shareBtn.textContent = original;
+          }
+        });
+      }
+    }
   }
 };
 
