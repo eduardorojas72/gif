@@ -265,9 +265,10 @@ const APP = {
           shareBtn.disabled = true;
           shareBtn.textContent = "Generando…";
           try {
-            const dataURL = SHARE.buildResultCardDataURL(profile);
-            const text = "Acabo de hacer el test «¿Cómo está tu economía?» y mi resultado fue: "
-              + profile.label + ". Hazlo tú también en 2 minutos: https://" + SHARE.SITE_URL;
+            const dataURL = SHARE.buildInviteCardDataURL();
+            const text = "He hecho este test de 2 minutos sobre mi economía… y el resultado me preocupa. "
+              + "¿Te atreves a hacerlo tú también y descubrir cómo mejorar tu situación financiera? "
+              + "https://" + SHARE.SITE_URL;
             await SHARE.shareCard(dataURL, text);
           } finally {
             shareBtn.disabled = false;

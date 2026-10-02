@@ -1,19 +1,9 @@
-// Genera la tarjeta de resultado (canvas) y la comparte / descarga, para que
-// quien hace el test pueda publicarla en redes o enviarla por WhatsApp.
+// Genera la tarjeta de invitación (canvas) y la comparte / descarga, para
+// que quien hace el test pueda publicarla en redes o enviarla por WhatsApp.
+// A propósito no muestra el resultado: es un gancho de curiosidad para que
+// quien la vea quiera hacer el test también.
 const SHARE = {
   SITE_URL: "test-economico.vercel.app",
-
-  riskColors(key) {
-    const map = {
-      rojos: { from: "#E5484D", to: "#B91C1C" },
-      limite: { from: "#F2994A", to: "#C96A1F" },
-      deuda_preocupa: { from: "#F2994A", to: "#C96A1F" },
-      hamster: { from: "#F2994A", to: "#C96A1F" },
-      ahorra_dependiente: { from: "#5B4CF0", to: "#4436D6" },
-      solido: { from: "#22C3A6", to: "#1A9A84" }
-    };
-    return map[key] || map.solido;
-  },
 
   roundRectPath(ctx, x, y, w, h, r) {
     ctx.beginPath();
@@ -53,25 +43,24 @@ const SHARE = {
     return lines;
   },
 
-  buildResultCardDataURL(profile) {
+  buildInviteCardDataURL() {
     const W = 1080, H = 1350;
     const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext("2d");
-    const hue = this.riskColors(profile.key);
 
     this.roundRectPath(ctx, 0, 0, W, H, 56);
     ctx.clip();
 
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, "#12152E");
-    bg.addColorStop(1, "#1C2152");
+    bg.addColorStop(1, "#23285C");
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    this.softGlow(ctx, W * 0.15, 220, 300, hue.from);
-    this.softGlow(ctx, W * 0.85, H - 260, 340, hue.to);
+    this.softGlow(ctx, W * 0.15, 220, 300, "#5B4CF0");
+    this.softGlow(ctx, W * 0.85, H - 260, 340, "#22C3A6");
 
     ctx.strokeStyle = "rgba(255,255,255,0.18)";
     ctx.lineWidth = 4;
@@ -84,43 +73,26 @@ const SHARE = {
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.fillText("🧭 ¿Cómo está tu economía?", 56, 86);
 
-    ctx.font = "600 30px Inter, system-ui, sans-serif";
-    const chipLabel = "Riesgo: " + profile.risk;
-    const chipW = ctx.measureText(chipLabel).width + 56;
-    const chipX = W - 56 - chipW;
-    const chipGrad = ctx.createLinearGradient(chipX, 0, chipX + chipW, 0);
-    chipGrad.addColorStop(0, hue.from);
-    chipGrad.addColorStop(1, hue.to);
-    this.roundRectPath(ctx, chipX, 150, chipW, 60, 30);
-    ctx.fillStyle = chipGrad;
-    ctx.fill();
-    ctx.fillStyle = "#FFFFFF";
     ctx.textAlign = "center";
-    ctx.fillText(chipLabel, chipX + chipW / 2, 180);
+    ctx.font = "190px system-ui, sans-serif";
+    ctx.fillText("😟", W / 2, 400);
 
-    ctx.textAlign = "center";
-    ctx.font = "220px system-ui, sans-serif";
-    ctx.fillText(profile.emoji, W / 2, 470);
-
-    ctx.font = "700 60px 'Space Grotesk', system-ui, sans-serif";
+    ctx.font = "700 54px 'Space Grotesk', system-ui, sans-serif";
     ctx.fillStyle = "#FFFFFF";
-    const labelLines = this.wrapText(ctx, profile.label, W - 160);
-    const labelStartY = 660;
-    labelLines.forEach((line, i) => ctx.fillText(line, W / 2, labelStartY + i * 74));
+    const headlineLines = this.wrapText(ctx, "He hecho este test de 2 minutos sobre mi economía… y el resultado me preocupa.", W - 160);
+    let y = 600;
+    headlineLines.forEach((line) => { ctx.fillText(line, W / 2, y); y += 66; });
 
-    const margenY = labelStartY + (labelLines.length - 1) * 74 + 150;
-    ctx.font = "500 32px Inter, system-ui, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.65)";
-    ctx.fillText("Margen mensual estimado", W / 2, margenY);
-    ctx.font = "700 62px 'Space Grotesk', system-ui, sans-serif";
-    ctx.fillStyle = profile.margin < 0 ? "#FF8A8A" : "#8CF2D6";
-    const margenLabel = (profile.margin >= 0 ? "+" : "") + APP.formatMoney(profile.margin);
-    ctx.fillText(margenLabel, W / 2, margenY + 70);
+    y += 50;
+    ctx.font = "500 36px Inter, system-ui, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    const subLines = this.wrapText(ctx, "¿Te atreves a hacerlo tú también y descubrir cómo mejorar tu situación financiera?", W - 180);
+    subLines.forEach((line) => { ctx.fillText(line, W / 2, y); y += 50; });
 
     ctx.textAlign = "left";
     ctx.font = "600 32px Inter, system-ui, sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.fillText("Haz tú también el test:", 56, H - 128);
+    ctx.fillText("Hazlo aquí:", 56, H - 128);
     ctx.font = "700 38px 'Space Grotesk', system-ui, sans-serif";
     ctx.fillStyle = "#8CF2D6";
     ctx.fillText(this.SITE_URL, 56, H - 78);
