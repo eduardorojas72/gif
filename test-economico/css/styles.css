@@ -99,27 +99,14 @@ p { margin: 0; line-height: 1.5; }
   margin: 0;
 }
 
-.q-form { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
-.q-form input {
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1.5px solid var(--border);
-  font-size: 17px;
-  font-family: inherit;
-  color: var(--text);
-}
-.q-form input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
-
-.choice-grid, .scale-grid {
+.choice-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 4px;
 }
-.scale-grid { flex-direction: row; }
 
-.choice-btn, .scale-btn {
+.choice-btn {
   font-family: inherit;
   font-size: 15px;
   border: 1.5px solid var(--border);
@@ -131,14 +118,47 @@ p { margin: 0; line-height: 1.5; }
   text-align: left;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.choice-btn:hover, .scale-btn:hover { border-color: var(--primary); background: #F1EFFE; }
+.choice-btn:hover { border-color: var(--primary); background: #F1EFFE; }
 
-.scale-btn {
-  flex: 1;
-  text-align: center;
-  font-weight: 700;
-  padding: 14px 0;
+/* ---------- Calculadora de ingresos/gastos ---------- */
+.calc-form { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.calc-section-title {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 14px;
+  margin: 10px 0 0;
+  color: var(--text-soft);
 }
+.calc-section-title:first-child { margin-top: 0; }
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13.5px;
+  color: var(--text-soft);
+}
+.calc-field input {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+}
+.calc-field input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
+
+.calc-balance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F6F6FC;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.calc-balance strong { font-size: 19px; }
 
 /* ---------- Botones ---------- */
 .btn {

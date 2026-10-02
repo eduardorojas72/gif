@@ -34,8 +34,7 @@ const APP = {
     this.render();
   },
 
-  answerAndNext(id, value) {
-    this.answers[id] = value;
+  advance() {
     if (this.step >= this.totalSteps() - 1) {
       this.step = this.totalSteps(); // pantalla de resultado
     } else {
@@ -44,25 +43,46 @@ const APP = {
     this.render();
   },
 
+  answerAndNext(id, value) {
+    this.answers[id] = value;
+    this.advance();
+  },
+
+  answerManyAndNext(patch) {
+    Object.assign(this.answers, patch);
+    this.advance();
+  },
+
   restart() {
     this.step = -1;
     this.answers = {};
     this.render();
   },
 
+  // ---------- Calculadora de ingresos/gastos (paso "finances") ----------
+  // `getValue(fieldId)` abstrae de dónde vienen los importes: de un
+  // formulario en vivo (vista previa) o de las respuestas ya guardadas
+  // (cálculo final del perfil).
+  calcBalance(getValue) {
+    const q = DATA.questions.find((x) => x.type === "calculator");
+    const income = q.income.reduce((sum, f) => sum + (Number(getValue(f.id)) || 0), 0);
+    const expenses = q.expenses.reduce((sum, f) => {
+      const raw = Number(getValue(f.id)) || 0;
+      return sum + (f.annual ? raw / 12 : raw);
+    }, 0);
+    return { income, expenses, margin: income - expenses };
+  },
+
   // ---------- Cálculo del perfil (solo diagnóstico) ----------
   computeProfile() {
     const a = this.answers;
-    const income = Number(a.income) || 0;
-    const expenses = Number(a.expenses) || 0;
-    const savings = Number(a.savings) || 0;
-    const margin = income - expenses;
+    const { income, expenses, margin } = this.calcBalance((id) => a[id]);
     const ratio = income ? expenses / income : 0;
-    const savingsRate = income ? savings / income : 0;
+    const savingsRate = income && margin > 0 ? margin / income : 0;
     const singleIncome = a.incomeSources === "one";
     const noBuffer = a.emergencyFund === "none" || a.emergencyFund === "less1";
     const worksALot = a.workHours === "high" || a.workHours === "veryhigh";
-    const lowSatisfaction = Number(a.satisfaction) <= 2;
+    const wantsBetterIncome = a.incomeGoal === "recurring" || a.incomeGoal === "double";
     const worriedDebt = a.debt === "yes";
 
     let key;
@@ -70,7 +90,7 @@ const APP = {
       key = "rojos";
     } else if (ratio >= 0.9 && noBuffer) {
       key = "limite";
-    } else if (worksALot && singleIncome && lowSatisfaction) {
+    } else if (worksALot && singleIncome && wantsBetterIncome) {
       key = "hamster";
     } else if (savingsRate > 0 && singleIncome) {
       key = "ahorra_dependiente";
@@ -79,12 +99,13 @@ const APP = {
     }
 
     const profile = DATA.profiles.find((p) => p.key === key) || DATA.profiles[0];
-    return Object.assign({ income, expenses, savings, margin, ratio, savingsRate, singleIncome }, profile);
+    return Object.assign({ income, expenses, margin, ratio, savingsRate, singleIncome }, profile);
   },
 
   whatsappLink(profile) {
-    const text = "Hola, acabo de hacer el test «Cómo está tu economía» y mi resultado fue: "
-      + profile.label + ". Me gustaría saber más.";
+    const goalLabel = DATA.incomeGoalLabels[this.answers.incomeGoal];
+    let text = "Hola, acabo de hacer el test «Cómo está tu economía» y mi resultado fue: " + profile.label + ".";
+    if (goalLabel) text += " Me gustaría " + goalLabel + ".";
     return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
   },
 
@@ -113,27 +134,36 @@ const APP = {
       </section>`;
   },
 
+  calculatorFieldHTML(f, savedValue) {
+    return `
+      <label class="calc-field">
+        ${f.label}
+        <input type="number" name="${f.id}" min="0" step="1" placeholder="${f.placeholder || ""}" value="${savedValue != null ? savedValue : ""}" />
+      </label>`;
+  },
+
   questionHTML(q, i) {
     const pct = Math.round(((i) / this.totalSteps()) * 100);
     let controlHTML = "";
-    if (q.type === "number") {
-      controlHTML = `
-        <form id="q-form" class="q-form">
-          <input type="number" name="value" min="0" step="1" placeholder="${q.placeholder || ""}" required autofocus />
-          <button type="submit" class="btn btn-primary btn-block">Continuar</button>
-        </form>`;
-    } else if (q.type === "choice") {
+    if (q.type === "choice") {
       controlHTML = `
         <div class="choice-grid">
           ${q.options.map((o) => `<button class="choice-btn" data-value="${o.value}">${o.label}</button>`).join("")}
         </div>`;
-    } else if (q.type === "scale") {
-      const nums = [];
-      for (let n = q.min; n <= q.max; n++) nums.push(n);
+    } else if (q.type === "calculator") {
+      const a = this.answers;
       controlHTML = `
-        <div class="scale-grid">
-          ${nums.map((n) => `<button class="scale-btn" data-value="${n}">${n}</button>`).join("")}
-        </div>`;
+        <form id="calc-form" class="calc-form">
+          <h2 class="calc-section-title">Tus ingresos</h2>
+          ${q.income.map((f) => this.calculatorFieldHTML(f, a[f.id])).join("")}
+          <h2 class="calc-section-title">Tus gastos fijos</h2>
+          ${q.expenses.map((f) => this.calculatorFieldHTML(f, a[f.id])).join("")}
+          <div class="calc-balance" id="calc-balance">
+            <span>Saldo mensual estimado</span>
+            <strong id="calc-balance-amount">0 €</strong>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Continuar</button>
+        </form>`;
     }
     return `
       <section class="card">
@@ -189,20 +219,30 @@ const APP = {
     if (restartBtn) restartBtn.addEventListener("click", () => this.restart());
 
     const q = DATA.questions[this.step];
-    if (q && q.type === "number") {
-      const form = document.getElementById("q-form");
+    if (q && q.type === "calculator") {
+      const form = document.getElementById("calc-form");
       if (form) {
+        const amountEl = document.getElementById("calc-balance-amount");
+        const updateBalance = () => {
+          const fd = new FormData(form);
+          const { margin } = this.calcBalance((id) => fd.get(id));
+          amountEl.textContent = (margin >= 0 ? "+" : "") + this.formatMoney(margin);
+          amountEl.className = margin < 0 ? "text-danger" : "text-ok";
+        };
+        updateBalance();
+        form.addEventListener("input", updateBalance);
         form.addEventListener("submit", (e) => {
           e.preventDefault();
-          const value = new FormData(form).get("value");
-          this.answerAndNext(q.id, value);
+          const fd = new FormData(form);
+          const patch = {};
+          q.income.concat(q.expenses).forEach((f) => {
+            patch[f.id] = fd.get(f.id) || 0;
+          });
+          this.answerManyAndNext(patch);
         });
       }
     }
     document.querySelectorAll(".choice-btn").forEach((btn) =>
-      btn.addEventListener("click", () => this.answerAndNext(q.id, btn.dataset.value))
-    );
-    document.querySelectorAll(".scale-btn").forEach((btn) =>
       btn.addEventListener("click", () => this.answerAndNext(q.id, btn.dataset.value))
     );
 

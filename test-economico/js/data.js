@@ -5,28 +5,24 @@
 const DATA = {
   questions: [
     {
-      id: "income",
-      type: "number",
-      question: "¿Cuál es tu ingreso mensual aproximado?",
-      hint: "Suma todo lo que entra: nómina, extras, ventas...",
-      placeholder: "Ej. 1500",
-      required: true
-    },
-    {
-      id: "expenses",
-      type: "number",
-      question: "¿Cuánto gastas al mes en total?",
-      hint: "Vivienda, comida, transporte, ocio, cuotas... todo incluido.",
-      placeholder: "Ej. 1400",
-      required: true
-    },
-    {
-      id: "savings",
-      type: "number",
-      question: "¿Cuánto consigues ahorrar realmente cada mes?",
-      hint: "No la meta ideal: lo que de verdad te queda guardado.",
-      placeholder: "Ej. 50",
-      required: true
+      id: "finances",
+      type: "calculator",
+      question: "Calculemos tu saldo mensual",
+      hint: "Escribe tus ingresos y gastos mensuales. Déjalo en blanco (o en 0) lo que no tengas.",
+      income: [
+        { id: "salary", label: "Ingreso de nómina", placeholder: "Ej. 1500" },
+        { id: "extraIncome", label: "Otro ingreso (horas extra, Plan B...)", placeholder: "Ej. 0" }
+      ],
+      expenses: [
+        { id: "rent", label: "Alquiler / hipoteca", placeholder: "Ej. 600" },
+        { id: "transport", label: "Transporte (coche, gasolina, transporte público)", placeholder: "Ej. 150" },
+        { id: "food", label: "Alimentación", placeholder: "Ej. 300" },
+        { id: "utilities", label: "Servicios (agua, luz, teléfono, gas)", placeholder: "Ej. 120" },
+        { id: "subscriptions", label: "Suscripciones (Netflix, Amazon, Disney+...)", placeholder: "Ej. 30" },
+        { id: "insurance", label: "Seguros (importe anual: lo prorrateamos a mensual)", placeholder: "Ej. 600", annual: true },
+        { id: "debtPayments", label: "Cuotas de tarjeta y préstamos", placeholder: "Ej. 100" },
+        { id: "other", label: "Otros gastos", placeholder: "Ej. 50" }
+      ]
     },
     {
       id: "debt",
@@ -71,12 +67,14 @@ const DATA = {
       ]
     },
     {
-      id: "satisfaction",
-      type: "scale",
-      question: "En una escala del 1 al 5, ¿qué tan satisfecho/a estás con lo que ganas hoy?",
-      hint: "1 = nada satisfecho/a · 5 = totalmente satisfecho/a",
-      min: 1,
-      max: 5
+      id: "incomeGoal",
+      type: "choice",
+      question: "Si pudieras aumentar tus ingresos, ¿qué te gustaría?",
+      options: [
+        { value: "hours", label: "Trabajar más horas y ganar más" },
+        { value: "recurring", label: "Ganar más de forma recurrente, trabajando pocas horas extra" },
+        { value: "double", label: "Tener otro empleo que me permita ganar al menos el doble, en las mismas horas que ahora" }
+      ]
     }
   ],
 
@@ -103,7 +101,7 @@ const DATA = {
       emoji: "🐹",
       label: "Mucho esfuerzo, un solo ingreso",
       risk: "Alto",
-      description: "Dedicas muchas horas al trabajo, pero toda tu economía depende de una única fuente de ingreso y no estás satisfecho/a con lo que ganas. Si esa fuente falla, no hay red debajo."
+      description: "Dedicas muchas horas al trabajo, pero toda tu economía depende de una única fuente de ingreso y buscas una forma mejor de ganar más. Si esa fuente falla, no hay red debajo."
     },
     {
       key: "ahorra_dependiente",
@@ -119,5 +117,13 @@ const DATA = {
       risk: "Bajo",
       description: "Generas margen mes a mes, tienes fondo de emergencia y más de una fuente de ingreso. Tu situación actual es sólida."
     }
-  ]
+  ],
+
+  // Etiquetas cortas para personalizar el mensaje de WhatsApp según lo que
+  // la persona dijo que le gustaría (pregunta "incomeGoal").
+  incomeGoalLabels: {
+    hours: "ganar más trabajando más horas",
+    recurring: "ganar más de forma recurrente sin sumar muchas horas extra",
+    double: "tener otro empleo que le permita ganar el doble en las mismas horas"
+  }
 };
