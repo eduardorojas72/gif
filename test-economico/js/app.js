@@ -2,9 +2,21 @@
 // perfil de resultado y construcción del enlace de WhatsApp final.
 // Sin frameworks, sin backend: todo vive en memoria del navegador.
 
-// Sustituye este número por el tuyo en formato internacional sin "+" ni
+// Número de WhatsApp por defecto, en formato internacional sin "+" ni
 // espacios (país + número). Ahora mismo asume España (+34).
-const WHATSAPP_NUMBER = "34635151252";
+const DEFAULT_WHATSAPP_NUMBER = "34635151252";
+
+// Cada persona del equipo puede compartir su propio enlace añadiendo
+// ?wa=<su número> (p.ej. test-economico.vercel.app/?wa=34600111222) para
+// que quien haga el test le escriba a ella y no al número por defecto.
+function resolveWhatsappNumber() {
+  const override = new URLSearchParams(window.location.search).get("wa");
+  if (!override) return DEFAULT_WHATSAPP_NUMBER;
+  const digits = override.replace(/\D/g, "");
+  return digits.length >= 8 && digits.length <= 15 ? digits : DEFAULT_WHATSAPP_NUMBER;
+}
+
+const WHATSAPP_NUMBER = resolveWhatsappNumber();
 
 const APP = {
   step: -1, // -1 = portada, 0..N-1 = preguntas, N = resultado
