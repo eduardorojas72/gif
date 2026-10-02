@@ -86,8 +86,10 @@ const APP = {
     const worriedDebt = a.debt === "yes";
 
     let key;
-    if (ratio >= 1 || worriedDebt) {
+    if (ratio >= 1) {
       key = "rojos";
+    } else if (worriedDebt) {
+      key = "deuda_preocupa";
     } else if (ratio >= 0.9 && noBuffer) {
       key = "limite";
     } else if (worksALot && singleIncome && wantsBetterIncome) {

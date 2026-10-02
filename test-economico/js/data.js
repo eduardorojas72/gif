@@ -90,6 +90,13 @@ const DATA = {
       description: "Ahora mismo gastas igual o más de lo que ingresas. Tu margen mensual real es cero o negativo, y es probable que cubras la diferencia con tarjetas o ayuda externa."
     },
     {
+      key: "deuda_preocupa",
+      emoji: "⚠️",
+      label: "Margen positivo, pero con deudas que pesan",
+      risk: "Alto",
+      description: "Tu saldo mensual es positivo, pero tienes deudas (tarjetas, préstamos...) que te cuesta bajar y te preocupan. Aunque hoy cierras el mes bien, esas deudas son un lastre que conviene vigilar antes de que crezcan."
+    },
+    {
       key: "limite",
       emoji: "⚖️",
       label: "Al límite, sin margen",
