@@ -71,9 +71,9 @@ const DATA = {
       type: "choice",
       question: "Si pudieras aumentar tus ingresos, ¿qué te gustaría?",
       options: [
-        { value: "hours", label: "Trabajar más horas y ganar más" },
-        { value: "recurring", label: "Ganar más de forma recurrente, trabajando pocas horas extra" },
-        { value: "double", label: "Tener otro empleo que me permita ganar al menos el doble, en las mismas horas que ahora" }
+        { value: "hours", letter: "a", label: "Trabajar más horas y ganar más" },
+        { value: "recurring", letter: "b", label: "Ganar más de forma recurrente, trabajando pocas horas extra" },
+        { value: "double", letter: "c", label: "Tener otro empleo que me permita ganar al menos el doble, en las mismas horas que ahora" }
       ]
     }
   ],
@@ -124,13 +124,5 @@ const DATA = {
       risk: "Bajo",
       description: "Generas margen mes a mes, tienes fondo de emergencia y más de una fuente de ingreso. Tu situación actual es sólida."
     }
-  ],
-
-  // Etiquetas cortas para personalizar el mensaje de WhatsApp según lo que
-  // la persona dijo que le gustaría (pregunta "incomeGoal").
-  incomeGoalLabels: {
-    hours: "ganar más trabajando más horas",
-    recurring: "ganar más de forma recurrente sin sumar muchas horas extra",
-    double: "tener otro empleo que le permita ganar el doble en las mismas horas"
-  }
+  ]
 };

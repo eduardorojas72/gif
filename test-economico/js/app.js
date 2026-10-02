@@ -105,9 +105,13 @@ const APP = {
   },
 
   whatsappLink(profile) {
-    const goalLabel = DATA.incomeGoalLabels[this.answers.incomeGoal];
+    const goalQuestion = DATA.questions.find((q) => q.id === "incomeGoal");
+    const chosenOption = goalQuestion && goalQuestion.options.find((o) => o.value === this.answers.incomeGoal);
     let text = "Hola, acabo de hacer el test «Cómo está tu economía» y mi resultado fue: " + profile.label + ".";
-    if (goalLabel) text += " Me gustaría " + goalLabel + ".";
+    if (chosenOption) {
+      text += "\n\nEn la pregunta \"" + goalQuestion.question + "\" he elegido la opción "
+        + chosenOption.letter.toUpperCase() + ": \"" + chosenOption.label + "\". Con base en eso, me gustaría que me respondieras.";
+    }
     return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
   },
 
