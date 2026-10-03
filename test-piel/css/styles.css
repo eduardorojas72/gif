@@ -1,16 +1,16 @@
 :root {
-  --bg: #241321;
-  --bg-soft: #3B1C34;
+  --bg: #16241C;
+  --bg-soft: #223A2C;
   --card-bg: #FFFFFF;
-  --text: #2B1A28;
-  --text-soft: #8A6E85;
-  --primary: #E0496A;
-  --primary-dark: #C23357;
-  --accent: #FFB199;
+  --text: #20301F;
+  --text-soft: #70897C;
+  --primary: #5B8C6E;
+  --primary-dark: #44704F;
+  --accent: #BFE3C8;
   --danger: #E5484D;
   --whatsapp: #25D366;
   --whatsapp-dark: #1EBE57;
-  --border: #F3E4EF;
+  --border: #E3EFE6;
   --radius: 18px;
 }
 
@@ -20,7 +20,11 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 45%, #4A2140 100%);
+  background-image: url("../img/bg-leaves.svg"), linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 45%, #2E4A3B 100%);
+  background-size: 420px 420px, cover;
+  background-repeat: repeat, no-repeat;
+  background-position: center, center;
+  background-attachment: fixed, fixed;
   color: var(--text);
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -110,7 +114,7 @@ p { margin: 0; line-height: 1.5; }
   font-family: inherit;
   font-size: 15px;
   border: 1.5px solid var(--border);
-  background: #FFF7FA;
+  background: #F3F9F4;
   color: var(--text);
   border-radius: 12px;
   padding: 14px 16px;
@@ -118,7 +122,7 @@ p { margin: 0; line-height: 1.5; }
   text-align: left;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.choice-btn:hover { border-color: var(--primary); background: #FEEBF1; }
+.choice-btn:hover { border-color: var(--primary); background: #E6F3E9; }
 
 /* ---------- Campo numérico (edad) ---------- */
 .number-form { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
@@ -144,7 +148,7 @@ p { margin: 0; line-height: 1.5; }
   font-family: inherit;
   font-size: 15px;
   border: 1.5px solid var(--border);
-  background: #FFF7FA;
+  background: #F3F9F4;
   color: var(--text);
   border-radius: 12px;
   padding: 14px 16px 14px 44px;
@@ -167,7 +171,7 @@ p { margin: 0; line-height: 1.5; }
 }
 .multi-btn.selected {
   border-color: var(--primary);
-  background: #FEEBF1;
+  background: #E6F3E9;
 }
 .multi-btn.selected::before {
   background: var(--primary);
@@ -195,7 +199,7 @@ p { margin: 0; line-height: 1.5; }
 .btn-primary:hover { background: var(--primary-dark); }
 .btn-primary:disabled { opacity: 0.5; cursor: default; }
 .btn-ghost { background: transparent; color: var(--text-soft); }
-.btn-ghost:hover { background: #FBF2F7; }
+.btn-ghost:hover { background: #EFF7F1; }
 .btn-whatsapp { background: var(--whatsapp); color: #fff; font-size: 16.5px; padding: 16px 18px; }
 .btn-whatsapp:hover { background: var(--whatsapp-dark); }
 
