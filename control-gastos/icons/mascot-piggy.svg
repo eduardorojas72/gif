@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 210">
+  <defs>
+    <linearGradient id="goldBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE39A"/>
+      <stop offset="55%" stop-color="#F2C94C"/>
+      <stop offset="100%" stop-color="#C98B12"/>
+    </linearGradient>
+    <linearGradient id="goldCoin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF3CE"/>
+      <stop offset="100%" stop-color="#F2C94C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- patas -->
+  <rect x="62" y="158" width="20" height="28" rx="8" fill="#C98B12"/>
+  <rect x="150" y="158" width="20" height="28" rx="8" fill="#C98B12"/>
+  <rect x="88" y="164" width="18" height="24" rx="8" fill="#DFA323"/>
+  <rect x="128" y="164" width="18" height="24" rx="8" fill="#DFA323"/>
+
+  <!-- cuerpo -->
+  <path d="M40 110c0-46 38-78 92-78s96 30 96 74c0 40-34 66-96 66S40 152 40 110Z" fill="url(#goldBody)" stroke="#8A5E0C" stroke-width="4"/>
+
+  <!-- cola -->
+  <path d="M216 92c10-8 24-4 22 8-1 9-13 12-19 6" fill="none" stroke="#C98B12" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- oreja -->
+  <path d="M74 44c-6-16 6-28 22-24 10 3 14 14 10 24-8 6-24 6-32 0Z" fill="#F2C94C" stroke="#8A5E0C" stroke-width="4"/>
+
+  <!-- ranura + moneda -->
+  <rect x="118" y="30" width="48" height="12" rx="6" fill="#5C3D08"/>
+  <ellipse cx="142" cy="14" rx="17" ry="17" fill="url(#goldCoin)" stroke="#8A5E0C" stroke-width="3"/>
+  <ellipse cx="136" cy="9" rx="5" ry="4" fill="#FFFBEA" opacity="0.8"/>
+
+  <!-- hocico -->
+  <ellipse cx="70" cy="118" rx="30" ry="24" fill="#F6D877" stroke="#8A5E0C" stroke-width="4"/>
+  <ellipse cx="60" cy="118" rx="5" ry="7" fill="#8A5E0C"/>
+  <ellipse cx="80" cy="118" rx="5" ry="7" fill="#8A5E0C"/>
+
+  <!-- ojo -->
+  <circle cx="96" cy="86" r="7" fill="#3A2A05"/>
+  <circle cx="98.5" cy="83.5" r="2.2" fill="#FFFBEA"/>
+
+  <!-- mejilla / brillo -->
+  <ellipse cx="150" cy="90" rx="34" ry="22" fill="#FFF3CE" opacity="0.35"/>
+</svg>

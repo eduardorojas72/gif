@@ -1,0 +1,295 @@
+// Lógica del test: estado, navegación entre preguntas, cálculo del
+// perfil de resultado y construcción del enlace de WhatsApp final.
+// Sin frameworks, sin backend: todo vive en memoria del navegador.
+
+// Número de WhatsApp por defecto, en formato internacional sin "+" ni
+// espacios (país + número). Ahora mismo asume España (+34).
+const DEFAULT_WHATSAPP_NUMBER = "34635151252";
+
+// Cada persona del equipo puede compartir su propio enlace añadiendo
+// ?wa=<su número> (p.ej. test-economico.vercel.app/?wa=34600111222) para
+// que quien haga el test le escriba a ella y no al número por defecto.
+function resolveWhatsappNumber() {
+  const override = new URLSearchParams(window.location.search).get("wa");
+  if (!override) return DEFAULT_WHATSAPP_NUMBER;
+  const digits = override.replace(/\D/g, "");
+  return digits.length >= 8 && digits.length <= 15 ? digits : DEFAULT_WHATSAPP_NUMBER;
+}
+
+const WHATSAPP_NUMBER = resolveWhatsappNumber();
+
+const APP = {
+  step: -1, // -1 = portada, 0..N-1 = preguntas, N = resultado
+  answers: {},
+
+  totalSteps() {
+    return DATA.questions.length;
+  },
+
+  formatMoney(n) {
+    const v = Number(n) || 0;
+    return v.toLocaleString("es-ES", { maximumFractionDigits: 0 }) + " €";
+  },
+
+  start() {
+    this.step = 0;
+    this.answers = {};
+    this.render();
+  },
+
+  back() {
+    if (this.step <= 0) {
+      this.step = -1;
+    } else {
+      this.step -= 1;
+    }
+    this.render();
+  },
+
+  advance() {
+    if (this.step >= this.totalSteps() - 1) {
+      this.step = this.totalSteps(); // pantalla de resultado
+    } else {
+      this.step += 1;
+    }
+    this.render();
+  },
+
+  answerAndNext(id, value) {
+    this.answers[id] = value;
+    this.advance();
+  },
+
+  answerManyAndNext(patch) {
+    Object.assign(this.answers, patch);
+    this.advance();
+  },
+
+  restart() {
+    this.step = -1;
+    this.answers = {};
+    this.render();
+  },
+
+  // ---------- Calculadora de ingresos/gastos (paso "finances") ----------
+  // `getValue(fieldId)` abstrae de dónde vienen los importes: de un
+  // formulario en vivo (vista previa) o de las respuestas ya guardadas
+  // (cálculo final del perfil).
+  calcBalance(getValue) {
+    const q = DATA.questions.find((x) => x.type === "calculator");
+    const income = q.income.reduce((sum, f) => sum + (Number(getValue(f.id)) || 0), 0);
+    const expenses = q.expenses.reduce((sum, f) => {
+      const raw = Number(getValue(f.id)) || 0;
+      return sum + (f.annual ? raw / 12 : raw);
+    }, 0);
+    return { income, expenses, margin: income - expenses };
+  },
+
+  // ---------- Cálculo del perfil (solo diagnóstico) ----------
+  computeProfile() {
+    const a = this.answers;
+    const { income, expenses, margin } = this.calcBalance((id) => a[id]);
+    const ratio = income ? expenses / income : 0;
+    const savingsRate = income && margin > 0 ? margin / income : 0;
+    const singleIncome = a.incomeSources === "one";
+    const noBuffer = a.emergencyFund === "none" || a.emergencyFund === "less1";
+    const worksALot = a.workHours === "high" || a.workHours === "veryhigh";
+    const wantsBetterIncome = a.incomeGoal === "recurring" || a.incomeGoal === "double";
+    const worriedDebt = a.debt === "yes";
+
+    let key;
+    if (ratio >= 1) {
+      key = "rojos";
+    } else if (worriedDebt) {
+      key = "deuda_preocupa";
+    } else if (ratio >= 0.9 && noBuffer) {
+      key = "limite";
+    } else if (worksALot && singleIncome && wantsBetterIncome) {
+      key = "hamster";
+    } else if (savingsRate > 0 && singleIncome) {
+      key = "ahorra_dependiente";
+    } else {
+      key = "solido";
+    }
+
+    const profile = DATA.profiles.find((p) => p.key === key) || DATA.profiles[0];
+    return Object.assign({ income, expenses, margin, ratio, savingsRate, singleIncome }, profile);
+  },
+
+  whatsappLink(profile) {
+    const goalQuestion = DATA.questions.find((q) => q.id === "incomeGoal");
+    const chosenOption = goalQuestion && goalQuestion.options.find((o) => o.value === this.answers.incomeGoal);
+    let text = "Hola, acabo de hacer el test «Cómo está tu economía» y mi resultado fue: " + profile.label + ".";
+    if (chosenOption) {
+      text += "\n\nEn la pregunta \"" + goalQuestion.question + "\" he elegido la opción "
+        + chosenOption.letter.toUpperCase() + ": \"" + chosenOption.label + "\". Con base en eso, me gustaría que me respondieras.";
+    }
+    return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
+  },
+
+  // ---------- Render ----------
+  render() {
+    const root = document.getElementById("view");
+    if (this.step === -1) {
+      root.innerHTML = this.introHTML();
+    } else if (this.step < this.totalSteps()) {
+      root.innerHTML = this.questionHTML(DATA.questions[this.step], this.step);
+    } else {
+      root.innerHTML = this.resultHTML(this.computeProfile());
+    }
+    this.wire();
+    window.scrollTo(0, 0);
+  },
+
+  introHTML() {
+    return `
+      <section class="card intro-card">
+        <span class="intro-emoji">🧭</span>
+        <h1>¿Cómo está tu economía?</h1>
+        <p class="muted">Un test rápido (2 minutos) para ver con claridad tu situación económica actual: cuánto margen tienes, cuánto dependes de un solo ingreso y qué tan preparado/a estás ante un imprevisto.</p>
+        <p class="muted-small">Esto es solo un diagnóstico: no te dice qué hacer con tu dinero, solo te ayuda a verlo con claridad.</p>
+        <button class="btn btn-primary btn-block" id="start-btn">Empezar el test</button>
+      </section>`;
+  },
+
+  calculatorFieldHTML(f, savedValue) {
+    return `
+      <label class="calc-field">
+        ${f.label}
+        <input type="number" name="${f.id}" min="0" step="1" placeholder="${f.placeholder || ""}" value="${savedValue != null ? savedValue : ""}" />
+      </label>`;
+  },
+
+  questionHTML(q, i) {
+    const pct = Math.round(((i) / this.totalSteps()) * 100);
+    let controlHTML = "";
+    if (q.type === "choice") {
+      controlHTML = `
+        <div class="choice-grid">
+          ${q.options.map((o) => `<button class="choice-btn" data-value="${o.value}">${o.label}</button>`).join("")}
+        </div>`;
+    } else if (q.type === "calculator") {
+      const a = this.answers;
+      controlHTML = `
+        <form id="calc-form" class="calc-form">
+          <h2 class="calc-section-title">Tus ingresos</h2>
+          ${q.income.map((f) => this.calculatorFieldHTML(f, a[f.id])).join("")}
+          <h2 class="calc-section-title">Tus gastos fijos</h2>
+          ${q.expenses.map((f) => this.calculatorFieldHTML(f, a[f.id])).join("")}
+          <div class="calc-balance" id="calc-balance">
+            <span>Saldo mensual estimado</span>
+            <strong id="calc-balance-amount">0 €</strong>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Continuar</button>
+        </form>`;
+    }
+    return `
+      <section class="card">
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <p class="q-count">Pregunta ${i + 1} de ${this.totalSteps()}</p>
+        <h1>${q.question}</h1>
+        ${q.hint ? `<p class="muted-small">${q.hint}</p>` : ""}
+        ${controlHTML}
+        <button type="button" class="btn btn-ghost btn-block" id="back-btn">Atrás</button>
+      </section>`;
+  },
+
+  resultHTML(p) {
+    return `
+      <section class="card result-card">
+        <span class="result-emoji">${p.emoji}</span>
+        <p class="result-kicker">Tu situación económica</p>
+        <h1>${p.label}</h1>
+        <p class="result-risk">Riesgo: <strong>${p.risk}</strong></p>
+        <p>${p.description}</p>
+
+        <div class="result-stats">
+          <div class="result-stat">
+            <span class="muted-small">Margen mensual</span>
+            <strong class="${p.margin < 0 ? "text-danger" : "text-ok"}">${p.margin >= 0 ? "+" : ""}${this.formatMoney(p.margin)}</strong>
+          </div>
+          <div class="result-stat">
+            <span class="muted-small">Fuentes de ingreso</span>
+            <strong>${p.singleIncome ? "1 (única)" : "2 o más"}</strong>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-outline btn-block" id="share-result-btn">📤 Compartir mi resultado</button>
+
+        <hr class="divider" />
+
+        <div class="cta-card">
+          <p class="cta-title">💬 ¿Te gustaría conocer una forma de generar un ingreso extra, compatible con lo que ya haces?</p>
+          <p class="muted-small">Sin compromiso: cuéntame tu caso por WhatsApp y hablamos.</p>
+          <a class="btn btn-whatsapp btn-block" id="whatsapp-btn" href="#" target="_blank" rel="noopener noreferrer">📲 Hablar por WhatsApp</a>
+        </div>
+
+        <button type="button" class="btn btn-ghost btn-block" id="restart-btn">Repetir el test</button>
+      </section>`;
+  },
+
+  wire() {
+    const startBtn = document.getElementById("start-btn");
+    if (startBtn) startBtn.addEventListener("click", () => this.start());
+
+    const backBtn = document.getElementById("back-btn");
+    if (backBtn) backBtn.addEventListener("click", () => this.back());
+
+    const restartBtn = document.getElementById("restart-btn");
+    if (restartBtn) restartBtn.addEventListener("click", () => this.restart());
+
+    const q = DATA.questions[this.step];
+    if (q && q.type === "calculator") {
+      const form = document.getElementById("calc-form");
+      if (form) {
+        const amountEl = document.getElementById("calc-balance-amount");
+        const updateBalance = () => {
+          const fd = new FormData(form);
+          const { margin } = this.calcBalance((id) => fd.get(id));
+          amountEl.textContent = (margin >= 0 ? "+" : "") + this.formatMoney(margin);
+          amountEl.className = margin < 0 ? "text-danger" : "text-ok";
+        };
+        updateBalance();
+        form.addEventListener("input", updateBalance);
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const fd = new FormData(form);
+          const patch = {};
+          q.income.concat(q.expenses).forEach((f) => {
+            patch[f.id] = fd.get(f.id) || 0;
+          });
+          this.answerManyAndNext(patch);
+        });
+      }
+    }
+    document.querySelectorAll(".choice-btn").forEach((btn) =>
+      btn.addEventListener("click", () => this.answerAndNext(q.id, btn.dataset.value))
+    );
+
+    const waBtn = document.getElementById("whatsapp-btn");
+    const shareBtn = document.getElementById("share-result-btn");
+    if (waBtn || shareBtn) {
+      const profile = this.computeProfile();
+      if (waBtn) waBtn.href = this.whatsappLink(profile);
+      if (shareBtn) {
+        shareBtn.addEventListener("click", async () => {
+          const original = shareBtn.textContent;
+          shareBtn.disabled = true;
+          shareBtn.textContent = "Generando…";
+          try {
+            const dataURL = SHARE.buildInviteCardDataURL();
+            const text = "He hecho este test de 2 minutos sobre mi economía… y el resultado me preocupa. "
+              + "¿Te atreves a hacerlo tú también y descubrir cómo mejorar tu situación financiera? "
+              + "https://" + SHARE.SITE_URL;
+            await SHARE.shareCard(dataURL, text);
+          } finally {
+            shareBtn.disabled = false;
+            shareBtn.textContent = original;
+          }
+        });
+      }
+    }
+  }
+};
+
+APP.render();
