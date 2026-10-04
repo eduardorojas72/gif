@@ -7,7 +7,7 @@
 const DEFAULT_WHATSAPP_NUMBER = "34635151252";
 
 // Cada persona del equipo puede compartir su propio enlace añadiendo
-// ?wa=<su número> (p.ej. test-economico.vercel.app/?wa=34600111222) para
+// ?wa=<su número> (p.ej. testeconomico.vercel.app/?wa=34600111222) para
 // que quien haga el test le escriba a ella y no al número por defecto.
 function resolveWhatsappNumber() {
   const override = new URLSearchParams(window.location.search).get("wa");

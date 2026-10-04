@@ -3,7 +3,7 @@
 // A propósito no muestra el resultado: es un gancho de curiosidad para que
 // quien la vea quiera hacer el test también.
 const SHARE = {
-  SITE_URL: "test-economico.vercel.app",
+  SITE_URL: "testeconomico.vercel.app",
 
   roundRectPath(ctx, x, y, w, h, r) {
     ctx.beginPath();
