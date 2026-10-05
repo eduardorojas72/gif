@@ -166,5 +166,15 @@ const DATA = {
         { value: "brilloAcne", label: "Controlar el brillo o el acné" }
       ]
     }
-  ]
+  ],
+
+  // Imagen de la pantalla de resultado, según género + tipo de piel.
+  // Se van añadiendo aquí a medida que llega cada foto (8 combinaciones:
+  // hombre/mujer x grasa/seca/mixta/sensible). Mientras una combinación
+  // no tenga foto propia, se usa resultFallbackImage.
+  resultImages: {
+    hombre: {},
+    mujer: {}
+  },
+  resultFallbackImage: "img/skin-types.webp"
 };

@@ -235,7 +235,12 @@ p { margin: 0; line-height: 1.5; }
 
 /* ---------- Resultado ---------- */
 .result-card { text-align: left; }
-.result-emoji { font-size: 44px; }
+.result-img {
+  width: 100%;
+  border-radius: 14px;
+  display: block;
+  margin-bottom: 2px;
+}
 .result-kicker {
   font-size: 12px;
   letter-spacing: 0.06em;
