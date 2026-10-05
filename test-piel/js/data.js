@@ -108,6 +108,7 @@ const DATA = {
       type: "choice",
       question: "¿Con qué frecuencia usas protector solar?",
       summaryLabel: "Protector solar",
+      image: "img/sunscreen.jpg",
       options: [
         { value: "diario", label: "Todos los días" },
         { value: "solFuerte", label: "Solo si voy a la playa o hace mucho sol" },
