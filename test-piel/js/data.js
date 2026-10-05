@@ -146,6 +146,7 @@ const DATA = {
       type: "choice",
       question: "¿Has probado ya algún tratamiento o crema específica para esto?",
       summaryLabel: "Tratamientos previos",
+      image: "img/triedbefore.jpg",
       options: [
         { value: "variasSinResultado", label: "Sí, varias cosas, sin buenos resultados" },
         { value: "algunaVezNoSegui", label: "Sí, alguna vez, pero no seguí con nada" },
@@ -157,6 +158,7 @@ const DATA = {
       type: "choice",
       question: "Si pudieras mejorar un aspecto de tu piel en los próximos 2 meses, ¿qué elegirías?",
       summaryLabel: "Objetivo",
+      image: "img/goal.jpg",
       options: [
         { value: "luminosidad", label: "Verme más luminosa y descansada" },
         { value: "arrugas", label: "Reducir arrugas o líneas finas" },
