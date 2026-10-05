@@ -128,7 +128,7 @@ const APP = {
   introHTML() {
     return `
       <section class="card intro-card">
-        <span class="intro-emoji">🧴</span>
+        <img src="img/intro-skin.webp" alt="" class="intro-img" />
         <h1>¿Cómo está tu piel?</h1>
         <p class="muted">Un test rápido para conocer tu tipo de piel y tus hábitos de cuidado actuales, y así poder darte una recomendación que se ajuste a ti.</p>
         <p class="muted-small">Esto es solo un diagnóstico: no te dice qué hacer, solo nos ayuda a entender tu caso antes de hablar contigo.</p>
