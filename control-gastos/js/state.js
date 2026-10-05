@@ -9,7 +9,8 @@ const STORE = {
     customCategories: "cg_custom_categories",
     plans: "cg_plans",
     goals: "cg_goals",
-    weekGoals: "cg_week_goals"
+    weekGoals: "cg_week_goals",
+    debts: "cg_debts"
   },
 
   defaultSettings: {
@@ -24,6 +25,7 @@ const STORE = {
     accountMode: "individual", // "individual" | "compartida"
     age: null,
     monthlyIncome: null,
+    otherIncome: 0,
     occupation: "",
     savingsGoalMonthly: null,
     currentlyMeetingGoal: null,
@@ -42,7 +44,12 @@ const STORE = {
     archetypeKey: null,
     savingsBehavior: "pasivo", // "pasivo" | "invierte"
     incomeExpenseProfileKey: null,
-    lastBackupAt: null
+    lastBackupAt: null,
+    // Último importe usado en cada atajo de gasto rápido ({ cafe: 1.8 }).
+    quickAmounts: {},
+    reminderTime: "21:00",
+    debtStrategy: "bola", // "bola" (bola de nieve) | "avalancha"
+    debtExtra: 0
   },
 
   _read(key, fallback) {
@@ -216,6 +223,25 @@ const STORE = {
     if (avoid && avoid.length) goals[weekStart] = { avoid, setAt: new Date().toISOString() };
     else delete goals[weekStart];
     this._write(this.keys.weekGoals, goals);
+  },
+
+  // Deudas: { id, name, balance, rate (% anual), minPayment (cuota mensual) }.
+  getDebts() {
+    return this._read(this.keys.debts, []);
+  },
+  saveDebts(list) {
+    this._write(this.keys.debts, list);
+  },
+  addDebt(debt) {
+    const list = this.getDebts();
+    list.push(Object.assign({ id: "debt_" + Date.now().toString(36) }, debt));
+    this.saveDebts(list);
+  },
+  updateDebt(id, patch) {
+    this.saveDebts(this.getDebts().map((d) => (d.id === id ? Object.assign({}, d, patch) : d)));
+  },
+  removeDebt(id) {
+    this.saveDebts(this.getDebts().filter((d) => d.id !== id));
   },
 
   // ---------- Copia de seguridad ----------
@@ -484,6 +510,108 @@ const LOGIC = {
       .map((it) => it.concept);
   },
 
+  // Pone al día datos guardados con versiones anteriores de la app.
+  migrateLegacyData() {
+    // La categoría "Compra de Productos Atomy" pasó a ser "Mis compras online".
+    const txs = STORE.getTransactions();
+    let changed = false;
+    txs.forEach((t) => {
+      if (t.category === "atomy") { t.category = "compras_online"; changed = true; }
+    });
+    if (changed) STORE.saveTransactions(txs);
+  },
+
+  // ---------- Fondo de emergencia ----------
+  // Sugerencia clásica: 3 meses de los gastos mensuales declarados en el
+  // cuestionario inicial. 0 si todavía no hay datos.
+  emergencyFundTarget() {
+    const snap = STORE.getSettings().expensesSnapshot || {};
+    const monthly = Object.values(snap).reduce((sum, v) => sum + (Number(v) || 0), 0);
+    return Math.round(monthly * 3);
+  },
+
+  // ---------- Detección de suscripciones ----------
+  // Busca pagos que se repiten cada mes con un importe parecido (p. ej. los
+  // importados del CSV del banco), o que por su concepto o categoría son
+  // claramente una suscripción. Devuelve { items, total } con el importe
+  // mensual más reciente de cada una.
+  detectSubscriptions() {
+    const keywords = DATA.categoryKeywords.expense.suscripciones || [];
+    const groups = {};
+    STORE.getTransactions().forEach((t) => {
+      if (t.type !== "expense" || t.antConcept) return;
+      const key = this._normalizeText(t.description).replace(/[\d*#/.,:-]+/g, " ").replace(/\s+/g, " ").trim();
+      if (!key) return;
+      (groups[key] || (groups[key] = [])).push(t);
+    });
+    const items = [];
+    Object.values(groups).forEach((txs) => {
+      txs.sort((a, b) => (a.date < b.date ? -1 : 1));
+      const last = txs[txs.length - 1];
+      const norm = this._normalizeText(last.description);
+      const byKeyword = last.category === "suscripciones" || keywords.some((kw) => norm.includes(kw));
+      const months = new Set(txs.map((t) => this.monthKeyOf(t.date)));
+      const amounts = txs.map((t) => Number(t.amount) || 0).sort((a, b) => a - b);
+      const median = amounts[Math.floor(amounts.length / 2)];
+      const steady = median > 0 && amounts.every((a) => Math.abs(a - median) <= median * 0.15);
+      // Un pago mensual: casi un movimiento por mes, en al menos 2 meses.
+      const recurring = months.size >= 2 && steady && txs.length <= months.size + 1;
+      if (byKeyword || recurring) {
+        items.push({ name: last.description, monthly: Number(last.amount) || 0, months: months.size, lastDate: last.date });
+      }
+    });
+    items.sort((a, b) => b.monthly - a.monthly);
+    return { items, total: items.reduce((sum, it) => sum + it.monthly, 0) };
+  },
+
+  // ---------- Plan para salir de deudas ----------
+  // Simula mes a mes: se aplican los intereses, se paga la cuota mínima de
+  // cada deuda y todo lo que sobre del presupuesto (cuotas + extra) va a la
+  // deuda prioritaria. Cuando una se liquida, su cuota pasa a la siguiente.
+  // "bola": primero la de menor saldo (motiva ver deudas cerradas pronto).
+  // "avalancha": primero la de mayor interés (paga menos intereses en total).
+  debtOrder(debts, strategy) {
+    return debts.slice().sort((a, b) => (strategy === "avalancha"
+      ? (b.rate - a.rate) || (a.balance - b.balance)
+      : (a.balance - b.balance) || (b.rate - a.rate)));
+  },
+  debtPlan(debts, strategy, extra) {
+    const order = this.debtOrder(debts, strategy).map((d) => ({
+      id: d.id, balance: Number(d.balance) || 0, rate: Number(d.rate) || 0, min: Number(d.minPayment) || 0, paidOffMonth: null
+    }));
+    const budget = order.reduce((sum, d) => sum + d.min, 0) + (Number(extra) || 0);
+    let totalInterest = 0;
+    let month = 0;
+    while (order.some((d) => d.balance > 0.005)) {
+      month++;
+      if (month > 600 || budget <= 0) return null; // no se llega a pagar nunca
+      order.forEach((d) => {
+        if (d.balance <= 0) return;
+        const interest = d.balance * d.rate / 1200;
+        d.balance += interest;
+        totalInterest += interest;
+      });
+      let available = budget;
+      order.forEach((d) => {
+        if (d.balance <= 0) return;
+        const pay = Math.min(d.balance, d.min, available);
+        d.balance -= pay;
+        available -= pay;
+      });
+      for (const d of order) {
+        if (available <= 0) break;
+        if (d.balance <= 0) continue;
+        const pay = Math.min(d.balance, available);
+        d.balance -= pay;
+        available -= pay;
+      }
+      order.forEach((d) => {
+        if (d.balance <= 0.005 && d.paidOffMonth === null) { d.balance = 0; d.paidOffMonth = month; }
+      });
+    }
+    return { months: month, totalInterest, budget, payoff: order.map((d) => ({ id: d.id, month: d.paidOffMonth })) };
+  },
+
   // Evalúa y cierra un día concreto contra la meta diaria. Idempotente.
   closeDay(date) {
     const settings = STORE.getSettings();
@@ -586,7 +714,11 @@ const LOGIC = {
     const desired = Number(d.desiredIncome) || 0;
     const expenses = d.expensesSnapshot || {};
     const totalExpenses = Object.values(expenses).reduce((sum, v) => sum + (Number(v) || 0), 0);
-    const currentSavings = Number(d.currentSavingsMonthly) || 0;
+    // Lo que sobra cada mes: si no hay dato antiguo de "ahorro actual", se
+    // toma como ahorro lo que queda del ingreso tras los gastos declarados.
+    const currentSavings = d.currentSavingsMonthly != null && d.currentSavingsMonthly !== ""
+      ? Number(d.currentSavingsMonthly) || 0
+      : Math.max(0, income - totalExpenses);
     const expenseRatio = income ? totalExpenses / income : 0;
     const savingsRatio = income ? currentSavings / income : 0;
     const dailyWorkHours = (Number(d.hoursPerDay) || 0) + (Number(d.overtimeHours) || 0) / 5 + (Number(d.commuteMinutes) || 0) / 60;
@@ -743,29 +875,5 @@ const LOGIC = {
     });
 
     return { rows: parsed, skipped };
-  },
-
-  // Genera un movimiento de gasto simulado, como si viniera de una tarjeta
-  // o pago móvil enlazado. Placeholder de una integración real (Open Banking).
-  simulateLinkedExpense(accountId) {
-    const merchants = [
-      { category: "alimentacion", label: { es: "Supermercado", en: "Supermarket", fr: "Supermarché", it: "Supermercato", pt: "Supermercado" }, range: [8, 45] },
-      { category: "transporte", label: { es: "Transporte público", en: "Public transport", fr: "Transport en commun", it: "Trasporto pubblico", pt: "Transporte público" }, range: [1.5, 12] },
-      { category: "ocio", label: { es: "Cafetería", en: "Coffee shop", fr: "Café", it: "Bar", pt: "Cafeteria" }, range: [2, 9] },
-      { category: "compras", label: { es: "Tienda online", en: "Online store", fr: "Boutique en ligne", it: "Negozio online", pt: "Loja online" }, range: [10, 60] },
-      { category: "suscripciones", label: { es: "Servicio de streaming", en: "Streaming service", fr: "Service de streaming", it: "Servizio di streaming", pt: "Serviço de streaming" }, range: [6, 15] }
-    ];
-    const m = merchants[Math.floor(Math.random() * merchants.length)];
-    const amount = +(Math.random() * (m.range[1] - m.range[0]) + m.range[0]).toFixed(2);
-    return STORE.addTransaction({
-      type: "expense",
-      category: m.category,
-      description: this.localized(m.label),
-      amount,
-      date: this.todayStr(),
-      method: "movil",
-      source: "linked",
-      accountId
-    });
   }
 };

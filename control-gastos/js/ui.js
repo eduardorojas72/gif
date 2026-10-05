@@ -14,9 +14,7 @@ const UI = {
   categoryLabel(id) {
     const all = this.categoriesFor("expense").concat(this.categoriesFor("income"));
     const found = all.find((c) => c.id === id);
-    if (found) return found.icon + " " + found.label;
-    const legacy = DATA.legacyCategories[id];
-    return legacy ? legacy.icon + " " + LOGIC.localized(legacy.label) : id;
+    return found ? found.icon + " " + found.label : id;
   },
   methodLabel(id) {
     const m = LOGIC.localized(DATA.paymentMethods).find((x) => x.id === id);
@@ -199,6 +197,8 @@ const UI = {
       });
       UI.closeModal();
       UI.toast(I18N.t("toastImported", { n: result.rows.length }));
+      const subs = LOGIC.detectSubscriptions();
+      if (subs.items.length) UI.toast("🔁 " + I18N.t("subsSummary", { n: subs.items.length, amount: LOGIC.formatMoney(subs.total) }));
       UI.render("movimientos");
     });
   },
@@ -223,6 +223,7 @@ const UI = {
     };
     view.innerHTML = (renderers[this.currentTab] || this.renderHoy).call(this);
     this.wire(this.currentTab);
+    this.updateFab();
     this.checkBudgetAlert();
   },
 
@@ -237,32 +238,25 @@ const UI = {
     sin_presupuesto: ["Regla 50/30/20", "Sobres virtuales por categoría"]
   },
   STEP_NUMBER: {
-    accountMode: 1, userName: 2, age: 3, country: 4, monthlyIncome: 5,
+    accountMode: 1, userName: 2, age: 3, country: 4, monthlyBudget: 5,
     desiredIncome: 6, occupation: 7, workHours: 8, workGoal: 9,
-    expensesSnapshot: 10, currentSavingsMonthly: 11, savingsGoalMonthly: 12,
-    meetingGoal: 13, obstacles: 14, diagnosis: 14, purposes: 15,
-    archetype: 16, summary: 17
+    obstacles: 10, diagnosis: 10, archetype: 11, summary: 12
   },
-  TOTAL_STEPS: 17,
+  TOTAL_STEPS: 12,
 
   nextStep(step, data) {
     const flow = {
       accountMode: "userName",
       userName: "age",
       age: "country",
-      country: "monthlyIncome",
-      monthlyIncome: "desiredIncome",
+      country: "monthlyBudget",
+      monthlyBudget: "desiredIncome",
       desiredIncome: "occupation",
       occupation: "workHours",
       workHours: "workGoal",
-      workGoal: "expensesSnapshot",
-      expensesSnapshot: "currentSavingsMonthly",
-      currentSavingsMonthly: "savingsGoalMonthly",
-      savingsGoalMonthly: "meetingGoal",
-      meetingGoal: () => (data.currentlyMeetingGoal ? "purposes" : "obstacles"),
+      workGoal: "obstacles",
       obstacles: "diagnosis",
-      diagnosis: "purposes",
-      purposes: "archetype",
+      diagnosis: "archetype",
       archetype: "summary",
       summary: null
     };
@@ -275,10 +269,11 @@ const UI = {
       step: "accountMode",
       history: [],
       editing: !!editing,
-      data: Object.assign({ obstacles: [], savingsPurposes: [] }, prefill || {})
+      data: Object.assign({ obstacles: [] }, prefill || {})
     };
     document.getElementById("tabbar").hidden = true;
     document.getElementById("status-pill").hidden = true;
+    document.getElementById("fab-add").hidden = true;
     this.renderOnboardingView();
   },
 
@@ -319,12 +314,9 @@ const UI = {
       country: d.country || null,
       currency: country ? country.currency : STORE.getSettings().currency,
       monthlyIncome: d.monthlyIncome || null,
+      otherIncome: d.otherIncome || 0,
       occupation: d.occupation || "",
-      savingsGoalMonthly: d.savingsGoalMonthly || null,
-      currentlyMeetingGoal: !!d.currentlyMeetingGoal,
       obstacles: d.obstacles || [],
-      savingsPurposes: d.savingsPurposes || [],
-      savingsPurposeOther: d.savingsPurposeOther || "",
       dailyGoal: d.dailyGoal || STORE.getSettings().dailyGoal,
       desiredIncome: d.desiredIncome || null,
       hoursPerDay: d.hoursPerDay || null,
@@ -333,7 +325,6 @@ const UI = {
       commuteMinutes: d.commuteMinutes || null,
       workGoal: d.workGoal || "",
       expensesSnapshot: d.expensesSnapshot || {},
-      currentSavingsMonthly: d.currentSavingsMonthly != null ? d.currentSavingsMonthly : null,
       archetypeKey: LOGIC.computeArchetype(d).key,
       savingsBehavior: d.savingsBehavior || "pasivo",
       incomeExpenseProfileKey: LOGIC.computeIncomeExpenseProfile(d).key,
@@ -387,13 +378,33 @@ const UI = {
           </select>
           ${this.obNavHTML()}
         </form>`,
-      monthlyIncome: () => `
+      // Ingresos y gastos del mes en una sola pantalla, con el saldo que
+      // va quedando calculado en vivo mientras se escribe.
+      monthlyBudget: () => {
+        const other = Number(d.otherIncome) || 0;
+        const salary = d.monthlyIncome ? Math.max(0, Number(d.monthlyIncome) - other) : "";
+        return `
         ${progress}
-        <h1>${I18N.t("onbMonthlyIncomeTitle")}</h1>
-        <form class="form ob-form" data-next>
-          <input type="number" name="monthlyIncome" min="0" step="0.01" value="${d.monthlyIncome || ""}" placeholder="${I18N.t("onbMonthlyIncomePlaceholder")}" required />
+        <h1>${I18N.t("onbBudgetTitle")}</h1>
+        <p class="muted-small">${I18N.t("onbBudgetHint")}</p>
+        <form class="form ob-form" data-next id="ob-budget-form">
+          <h3 class="ob-subtitle">${I18N.t("onbIncomeSection")}</h3>
+          <label>${I18N.t("onbSalaryLabel")}
+            <input type="number" name="salary" min="0" step="0.01" value="${salary || ""}" placeholder="Ej. 1500" inputmode="decimal" required />
+          </label>
+          <label>${I18N.t("onbOtherIncomeLabel")}
+            <input type="number" name="otherIncome" min="0" step="0.01" value="${other || ""}" placeholder="Ej. 0" inputmode="decimal" />
+          </label>
+          <h3 class="ob-subtitle">${I18N.t("onbExpensesSection")}</h3>
+          ${DATA.expenseSnapshotCategories.map((c) => `
+            <label>${c.icon} ${LOGIC.localized(c.label)}
+              <input type="number" name="expense_${c.id}" min="0" step="0.01" value="${(d.expensesSnapshot && d.expensesSnapshot[c.id]) || ""}" placeholder="0.00" inputmode="decimal" />
+            </label>
+          `).join("")}
+          <div id="ob-budget-balance"></div>
           ${this.obNavHTML()}
-        </form>`,
+        </form>`;
+      },
       desiredIncome: () => `
         ${progress}
         <h1>${I18N.t("onbDesiredIncomeTitle")}</h1>
@@ -436,47 +447,6 @@ const UI = {
           <button class="ob-choice" data-workgoal="trabajar_menos">${I18N.t("onbWorkGoalWorkLess")}</button>
           <button class="ob-choice" data-workgoal="ambas">${I18N.t("onbWorkGoalBoth")}</button>
         </div>`,
-      expensesSnapshot: () => `
-        ${progress}
-        <h1>${I18N.t("onbExpensesSnapshotTitle")}</h1>
-        <p class="muted-small">${I18N.t("onbExpensesSnapshotHint")}</p>
-        <form class="form ob-form" data-next>
-          ${DATA.expenseSnapshotCategories.map((c) => `
-            <label>${c.icon} ${LOGIC.localized(c.label)}
-              <input type="number" name="expense_${c.id}" min="0" step="0.01" value="${(d.expensesSnapshot && d.expensesSnapshot[c.id]) || ""}" placeholder="0.00" />
-            </label>
-          `).join("")}
-          ${this.obNavHTML()}
-        </form>`,
-      currentSavingsMonthly: () => `
-        ${progress}
-        <h1>${I18N.t("onbCurrentSavingsTitle")}</h1>
-        <p class="muted-small">${I18N.t("onbCurrentSavingsHint")}</p>
-        <form class="form ob-form" data-next>
-          <input type="number" name="currentSavingsMonthly" min="0" step="0.01" value="${d.currentSavingsMonthly || ""}" placeholder="${I18N.t("onbCurrentSavingsPlaceholder")}" required />
-          <label>${I18N.t("onbSavingsBehaviorLabel")}
-            <select name="savingsBehavior">
-              <option value="pasivo" ${(d.savingsBehavior || "pasivo") === "pasivo" ? "selected" : ""}>${I18N.t("onbSavingsBehaviorPassive")}</option>
-              <option value="invierte" ${d.savingsBehavior === "invierte" ? "selected" : ""}>${I18N.t("onbSavingsBehaviorInvest")}</option>
-            </select>
-          </label>
-          ${this.obNavHTML()}
-        </form>`,
-      savingsGoalMonthly: () => `
-        ${progress}
-        <h1>${I18N.t("onbSavingsGoalTitle")}</h1>
-        <p class="muted-small">${I18N.t("onbSavingsGoalHint")}</p>
-        <form class="form ob-form" data-next>
-          <input type="number" name="savingsGoalMonthly" min="0" step="0.01" value="${d.savingsGoalMonthly || ""}" placeholder="${I18N.t("onbSavingsGoalPlaceholder")}" required />
-          ${this.obNavHTML()}
-        </form>`,
-      meetingGoal: () => `
-        ${progress}
-        <h1>${I18N.t("onbMeetingGoalTitle")}</h1>
-        <div class="ob-choice-grid">
-          <button class="ob-choice" data-bool="true">${I18N.t("onbMeetingGoalYes")}</button>
-          <button class="ob-choice" data-bool="false">${I18N.t("onbMeetingGoalNo")}</button>
-        </div>`,
       obstacles: () => `
         ${progress}
         <h1>${I18N.t("onbObstaclesTitle")}</h1>
@@ -506,18 +476,6 @@ const UI = {
             <button type="button" class="btn btn-primary" id="ob-continue">${I18N.t("btnContinue")}</button>
           </div>`;
       },
-      purposes: () => `
-        ${progress}
-        <h1>${I18N.t("onbPurposesTitle")}</h1>
-        <form class="form ob-form" data-next id="ob-purposes-form">
-          <div class="ob-checks ob-checks--grid">
-            ${DATA.savingsPurposes.map((p) => `
-              <label class="ob-check"><input type="checkbox" name="savingsPurposes" value="${p.id}" ${(d.savingsPurposes || []).includes(p.id) ? "checked" : ""}/> ${p.icon} ${LOGIC.localized(p.label)}</label>
-            `).join("")}
-          </div>
-          <input type="text" name="savingsPurposeOther" value="${d.savingsPurposeOther || ""}" placeholder="${I18N.t("onbPurposeOtherPlaceholder")}" />
-          ${this.obNavHTML()}
-        </form>`,
       archetype: () => {
         const result = LOGIC.computeArchetype(d);
         const profile = LOGIC.computeIncomeExpenseProfile(d);
@@ -544,8 +502,9 @@ const UI = {
       summary: () => {
         const daysInMonth = LOGIC.daysInMonth(LOGIC.todayStr());
         const fixedMonthly = LOGIC.fixedMonthlyFromSnapshot(d.expensesSnapshot);
-        const suggested = d.monthlyIncome && d.savingsGoalMonthly
-          ? Math.max(0, (d.monthlyIncome - d.savingsGoalMonthly - fixedMonthly) / daysInMonth)
+        // Lo que queda del ingreso tras los gastos fijos, repartido por día.
+        const suggested = d.monthlyIncome
+          ? Math.max(0, (d.monthlyIncome - fixedMonthly) / daysInMonth)
           : (d.dailyGoal || 0);
         return `
           ${progress}
@@ -601,6 +560,14 @@ const UI = {
       </div>`;
   },
 
+  readBudgetForm(form) {
+    const fd = new FormData(form);
+    const num = (key) => parseFloat(fd.get(key)) || 0;
+    const expenses = {};
+    DATA.expenseSnapshotCategories.forEach((c) => { expenses[c.id] = num("expense_" + c.id); });
+    return { income: num("salary") + num("otherIncome"), otherIncome: num("otherIncome"), expenses };
+  },
+
   wireOnboarding(step) {
     const view = document.getElementById("view");
     const langSelect = view.querySelector("#lang-switcher-select");
@@ -613,15 +580,23 @@ const UI = {
     view.querySelectorAll(".ob-choice[data-value]").forEach((btn) =>
       btn.addEventListener("click", () => this.onboardNext({ accountMode: btn.dataset.value }))
     );
-    view.querySelectorAll(".ob-choice[data-bool]").forEach((btn) =>
-      btn.addEventListener("click", () => this.onboardNext({ currentlyMeetingGoal: btn.dataset.bool === "true" }))
-    );
     view.querySelectorAll(".ob-choice[data-workgoal]").forEach((btn) =>
       btn.addEventListener("click", () => this.onboardNext({ workGoal: btn.dataset.workgoal }))
     );
 
     const continueBtn = view.querySelector("#ob-continue");
     if (continueBtn) continueBtn.addEventListener("click", () => this.onboardNext({}));
+
+    const budgetForm = view.querySelector("#ob-budget-form");
+    if (budgetForm) {
+      const balanceSlot = budgetForm.querySelector("#ob-budget-balance");
+      const updateBalance = () => {
+        const { income, expenses } = this.readBudgetForm(budgetForm);
+        balanceSlot.innerHTML = this.balanceBannerHTML(income - Object.values(expenses).reduce((a, b) => a + b, 0));
+      };
+      updateBalance();
+      budgetForm.addEventListener("input", updateBalance);
+    }
 
     const form = view.querySelector("form[data-next]");
     if (form) {
@@ -630,21 +605,16 @@ const UI = {
         const fd = new FormData(form);
         const patch = {};
         const numericFields = new Set([
-          "age", "monthlyIncome", "savingsGoalMonthly", "dailyGoal",
-          "desiredIncome", "hoursPerDay", "overtimeHours", "commuteMinutes", "currentSavingsMonthly"
+          "age", "monthlyIncome", "dailyGoal",
+          "desiredIncome", "hoursPerDay", "overtimeHours", "commuteMinutes"
         ]);
         if (step === "obstacles") {
           patch.obstacles = fd.getAll("obstacles");
-        } else if (step === "purposes") {
-          patch.savingsPurposes = fd.getAll("savingsPurposes");
-          patch.savingsPurposeOther = fd.get("savingsPurposeOther") || "";
-        } else if (step === "expensesSnapshot") {
-          const snapshot = {};
-          DATA.expenseSnapshotCategories.forEach((c) => {
-            const value = fd.get("expense_" + c.id);
-            snapshot[c.id] = value ? parseFloat(value) : 0;
-          });
-          patch.expensesSnapshot = snapshot;
+        } else if (step === "monthlyBudget") {
+          const { income, otherIncome, expenses } = this.readBudgetForm(form);
+          patch.monthlyIncome = income;
+          patch.otherIncome = otherIncome;
+          patch.expensesSnapshot = expenses;
         } else {
           for (const [key, value] of fd.entries()) {
             if (key === "multipleJobs") continue;
@@ -867,6 +837,156 @@ const UI = {
         </div>
       </form>
     `;
+  },
+
+  // Guarda un gasto de hoy y refresca la vista actual.
+  saveExpenseToday(tx, toastKey) {
+    STORE.addTransaction(Object.assign({ type: "expense", method: null, excludeFromDailyGoal: false, date: LOGIC.todayStr(), source: "manual" }, tx));
+    UI.closeModal();
+    UI.toast(I18N.t(toastKey || "toastExpenseAdded"));
+    UI.render(UI.currentTab);
+    UI.checkBudgetAlert();
+  },
+
+  openAddForm(type) {
+    UI.openModal(UI.addFormHTML(type));
+    document.getElementById("tx-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const tx = {
+        type: fd.get("type"),
+        category: fd.get("category"),
+        description: fd.get("description"),
+        amount: parseFloat(fd.get("amount")) || 0,
+        method: fd.get("method") || null,
+        excludeFromDailyGoal: fd.get("excludeFromDailyGoal") === "on",
+        date: LOGIC.todayStr(),
+        source: "manual"
+      };
+      if (fd.get("antConcept")) tx.antConcept = fd.get("antConcept");
+      STORE.addTransaction(tx);
+      UI.closeModal();
+      UI.toast(tx.type === "income" ? I18N.t("toastIncomeAdded") : I18N.t("toastExpenseAdded"));
+      UI.render(UI.currentTab);
+      UI.checkBudgetAlert();
+    });
+  },
+
+  openAntForm() {
+    UI.openModal(UI.antFormHTML());
+    document.getElementById("ant-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const concept = LOGIC.antConcept(fd.get("antConcept"));
+      UI.saveExpenseToday({
+        category: concept.category,
+        antConcept: concept.id,
+        description: fd.get("description") || "",
+        amount: parseFloat(fd.get("amount")) || 0
+      }, "toastAntAdded");
+    });
+  },
+
+  // ---------- Botón "+": gasto en 2 toques ----------
+  // Toque 1: elegir el atajo. Toque 2: guardar (el importe viene ya puesto
+  // con el último usado para ese atajo).
+  openQuickAdd() {
+    const quickAmounts = STORE.getSettings().quickAmounts || {};
+    UI.openModal(`
+      <h2>${I18N.t("quickAddTitle")}</h2>
+      <div class="quick-grid">
+        ${DATA.quickShortcuts.map((q) => `
+          <button type="button" class="quick-btn" data-quick="${q.id}">
+            <span class="quick-icon">${q.icon}</span>
+            <span>${LOGIC.localized(q.label)}</span>
+            ${quickAmounts[q.id] ? `<span class="muted-small">${LOGIC.formatMoney(quickAmounts[q.id])}</span>` : ""}
+          </button>`).join("")}
+        <button type="button" class="quick-btn" data-quick-open="ant"><span class="quick-icon">🐜</span><span>${I18N.t("quickAntLabel")}</span></button>
+        <button type="button" class="quick-btn" data-quick-open="other"><span class="quick-icon">✏️</span><span>${I18N.t("quickOtherLabel")}</span></button>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn btn-ghost" data-close-modal>${I18N.t("btnCancel")}</button></div>
+    `);
+    document.querySelector('[data-quick-open="ant"]').addEventListener("click", () => UI.openAntForm());
+    document.querySelector('[data-quick-open="other"]').addEventListener("click", () => UI.openAddForm("expense"));
+    document.querySelectorAll("[data-quick]").forEach((btn) =>
+      btn.addEventListener("click", () => UI.openQuickAmount(DATA.quickShortcuts.find((q) => q.id === btn.dataset.quick)))
+    );
+  },
+
+  openQuickAmount(q) {
+    const last = (STORE.getSettings().quickAmounts || {})[q.id];
+    UI.openModal(`
+      <h2>${q.icon} ${LOGIC.localized(q.label)}</h2>
+      <form id="quick-form" class="form">
+        <label>${I18N.t("amountLabel")}
+          <input type="number" name="amount" min="0.01" step="0.01" required placeholder="0.00" inputmode="decimal" value="${last || ""}" />
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="quick-back">${I18N.t("btnBack")}</button>
+          <button type="submit" class="btn btn-primary">${I18N.t("btnSave")}</button>
+        </div>
+      </form>
+    `);
+    const input = document.querySelector("#quick-form [name=amount]");
+    if (!last) input.focus();
+    document.getElementById("quick-back").addEventListener("click", () => UI.openQuickAdd());
+    document.getElementById("quick-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const amount = parseFloat(input.value) || 0;
+      const settings = STORE.getSettings();
+      settings.quickAmounts = Object.assign({}, settings.quickAmounts, { [q.id]: amount });
+      STORE.saveSettings(settings);
+      const tx = { category: q.category, description: LOGIC.localized(q.label), amount };
+      if (q.antConcept) tx.antConcept = q.antConcept;
+      UI.saveExpenseToday(tx, q.antConcept ? "toastAntAdded" : "toastExpenseAdded");
+    });
+  },
+
+  // Muestra el botón "+" solo cuando se puede apuntar un gasto de hoy.
+  updateFab() {
+    const fab = document.getElementById("fab-add");
+    if (!fab) return;
+    const closed = !!STORE.getDays()[LOGIC.todayStr()];
+    fab.hidden = !!this.onboard || closed;
+    fab.setAttribute("aria-label", I18N.t("quickAddTitle"));
+  },
+
+  // ---------- Recordatorio diario (evento repetido en el calendario) ----------
+  // Una web sin servidor no puede enviar avisos a una hora fija con la app
+  // cerrada; el calendario del móvil sí, así que se genera un evento diario.
+  reminderICS(time) {
+    const [hh, mm] = (time || "21:00").split(":");
+    const d = new Date();
+    const date = LOGIC.ymd(d).replace(/-/g, "");
+    const stamp = d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const url = location.origin + location.pathname;
+    const title = I18N.t("reminderEventTitle");
+    return [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hucha//Recordatorio//ES", "CALSCALE:GREGORIAN",
+      "BEGIN:VEVENT",
+      "UID:hucha-recordatorio-" + Date.now() + "@hucha",
+      "DTSTAMP:" + stamp,
+      "DTSTART:" + date + "T" + hh.padStart(2, "0") + mm.padStart(2, "0") + "00",
+      "DURATION:PT5M",
+      "RRULE:FREQ=DAILY",
+      "SUMMARY:" + title,
+      "DESCRIPTION:" + I18N.t("reminderEventBody") + " " + url,
+      "URL:" + url,
+      "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + title, "TRIGGER:PT0M", "END:VALARM",
+      "END:VEVENT", "END:VCALENDAR"
+    ].join("\r\n");
+  },
+
+  downloadFile(name, content, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 
   // Revisión de fin de día: por cada gasto hormiga, "lo necesitaba" o "no lo
@@ -1095,48 +1215,128 @@ const UI = {
 
   // ================= CUENTAS =================
   renderCuentas() {
-    const accounts = STORE.getAccounts();
-    const connectedIds = new Set(accounts.map((a) => a.bankId));
-
     return `
       <section class="card">
         <div class="card-head"><h1>${I18N.t("cuentasTitle")}</h1></div>
-        <div class="notice">${I18N.t("cuentasNotice")}</div>
-
-        <h2 class="section-title">${I18N.t("connectedAccountsTitle")}</h2>
-        ${accounts.length ? `
-          <ul class="account-list">
-            ${accounts.map((a) => `
-              <li class="account-item">
-                <div>
-                  <strong>${a.name}</strong>
-                  <div class="muted-small">${a.kind}</div>
-                </div>
-                <div class="account-actions">
-                  <button class="btn btn-secondary btn-sm" data-action="simulate-charge" data-id="${a.id}">${I18N.t("simulatePaymentBtn")}</button>
-                  <button class="btn btn-ghost btn-sm" data-action="disconnect" data-id="${a.id}">${I18N.t("disconnectBtn")}</button>
-                </div>
-              </li>`).join("")}
-          </ul>
-        ` : `<p class="muted">${I18N.t("noAccountsYet")}</p>`}
-
-        <h2 class="section-title">${I18N.t("demoBanksTitle")}</h2>
-        <ul class="account-list">
-          ${DATA.demoBanks.filter((b) => !connectedIds.has(b.id)).map((b) => `
-            <li class="account-item">
-              <div>
-                <strong>${LOGIC.localized(b.name)}</strong>
-                <div class="muted-small">${LOGIC.localized(b.kind)}</div>
-              </div>
-              <button class="btn btn-primary btn-sm" data-action="connect" data-id="${b.id}">${I18N.t("connectBtn")}</button>
-            </li>`).join("")}
-        </ul>
 
         <h2 class="section-title">${I18N.t("csvImportTitle")}</h2>
         <p class="muted-small">${I18N.t("csvImportHint")}</p>
         <label class="btn btn-secondary btn-block" for="csv-import-input">${I18N.t("csvChooseFileBtn")}</label>
         <input type="file" accept=".csv,text/csv" id="csv-import-input" hidden />
+
+        ${this.subscriptionsSectionHTML()}
+        ${this.debtsSectionHTML()}
       </section>
+    `;
+  },
+
+  // ---------- Suscripciones detectadas ----------
+  subscriptionsSectionHTML() {
+    const subs = LOGIC.detectSubscriptions();
+    return `
+      <h2 class="section-title">${I18N.t("subsTitle")}</h2>
+      ${subs.items.length ? `
+        <div class="subs-total">
+          <strong>${I18N.t("subsSummary", { n: subs.items.length, amount: LOGIC.formatMoney(subs.total) })}</strong>
+          <span class="muted-small">${I18N.t("subsYearly", { amount: LOGIC.formatMoney(subs.total * 12) })}</span>
+        </div>
+        <ul class="subs-list">
+          ${subs.items.map((it) => `
+            <li class="subs-item">
+              <span>🔁 ${it.name}<span class="muted-small"> · ${I18N.t("subsSeen", { n: it.months })}</span></span>
+              <strong>${LOGIC.formatMoney(it.monthly)}${I18N.t("perMonthShort")}</strong>
+            </li>`).join("")}
+        </ul>
+        <p class="muted-small">${I18N.t("subsTip")}</p>
+      ` : `<p class="muted-small">${I18N.t("subsNone")}</p>`}
+    `;
+  },
+
+  // ---------- Deudas y plan para salir de ellas ----------
+  addMonthsLabel(months) {
+    const d = new Date();
+    d.setMonth(d.getMonth() + months);
+    return d.toLocaleDateString(I18N.t("todayDateLocale"), { month: "long", year: "numeric" });
+  },
+
+  debtsSectionHTML() {
+    const s = STORE.getSettings();
+    const debts = STORE.getDebts();
+    const strategy = s.debtStrategy === "avalancha" ? "avalancha" : "bola";
+    const totalDebt = debts.reduce((sum, d) => sum + (Number(d.balance) || 0), 0);
+    const active = debts.filter((d) => Number(d.balance) > 0);
+    const plan = active.length ? LOGIC.debtPlan(active, strategy, s.debtExtra) : null;
+    const other = active.length ? LOGIC.debtPlan(active, strategy === "bola" ? "avalancha" : "bola", s.debtExtra) : null;
+    const byId = Object.fromEntries(debts.map((d) => [d.id, d]));
+    return `
+      <h2 class="section-title">${I18N.t("debtsTitle")}</h2>
+      <p class="muted-small">${I18N.t("debtsHint")}</p>
+      ${debts.length ? `
+        <ul class="debt-list">
+          ${debts.map((d) => `
+            <li class="debt-item">
+              <div class="debt-head">
+                <strong>${d.name}</strong>
+                <button class="icon-btn" data-action="remove-debt" data-id="${d.id}" aria-label="${I18N.t("deleteAria")}">🗑️</button>
+              </div>
+              <div class="muted-small">${I18N.t("debtLine", { balance: LOGIC.formatMoney(d.balance), rate: Number(d.rate) || 0, min: LOGIC.formatMoney(d.minPayment) })}</div>
+              ${Number(d.balance) > 0
+                ? `<button class="btn btn-secondary btn-sm" data-action="pay-debt" data-id="${d.id}">${I18N.t("debtPayBtn")}</button>`
+                : `<span class="debt-done">${I18N.t("debtPaidOff")}</span>`}
+            </li>`).join("")}
+        </ul>
+        <div class="period-total">
+          <span class="muted-small">${I18N.t("debtTotalLabel")}</span>
+          <strong>${LOGIC.formatMoney(totalDebt)}</strong>
+        </div>
+      ` : ""}
+      <form id="debt-form" class="form debt-form">
+        <label>${I18N.t("debtNameLabel")}
+          <input type="text" name="name" placeholder="${I18N.t("debtNamePlaceholder")}" required />
+        </label>
+        <div class="debt-form-row">
+          <label>${I18N.t("debtBalanceLabel")}
+            <input type="number" name="balance" min="0" step="0.01" placeholder="Ej. 1200" inputmode="decimal" required />
+          </label>
+          <label>${I18N.t("debtRateLabel")}
+            <input type="number" name="rate" min="0" step="0.01" placeholder="Ej. 18" inputmode="decimal" />
+          </label>
+          <label>${I18N.t("debtMinLabel")}
+            <input type="number" name="minPayment" min="0" step="0.01" placeholder="Ej. 60" inputmode="decimal" required />
+          </label>
+        </div>
+        <button type="submit" class="btn btn-secondary btn-block">${I18N.t("debtAddBtn")}</button>
+      </form>
+      ${active.length ? `
+        <div class="debt-plan">
+          <h3>${I18N.t("debtPlanTitle")}</h3>
+          <div class="period-tabs">
+            <button class="period-tab ${strategy === "bola" ? "is-active" : ""}" data-debt-strategy="bola">${I18N.t("debtSnowball")}</button>
+            <button class="period-tab ${strategy === "avalancha" ? "is-active" : ""}" data-debt-strategy="avalancha">${I18N.t("debtAvalanche")}</button>
+          </div>
+          <p class="muted-small">${I18N.t(strategy === "bola" ? "debtSnowballHint" : "debtAvalancheHint")}</p>
+          <label class="debt-extra">${I18N.t("debtExtraLabel")}
+            <input type="number" id="debt-extra" min="0" step="1" value="${s.debtExtra || ""}" placeholder="0" inputmode="decimal" />
+          </label>
+          ${plan ? `
+            <div class="debt-free">
+              <span>${I18N.t("debtFreeIn")}</span>
+              <strong>${I18N.t("debtMonths", { n: plan.months })}</strong>
+              <span class="muted-small">${this.addMonthsLabel(plan.months)} · ${I18N.t("debtInterestTotal", { amount: LOGIC.formatMoney(plan.totalInterest) })}</span>
+            </div>
+            <ol class="debt-order">
+              ${plan.payoff.map((p, i) => `
+                <li class="${i === 0 ? "is-first" : ""}">
+                  <strong>${byId[p.id].name}</strong>
+                  <span class="muted-small">${i === 0 ? I18N.t("debtAttackFirst") + " · " : ""}${I18N.t("debtPaidBy", { when: this.addMonthsLabel(p.month) })}</span>
+                </li>`).join("")}
+            </ol>
+            ${other && other.totalInterest + 1 < plan.totalInterest
+              ? `<p class="muted-small">${I18N.t("debtOtherCheaper", { amount: LOGIC.formatMoney(plan.totalInterest - other.totalInterest) })}</p>`
+              : ""}
+          ` : `<p class="alert-text">${I18N.t("debtNeverWarning")}</p>`}
+        </div>
+      ` : ""}
     `;
   },
 
@@ -1207,9 +1407,6 @@ const UI = {
           <label>${I18N.t("dailyGoalLabel2")}
             <input type="number" name="dailyGoal" min="0" step="0.01" value="${s.dailyGoal || ""}" placeholder="Ej. 25" required />
           </label>
-          <label>${I18N.t("monthlySavingsGoalLabel")}
-            <input type="number" name="savingsGoalMonthly" min="0" step="0.01" value="${s.savingsGoalMonthly || ""}" placeholder="Ej. 150" />
-          </label>
           <label class="toggle-row">
             <input type="checkbox" name="soundEnabled" ${s.soundEnabled ? "checked" : ""} />
             ${I18N.t("soundAlertLabel")}
@@ -1248,6 +1445,16 @@ const UI = {
             }).join("")}
           </ul>
         ` : ""}
+        ${(() => {
+          const target = LOGIC.emergencyFundTarget();
+          if (!target || goals.some((g) => g.purpose === "emergencia")) return "";
+          return `
+            <div class="suggest-card">
+              <strong>${I18N.t("emergencySuggestTitle")}</strong>
+              <p class="muted-small">${I18N.t("emergencySuggestBody", { amount: LOGIC.formatMoney(target) })}</p>
+              <button class="btn btn-primary btn-sm" data-action="add-emergency" data-amount="${target}">${I18N.t("emergencySuggestBtn")}</button>
+            </div>`;
+        })()}
         <form id="goal-form" class="form">
           <label>${I18N.t("goalWhatLabel")}
             <input type="text" name="label" placeholder="${I18N.t("goalWhatPlaceholder")}" required />
@@ -1261,6 +1468,13 @@ const UI = {
             <input type="number" name="targetAmount" min="0" step="0.01" placeholder="Ej. 50" required />
           </label>
           <button type="submit" class="btn btn-secondary btn-block">${I18N.t("addGoalBtn")}</button>
+        </form>
+
+        <h2 class="section-title">${I18N.t("reminderTitle")}</h2>
+        <p class="muted-small">${I18N.t("reminderHint")}</p>
+        <form id="reminder-form" class="reminder-row">
+          <input type="time" name="time" value="${s.reminderTime || "21:00"}" required />
+          <button type="submit" class="btn btn-primary">${I18N.t("reminderBtn")}</button>
         </form>
 
         <h2 class="section-title">${I18N.t("backupTitle")}</h2>
@@ -1347,6 +1561,24 @@ const UI = {
     };
   },
 
+  // Consejos agrupados por tema. Los que no estén en ningún tema (p. ej.
+  // consejos añadidos más adelante) van al grupo final "Más consejos".
+  tipTopics() {
+    const used = new Set();
+    const topics = DATA.tipTopics.map((t) => {
+      t.tips.forEach((i) => used.add(i));
+      return Object.assign({}, t, { tips: t.tips.map((i) => DATA.tips[i]).filter(Boolean) });
+    });
+    const rest = DATA.tips.filter((_, i) => !used.has(i));
+    if (rest.length) topics.push({ id: "mas", icon: "✨", label: { es: "Más consejos", en: "More tips", fr: "Plus de conseils", it: "Altri consigli", pt: "Mais dicas" }, tips: rest });
+    return topics;
+  },
+  tipOfTheDay() {
+    const d = new Date();
+    const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+    return DATA.tips[dayOfYear % DATA.tips.length];
+  },
+
   renderConsejos() {
     const settings = STORE.getSettings();
     const simIncome = settings.monthlyIncome || "";
@@ -1357,14 +1589,35 @@ const UI = {
     return `
       <section class="card">
         <div class="card-head"><h1>${I18N.t("consejosTitle")}</h1></div>
-        <div class="tip-grid">
-          ${DATA.tips.map((t) => `
-            <div class="tip-card">
-              <h3>${LOGIC.localized(t.title)}</h3>
-              <p>${LOGIC.localized(t.body)}</p>
-            </div>`).join("")}
+        ${(() => {
+          const tip = this.tipOfTheDay();
+          return `
+            <div class="tip-of-day">
+              <span class="tip-of-day-kicker">${I18N.t("tipOfDayKicker")}</span>
+              <h3>${LOGIC.localized(tip.title)}</h3>
+              <p>${LOGIC.localized(tip.body)}</p>
+            </div>`;
+        })()}
+        <input type="search" id="tips-search" class="tips-search" placeholder="${I18N.t("tipsSearchPlaceholder")}" aria-label="${I18N.t("tipsSearchPlaceholder")}" />
+        <p class="muted-small" id="tips-search-empty" hidden>${I18N.t("tipsSearchEmpty")}</p>
+
+        <div class="topic-list">
+          ${this.tipTopics().map((topic) => `
+            <details class="topic" data-topic="${topic.id}">
+              <summary><span>${topic.icon} ${LOGIC.localized(topic.label)}</span><span class="topic-count">${topic.tips.length}</span></summary>
+              <div class="tip-grid">
+                ${topic.tips.map((t) => `
+                  <div class="tip-card">
+                    <h3>${LOGIC.localized(t.title)}</h3>
+                    <p>${LOGIC.localized(t.body)}</p>
+                  </div>`).join("")}
+              </div>
+            </details>`).join("")}
         </div>
 
+        <details class="topic topic--tools">
+          <summary><span>${I18N.t("toolsTopicTitle")}</span></summary>
+          <div class="topic-body">
         <h2 class="section-title">${I18N.t("sim502030Title")}</h2>
         <p class="muted-small">${I18N.t("sim502030Hint")}</p>
         <div class="budget-sim">
@@ -1491,7 +1744,12 @@ const UI = {
           <p class="muted-small" style="margin:2px 0 0">${I18N.t("travelFootnote")}</p>
         </div>
 
-        <h2 class="section-title">${I18N.t("investorRoadmapTitle")}</h2>
+          </div>
+        </details>
+
+        <details class="topic topic--tools">
+          <summary><span>${I18N.t("investorRoadmapTitle")}</span></summary>
+          <div class="topic-body">
         <p class="muted-small">${I18N.t("investorRoadmapHint")}</p>
         <div class="triple-colchon">
           <div class="triple-colchon-row"><span>60-70%</span><small>${I18N.t("lifestyleNoStress")}</small></div>
@@ -1525,7 +1783,12 @@ const UI = {
             </div>`).join("")}
         </div>
         <p class="muted-small">${I18N.t("investingFootnote")}</p>
+          </div>
+        </details>
 
+        <details class="topic topic--tools">
+          <summary><span>${I18N.t("resourcesTopicTitle")}</span></summary>
+          <div class="topic-body">
         <h2 class="section-title">${I18N.t("booksTitle")}</h2>
         <ul class="resource-list">
           ${DATA.resources.books.map((b) => `<li><strong>${b.title}</strong>${b.author !== "—" ? " — " + b.author : ""}<br><span class="muted-small">${LOGIC.localized(b.note)}</span></li>`).join("")}
@@ -1547,8 +1810,45 @@ const UI = {
             ${DATA.resources.videos.map((v) => `<li><a href="${v.url}" target="_blank" rel="noopener noreferrer">${v.title}</a> <span class="muted-small">(${v.source})</span></li>`).join("")}
           </ul>
         ` : ""}
+          </div>
+        </details>
       </section>
     `;
+  },
+
+  // ---------- Gráfico de columnas: gasto variable de cada día ----------
+  // Una sola serie (el gasto del día) frente a la línea de la meta diaria.
+  // Las columnas por encima de la meta van en rojo; tocar una muestra su cifra.
+  dailyChartHTML(start, end) {
+    const goal = STORE.getSettings().dailyGoal || 0;
+    const today = LOGIC.todayStr();
+    const days = [];
+    for (let d = new Date(start + "T00:00:00"); LOGIC.ymd(d) <= end; d.setDate(d.getDate() + 1)) {
+      const date = LOGIC.ymd(d);
+      days.push({ date, amount: date > today ? null : LOGIC.variableSpentForDate(date) });
+    }
+    const max = Math.max(goal, ...days.map((x) => x.amount || 0));
+    if (!max) return "";
+    const locale = I18N.t("todayDateLocale");
+    const label = (date) => new Date(date + "T00:00:00").toLocaleDateString(locale, { weekday: "short", day: "numeric" });
+    const showEvery = days.length > 10 ? 5 : 1;
+    return `
+      <div class="day-chart" role="img" aria-label="${I18N.t("dailyChartTitle")}">
+        <div class="day-chart-head">
+          <strong>${I18N.t("dailyChartTitle")}</strong>
+          <span class="muted-small" id="day-chart-readout">${goal ? I18N.t("dailyChartGoalLegend", { amount: LOGIC.formatMoney(goal) }) : ""}</span>
+        </div>
+        <div class="day-chart-plot">
+          ${goal ? `<div class="day-chart-goal" style="bottom:${(goal / max) * 100}%"></div>` : ""}
+          ${days.map((x) => `
+            <button type="button" class="day-col" data-readout="${label(x.date)}: ${x.amount == null ? "—" : LOGIC.formatMoney(x.amount)}" title="${label(x.date)}: ${x.amount == null ? "—" : LOGIC.formatMoney(x.amount)}">
+              <span class="day-bar ${goal && x.amount > goal ? "is-over" : ""} ${x.date === today ? "is-today" : ""}" style="height:${x.amount ? Math.max(2, (x.amount / max) * 100) : 0}%"></span>
+            </button>`).join("")}
+        </div>
+        <div class="day-chart-axis">
+          ${days.map((x, i) => `<span>${i % showEvery === 0 ? (days.length > 10 ? Number(x.date.slice(8)) : label(x.date).split(" ")[0]) : ""}</span>`).join("")}
+        </div>
+      </div>`;
   },
 
   // ---------- Resumen semanal de gastos hormiga + meta de la semana ----------
@@ -1651,6 +1951,8 @@ const UI = {
           <strong>${LOGIC.formatMoney(breakdown.total)}</strong>
         </div>
 
+        ${period !== "day" ? this.dailyChartHTML(breakdown.start, period === "month" ? LOGIC.ymd(new Date(Number(breakdown.start.slice(0, 4)), Number(breakdown.start.slice(5, 7)), 0)) : breakdown.end) : ""}
+
         ${breakdown.top ? `<p class="muted-small">${I18N.t("topSpendingNote", { category: this.categoryLabel(breakdown.top.category), amount: LOGIC.formatMoney(breakdown.top.amount), pct: Math.round(breakdown.top.pct) })}</p>` : ""}
 
         ${breakdown.items.length ? `
@@ -1719,57 +2021,11 @@ const UI = {
     );
 
     view.querySelectorAll('[data-action="add"]').forEach((btn) =>
-      btn.addEventListener("click", () => {
-        UI.openModal(UI.addFormHTML(btn.dataset.type));
-        document.getElementById("tx-form").addEventListener("submit", (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          const tx = {
-            type: fd.get("type"),
-            category: fd.get("category"),
-            description: fd.get("description"),
-            amount: parseFloat(fd.get("amount")) || 0,
-            method: fd.get("method") || null,
-            excludeFromDailyGoal: fd.get("excludeFromDailyGoal") === "on",
-            date: LOGIC.todayStr(),
-            source: "manual"
-          };
-          if (fd.get("antConcept")) tx.antConcept = fd.get("antConcept");
-          STORE.addTransaction(tx);
-          UI.closeModal();
-          UI.toast(tx.type === "income" ? I18N.t("toastIncomeAdded") : I18N.t("toastExpenseAdded"));
-          UI.render("hoy");
-          UI.checkBudgetAlert();
-        });
-      })
+      btn.addEventListener("click", () => UI.openAddForm(btn.dataset.type))
     );
 
     const addAntBtn = view.querySelector('[data-action="add-ant"]');
-    if (addAntBtn) {
-      addAntBtn.addEventListener("click", () => {
-        UI.openModal(UI.antFormHTML());
-        document.getElementById("ant-form").addEventListener("submit", (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          const concept = LOGIC.antConcept(fd.get("antConcept"));
-          STORE.addTransaction({
-            type: "expense",
-            category: concept.category,
-            antConcept: concept.id,
-            description: fd.get("description") || "",
-            amount: parseFloat(fd.get("amount")) || 0,
-            method: null,
-            excludeFromDailyGoal: false,
-            date: LOGIC.todayStr(),
-            source: "manual"
-          });
-          UI.closeModal();
-          UI.toast(I18N.t("toastAntAdded"));
-          UI.render("hoy");
-          UI.checkBudgetAlert();
-        });
-      });
-    }
+    if (addAntBtn) addAntBtn.addEventListener("click", () => UI.openAntForm());
 
     view.querySelectorAll('[data-action="go-resumen"]').forEach((b) =>
       b.addEventListener("click", () => {
@@ -1824,6 +2080,35 @@ const UI = {
       });
     }
 
+    const tipsSearch = view.querySelector("#tips-search");
+    if (tipsSearch) {
+      const norm = (x) => LOGIC._normalizeText(x);
+      tipsSearch.addEventListener("input", () => {
+        const q = norm(tipsSearch.value.trim());
+        let found = 0;
+        view.querySelectorAll(".topic[data-topic]").forEach((topic) => {
+          let visible = 0;
+          topic.querySelectorAll(".tip-card").forEach((card) => {
+            const match = !q || norm(card.textContent).includes(q);
+            card.hidden = !match;
+            if (match) visible++;
+          });
+          topic.hidden = q && !visible;
+          topic.open = !!q && visible > 0;
+          found += visible;
+        });
+        view.querySelector("#tips-search-empty").hidden = !q || found > 0;
+      });
+    }
+
+    const readout = view.querySelector("#day-chart-readout");
+    view.querySelectorAll(".day-col").forEach((col) => {
+      const show = () => { readout.textContent = col.dataset.readout; };
+      col.addEventListener("mouseenter", show);
+      col.addEventListener("focus", show);
+      col.addEventListener("click", show);
+    });
+
     const weekGoalForm = view.querySelector("#week-goal-form");
     if (weekGoalForm) {
       weekGoalForm.addEventListener("submit", (e) => {
@@ -1861,30 +2146,6 @@ const UI = {
         UI.checkBudgetAlert();
       });
     }
-
-    // ---- Cuentas ----
-    view.querySelectorAll('[data-action="connect"]').forEach((btn) =>
-      btn.addEventListener("click", () => {
-        const bank = DATA.demoBanks.find((b) => b.id === btn.dataset.id);
-        STORE.addAccount({ bankId: bank.id, name: LOGIC.localized(bank.name), kind: LOGIC.localized(bank.kind) });
-        UI.toast(I18N.t("toastAccountConnected"));
-        UI.render("cuentas");
-      })
-    );
-    view.querySelectorAll('[data-action="disconnect"]').forEach((btn) =>
-      btn.addEventListener("click", () => {
-        STORE.removeAccount(btn.dataset.id);
-        UI.render("cuentas");
-      })
-    );
-    view.querySelectorAll('[data-action="simulate-charge"]').forEach((btn) =>
-      btn.addEventListener("click", () => {
-        const tx = LOGIC.simulateLinkedExpense(btn.dataset.id);
-        UI.toast(I18N.t("toastSimulatedPayment", { desc: tx.description, amount: LOGIC.formatMoney(tx.amount) }));
-        UI.render("cuentas");
-        UI.checkBudgetAlert();
-      })
-    );
 
     // ---- Cuentas: importar movimientos desde CSV ----
     const csvInput = view.querySelector("#csv-import-input");
@@ -1937,7 +2198,6 @@ const UI = {
           country: fd.get("country"),
           currency: country ? country.currency : settings.currency,
           dailyGoal: parseFloat(fd.get("dailyGoal")) || null,
-          savingsGoalMonthly: parseFloat(fd.get("savingsGoalMonthly")) || null,
           soundEnabled: fd.get("soundEnabled") === "on"
         }));
         UI.toast(I18N.t("toastGoalsSaved"));
@@ -1964,6 +2224,81 @@ const UI = {
     );
 
     // ---- Metas de ahorro por propósito ----
+    const emergencyBtn = view.querySelector('[data-action="add-emergency"]');
+    if (emergencyBtn) {
+      emergencyBtn.addEventListener("click", () => {
+        STORE.addGoal({
+          label: LOGIC.localized(DATA.savingsPurposes.find((p) => p.id === "emergencia").label),
+          purpose: "emergencia",
+          targetAmount: Number(emergencyBtn.dataset.amount) || 0
+        });
+        UI.toast(I18N.t("toastGoalAdded"));
+        UI.render("metas");
+      });
+    }
+    const reminderForm = view.querySelector("#reminder-form");
+    if (reminderForm) {
+      reminderForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const time = new FormData(reminderForm).get("time") || "21:00";
+        STORE.saveSettings(Object.assign({}, STORE.getSettings(), { reminderTime: time }));
+        UI.downloadFile("hucha-recordatorio.ics", UI.reminderICS(time), "text/calendar");
+        UI.toast(I18N.t("toastReminderDownloaded"));
+      });
+    }
+
+    // ---- Deudas ----
+    const debtForm = view.querySelector("#debt-form");
+    if (debtForm) {
+      debtForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(debtForm);
+        STORE.addDebt({
+          name: fd.get("name"),
+          balance: parseFloat(fd.get("balance")) || 0,
+          rate: parseFloat(fd.get("rate")) || 0,
+          minPayment: parseFloat(fd.get("minPayment")) || 0
+        });
+        UI.toast(I18N.t("toastDebtAdded"));
+        UI.render("cuentas");
+      });
+    }
+    view.querySelectorAll('[data-action="remove-debt"]').forEach((btn) =>
+      btn.addEventListener("click", () => {
+        if (confirm(I18N.t("confirmDeleteDebt"))) {
+          STORE.removeDebt(btn.dataset.id);
+          UI.render("cuentas");
+        }
+      })
+    );
+    view.querySelectorAll('[data-action="pay-debt"]').forEach((btn) =>
+      btn.addEventListener("click", () => {
+        const debt = STORE.getDebts().find((d) => d.id === btn.dataset.id);
+        if (!debt) return;
+        const raw = prompt(I18N.t("debtPayPrompt", { name: debt.name }), debt.minPayment || "");
+        const amount = parseFloat(String(raw || "").replace(",", "."));
+        if (!amount || amount <= 0) return;
+        const balance = Math.max(0, Math.round((Number(debt.balance) - amount) * 100) / 100);
+        STORE.updateDebt(debt.id, { balance });
+        UI.toast(balance === 0 ? I18N.t("toastDebtPaidOff", { name: debt.name }) : I18N.t("toastDebtPaid"));
+        if (balance === 0) UI.confettiBurst();
+        UI.render("cuentas");
+      })
+    );
+    view.querySelectorAll("[data-debt-strategy]").forEach((btn) =>
+      btn.addEventListener("click", () => {
+        STORE.saveSettings(Object.assign({}, STORE.getSettings(), { debtStrategy: btn.dataset.debtStrategy }));
+        UI.render("cuentas");
+      })
+    );
+    const debtExtra = view.querySelector("#debt-extra");
+    if (debtExtra) {
+      debtExtra.addEventListener("change", () => {
+        STORE.saveSettings(Object.assign({}, STORE.getSettings(), { debtExtra: Math.max(0, parseFloat(debtExtra.value) || 0) }));
+        UI.render("cuentas");
+      });
+    }
+
     const goalForm = view.querySelector("#goal-form");
     if (goalForm) {
       goalForm.addEventListener("submit", (e) => {
@@ -2066,7 +2401,7 @@ const UI = {
     }
 
     // ---- Resumen ----
-    view.querySelectorAll(".period-tab").forEach((btn) =>
+    view.querySelectorAll(".period-tab[data-period]").forEach((btn) =>
       btn.addEventListener("click", () => {
         UI.resumenPeriod = btn.dataset.period;
         UI.render("resumen");
@@ -2104,15 +2439,7 @@ const UI = {
     if (exportBtn) {
       exportBtn.addEventListener("click", () => {
         const backup = STORE.exportAll();
-        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "hucha-copia-" + LOGIC.todayStr() + ".json";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        UI.downloadFile("hucha-copia-" + LOGIC.todayStr() + ".json", JSON.stringify(backup, null, 2), "application/json");
         STORE.saveSettings(Object.assign({}, STORE.getSettings(), { lastBackupAt: backup.exportedAt }));
         UI.toast(I18N.t("toastBackupExported"));
         UI.render("metas");

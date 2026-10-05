@@ -8,6 +8,7 @@ const DATA = {
       { id: "ocio", label: "Ocio", icon: "🎬" },
       { id: "salud", label: "Salud", icon: "💊" },
       { id: "compras", label: "Compras", icon: "🛍️" },
+      { id: "compras_online", label: "Mis compras online", icon: "📦" },
       { id: "suscripciones", label: "Suscripciones", icon: "🔁" },
       { id: "educacion", label: "Educación", icon: "📚" },
       { id: "otros", label: "Otros", icon: "✨" }
@@ -19,6 +20,7 @@ const DATA = {
       { id: "ocio", label: "Leisure", icon: "🎬" },
       { id: "salud", label: "Health", icon: "💊" },
       { id: "compras", label: "Shopping", icon: "🛍️" },
+      { id: "compras_online", label: "My online shopping", icon: "📦" },
       { id: "suscripciones", label: "Subscriptions", icon: "🔁" },
       { id: "educacion", label: "Education", icon: "📚" },
       { id: "otros", label: "Other", icon: "✨" }
@@ -30,6 +32,7 @@ const DATA = {
       { id: "ocio", label: "Loisirs", icon: "🎬" },
       { id: "salud", label: "Santé", icon: "💊" },
       { id: "compras", label: "Achats", icon: "🛍️" },
+      { id: "compras_online", label: "Mes achats en ligne", icon: "📦" },
       { id: "suscripciones", label: "Abonnements", icon: "🔁" },
       { id: "educacion", label: "Éducation", icon: "📚" },
       { id: "otros", label: "Autres", icon: "✨" }
@@ -41,6 +44,7 @@ const DATA = {
       { id: "ocio", label: "Tempo libero", icon: "🎬" },
       { id: "salud", label: "Salute", icon: "💊" },
       { id: "compras", label: "Shopping", icon: "🛍️" },
+      { id: "compras_online", label: "I miei acquisti online", icon: "📦" },
       { id: "suscripciones", label: "Abbonamenti", icon: "🔁" },
       { id: "educacion", label: "Istruzione", icon: "📚" },
       { id: "otros", label: "Altro", icon: "✨" }
@@ -52,6 +56,7 @@ const DATA = {
       { id: "ocio", label: "Lazer", icon: "🎬" },
       { id: "salud", label: "Saúde", icon: "💊" },
       { id: "compras", label: "Compras", icon: "🛍️" },
+      { id: "compras_online", label: "Minhas compras online", icon: "📦" },
       { id: "suscripciones", label: "Assinaturas", icon: "🔁" },
       { id: "educacion", label: "Educação", icon: "📚" },
       { id: "otros", label: "Outros", icon: "✨" }
@@ -132,11 +137,16 @@ const DATA = {
     ]
   },
 
-  // Categorías que ya no vienen por defecto pero pueden aparecer en
-  // movimientos antiguos guardados en el dispositivo: solo para mostrarlas.
-  legacyCategories: {
-    atomy: { icon: "📦", label: { es: "Compra de Productos Atomy", en: "Atomy Product Purchase", fr: "Achat de produits Atomy", it: "Acquisto prodotti Atomy", pt: "Compra de Produtos Atomy" } }
-  },
+  // Atajos del botón "+" para apuntar los gastos más habituales en 2 toques.
+  // Si llevan antConcept, se guardan además como gasto hormiga.
+  quickShortcuts: [
+    { id: "cafe", icon: "☕", category: "alimentacion", antConcept: "cafe", label: { es: "Café", en: "Coffee", fr: "Café", it: "Caffè", pt: "Café" } },
+    { id: "super", icon: "🛒", category: "alimentacion", label: { es: "Súper", en: "Groceries", fr: "Courses", it: "Spesa", pt: "Mercado" } },
+    { id: "gasolina", icon: "⛽", category: "transporte", label: { es: "Gasolina", en: "Fuel", fr: "Essence", it: "Benzina", pt: "Gasolina" } },
+    { id: "bus", icon: "🚌", category: "transporte", label: { es: "Bus / metro", en: "Bus / subway", fr: "Bus / métro", it: "Bus / metro", pt: "Ônibus / metrô" } },
+    { id: "comer_fuera", icon: "🍽️", category: "ocio", label: { es: "Comer fuera", en: "Eating out", fr: "Restaurant", it: "Mangiare fuori", pt: "Comer fora" } },
+    { id: "farmacia", icon: "💊", category: "salud", label: { es: "Farmacia", en: "Pharmacy", fr: "Pharmacie", it: "Farmacia", pt: "Farmácia" } }
+  ],
 
   // Gastos hormiga: pequeños gastos diarios que, sumados, se llevan una parte
   // importante del dinero sin que uno se dé cuenta. Cada concepto se guarda
@@ -166,9 +176,10 @@ const DATA = {
       vivienda: ["alquiler", "hipoteca", "comunidad de propietarios", "inmobiliaria"],
       ocio: ["cine", "teatro", "concierto", "restaurante", "cafeteria", " bar ", "discoteca"],
       salud: ["farmacia", "clinica", "hospital", "dentista", "fisioterap"],
-      compras: ["amazon", "zara", "el corte ingles", "decathlon", "ikea", "primark", "mercado libre", "aliexpress"],
+      compras: ["zara", "el corte ingles", "decathlon", "ikea", "primark"],
       suscripciones: ["netflix", "spotify", "hbo", "disney+", "amazon prime", "icloud", "google one", "youtube premium"],
-      educacion: ["universidad", "colegio", "udemy", "libreria", "coursera"]
+      educacion: ["universidad", "colegio", "udemy", "libreria", "coursera"],
+      compras_online: ["amazon", "aliexpress", "atomy", "shein", "temu", "ebay", "zalando", "mercado libre", "miravia", "paypal"]
     },
     income: {
       salario: ["nomina", "salario", "payroll"],
@@ -221,6 +232,7 @@ const DATA = {
     { id: "sin_presupuesto", label: { es: "Nunca he llevado un presupuesto", en: "I've never kept a budget", fr: "Je n'ai jamais tenu de budget", it: "Non ho mai tenuto un budget", pt: "Nunca fiz um orçamento" } }
   ],
   savingsPurposes: [
+    { id: "emergencia", label: { es: "Fondo de emergencia", en: "Emergency fund", fr: "Fonds d'urgence", it: "Fondo di emergenza", pt: "Fundo de emergência" }, icon: "🛟" },
     { id: "viajar", label: { es: "Viajar", en: "Travel", fr: "Voyager", it: "Viaggiare", pt: "Viajar" }, icon: "✈️" },
     { id: "familia", label: { es: "Salir en familia", en: "Family outings", fr: "Sorties en famille", it: "Uscite in famiglia", pt: "Sair em família" }, icon: "👨‍👩‍👧" },
     { id: "amigos", label: { es: "Salir con amigos", en: "Going out with friends", fr: "Sorties entre amis", it: "Uscite con gli amici", pt: "Sair com amigos" }, icon: "🎉" },
@@ -458,6 +470,21 @@ const DATA = {
 
   // Consejos de ahorro originales, inspirados en principios de educación financiera
   // conocidos (regla 50/30/20, automatización del ahorro, aversión a la pérdida, etc.)
+  // Temas de la pestaña Consejos: cada uno lista posiciones de DATA.tips.
+  tipTopics: [
+    { id: "basico", icon: "🧭", label: { es: "Lo básico", en: "The basics", fr: "Les bases", it: "Le basi", pt: "O básico" }, tips: [0, 3, 4, 1, 5, 7, 12, 14, 23, 24, 25, 10, 11] },
+    { id: "hormiga", icon: "🐜", label: { es: "Gastos hormiga", en: "Small leaks", fr: "Petites dépenses", it: "Spese formica", pt: "Gastos formiga" }, tips: [8, 13, 28, 9] },
+    { id: "compra", icon: "🛒", label: { es: "La compra y la cocina", en: "Groceries and cooking", fr: "Courses et cuisine", it: "Spesa e cucina", pt: "Compras e cozinha" }, tips: [17, 18, 19, 80, 79, 65, 66, 67, 84, 85, 81, 82, 83, 78] },
+    { id: "hogar", icon: "🏠", label: { es: "Hogar, facturas y coche", en: "Home, bills and car", fr: "Maison, factures et voiture", it: "Casa, bollette e auto", pt: "Casa, contas e carro" }, tips: [15, 16, 35, 36, 37, 38, 39, 20] },
+    { id: "suscripciones", icon: "🔁", label: { es: "Suscripciones, banco y móvil", en: "Subscriptions, bank and phone", fr: "Abonnements, banque et mobile", it: "Abbonamenti, banca e telefono", pt: "Assinaturas, banco e celular" }, tips: [6, 29, 21, 30, 31, 27, 26, 34, 32, 33] },
+    { id: "deudas", icon: "💳", label: { es: "Deudas", en: "Debts", fr: "Dettes", it: "Debiti", pt: "Dívidas" }, tips: [2] },
+    { id: "online", icon: "📦", label: { es: "Compras online y segunda mano", en: "Online and second-hand shopping", fr: "Achats en ligne et d'occasion", it: "Acquisti online e usato", pt: "Compras online e de segunda mão" }, tips: [42, 41, 40, 43, 44, 46, 22] },
+    { id: "viajes", icon: "✈️", label: { es: "Viajes y vacaciones", en: "Travel and holidays", fr: "Voyages et vacances", it: "Viaggi e vacanze", pt: "Viagens e férias" }, tips: [61, 62, 63, 64, 47, 48, 49, 50, 45, 51, 52, 53] },
+    { id: "reclamar", icon: "📣", label: { es: "Reclamaciones", en: "Complaints", fr: "Réclamations", it: "Reclami", pt: "Reclamações" }, tips: [54, 55, 56, 57, 58, 59, 60] },
+    { id: "ocio", icon: "🎬", label: { es: "Ocio, cine y teatro", en: "Leisure, cinema and theatre", fr: "Loisirs, cinéma et théâtre", it: "Svago, cinema e teatro", pt: "Lazer, cinema e teatro" }, tips: [68, 69, 70, 71, 72, 73, 74] },
+    { id: "cole", icon: "🎒", label: { es: "Vuelta al cole y familia", en: "Back to school and family", fr: "Rentrée et famille", it: "Ritorno a scuola e famiglia", pt: "Volta às aulas e família" }, tips: [75, 87, 88, 89, 76, 77, 86] }
+  ],
+
   tips: [
     {
       title: { es: "No es cuestión de ganar más", en: "It's not about earning more", fr: "Ce n'est pas une question de gagner plus", it: "Non è una questione di guadagnare di più", pt: "Não é questão de ganhar mais" },
@@ -1405,12 +1432,5 @@ const DATA = {
     videos: [
       { title: "¡Ahorra sin darte cuenta! El método del redondeo", source: "Facebook · dinerocomsv", url: "https://www.facebook.com/watch/?v=3663749137099051" }
     ]
-  },
-
-  // Bancos de demostración para el enlace de cuentas simulado.
-  demoBanks: [
-    { id: "demo-visa", name: { es: "Tarjeta Visa Demo", en: "Demo Visa Card", fr: "Carte Visa Démo", it: "Carta Visa Demo", pt: "Cartão Visa Demo" }, kind: { es: "Tarjeta de crédito", en: "Credit card", fr: "Carte de crédit", it: "Carta di credito", pt: "Cartão de crédito" } },
-    { id: "demo-banco", name: { es: "Banco Simulado", en: "Simulated Bank", fr: "Banque simulée", it: "Banca simulata", pt: "Banco simulado" }, kind: { es: "Cuenta corriente", en: "Checking account", fr: "Compte courant", it: "Conto corrente", pt: "Conta corrente" } },
-    { id: "demo-wallet", name: { es: "Billetera Móvil Demo", en: "Demo Mobile Wallet", fr: "Portefeuille mobile démo", it: "Portafoglio mobile demo", pt: "Carteira móvel demo" }, kind: { es: "Pago móvil", en: "Mobile payment", fr: "Paiement mobile", it: "Pagamento mobile", pt: "Pagamento móvel" } }
-  ]
+  }
 };

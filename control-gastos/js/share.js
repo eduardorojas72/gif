@@ -3,7 +3,7 @@ const SHARE = {
   TAGLINES: [
     "Gastar con cabeza también se puede presumir.",
     "Hoy le gané a mis propios gastos.",
-    "Ahorrar, un día a la vez."
+    "Gastar con conciencia, un día a la vez."
   ],
 
   async ensureFonts() {
@@ -328,18 +328,17 @@ const SHARE = {
     ctx.fillStyle = "#CFE8DE";
     ctx.fillText(dateLabel, W / 2, 560);
 
-    // Cifra hero: lo ahorrado
-    const saved = Math.max(0, goal - spent);
+    // Cifra hero: lo gastado frente a la meta
     ctx.font = "700 66px Inter, system-ui, sans-serif";
     ctx.fillStyle = "#CFE8DE";
-    ctx.fillText("Ahorré", W / 2, 660);
+    ctx.fillText("Gasté", W / 2, 660);
     ctx.font = "700 128px 'Space Grotesk', system-ui, sans-serif";
     ctx.fillStyle = "#F2C94C";
-    ctx.fillText(LOGIC.formatMoney(saved), W / 2, 780);
+    ctx.fillText(LOGIC.formatMoney(spent), W / 2, 780);
 
     ctx.font = "400 32px Inter, system-ui, sans-serif";
     ctx.fillStyle = "#CFE8DE";
-    ctx.fillText("Gasté " + LOGIC.formatMoney(spent) + " de mi meta de " + LOGIC.formatMoney(goal), W / 2, 850);
+    ctx.fillText("de mi meta de " + LOGIC.formatMoney(goal) + " · me sobraron " + LOGIC.formatMoney(Math.max(0, goal - spent)), W / 2, 850);
 
     // Franja de racha (si aplica) como refuerzo visual grande
     let taglineY = 980;
