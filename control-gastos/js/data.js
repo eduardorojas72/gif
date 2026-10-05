@@ -231,18 +231,6 @@ const DATA = {
     { id: "imprevistos", label: { es: "Gastos inesperados o familiares", en: "Unexpected or family expenses", fr: "Dépenses imprévues ou familiales", it: "Spese impreviste o familiari", pt: "Despesas inesperadas ou familiares" } },
     { id: "sin_presupuesto", label: { es: "Nunca he llevado un presupuesto", en: "I've never kept a budget", fr: "Je n'ai jamais tenu de budget", it: "Non ho mai tenuto un budget", pt: "Nunca fiz um orçamento" } }
   ],
-  savingsPurposes: [
-    { id: "emergencia", label: { es: "Fondo de emergencia", en: "Emergency fund", fr: "Fonds d'urgence", it: "Fondo di emergenza", pt: "Fundo de emergência" }, icon: "🛟" },
-    { id: "viajar", label: { es: "Viajar", en: "Travel", fr: "Voyager", it: "Viaggiare", pt: "Viajar" }, icon: "✈️" },
-    { id: "familia", label: { es: "Salir en familia", en: "Family outings", fr: "Sorties en famille", it: "Uscite in famiglia", pt: "Sair em família" }, icon: "👨‍👩‍👧" },
-    { id: "amigos", label: { es: "Salir con amigos", en: "Going out with friends", fr: "Sorties entre amis", it: "Uscite con gli amici", pt: "Sair com amigos" }, icon: "🎉" },
-    { id: "auto", label: { es: "Comprar un auto", en: "Buy a car", fr: "Acheter une voiture", it: "Comprare un'auto", pt: "Comprar um carro" }, icon: "🚗" },
-    { id: "casa", label: { es: "Comprar una casa", en: "Buy a house", fr: "Acheter une maison", it: "Comprare una casa", pt: "Comprar uma casa" }, icon: "🏠" },
-    { id: "ayudar", label: { es: "Ayudar a familiares", en: "Help family members", fr: "Aider ma famille", it: "Aiutare la famiglia", pt: "Ajudar familiares" }, icon: "🤝" },
-    { id: "donar", label: { es: "Donar a una ONG", en: "Donate to a charity", fr: "Faire un don à une association", it: "Donare a un'associazione", pt: "Doar para uma ONG" }, icon: "💚" },
-    { id: "otro", label: { es: "Otro", en: "Other", fr: "Autre", it: "Altro", pt: "Outro" }, icon: "✨" }
-  ],
-
   // Categorías de la "foto" de gastos mensuales del cuestionario de diagnóstico,
   // distintas de expenseCategories (esas son para registrar movimientos día a día).
   expenseSnapshotCategories: [

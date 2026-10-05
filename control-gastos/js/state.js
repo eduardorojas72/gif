@@ -8,7 +8,6 @@ const STORE = {
     days: "cg_days",
     customCategories: "cg_custom_categories",
     plans: "cg_plans",
-    goals: "cg_goals",
     weekGoals: "cg_week_goals",
     debts: "cg_debts"
   },
@@ -30,8 +29,6 @@ const STORE = {
     savingsGoalMonthly: null,
     currentlyMeetingGoal: null,
     obstacles: [],
-    savingsPurposes: [],
-    savingsPurposeOther: "",
     // Cuestionario de diagnóstico financiero (arquetipo)
     desiredIncome: null,
     hoursPerDay: null,
@@ -168,46 +165,6 @@ const STORE = {
   },
   getPlan(date) {
     return this.getPlans()[date] || "";
-  },
-
-  // Metas de ahorro con propósito (p. ej. "Cena con amigos"), independientes
-  // de la meta de ahorro mensual general.
-  getGoals() {
-    return this._read(this.keys.goals, []);
-  },
-  saveGoals(goals) {
-    this._write(this.keys.goals, goals);
-  },
-  addGoal(goal) {
-    const goals = this.getGoals();
-    const record = Object.assign(
-      { id: "goal_" + Date.now().toString(36), createdAt: LOGIC.todayStr(), achieved: false, achievedAt: null },
-      goal
-    );
-    goals.push(record);
-    this.saveGoals(goals);
-    return record;
-  },
-  removeGoal(id) {
-    this.saveGoals(this.getGoals().filter((g) => g.id !== id));
-  },
-  markGoalAchieved(id) {
-    const goals = this.getGoals();
-    const goal = goals.find((g) => g.id === id);
-    if (goal && !goal.achieved) {
-      goal.achieved = true;
-      goal.achievedAt = LOGIC.todayStr();
-      this.saveGoals(goals);
-    }
-    return goal;
-  },
-  setGoalPhoto(id, dataURL) {
-    const goals = this.getGoals();
-    const goal = goals.find((g) => g.id === id);
-    if (!goal) return null;
-    goal.photo = dataURL;
-    this.saveGoals(goals);
-    return goal;
   },
 
   // Metas semanales de gastos hormiga, guardadas por el lunes de la semana a
@@ -378,39 +335,6 @@ const LOGIC = {
   monthKeyOf(dateStr) {
     return dateStr.slice(0, 7); // YYYY-MM
   },
-  // Progreso de una meta de ahorro con propósito: suma lo que sobró de la
-  // meta de gasto en los días ya cerrados desde que se creó la meta. El día
-  // de hoy no cuenta hasta cerrarlo: si no, la meta avanzaría sola sin haber
-  // hecho nada, solo por no haber apuntado todavía los gastos.
-  goalProgress(goal) {
-    const days = STORE.getDays();
-    let saved = 0;
-    Object.values(days).forEach((d) => {
-      if (d.date >= goal.createdAt) saved += (d.goal - d.spent);
-    });
-    saved = Math.max(0, saved);
-    return {
-      saved,
-      target: goal.targetAmount,
-      pct: goal.targetAmount ? Math.max(0, Math.min(100, Math.round((saved / goal.targetAmount) * 100))) : 0
-    };
-  },
-
-  // Revisa las metas sin alcanzar y marca como logradas las que ya llegaron
-  // a su importe objetivo. Devuelve la lista de las recién alcanzadas para
-  // que la UI pueda celebrarlas.
-  checkGoalsAchieved() {
-    const newlyAchieved = [];
-    STORE.getGoals().forEach((goal) => {
-      if (goal.achieved) return;
-      const progress = this.goalProgress(goal);
-      if (progress.saved >= goal.targetAmount) {
-        newlyAchieved.push(STORE.markGoalAchieved(goal.id));
-      }
-    });
-    return newlyAchieved;
-  },
-
   // ---------- Rangos de fechas para las gráficas (día/semana/mes) ----------
   periodRange(period, refDate) {
     const ref = refDate || this.todayStr();

@@ -95,42 +95,6 @@ const UI = {
     }
   },
 
-  async celebrateGoal(goal) {
-    AUDIO.playSuccess();
-    this.confettiBurst();
-    const settings = STORE.getSettings();
-    const dataURL = await SHARE.buildGoalCardDataURL({ goal, userName: settings.userName });
-    this.openModal(`
-      <h2>${I18N.t("achievementTitle")}</h2>
-      <img src="${dataURL}" alt="${I18N.t("achievementAlt")}" class="achievement-preview" />
-      <p class="muted-small">${goal.photo ? "" : I18N.t("addPhotoHint")}</p>
-      <input type="file" accept="image/*" id="celebrate-photo-input" hidden />
-      <div class="modal-actions">
-        <button type="button" class="btn btn-ghost" data-close-modal>${I18N.t("btnClose")}</button>
-        <label class="btn btn-secondary" for="celebrate-photo-input">${goal.photo ? I18N.t("changePhotoBtn") : I18N.t("addPhotoBtn")}</label>
-        <button type="button" class="btn btn-primary" id="share-goal-celebrate">${I18N.t("btnShare")}</button>
-      </div>
-    `);
-    const shareBtn = document.getElementById("share-goal-celebrate");
-    if (shareBtn) {
-      shareBtn.addEventListener("click", async () => {
-        const text = I18N.t("shareGoalText", { label: goal.label });
-        const result = await SHARE.shareCard(dataURL, text);
-        if (result === "downloaded") UI.toast(I18N.t("imageDownloadedToast"));
-      });
-    }
-    const photoInput = document.getElementById("celebrate-photo-input");
-    if (photoInput) {
-      photoInput.addEventListener("change", async () => {
-        const file = photoInput.files && photoInput.files[0];
-        if (!file) return;
-        const photoDataURL = await SHARE.resizeImageFile(file, 1000, 0.85);
-        const updated = STORE.setGoalPhoto(goal.id, photoDataURL);
-        UI.celebrateGoal(updated);
-      });
-    }
-  },
-
   // ---------- Comprobación de la meta diaria ----------
   checkBudgetAlert() {
     const settings = STORE.getSettings();
@@ -1126,12 +1090,6 @@ const UI = {
     });
 
     UI.render("hoy");
-
-    // El cierre de día puede hacer que una meta con propósito también
-    // se cumpla; se avisa con un toast para no chocar con este modal.
-    LOGIC.checkGoalsAchieved().forEach((g) => {
-      UI.toast(I18N.t("toastGoalAchieved", { label: g.label }));
-    });
   },
 
   // ================= MOVIMIENTOS =================
@@ -1344,7 +1302,6 @@ const UI = {
   renderMetas() {
     const s = STORE.getSettings();
     const custom = STORE.getCustomCategories();
-    const goals = STORE.getGoals();
 
     return `
       <section class="card">
@@ -1417,58 +1374,15 @@ const UI = {
           </div>
         </form>
 
-        <h2 class="section-title">${I18N.t("savingsGoalsTitle")}</h2>
-        <p class="muted-small">${I18N.t("savingsGoalsHint")}</p>
-        ${goals.length ? `
-          <ul class="goal-list">
-            ${goals.map((g) => {
-              const p = LOGIC.goalProgress(g);
-              const purpose = DATA.savingsPurposes.find((x) => x.id === g.purpose);
-              return `
-                <li class="goal-item ${g.achieved ? "is-achieved" : ""}">
-                  <div class="goal-item-head">
-                    <strong>${purpose ? purpose.icon : "🎯"} ${g.label}</strong>
-                    <button class="icon-btn" data-action="remove-goal" data-id="${g.id}" aria-label="${I18N.t("goalDeleteAria")}">🗑️</button>
-                  </div>
-                  <div class="goal-photo-row">
-                    ${g.photo ? `<img src="${g.photo}" class="goal-photo-thumb" alt="" />` : ""}
-                    <label class="btn btn-ghost btn-sm" for="goal-photo-input-${g.id}">${g.photo ? I18N.t("changePhotoBtn") : I18N.t("addPhotoBtn")}</label>
-                    <input type="file" accept="image/*" id="goal-photo-input-${g.id}" data-action="goal-photo-input" data-id="${g.id}" hidden />
-                  </div>
-                  ${g.achieved
-                    ? `<div class="goal-achieved-row"><span>${I18N.t("goalAchievedLabel")}</span><button class="btn btn-primary btn-sm" data-action="share-goal" data-id="${g.id}">${I18N.t("btnShare")}</button></div>`
-                    : `
-                      <div class="progress-track"><div class="progress-fill" style="width:${p.pct}%"></div></div>
-                      <p class="muted-small">${LOGIC.formatMoney(p.saved)} / ${LOGIC.formatMoney(g.targetAmount)}</p>
-                    `}
-                </li>`;
-            }).join("")}
-          </ul>
-        ` : ""}
         ${(() => {
           const target = LOGIC.emergencyFundTarget();
-          if (!target || goals.some((g) => g.purpose === "emergencia")) return "";
+          if (!target) return "";
           return `
             <div class="suggest-card">
               <strong>${I18N.t("emergencySuggestTitle")}</strong>
               <p class="muted-small">${I18N.t("emergencySuggestBody", { amount: LOGIC.formatMoney(target) })}</p>
-              <button class="btn btn-primary btn-sm" data-action="add-emergency" data-amount="${target}">${I18N.t("emergencySuggestBtn")}</button>
             </div>`;
         })()}
-        <form id="goal-form" class="form">
-          <label>${I18N.t("goalWhatLabel")}
-            <input type="text" name="label" placeholder="${I18N.t("goalWhatPlaceholder")}" required />
-          </label>
-          <label>${I18N.t("purposeLabel")}
-            <select name="purpose">
-              ${DATA.savingsPurposes.map((p) => `<option value="${p.id}">${p.icon} ${LOGIC.localized(p.label)}</option>`).join("")}
-            </select>
-          </label>
-          <label>${I18N.t("goalHowMuchLabel")}
-            <input type="number" name="targetAmount" min="0" step="0.01" placeholder="Ej. 50" required />
-          </label>
-          <button type="submit" class="btn btn-secondary btn-block">${I18N.t("addGoalBtn")}</button>
-        </form>
 
         <h2 class="section-title">${I18N.t("reminderTitle")}</h2>
         <p class="muted-small">${I18N.t("reminderHint")}</p>
@@ -2224,18 +2138,6 @@ const UI = {
     );
 
     // ---- Metas de ahorro por propósito ----
-    const emergencyBtn = view.querySelector('[data-action="add-emergency"]');
-    if (emergencyBtn) {
-      emergencyBtn.addEventListener("click", () => {
-        STORE.addGoal({
-          label: LOGIC.localized(DATA.savingsPurposes.find((p) => p.id === "emergencia").label),
-          purpose: "emergencia",
-          targetAmount: Number(emergencyBtn.dataset.amount) || 0
-        });
-        UI.toast(I18N.t("toastGoalAdded"));
-        UI.render("metas");
-      });
-    }
     const reminderForm = view.querySelector("#reminder-form");
     if (reminderForm) {
       reminderForm.addEventListener("submit", (e) => {
@@ -2298,55 +2200,6 @@ const UI = {
         UI.render("cuentas");
       });
     }
-
-    const goalForm = view.querySelector("#goal-form");
-    if (goalForm) {
-      goalForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        STORE.addGoal({
-          label: fd.get("label"),
-          purpose: fd.get("purpose"),
-          targetAmount: parseFloat(fd.get("targetAmount")) || 0
-        });
-        UI.toast(I18N.t("toastGoalAdded"));
-        UI.render("metas");
-      });
-    }
-    view.querySelectorAll('[data-action="remove-goal"]').forEach((btn) =>
-      btn.addEventListener("click", () => {
-        if (confirm(I18N.t("confirmDeleteGoal"))) {
-          STORE.removeGoal(btn.dataset.id);
-          UI.render("metas");
-        }
-      })
-    );
-    view.querySelectorAll('[data-action="goal-photo-input"]').forEach((input) =>
-      input.addEventListener("change", async () => {
-        const file = input.files && input.files[0];
-        if (!file) return;
-        try {
-          const dataURL = await SHARE.resizeImageFile(file, 1000, 0.85);
-          STORE.setGoalPhoto(input.dataset.id, dataURL);
-          UI.toast(I18N.t("toastPhotoAdded"));
-          UI.render("metas");
-        } catch (e) {
-          UI.toast(I18N.t("toastPhotoError"));
-        }
-      })
-    );
-    view.querySelectorAll('[data-action="share-goal"]').forEach((btn) =>
-      btn.addEventListener("click", async () => {
-        const goal = STORE.getGoals().find((g) => g.id === btn.dataset.id);
-        if (!goal) return;
-        const settings = STORE.getSettings();
-        const dataURL = await SHARE.buildGoalCardDataURL({ goal, userName: settings.userName });
-        const text = I18N.t("shareGoalText", { label: goal.label });
-        SHARE.shareCard(dataURL, text).then((result) => {
-          if (result === "downloaded") UI.toast(I18N.t("imageDownloadedToast"));
-        });
-      })
-    );
 
     // ---- Consejos: simulador 50/30/20 ----
     const simIncomeInput = view.querySelector("#sim-income");
