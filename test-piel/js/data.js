@@ -29,6 +29,7 @@ const DATA = {
       type: "choice",
       question: "¿Cómo describirías tu piel la mayoría de los días?",
       summaryLabel: "Tipo de piel",
+      image: "img/skin-types.webp",
       options: [
         { value: "grasa", label: "Grasa / con brillo", shortLabel: "grasa" },
         { value: "seca", label: "Seca / con sensación de tirantez", shortLabel: "seca" },

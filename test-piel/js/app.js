@@ -179,6 +179,7 @@ const APP = {
         <p class="q-count">Pregunta ${i + 1} de ${this.totalSteps()}</p>
         <h1>${q.question}</h1>
         ${q.hint ? `<p class="muted-small">${q.hint}</p>` : ""}
+        ${q.image ? `<img src="${q.image}" alt="" class="question-img" />` : ""}
         ${controlHTML}
         <button type="button" class="btn btn-ghost btn-block" id="back-btn">Atrás</button>
       </section>`;
