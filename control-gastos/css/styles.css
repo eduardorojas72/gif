@@ -10,6 +10,7 @@
   --expense: #C0392B;
   --danger: #C0392B;
   --border: #E3E9E5;
+  --ant: #8E5828;
   --radius: 16px;
   color-scheme: light;
 }
@@ -26,6 +27,7 @@
     --income: #4FD397;
     --expense: #FF7A6E;
     --border: #263229;
+    --ant: #E0A971;
     color-scheme: dark;
   }
 }
@@ -181,6 +183,7 @@ h1, h2, h3 {
 .btn-expense { background: rgba(192, 57, 43, 0.12); color: var(--expense); }
 .btn-income { background: rgba(27, 138, 90, 0.12); color: var(--income); }
 .btn-saving { background: rgba(201, 139, 18, 0.14); color: var(--gold); }
+.btn-ant { background: rgba(142, 88, 40, 0.13); color: var(--ant); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 12px; font-size: 13px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -642,3 +645,67 @@ h1, h2, h3 {
 .bar-track { height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; }
 .bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
 .bar-value { text-align: right; font-weight: 600; }
+
+/* ---------- Gastos hormiga ---------- */
+.ant-block { border-top: 1px dashed var(--border); padding-top: 12px; }
+.ant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ant-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(142, 88, 40, 0.10);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+}
+.tag-ant { font-style: normal; font-size: 10px; background: rgba(142, 88, 40, 0.14); color: var(--ant); padding: 2px 6px; border-radius: 999px; }
+.ant-goal-note {
+  background: rgba(27, 138, 90, 0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.ant-goal-note.is-slip { background: rgba(201, 139, 18, 0.14); }
+.ant-concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ant-concept { flex-direction: row !important; align-items: center; cursor: pointer; }
+.ant-concept input { position: absolute; opacity: 0; pointer-events: none; }
+.ant-concept span {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+}
+.ant-concept input:checked + span { border-color: var(--ant); background: rgba(142, 88, 40, 0.14); font-weight: 600; }
+.ant-concept input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ant-review-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; max-height: 55vh; overflow-y: auto; }
+.ant-review-item { border: 1px solid var(--border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.ant-review-head { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.ant-review-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ant-yes, .ant-no { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+.ant-yes.is-on { background: rgba(27, 138, 90, 0.16); border-color: var(--income); color: var(--income); }
+.ant-no.is-on { background: rgba(192, 57, 43, 0.12); border-color: var(--expense); color: var(--expense); }
+.ant-day-summary { display: flex; flex-direction: column; gap: 8px; background: rgba(142, 88, 40, 0.08); border-radius: 12px; padding: 12px; }
+.ant-day-summary p { margin: 0; }
+.ant-day-summary.is-clean { background: rgba(27, 138, 90, 0.12); color: var(--income); text-align: center; }
+.ant-day-summary.is-clean p { color: var(--text); font-size: 13.5px; }
+.ant-week { display: flex; flex-direction: column; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.bar-fill--ant { background: var(--ant); }
+.ant-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ant-split-box { display: flex; flex-direction: column; gap: 2px; border-radius: 12px; padding: 10px; font-size: 12.5px; }
+.ant-split-box strong { font-size: 18px; font-family: "Space Grotesk", sans-serif; }
+.ant-split-box.is-yes { background: rgba(27, 138, 90, 0.10); color: var(--income); }
+.ant-split-box.is-no { background: rgba(192, 57, 43, 0.10); color: var(--expense); }
+.ant-insight { margin: 0; font-size: 13px; background: rgba(201, 139, 18, 0.12); border-radius: 10px; padding: 10px 12px; }
+.ant-goal-form { border: 1px dashed var(--border); border-radius: 12px; padding: 12px; }
+.ant-goal-form h3 { margin: 0; font-size: 15px; }
+.ant-goal-form p { margin: 0; }
+
+/* En móvil, la fila de "añadir categoría" se parte en dos líneas. */
+@media (max-width: 480px) {
+  .category-add-row { grid-template-columns: 1fr 3.5rem; }
+  .category-add-row select, .category-add-row button { grid-column: 1 / -1; }
+}

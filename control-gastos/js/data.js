@@ -10,7 +10,6 @@ const DATA = {
       { id: "compras", label: "Compras", icon: "🛍️" },
       { id: "suscripciones", label: "Suscripciones", icon: "🔁" },
       { id: "educacion", label: "Educación", icon: "📚" },
-      { id: "atomy", label: "Compra de Productos Atomy", icon: "📦" },
       { id: "otros", label: "Otros", icon: "✨" }
     ],
     en: [
@@ -22,7 +21,6 @@ const DATA = {
       { id: "compras", label: "Shopping", icon: "🛍️" },
       { id: "suscripciones", label: "Subscriptions", icon: "🔁" },
       { id: "educacion", label: "Education", icon: "📚" },
-      { id: "atomy", label: "Atomy Product Purchase", icon: "📦" },
       { id: "otros", label: "Other", icon: "✨" }
     ],
     fr: [
@@ -34,7 +32,6 @@ const DATA = {
       { id: "compras", label: "Achats", icon: "🛍️" },
       { id: "suscripciones", label: "Abonnements", icon: "🔁" },
       { id: "educacion", label: "Éducation", icon: "📚" },
-      { id: "atomy", label: "Achat de produits Atomy", icon: "📦" },
       { id: "otros", label: "Autres", icon: "✨" }
     ],
     it: [
@@ -46,7 +43,6 @@ const DATA = {
       { id: "compras", label: "Shopping", icon: "🛍️" },
       { id: "suscripciones", label: "Abbonamenti", icon: "🔁" },
       { id: "educacion", label: "Istruzione", icon: "📚" },
-      { id: "atomy", label: "Acquisto prodotti Atomy", icon: "📦" },
       { id: "otros", label: "Altro", icon: "✨" }
     ],
     pt: [
@@ -58,7 +54,6 @@ const DATA = {
       { id: "compras", label: "Compras", icon: "🛍️" },
       { id: "suscripciones", label: "Assinaturas", icon: "🔁" },
       { id: "educacion", label: "Educação", icon: "📚" },
-      { id: "atomy", label: "Compra de Produtos Atomy", icon: "📦" },
       { id: "otros", label: "Outros", icon: "✨" }
     ]
   },
@@ -137,6 +132,30 @@ const DATA = {
     ]
   },
 
+  // Categorías que ya no vienen por defecto pero pueden aparecer en
+  // movimientos antiguos guardados en el dispositivo: solo para mostrarlas.
+  legacyCategories: {
+    atomy: { icon: "📦", label: { es: "Compra de Productos Atomy", en: "Atomy Product Purchase", fr: "Achat de produits Atomy", it: "Acquisto prodotti Atomy", pt: "Compra de Produtos Atomy" } }
+  },
+
+  // Gastos hormiga: pequeños gastos diarios que, sumados, se llevan una parte
+  // importante del dinero sin que uno se dé cuenta. Cada concepto se guarda
+  // en el movimiento (antConcept) y se asocia a una categoría normal.
+  antConcepts: [
+    { id: "cafe", icon: "☕", category: "alimentacion", label: { es: "Café", en: "Coffee", fr: "Café", it: "Caffè", pt: "Café" } },
+    { id: "snack", icon: "🥐", category: "alimentacion", label: { es: "Snack o bollería", en: "Snack or pastry", fr: "Snack ou viennoiserie", it: "Snack o brioche", pt: "Lanche ou doce" } },
+    { id: "bebidas", icon: "🥤", category: "alimentacion", label: { es: "Refrescos y bebidas", en: "Soft drinks", fr: "Boissons", it: "Bibite", pt: "Refrigerantes e bebidas" } },
+    { id: "delivery", icon: "🛵", category: "alimentacion", label: { es: "Comida a domicilio", en: "Food delivery", fr: "Livraison de repas", it: "Cibo a domicilio", pt: "Delivery de comida" } },
+    { id: "comer_fuera", icon: "🍔", category: "ocio", label: { es: "Comer o picar fuera", en: "Eating out", fr: "Manger dehors", it: "Mangiare fuori", pt: "Comer fora" } },
+    { id: "taxi", icon: "🚕", category: "transporte", label: { es: "Taxi / VTC", en: "Taxi / rideshare", fr: "Taxi / VTC", it: "Taxi / NCC", pt: "Táxi / app de transporte" } },
+    { id: "tabaco", icon: "🚬", category: "otros", label: { es: "Tabaco", en: "Tobacco", fr: "Tabac", it: "Tabacco", pt: "Tabaco" } },
+    { id: "apuestas", icon: "🎰", category: "ocio", label: { es: "Lotería y apuestas", en: "Lottery & betting", fr: "Loterie et paris", it: "Lotteria e scommesse", pt: "Loteria e apostas" } },
+    { id: "apps", icon: "📱", category: "ocio", label: { es: "Apps y juegos", en: "Apps & games", fr: "Applis et jeux", it: "App e giochi", pt: "Apps e jogos" } },
+    { id: "caprichos", icon: "🛍️", category: "compras", label: { es: "Caprichos y compras pequeñas", en: "Treats & small purchases", fr: "Petits achats plaisir", it: "Sfizi e piccoli acquisti", pt: "Mimos e pequenas compras" } },
+    { id: "comisiones", icon: "🏧", category: "otros", label: { es: "Comisiones del banco", en: "Bank fees", fr: "Frais bancaires", it: "Commissioni bancarie", pt: "Tarifas bancárias" } },
+    { id: "otro", icon: "✨", category: "otros", label: { es: "Otro", en: "Other", fr: "Autre", it: "Altro", pt: "Outro" } }
+  ],
+
   // Palabras clave (sin acentos, en minúscula) para sugerir una categoría al
   // importar movimientos desde un CSV bancario, a partir del texto del
   // concepto/descripción. Es solo una sugerencia editable, no una regla fija.
@@ -149,8 +168,7 @@ const DATA = {
       salud: ["farmacia", "clinica", "hospital", "dentista", "fisioterap"],
       compras: ["amazon", "zara", "el corte ingles", "decathlon", "ikea", "primark", "mercado libre", "aliexpress"],
       suscripciones: ["netflix", "spotify", "hbo", "disney+", "amazon prime", "icloud", "google one", "youtube premium"],
-      educacion: ["universidad", "colegio", "udemy", "libreria", "coursera"],
-      atomy: ["atomy"]
+      educacion: ["universidad", "colegio", "udemy", "libreria", "coursera"]
     },
     income: {
       salario: ["nomina", "salario", "payroll"],

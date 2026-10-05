@@ -14,7 +14,9 @@ const UI = {
   categoryLabel(id) {
     const all = this.categoriesFor("expense").concat(this.categoriesFor("income"));
     const found = all.find((c) => c.id === id);
-    return found ? found.icon + " " + found.label : id;
+    if (found) return found.icon + " " + found.label;
+    const legacy = DATA.legacyCategories[id];
+    return legacy ? legacy.icon + " " + LOGIC.localized(legacy.label) : id;
   },
   methodLabel(id) {
     const m = LOGIC.localized(DATA.paymentMethods).find((x) => x.id === id);
@@ -671,7 +673,7 @@ const UI = {
     const dayClosed = STORE.getDays()[today];
     const txs = LOGIC.transactionsForDate(today).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
     const planToday = STORE.getPlan(today);
-    const savings = LOGIC.savingsProgressThisMonth();
+    const ants = LOGIC.antSummary(today, today);
     const streak = LOGIC.currentStreak();
     const tier = LOGIC.streakTier(streak);
 
@@ -724,24 +726,13 @@ const UI = {
           </div>
         `}
 
-        ${settings.savingsGoalMonthly ? `
-          <div class="goal-block savings-block">
-            <div class="goal-row">
-              <span>${I18N.t("savingsThisMonth")}</span>
-              <span><strong>${LOGIC.formatMoney(savings.saved)}</strong> / ${LOGIC.formatMoney(savings.goal)}</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill progress-fill--savings" style="width:${savings.pct}%"></div>
-            </div>
-            <p class="muted-small">${I18N.t("dailySavingsTargetNote", { amount: LOGIC.formatMoney(LOGIC.dailySavingsTarget()) })}</p>
-          </div>
-        ` : ""}
+        ${this.antTodayBlockHTML(ants)}
 
         <div class="quick-actions">
           <button class="btn btn-expense" data-action="add" data-type="expense" ${dayClosed ? "disabled" : ""}>${I18N.t("addExpenseBtn")}</button>
           <button class="btn btn-income" data-action="add" data-type="income" ${dayClosed ? "disabled" : ""}>${I18N.t("addIncomeBtn")}</button>
         </div>
-        <button class="btn btn-saving btn-block" data-action="add-saving" ${dayClosed ? "disabled" : ""}>${I18N.t("addSavingBtn")}</button>
+        <button class="btn btn-ant btn-block" data-action="add-ant" ${dayClosed ? "disabled" : ""}>${I18N.t("addAntBtn")}</button>
 
         ${income ? `<p class="muted-small">${I18N.t("todayIncomeNote", { amount: "<strong>" + LOGIC.formatMoney(income) + "</strong>" })}</p>` : ""}
 
@@ -750,7 +741,7 @@ const UI = {
                ${dayClosed.met ? I18N.t("dayClosedGood") : I18N.t("dayClosedBad")}
              </div>`
           : `<div class="hoy-close-actions">
-               ${goal ? `<button class="btn btn-secondary btn-block" data-action="close-day">${I18N.t("closeDayBtn")}</button>` : ""}
+               <button class="btn btn-secondary btn-block" data-action="close-day">${I18N.t("closeDayBtn")}</button>
                <button class="btn btn-ghost btn-block" data-action="plan-tomorrow">${I18N.t("planTomorrowBtn")}</button>
              </div>`
         }
@@ -764,12 +755,15 @@ const UI = {
   txItemHTML(t) {
     const sign = t.type === "expense" ? "−" : "+";
     const amountClass = t.type === "expense" ? "text-expense" : (t.type === "saving" ? "text-saving" : "text-income");
-    const catLabel = t.type === "saving" ? I18N.t("savingCatLabel") : this.categoryLabel(t.category);
+    const catLabel = t.type === "saving" ? I18N.t("savingCatLabel") : (t.antConcept ? LOGIC.antConceptLabel(t.antConcept) : this.categoryLabel(t.category));
     const fixedTag = t.excludeFromDailyGoal ? ` <em class="tag-linked">${I18N.t("tagFixed")}</em>` : "";
+    const antTag = t.antConcept
+      ? ` <em class="tag-ant">🐜${t.antNeeded === true ? " ✅" : t.antNeeded === false ? " ❌" : ""}</em>`
+      : "";
     return `
       <li class="tx-item" data-id="${t.id}">
         <span class="tx-cat">${catLabel}</span>
-        <span class="tx-desc">${t.description || ""}${t.source === "linked" ? ` <em class="tag-linked">${I18N.t("tagLinked")}</em>` : ""}${fixedTag}</span>
+        <span class="tx-desc">${t.description || ""}${t.source === "linked" ? ` <em class="tag-linked">${I18N.t("tagLinked")}</em>` : ""}${fixedTag}${antTag}</span>
         <span class="tx-amount ${amountClass}">${sign} ${LOGIC.formatMoney(t.amount)}</span>
         <button class="icon-btn" data-action="delete-tx" data-id="${t.id}" title="${I18N.t("deleteAria")}" aria-label="${I18N.t("deleteMovementAria")}">🗑️</button>
       </li>`;
@@ -789,7 +783,13 @@ const UI = {
         <label>${I18N.t("amountLabel")}
           <input type="number" name="amount" min="0" step="0.01" required placeholder="0.00" />
         </label>
-        ${type === "expense" ? `<label>${I18N.t("paymentMethodLabel")}
+        ${type === "expense" ? `<label>${I18N.t("antSelectLabel")}
+          <select name="antConcept">
+            <option value="">${I18N.t("antSelectNone")}</option>
+            ${this.antConceptOptionsHTML()}
+          </select>
+        </label>
+        <label>${I18N.t("paymentMethodLabel")}
           <select name="method">${this.methodOptionsHTML("efectivo")}</select>
         </label>
         <label class="toggle-row">
@@ -805,16 +805,61 @@ const UI = {
     `;
   },
 
-  savingFormHTML() {
+  // ---------- Gastos hormiga ----------
+  antConceptOptionsHTML(selected) {
+    return DATA.antConcepts
+      .map((c) => `<option value="${c.id}" ${c.id === selected ? "selected" : ""}>${c.icon} ${LOGIC.localized(c.label)}</option>`)
+      .join("");
+  },
+
+  antChipsHTML(items) {
+    return `<div class="ant-chips">${items.map((it) => `
+      <span class="ant-chip">${LOGIC.antConceptLabel(it.concept)} <strong>${LOGIC.formatMoney(it.amount)}</strong>${it.count > 1 ? ` <span class="muted-small">×${it.count}</span>` : ""}</span>
+    `).join("")}</div>`;
+  },
+
+  antTodayBlockHTML(ants) {
+    const weekStart = LOGIC.weekStartOf();
+    const weekGoal = LOGIC.weekGoalProgress(weekStart);
+    const lastWeekStart = LOGIC.weekStartOf(null, -1);
+    const lastWeek = LOGIC.antSummary(lastWeekStart, LOGIC.weekEndOf(lastWeekStart));
+    const avoidLabels = weekGoal ? weekGoal.avoid.map((id) => LOGIC.antConceptLabel(id)).join(" · ") : "";
     return `
-      <h2>${I18N.t("savingModalTitle")}</h2>
-      <p class="muted-small">${I18N.t("savingModalHint")}</p>
-      <form id="saving-form" class="form">
-        <label>${I18N.t("savingWhatLabel")}
-          <input type="text" name="description" placeholder="${I18N.t("savingWhatPlaceholder")}" required />
+      <div class="goal-block ant-block">
+        <div class="goal-row">
+          <span>${I18N.t("antTodayTitle")}</span>
+          <strong>${LOGIC.formatMoney(ants.total)}</strong>
+        </div>
+        ${ants.count ? this.antChipsHTML(ants.items) : `<p class="muted-small">${I18N.t("antTodayNone")}</p>`}
+        ${weekGoal ? `
+          <div class="ant-goal-note ${weekGoal.slips ? "is-slip" : ""}">
+            <strong>${I18N.t("antWeekGoalShort")}</strong> ${avoidLabels}
+            <div class="muted-small">${weekGoal.slips
+              ? I18N.t("antWeekGoalSlips", { n: weekGoal.slips, amount: LOGIC.formatMoney(weekGoal.slipAmount) })
+              : I18N.t("antWeekGoalClean")}</div>
+          </div>` : (lastWeek.count ? `
+          <button class="btn btn-ghost btn-block" data-action="go-resumen">${I18N.t("antSetWeekGoalPrompt", { amount: LOGIC.formatMoney(lastWeek.total) })}</button>` : "")}
+      </div>`;
+  },
+
+  antFormHTML() {
+    return `
+      <h2>${I18N.t("antModalTitle")}</h2>
+      <p class="muted-small">${I18N.t("antModalHint")}</p>
+      <form id="ant-form" class="form">
+        <div class="ant-concept-grid">
+          ${DATA.antConcepts.map((c, i) => `
+            <label class="ant-concept">
+              <input type="radio" name="antConcept" value="${c.id}" ${i === 0 ? "checked" : ""} />
+              <span>${c.icon} ${LOGIC.localized(c.label)}</span>
+            </label>
+          `).join("")}
+        </div>
+        <label>${I18N.t("amountLabel")}
+          <input type="number" name="amount" min="0" step="0.01" required placeholder="0.00" inputmode="decimal" />
         </label>
-        <label>${I18N.t("savingAmountLabel")}
-          <input type="number" name="amount" min="0" step="0.01" required placeholder="0.00" />
+        <label>${I18N.t("descriptionLabel")}
+          <input type="text" name="description" placeholder="${I18N.t("antDescriptionPlaceholder")}" />
         </label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-close-modal>${I18N.t("btnCancel")}</button>
@@ -822,6 +867,64 @@ const UI = {
         </div>
       </form>
     `;
+  },
+
+  // Revisión de fin de día: por cada gasto hormiga, "lo necesitaba" o "no lo
+  // necesitaba". Llama a onDone cuando el usuario termina.
+  openAntReview(date, onDone) {
+    const txs = LOGIC.antTransactionsInRange(date, date).sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
+    const render = () => {
+      const current = LOGIC.antTransactionsInRange(date, date);
+      const byId = Object.fromEntries(current.map((t) => [t.id, t]));
+      const pending = txs.filter((t) => byId[t.id] && byId[t.id].antNeeded == null).length;
+      UI.openModal(`
+        <h2>${I18N.t("antReviewTitle")}</h2>
+        <p class="muted-small">${I18N.t("antReviewHint")}</p>
+        <ul class="ant-review-list">
+          ${txs.map((t) => {
+            const v = byId[t.id] ? byId[t.id].antNeeded : null;
+            return `
+              <li class="ant-review-item">
+                <div class="ant-review-head">
+                  <span>${LOGIC.antConceptLabel(t.antConcept)}${t.description && t.description !== LOGIC.localized(LOGIC.antConcept(t.antConcept).label) ? ` <span class="muted-small">· ${t.description}</span>` : ""}</span>
+                  <strong>${LOGIC.formatMoney(t.amount)}</strong>
+                </div>
+                <div class="ant-review-actions">
+                  <button type="button" class="btn btn-sm ant-yes ${v === true ? "is-on" : ""}" data-review="${t.id}" data-needed="true">${I18N.t("antNeededYes")}</button>
+                  <button type="button" class="btn btn-sm ant-no ${v === false ? "is-on" : ""}" data-review="${t.id}" data-needed="false">${I18N.t("antNeededNo")}</button>
+                </div>
+              </li>`;
+          }).join("")}
+        </ul>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" id="ant-review-done">${pending ? I18N.t("antReviewPending", { n: pending }) : I18N.t("btnContinue")}</button>
+        </div>
+      `);
+      document.querySelectorAll("[data-review]").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          STORE.updateTransaction(btn.dataset.review, { antNeeded: btn.dataset.needed === "true" });
+          render();
+        })
+      );
+      document.getElementById("ant-review-done").addEventListener("click", () => onDone());
+    };
+    render();
+  },
+
+  // Bloque de resumen hormiga que encabeza el modal de cierre del día.
+  antDaySummaryHTML(date) {
+    const ants = LOGIC.antSummary(date, date);
+    if (!ants.count) {
+      return `<div class="ant-day-summary is-clean"><strong>${I18N.t("antDayCleanTitle")}</strong><p>${I18N.t("antDayCleanBody")}</p></div>`;
+    }
+    return `
+      <div class="ant-day-summary">
+        <strong>${I18N.t("antDaySummaryTitle", { amount: LOGIC.formatMoney(ants.total), n: ants.count })}</strong>
+        ${this.antChipsHTML(ants.items)}
+        <p class="muted-small">${ants.notNeeded > 0
+          ? I18N.t("antDayNotNeeded", { amount: LOGIC.formatMoney(ants.notNeeded) })
+          : I18N.t("antDayAllNeeded")}</p>
+      </div>`;
   },
 
   planFormHTML(forDate, current) {
@@ -836,6 +939,79 @@ const UI = {
         </div>
       </form>
     `;
+  },
+
+  // Cierra el día (si hay meta diaria), muestra el resumen de gastos hormiga
+  // y ofrece planificar mañana.
+  finishCloseDay(date) {
+    const record = LOGIC.closeDay(date);
+    const hadAnts = LOGIC.antTransactionsInRange(date, date).length > 0;
+    const tomorrow = LOGIC.todayStr(1);
+    const existingPlan = STORE.getPlan(tomorrow);
+    let resultHTML;
+    let dataURL = null;
+    const text = I18N.t("shareStreakText", { n: LOGIC.currentStreak() });
+
+    if (record && record.met) {
+      AUDIO.playSuccess();
+      UI.confettiBurst();
+      const settings = STORE.getSettings();
+      dataURL = SHARE.buildCardDataURL({
+        date: record.date, goal: record.goal, spent: record.spent,
+        streak: LOGIC.currentStreak(), userName: settings.userName
+      });
+      resultHTML = `
+        <h2>${I18N.t("goalMetTitle")}</h2>
+        <img src="${dataURL}" alt="${I18N.t("achievementCardAlt")}" class="achievement-preview" />
+        <button type="button" class="btn btn-primary btn-block" id="share-btn">${I18N.t("btnShare")}</button>`;
+    } else if (record) {
+      resultHTML = `
+        <h2>${I18N.t("dayClosedTitle")}</h2>
+        <p>${I18N.t("dayClosedOverBody")}</p>`;
+    } else {
+      resultHTML = `<h2>${I18N.t("dayClosedTitle")}</h2>`;
+    }
+    // Sin gastos hormiga en el día también se celebra, aunque no haya meta.
+    if (!hadAnts && !(record && record.met)) {
+      AUDIO.playSuccess();
+      UI.confettiBurst();
+    }
+
+    UI.openModal(`
+      ${UI.antDaySummaryHTML(date)}
+      ${resultHTML}
+      <hr class="modal-divider" />
+      <h3>${I18N.t("planTomorrowTitle")}</h3>
+      <form id="plan-form">
+        <textarea name="plan" rows="3" placeholder="${I18N.t("planExamplePlaceholder")}">${existingPlan}</textarea>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>${I18N.t("btnClose")}</button>
+          <button type="submit" class="btn btn-primary">${I18N.t("savePlanBtn")}</button>
+        </div>
+      </form>
+    `);
+
+    if (dataURL) {
+      document.getElementById("share-btn").addEventListener("click", async () => {
+        const result = await SHARE.shareCard(dataURL, text);
+        if (result === "downloaded") UI.toast(I18N.t("imageDownloadedToast"));
+      });
+    }
+    document.getElementById("plan-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      STORE.setPlan(tomorrow, new FormData(e.target).get("plan"));
+      UI.closeModal();
+      UI.toast(I18N.t("toastPlanSavedTomorrow"));
+      UI.render("hoy");
+    });
+
+    UI.render("hoy");
+
+    // El cierre de día puede hacer que una meta con propósito también
+    // se cumpla; se avisa con un toast para no chocar con este modal.
+    LOGIC.checkGoalsAchieved().forEach((g) => {
+      UI.toast(I18N.t("toastGoalAchieved", { label: g.label }));
+    });
   },
 
   // ================= MOVIMIENTOS =================
@@ -879,7 +1055,7 @@ const UI = {
                   <td>${t.date}</td>
                   <td>${typeLabel[t.type] || t.type}</td>
                   <td>${t.type === "saving" ? I18N.t("savingCatLabel") : this.categoryLabel(t.category)}</td>
-                  <td>${t.description || ""}${t.excludeFromDailyGoal ? ` <em class="tag-linked">${I18N.t("tagFixed")}</em>` : ""}</td>
+                  <td>${t.description || ""}${t.excludeFromDailyGoal ? ` <em class="tag-linked">${I18N.t("tagFixed")}</em>` : ""}${t.antConcept ? ` <em class="tag-ant">🐜 ${LOGIC.antConceptLabel(t.antConcept)}</em>` : ""}</td>
                   <td>${t.method ? this.methodLabel(t.method) : "—"}</td>
                   <td>${t.source === "linked" ? I18N.t("sourceLinked") : t.source === "imported" ? I18N.t("sourceImported") : I18N.t("sourceManual")}</td>
                   <td class="${t.type === "expense" ? "text-expense" : (t.type === "saving" ? "text-saving" : "text-income")}">${t.type === "expense" ? "−" : "+"} ${LOGIC.formatMoney(t.amount)}</td>
@@ -1086,6 +1262,17 @@ const UI = {
           </label>
           <button type="submit" class="btn btn-secondary btn-block">${I18N.t("addGoalBtn")}</button>
         </form>
+
+        <h2 class="section-title">${I18N.t("backupTitle")}</h2>
+        <p class="muted-small">${I18N.t("backupHint")}</p>
+        <p class="muted-small"><strong>${s.lastBackupAt
+          ? I18N.t("backupLast", { date: new Date(s.lastBackupAt).toLocaleDateString(I18N.t("todayDateLocale"), { day: "numeric", month: "long", year: "numeric" }) })
+          : I18N.t("backupNever")}</strong></p>
+        <div class="quick-actions">
+          <button class="btn btn-primary" data-action="export-backup">${I18N.t("backupExportBtn")}</button>
+          <label class="btn btn-secondary" for="import-backup-input">${I18N.t("backupImportBtn")}</label>
+        </div>
+        <input type="file" id="import-backup-input" accept="application/json,.json" hidden />
 
         <h2 class="section-title">${I18N.t("inviteTitle")}</h2>
         <p class="muted-small">${I18N.t("inviteHint")}</p>
@@ -1364,6 +1551,75 @@ const UI = {
     `;
   },
 
+  // ---------- Resumen semanal de gastos hormiga + meta de la semana ----------
+  antWeekSectionHTML() {
+    const today = LOGIC.todayStr();
+    const weekStart = LOGIC.weekStartOf(today);
+    const week = LOGIC.antSummary(weekStart, LOGIC.weekEndOf(weekStart));
+    const lastStart = LOGIC.weekStartOf(today, -1);
+    const last = LOGIC.antSummary(lastStart, LOGIC.weekEndOf(lastStart));
+    const progress = LOGIC.weekGoalProgress(weekStart);
+    // El domingo se cierra la semana: la meta que se fija es la de la próxima.
+    const isSunday = new Date(today + "T00:00:00").getDay() === 0;
+    const targetStart = isSunday ? LOGIC.weekStartOf(today, 1) : weekStart;
+    const targetGoal = STORE.getWeekGoal(targetStart);
+    const basis = isSunday ? week : last;
+    const preselected = targetGoal ? targetGoal.avoid : LOGIC.suggestedAvoidConcepts(basis);
+    const fmtDay = (d) => new Date(d + "T00:00:00").toLocaleDateString(I18N.t("todayDateLocale"), { day: "numeric", month: "short" });
+    const diff = week.total - last.total;
+
+    return `
+      <div class="ant-week">
+        <h2 class="section-title">${I18N.t("antWeekTitle")}</h2>
+        <p class="muted-small">${fmtDay(weekStart)} – ${fmtDay(LOGIC.weekEndOf(weekStart))}</p>
+        <div class="period-total">
+          <span class="muted-small">${I18N.t("antWeekTotalLabel", { n: week.count })}</span>
+          <strong>${LOGIC.formatMoney(week.total)}</strong>
+        </div>
+        ${week.count ? `
+          <div class="bar-chart">
+            ${week.items.map((it) => `
+              <div class="bar-row">
+                <span class="bar-label">${LOGIC.antConceptLabel(it.concept)}</span>
+                <div class="bar-track"><div class="bar-fill bar-fill--ant" style="width:${Math.max(4, it.pct)}%"></div></div>
+                <span class="bar-value">${LOGIC.formatMoney(it.amount)}</span>
+              </div>
+            `).join("")}
+          </div>
+          <div class="ant-split">
+            <div class="ant-split-box is-yes"><span>${I18N.t("antNeededYes")}</span><strong>${LOGIC.formatMoney(week.needed)}</strong></div>
+            <div class="ant-split-box is-no"><span>${I18N.t("antNeededNo")}</span><strong>${LOGIC.formatMoney(week.notNeeded)}</strong></div>
+          </div>
+          ${week.unreviewed > 0 ? `<p class="muted-small">${I18N.t("antUnreviewedNote", { amount: LOGIC.formatMoney(week.unreviewed) })}</p>` : ""}
+          ${week.notNeeded > 0 ? `<p class="ant-insight">${I18N.t("antMonthProjection", { amount: LOGIC.formatMoney(week.notNeeded * 52 / 12) })}</p>` : ""}
+        ` : `<p class="muted">${I18N.t("antWeekNone")}</p>`}
+        ${last.count ? `<p class="muted-small">${I18N.t(diff <= 0 ? "antVsLastWeekDown" : "antVsLastWeekUp", { last: LOGIC.formatMoney(last.total), diff: LOGIC.formatMoney(Math.abs(diff)) })}</p>` : ""}
+
+        ${progress ? `
+          <div class="ant-goal-note ${progress.slips ? "is-slip" : ""}">
+            <strong>${I18N.t("antWeekGoalShort")}</strong> ${progress.avoid.map((id) => LOGIC.antConceptLabel(id)).join(" · ")}
+            <div class="muted-small">${progress.slips
+              ? I18N.t("antWeekGoalSlips", { n: progress.slips, amount: LOGIC.formatMoney(progress.slipAmount) })
+              : I18N.t("antWeekGoalClean")}</div>
+          </div>` : ""}
+
+        <form id="week-goal-form" class="form ant-goal-form" data-week="${targetStart}">
+          <h3>${I18N.t(isSunday ? "antNextWeekGoalTitle" : "antThisWeekGoalTitle")}</h3>
+          <p class="muted-small">${I18N.t("antGoalHint")}</p>
+          <div class="ant-concept-grid">
+            ${DATA.antConcepts.map((c) => `
+              <label class="ant-concept">
+                <input type="checkbox" name="avoid" value="${c.id}" ${preselected.includes(c.id) ? "checked" : ""} />
+                <span>${c.icon} ${LOGIC.localized(c.label)}</span>
+              </label>
+            `).join("")}
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">${targetGoal ? I18N.t("antGoalUpdateBtn") : I18N.t("antGoalSaveBtn")}</button>
+        </form>
+      </div>
+    `;
+  },
+
   // ================= RESUMEN (gráficas + logros) =================
   resumenPeriod: "day",
 
@@ -1381,6 +1637,9 @@ const UI = {
       <section class="card">
         <div class="card-head"><h1>${I18N.t("resumenTitle")}</h1></div>
 
+        ${this.antWeekSectionHTML()}
+
+        <h2 class="section-title">${I18N.t("allExpensesTitle")}</h2>
         <div class="period-tabs">
           ${["day", "week", "month"].map((p) => `
             <button class="period-tab ${p === period ? "is-active" : ""}" data-period="${p}">${periodTabLabel[p]}</button>
@@ -1475,6 +1734,7 @@ const UI = {
             date: LOGIC.todayStr(),
             source: "manual"
           };
+          if (fd.get("antConcept")) tx.antConcept = fd.get("antConcept");
           STORE.addTransaction(tx);
           UI.closeModal();
           UI.toast(tx.type === "income" ? I18N.t("toastIncomeAdded") : I18N.t("toastExpenseAdded"));
@@ -1484,27 +1744,39 @@ const UI = {
       })
     );
 
-    const addSavingBtn = view.querySelector('[data-action="add-saving"]');
-    if (addSavingBtn) {
-      addSavingBtn.addEventListener("click", () => {
-        UI.openModal(UI.savingFormHTML());
-        document.getElementById("saving-form").addEventListener("submit", (e) => {
+    const addAntBtn = view.querySelector('[data-action="add-ant"]');
+    if (addAntBtn) {
+      addAntBtn.addEventListener("click", () => {
+        UI.openModal(UI.antFormHTML());
+        document.getElementById("ant-form").addEventListener("submit", (e) => {
           e.preventDefault();
           const fd = new FormData(e.target);
+          const concept = LOGIC.antConcept(fd.get("antConcept"));
           STORE.addTransaction({
-            type: "saving",
-            category: null,
-            description: fd.get("description"),
+            type: "expense",
+            category: concept.category,
+            antConcept: concept.id,
+            description: fd.get("description") || "",
             amount: parseFloat(fd.get("amount")) || 0,
+            method: null,
+            excludeFromDailyGoal: false,
             date: LOGIC.todayStr(),
             source: "manual"
           });
           UI.closeModal();
-          UI.toast(I18N.t("toastSavingLogged"));
+          UI.toast(I18N.t("toastAntAdded"));
           UI.render("hoy");
+          UI.checkBudgetAlert();
         });
       });
     }
+
+    view.querySelectorAll('[data-action="go-resumen"]').forEach((b) =>
+      b.addEventListener("click", () => {
+        UI.resumenPeriod = "week";
+        UI.render("resumen");
+      })
+    );
 
     view.querySelectorAll('[data-action="delete-tx"]').forEach((btn) =>
       btn.addEventListener("click", () => {
@@ -1546,66 +1818,20 @@ const UI = {
     const closeDayBtn = view.querySelector('[data-action="close-day"]');
     if (closeDayBtn) {
       closeDayBtn.addEventListener("click", () => {
-        const record = LOGIC.closeDay(LOGIC.todayStr());
-        if (!record) return;
-        const tomorrow = LOGIC.todayStr(1);
-        const existingPlan = STORE.getPlan(tomorrow);
-        let resultHTML;
-        let dataURL = null;
-        const text = I18N.t("shareStreakText", { n: LOGIC.currentStreak() });
+        const today = LOGIC.todayStr();
+        if (LOGIC.antTransactionsInRange(today, today).length) UI.openAntReview(today, () => UI.finishCloseDay(today));
+        else UI.finishCloseDay(today);
+      });
+    }
 
-        if (record.met) {
-          AUDIO.playSuccess();
-          UI.confettiBurst();
-          const settings = STORE.getSettings();
-          dataURL = SHARE.buildCardDataURL({
-            date: record.date, goal: record.goal, spent: record.spent,
-            streak: LOGIC.currentStreak(), userName: settings.userName
-          });
-          resultHTML = `
-            <h2>${I18N.t("goalMetTitle")}</h2>
-            <img src="${dataURL}" alt="${I18N.t("achievementCardAlt")}" class="achievement-preview" />
-            <button type="button" class="btn btn-primary btn-block" id="share-btn">${I18N.t("btnShare")}</button>`;
-        } else {
-          resultHTML = `
-            <h2>${I18N.t("dayClosedTitle")}</h2>
-            <p>${I18N.t("dayClosedOverBody")}</p>`;
-        }
-
-        UI.openModal(`
-          ${resultHTML}
-          <hr class="modal-divider" />
-          <h3>${I18N.t("planTomorrowTitle")}</h3>
-          <form id="plan-form">
-            <textarea name="plan" rows="3" placeholder="${I18N.t("planExamplePlaceholder")}">${existingPlan}</textarea>
-            <div class="modal-actions">
-              <button type="button" class="btn btn-ghost" data-close-modal>${I18N.t("btnClose")}</button>
-              <button type="submit" class="btn btn-primary">${I18N.t("savePlanBtn")}</button>
-            </div>
-          </form>
-        `);
-
-        if (dataURL) {
-          document.getElementById("share-btn").addEventListener("click", async () => {
-            const result = await SHARE.shareCard(dataURL, text);
-            if (result === "downloaded") UI.toast(I18N.t("imageDownloadedToast"));
-          });
-        }
-        document.getElementById("plan-form").addEventListener("submit", (e) => {
-          e.preventDefault();
-          STORE.setPlan(tomorrow, new FormData(e.target).get("plan"));
-          UI.closeModal();
-          UI.toast(I18N.t("toastPlanSavedTomorrow"));
-          UI.render("hoy");
-        });
-
-        UI.render("hoy");
-
-        // El cierre de día puede hacer que una meta con propósito también
-        // se cumpla; se avisa con un toast para no chocar con este modal.
-        LOGIC.checkGoalsAchieved().forEach((g) => {
-          UI.toast(I18N.t("toastGoalAchieved", { label: g.label }));
-        });
+    const weekGoalForm = view.querySelector("#week-goal-form");
+    if (weekGoalForm) {
+      weekGoalForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const avoid = new FormData(weekGoalForm).getAll("avoid");
+        STORE.setWeekGoal(weekGoalForm.dataset.week, avoid);
+        UI.toast(avoid.length ? I18N.t("toastWeekGoalSaved") : I18N.t("toastWeekGoalCleared"));
+        UI.render("resumen");
       });
     }
 
@@ -1870,6 +2096,44 @@ const UI = {
         SHARE.shareCard(dataURL, text).then((result) => {
           if (result === "downloaded") UI.toast(I18N.t("imageDownloadedToast"));
         });
+      });
+    }
+
+    // ---- Copia de seguridad ----
+    const exportBtn = view.querySelector('[data-action="export-backup"]');
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const backup = STORE.exportAll();
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "hucha-copia-" + LOGIC.todayStr() + ".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        STORE.saveSettings(Object.assign({}, STORE.getSettings(), { lastBackupAt: backup.exportedAt }));
+        UI.toast(I18N.t("toastBackupExported"));
+        UI.render("metas");
+      });
+    }
+    const importInput = view.querySelector("#import-backup-input");
+    if (importInput) {
+      importInput.addEventListener("change", async () => {
+        const file = importInput.files && importInput.files[0];
+        importInput.value = "";
+        if (!file) return;
+        let backup = null;
+        try { backup = JSON.parse(await file.text()); } catch (e) { backup = null; }
+        if (!backup || backup.app !== STORE.BACKUP_APP_ID) {
+          UI.toast(I18N.t("toastBackupInvalid"), "warn");
+          return;
+        }
+        const when = new Date(backup.exportedAt).toLocaleDateString(I18N.t("todayDateLocale"), { day: "numeric", month: "long", year: "numeric" });
+        if (!confirm(I18N.t("confirmBackupImport", { date: when }))) return;
+        if (STORE.importAll(backup)) location.reload();
+        else UI.toast(I18N.t("toastBackupInvalid"), "warn");
       });
     }
 

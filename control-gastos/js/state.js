@@ -8,7 +8,8 @@ const STORE = {
     days: "cg_days",
     customCategories: "cg_custom_categories",
     plans: "cg_plans",
-    goals: "cg_goals"
+    goals: "cg_goals",
+    weekGoals: "cg_week_goals"
   },
 
   defaultSettings: {
@@ -40,7 +41,8 @@ const STORE = {
     currentSavingsMonthly: null,
     archetypeKey: null,
     savingsBehavior: "pasivo", // "pasivo" | "invierte"
-    incomeExpenseProfileKey: null
+    incomeExpenseProfileKey: null,
+    lastBackupAt: null
   },
 
   _read(key, fallback) {
@@ -199,14 +201,60 @@ const STORE = {
     goal.photo = dataURL;
     this.saveGoals(goals);
     return goal;
+  },
+
+  // Metas semanales de gastos hormiga, guardadas por el lunes de la semana a
+  // la que aplican: { "2026-10-05": { avoid: ["cafe", "delivery"], setAt } }.
+  getWeekGoals() {
+    return this._read(this.keys.weekGoals, {});
+  },
+  getWeekGoal(weekStart) {
+    return this.getWeekGoals()[weekStart] || null;
+  },
+  setWeekGoal(weekStart, avoid) {
+    const goals = this.getWeekGoals();
+    if (avoid && avoid.length) goals[weekStart] = { avoid, setAt: new Date().toISOString() };
+    else delete goals[weekStart];
+    this._write(this.keys.weekGoals, goals);
+  },
+
+  // ---------- Copia de seguridad ----------
+  // Todo vive en este navegador: exportar genera un archivo con todos los
+  // datos para poder guardarlo fuera (Drive, correo...) y restaurarlo luego.
+  BACKUP_APP_ID: "hucha",
+  exportAll() {
+    const data = {};
+    Object.values(this.keys).forEach((key) => {
+      const raw = this._read(key, null);
+      if (raw !== null) data[key] = raw;
+    });
+    return { app: this.BACKUP_APP_ID, version: 1, exportedAt: new Date().toISOString(), data };
+  },
+  // Devuelve true si el archivo es una copia válida de Hucha y se restauró.
+  importAll(backup) {
+    if (!backup || backup.app !== this.BACKUP_APP_ID || typeof backup.data !== "object" || !backup.data) return false;
+    const known = new Set(Object.values(this.keys));
+    const entries = Object.entries(backup.data).filter(([key]) => known.has(key));
+    if (!entries.length) return false;
+    known.forEach((key) => {
+      try { localStorage.removeItem(key); } catch (e) { /* sin almacenamiento */ }
+    });
+    entries.forEach(([key, value]) => this._write(key, value));
+    return true;
   }
 };
 
 const LOGIC = {
+  // Fecha local en formato AAAA-MM-DD. No usa toISOString(), que convierte
+  // a UTC y en husos horarios como el de España da el día anterior de
+  // madrugada (y desplaza los lunes a domingo al calcular semanas).
+  ymd(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  },
   todayStr(offsetDays) {
     const d = new Date();
     if (offsetDays) d.setDate(d.getDate() + offsetDays);
-    return d.toISOString().slice(0, 10);
+    return this.ymd(d);
   },
 
   formatMoney(amount, currency) {
@@ -304,46 +352,16 @@ const LOGIC = {
   monthKeyOf(dateStr) {
     return dateStr.slice(0, 7); // YYYY-MM
   },
-  dailySavingsTarget() {
-    const settings = STORE.getSettings();
-    if (!settings.savingsGoalMonthly) return 0;
-    return settings.savingsGoalMonthly / this.daysInMonth(this.todayStr());
-  },
-  // Suma lo "ahorrado" (meta de gasto - gastado real) en los días ya cerrados
-  // de este mes, más una estimación en vivo del día de hoy si aún no se cerró.
-  savingsProgressThisMonth() {
-    const settings = STORE.getSettings();
-    const goal = settings.savingsGoalMonthly || 0;
-    const days = STORE.getDays();
-    const thisMonth = this.monthKeyOf(this.todayStr());
-    let saved = 0;
-    Object.values(days).forEach((d) => {
-      if (this.monthKeyOf(d.date) === thisMonth) saved += (d.goal - d.spent);
-    });
-    const today = this.todayStr();
-    if (!days[today] && settings.dailyGoal) {
-      saved += (this.effectiveGoalForDate(today) - this.spentToday());
-    }
-    return {
-      saved,
-      goal,
-      pct: goal ? Math.max(0, Math.min(100, Math.round((saved / goal) * 100))) : 0
-    };
-  },
-
-  // Progreso de una meta de ahorro con propósito: suma lo ahorrado (meta de
-  // gasto - gastado real) desde el día en que se creó la meta hasta hoy.
+  // Progreso de una meta de ahorro con propósito: suma lo que sobró de la
+  // meta de gasto en los días ya cerrados desde que se creó la meta. El día
+  // de hoy no cuenta hasta cerrarlo: si no, la meta avanzaría sola sin haber
+  // hecho nada, solo por no haber apuntado todavía los gastos.
   goalProgress(goal) {
-    const settings = STORE.getSettings();
     const days = STORE.getDays();
     let saved = 0;
     Object.values(days).forEach((d) => {
       if (d.date >= goal.createdAt) saved += (d.goal - d.spent);
     });
-    const today = this.todayStr();
-    if (!days[today] && settings.dailyGoal) {
-      saved += (this.effectiveGoalForDate(today) - this.spentToday());
-    }
     saved = Math.max(0, saved);
     return {
       saved,
@@ -376,7 +394,7 @@ const LOGIC = {
       const dow = (d.getDay() + 6) % 7; // lunes = 0
       const start = new Date(d); start.setDate(d.getDate() - dow);
       const end = new Date(start); end.setDate(start.getDate() + 6);
-      return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+      return { start: this.ymd(start), end: this.ymd(end) };
     }
     // month
     return { start: ref.slice(0, 7) + "-01", end: ref.slice(0, 7) + "-31" };
@@ -397,6 +415,73 @@ const LOGIC = {
       .map(([category, amount]) => ({ category, amount, pct: total ? (amount / total) * 100 : 0 }))
       .sort((a, b) => b.amount - a.amount);
     return { start, end, total, items, top: items[0] || null };
+  },
+
+  // ---------- Gastos hormiga ----------
+  antConcept(id) {
+    return DATA.antConcepts.find((c) => c.id === id) || DATA.antConcepts[DATA.antConcepts.length - 1];
+  },
+  antConceptLabel(id) {
+    const c = this.antConcept(id);
+    return c.icon + " " + this.localized(c.label);
+  },
+  antTransactionsInRange(start, end) {
+    return this.transactionsInRange(start, end, "expense").filter((t) => t.antConcept);
+  },
+  // Lunes (AAAA-MM-DD) de la semana de `date`; offsetWeeks mueve semanas.
+  weekStartOf(date, offsetWeeks) {
+    const d = new Date((date || this.todayStr()) + "T00:00:00");
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 7 * (offsetWeeks || 0));
+    return this.ymd(d);
+  },
+  weekEndOf(weekStart) {
+    const d = new Date(weekStart + "T00:00:00");
+    d.setDate(d.getDate() + 6);
+    return this.ymd(d);
+  },
+  // Total, desglose por concepto y reparto "lo necesitaba / no lo
+  // necesitaba / sin revisar" de los gastos hormiga de un rango de fechas.
+  antSummary(start, end) {
+    const txs = this.antTransactionsInRange(start, end);
+    const byConcept = {};
+    let total = 0, needed = 0, notNeeded = 0, unreviewed = 0;
+    txs.forEach((t) => {
+      const amount = Number(t.amount || 0);
+      total += amount;
+      if (t.antNeeded === true) needed += amount;
+      else if (t.antNeeded === false) notNeeded += amount;
+      else unreviewed += amount;
+      const c = byConcept[t.antConcept] || (byConcept[t.antConcept] = { concept: t.antConcept, amount: 0, count: 0, notNeeded: 0 });
+      c.amount += amount;
+      c.count++;
+      if (t.antNeeded === false) c.notNeeded += amount;
+    });
+    const items = Object.values(byConcept).sort((a, b) => b.amount - a.amount);
+    items.forEach((it) => { it.pct = total ? (it.amount / total) * 100 : 0; });
+    return { start, end, txs, total, needed, notNeeded, unreviewed, count: txs.length, items };
+  },
+  // Cómo va la meta semanal: cuántas veces y cuánto se gastó en los
+  // conceptos que el usuario se propuso evitar esa semana.
+  weekGoalProgress(weekStart) {
+    const goal = STORE.getWeekGoal(weekStart);
+    if (!goal) return null;
+    const avoid = new Set(goal.avoid);
+    const slips = this.antTransactionsInRange(weekStart, this.weekEndOf(weekStart)).filter((t) => avoid.has(t.antConcept));
+    return {
+      avoid: goal.avoid,
+      slips: slips.length,
+      slipAmount: slips.reduce((s, t) => s + Number(t.amount || 0), 0),
+      slipConcepts: Array.from(new Set(slips.map((t) => t.antConcept)))
+    };
+  },
+  // Conceptos sugeridos para evitar la semana siguiente: primero los
+  // marcados como "no lo necesitaba", luego los de más gasto.
+  suggestedAvoidConcepts(summary) {
+    return summary.items
+      .slice()
+      .sort((a, b) => (b.notNeeded - a.notNeeded) || (b.amount - a.amount))
+      .slice(0, 3)
+      .map((it) => it.concept);
   },
 
   // Evalúa y cierra un día concreto contra la meta diaria. Idempotente.

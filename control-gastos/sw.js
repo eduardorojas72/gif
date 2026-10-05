@@ -1,10 +1,11 @@
-const CACHE_NAME = "control-gastos-v2";
+const CACHE_NAME = "control-gastos-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./css/styles.css",
   "./js/data.js",
+  "./js/i18n.js",
   "./js/state.js",
   "./js/audio.js",
   "./js/share.js",
