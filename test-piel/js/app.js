@@ -159,9 +159,14 @@ const APP = {
     const pct = Math.round((i / this.totalSteps()) * 100);
     let controlHTML = "";
     if (q.type === "choice") {
+      const hasImages = q.options.some((o) => o.image);
       controlHTML = `
-        <div class="choice-grid">
-          ${q.options.map((o) => `<button class="choice-btn" data-value="${o.value}">${o.label}</button>`).join("")}
+        <div class="choice-grid${hasImages ? " choice-grid-photo" : ""}">
+          ${q.options.map((o) => `
+            <button class="choice-btn${o.image ? " choice-btn-photo" : ""}" data-value="${o.value}">
+              ${o.image ? `<img src="${o.image}" alt="" class="choice-btn-img" />` : ""}
+              <span>${o.label}</span>
+            </button>`).join("")}
         </div>`;
     } else if (q.type === "number") {
       controlHTML = this.numberFieldHTML(q, this.answers[q.id]);

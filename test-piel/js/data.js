@@ -11,8 +11,8 @@ const DATA = {
       question: "Para adaptar el test, ¿cómo te identificas?",
       summaryLabel: "Género",
       options: [
-        { value: "hombre", label: "Hombre" },
-        { value: "mujer", label: "Mujer" }
+        { value: "hombre", label: "Hombre", image: "img/hombre.webp" },
+        { value: "mujer", label: "Mujer", image: "img/mujer.webp" }
       ]
     },
     {
