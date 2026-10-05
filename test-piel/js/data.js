@@ -29,6 +29,7 @@ const DATA = {
       type: "choice",
       question: "¿Cómo describirías tu piel la mayoría de los días?",
       summaryLabel: "Tipo de piel",
+      image: "img/skin-types.webp",
       options: [
         { value: "grasa", label: "Grasa / con brillo", shortLabel: "grasa" },
         { value: "seca", label: "Seca / con sensación de tirantez", shortLabel: "seca" },
@@ -43,6 +44,7 @@ const DATA = {
       question: "¿Qué es lo que más te preocupa de tu piel ahora mismo?",
       hint: "Puedes elegir varias opciones.",
       summaryLabel: "Preocupaciones",
+      image: "img/concerns.webp",
       options: [
         { value: "arrugas", label: "Arrugas o líneas de expresión" },
         { value: "manchas", label: "Manchas o tono desigual" },
@@ -94,6 +96,7 @@ const DATA = {
       type: "choice",
       question: "¿Sigues una rutina de cuidado facial a diario?",
       summaryLabel: "Rutina facial",
+      image: "img/routine.jpg",
       options: [
         { value: "mananaNoche", label: "Sí, mañana y noche" },
         { value: "aveces", label: "Solo a veces" },
@@ -105,6 +108,7 @@ const DATA = {
       type: "choice",
       question: "¿Con qué frecuencia usas protector solar?",
       summaryLabel: "Protector solar",
+      image: "img/sunscreen.jpg",
       options: [
         { value: "diario", label: "Todos los días" },
         { value: "solFuerte", label: "Solo si voy a la playa o hace mucho sol" },
@@ -116,6 +120,7 @@ const DATA = {
       type: "choice",
       question: "¿Cómo dirías que es tu día a día en estos aspectos?",
       summaryLabel: "Sueño e hidratación",
+      image: "img/sleepwater.jpg",
       options: [
         { value: "bienBien", label: "Duermo bien y bebo bastante agua" },
         { value: "bienPoca", label: "Duermo bien pero bebo poca agua" },
@@ -128,6 +133,7 @@ const DATA = {
       type: "choice",
       question: "¿Usas actualmente algún producto con ingredientes activos (retinol, ácidos exfoliantes, vitamina C...)?",
       summaryLabel: "Ingredientes activos",
+      image: "img/actives.jpg",
       options: [
         { value: "regular", label: "Sí, regularmente" },
         { value: "rara", label: "Sí, pero rara vez" },
