@@ -185,11 +185,18 @@ const APP = {
       </section>`;
   },
 
+  resultImage() {
+    const gender = this.answers.gender;
+    const skinType = this.answers.skinType;
+    const byGender = DATA.resultImages[gender];
+    return (byGender && byGender[skinType]) || DATA.resultFallbackImage;
+  },
+
   resultHTML() {
     const { skinTypeLabel, concernsText } = this.buildDiagnosis();
     return `
       <section class="card result-card">
-        <span class="result-emoji">🧴</span>
+        <img src="${this.resultImage()}" alt="" class="result-img" />
         <p class="result-kicker">Tu diagnóstico</p>
         <h1>Piel ${skinTypeLabel.toLowerCase()}</h1>
         <p>Según tus respuestas, tus focos principales son: <strong>${concernsText}</strong>. Antes de recomendarte algo, prefiero verlo contigo.</p>
