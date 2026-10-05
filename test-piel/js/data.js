@@ -133,6 +133,7 @@ const DATA = {
       type: "choice",
       question: "¿Usas actualmente algún producto con ingredientes activos (retinol, ácidos exfoliantes, vitamina C...)?",
       summaryLabel: "Ingredientes activos",
+      image: "img/actives.jpg",
       options: [
         { value: "regular", label: "Sí, regularmente" },
         { value: "rara", label: "Sí, pero rara vez" },
