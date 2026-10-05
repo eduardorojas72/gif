@@ -176,5 +176,60 @@ const DATA = {
     hombre: {},
     mujer: {}
   },
-  resultFallbackImage: "img/skin-types.webp"
+  resultFallbackImage: "img/skin-types.webp",
+
+  // Frase para el objetivo elegido, usada en el diagnóstico final.
+  goalPhrases: {
+    luminosidad: "una piel más luminosa y descansada",
+    arrugas: "reducir las arrugas y líneas finas",
+    manchas: "unificar el tono y las manchas",
+    brilloAcne: "controlar el brillo y el acné"
+  },
+
+  // Arquetipos del diagnóstico final, según los hábitos de cuidado (no
+  // según el tipo de piel, que ya lo indicó la persona en el test). Se
+  // evalúan en orden en app.js: el primero que calce con sus respuestas
+  // es el que se muestra; "default" es el que queda si ninguno calza.
+  archetypes: [
+    {
+      key: "triedEverything",
+      title: "Has probado de todo, pero...",
+      body: "nada te ha dado buenos resultados todavía. No es que no exista nada para ti: es que aún no has dado con lo que tu piel necesita para {goal}."
+    },
+    {
+      key: "noSleepNoWater",
+      title: "No duermes bien y bebes poca agua",
+      body: "y tu piel es la primera en notarlo. Antes de pensar en productos, necesita descanso e hidratación real para {goal}."
+    },
+    {
+      key: "noSleep",
+      title: "No duermes y necesitas...",
+      body: "cuidar ese descanso, porque se refleja directamente en tu piel. Mientras tanto, podemos ayudarte a {goal}."
+    },
+    {
+      key: "lowWater",
+      title: "Bebes poca agua y tu piel lo nota",
+      body: "la hidratación desde dentro también cuenta. Vamos a enfocarnos en {goal}."
+    },
+    {
+      key: "noRoutine",
+      title: "Te cuidas poco y tu piel lo pide a gritos",
+      body: "sin una rutina fija es difícil avanzar. Empezar con lo básico puede ayudarte a {goal}."
+    },
+    {
+      key: "noSunscreen",
+      title: "Cuidas tu piel, pero sin protección",
+      body: "el protector solar es clave y aún no lo usas a diario. Es un paso sencillo para lograr {goal}."
+    },
+    {
+      key: "careButNoResults",
+      title: "Te cuidas pero...",
+      body: "aún no ves los resultados que buscas. Puede que tu rutina actual no sea la adecuada para {goal}."
+    },
+    {
+      key: "default",
+      title: "Estás en buen camino",
+      body: "y con algunos ajustes podemos ayudarte a {goal}. Antes de recomendarte nada, prefiero verlo contigo."
+    }
+  ]
 };

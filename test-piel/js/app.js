@@ -192,14 +192,48 @@ const APP = {
     return (byGender && byGender[skinType]) || DATA.resultFallbackImage;
   },
 
+  // ---------- Arquetipo del diagnóstico (según hábitos, no tipo de piel) ----------
+  buildArchetype() {
+    const a = this.answers;
+    const poorSleep = a.sleepWater === "pocoBien" || a.sleepWater === "pocoPoca";
+    const poorWater = a.sleepWater === "bienPoca" || a.sleepWater === "pocoPoca";
+    const noRoutine = a.routine === "no" || a.routine === "aveces";
+    const noSunscreen = a.sunscreen === "casiNunca";
+
+    let key;
+    if (a.triedBefore === "variasSinResultado") {
+      key = "triedEverything";
+    } else if (poorSleep && poorWater) {
+      key = "noSleepNoWater";
+    } else if (poorSleep) {
+      key = "noSleep";
+    } else if (poorWater) {
+      key = "lowWater";
+    } else if (noRoutine) {
+      key = "noRoutine";
+    } else if (noSunscreen) {
+      key = "noSunscreen";
+    } else if (a.triedBefore === "algunaVezNoSegui") {
+      key = "careButNoResults";
+    } else {
+      key = "default";
+    }
+
+    const archetype = DATA.archetypes.find((x) => x.key === key) || DATA.archetypes[DATA.archetypes.length - 1];
+    const goalPhrase = DATA.goalPhrases[a.goal] || "lo que buscas";
+    return { title: archetype.title, body: archetype.body.replace("{goal}", goalPhrase) };
+  },
+
   resultHTML() {
-    const { skinTypeLabel, concernsText } = this.buildDiagnosis();
+    const { concernsText } = this.buildDiagnosis();
+    const { title, body } = this.buildArchetype();
     return `
       <section class="card result-card">
         <img src="${this.resultImage()}" alt="" class="result-img" />
         <p class="result-kicker">Tu diagnóstico</p>
-        <h1>Piel ${skinTypeLabel.toLowerCase()}</h1>
-        <p>Según tus respuestas, tus focos principales son: <strong>${concernsText}</strong>. Antes de recomendarte algo, prefiero verlo contigo.</p>
+        <h1>${title}</h1>
+        <p>${body}</p>
+        <p class="muted-small">Tus focos principales: <strong>${concernsText}</strong>.</p>
 
         <hr class="divider" />
 
