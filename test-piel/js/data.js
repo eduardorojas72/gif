@@ -44,6 +44,7 @@ const DATA = {
       question: "¿Qué es lo que más te preocupa de tu piel ahora mismo?",
       hint: "Puedes elegir varias opciones.",
       summaryLabel: "Preocupaciones",
+      image: "img/concerns.webp",
       options: [
         { value: "arrugas", label: "Arrugas o líneas de expresión" },
         { value: "manchas", label: "Manchas o tono desigual" },
@@ -95,6 +96,7 @@ const DATA = {
       type: "choice",
       question: "¿Sigues una rutina de cuidado facial a diario?",
       summaryLabel: "Rutina facial",
+      image: "img/routine.jpg",
       options: [
         { value: "mananaNoche", label: "Sí, mañana y noche" },
         { value: "aveces", label: "Solo a veces" },
