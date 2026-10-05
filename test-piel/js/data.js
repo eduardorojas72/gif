@@ -120,6 +120,7 @@ const DATA = {
       type: "choice",
       question: "¿Cómo dirías que es tu día a día en estos aspectos?",
       summaryLabel: "Sueño e hidratación",
+      image: "img/sleepwater.jpg",
       options: [
         { value: "bienBien", label: "Duermo bien y bebo bastante agua" },
         { value: "bienPoca", label: "Duermo bien pero bebo poca agua" },
