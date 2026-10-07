@@ -171,6 +171,9 @@ const DATA = {
       question: "Si pudieras mejorar un aspecto de tu piel en los próximos 2 meses, ¿qué elegirías?",
       summaryLabel: "Objetivo",
       image: "img/goal.jpg",
+      imageByGender: {
+        hombre: "img/goal-hombre.jpg"
+      },
       options: [
         {
           value: "luminosidad",
