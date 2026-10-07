@@ -172,7 +172,14 @@ const DATA = {
       summaryLabel: "Objetivo",
       image: "img/goal.jpg",
       options: [
-        { value: "luminosidad", label: "Verme más luminosa y descansada" },
+        {
+          value: "luminosidad",
+          label: "Ver mi piel más luminosa y descansada",
+          imageByGender: {
+            hombre: "img/goal-luminosidad-hombre.jpg",
+            mujer: "img/goal-luminosidad-mujer.jpg"
+          }
+        },
         { value: "arrugas", label: "Reducir arrugas o líneas finas" },
         { value: "manchas", label: "Unificar el tono y las manchas" },
         { value: "brilloAcne", label: "Controlar el brillo o el acné" }

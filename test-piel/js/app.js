@@ -159,12 +159,13 @@ const APP = {
     const pct = Math.round((i / this.totalSteps()) * 100);
     let controlHTML = "";
     if (q.type === "choice") {
-      const hasImages = q.options.some((o) => o.image);
+      const optionImage = (o) => (o.imageByGender && o.imageByGender[this.answers.gender]) || o.image;
+      const hasImages = q.options.some((o) => optionImage(o));
       controlHTML = `
         <div class="choice-grid${hasImages ? " choice-grid-photo" : ""}">
           ${q.options.map((o) => `
-            <button class="choice-btn${o.image ? " choice-btn-photo" : ""}" data-value="${o.value}">
-              ${o.image ? `<img src="${o.image}" alt="" class="choice-btn-img" />` : ""}
+            <button class="choice-btn${optionImage(o) ? " choice-btn-photo" : ""}" data-value="${o.value}">
+              ${optionImage(o) ? `<img src="${optionImage(o)}" alt="" class="choice-btn-img" />` : ""}
               <span>${o.label}</span>
             </button>`).join("")}
         </div>`;
