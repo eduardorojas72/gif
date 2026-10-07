@@ -48,6 +48,9 @@ const DATA = {
       hint: "Puedes elegir varias opciones.",
       summaryLabel: "Preocupaciones",
       image: "img/concerns.webp",
+      imageByGender: {
+        hombre: "img/concerns-hombre.webp"
+      },
       options: [
         { value: "arrugas", label: "Arrugas o líneas de expresión" },
         { value: "manchas", label: "Manchas o tono desigual" },
@@ -100,6 +103,9 @@ const DATA = {
       question: "¿Sigues una rutina de cuidado facial a diario?",
       summaryLabel: "Rutina facial",
       image: "img/routine.jpg",
+      imageByGender: {
+        hombre: "img/routine-hombre.webp"
+      },
       options: [
         { value: "mananaNoche", label: "Sí, mañana y noche" },
         { value: "aveces", label: "Solo a veces" },
@@ -123,7 +129,7 @@ const DATA = {
       type: "choice",
       question: "¿Cómo dirías que es tu día a día en estos aspectos?",
       summaryLabel: "Sueño e hidratación",
-      image: "img/sleepwater.jpg",
+      image: "img/sleepwater-couple.webp",
       options: [
         { value: "bienBien", label: "Duermo bien y bebo bastante agua" },
         { value: "bienPoca", label: "Duermo bien pero bebo poca agua" },
