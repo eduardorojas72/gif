@@ -1,0 +1,200 @@
+:root {
+  --bg: #0F2A3D;
+  --bg-soft: #163D52;
+  --card-bg: #FFFFFF;
+  --text: #15303B;
+  --text-soft: #5C7A86;
+  --primary: #1D8A8C;
+  --primary-dark: #156E70;
+  --accent: #BFE9E6;
+  --danger: #E5484D;
+  --whatsapp: #25D366;
+  --whatsapp-dark: #1EBE57;
+  --border: #DCF0EF;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-image: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 45%, #1E5068 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 48px;
+}
+
+.topbar {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+}
+.topbar .brand-mark { font-size: 20px; }
+
+.view {
+  width: 100%;
+  max-width: 480px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 28px 22px 24px;
+  box-shadow: 0 20px 50px rgba(10, 30, 40, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h1 {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+p { margin: 0; line-height: 1.5; }
+.muted { color: var(--text-soft); font-size: 14.5px; }
+.muted-small { color: var(--text-soft); font-size: 13px; }
+
+/* ---------- Intro ---------- */
+.intro-card { align-items: flex-start; text-align: left; }
+.intro-emoji { font-size: 42px; }
+
+/* ---------- Progreso y pregunta ---------- */
+.progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+.q-count {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.choice-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.choice-btn {
+  font-family: inherit;
+  font-size: 15px;
+  border: 1.5px solid var(--border);
+  background: #F0FAF9;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.choice-btn:hover { border-color: var(--primary); background: #E2F4F3; }
+
+/* ---------- Botones ---------- */
+.btn {
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-block { width: 100%; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { opacity: 0.5; cursor: default; }
+.btn-ghost { background: transparent; color: var(--text-soft); }
+.btn-ghost:hover { background: #EDF8F7; }
+.btn-whatsapp { background: var(--whatsapp); color: #fff; font-size: 16.5px; padding: 16px 18px; }
+.btn-whatsapp:hover { background: var(--whatsapp-dark); }
+
+/* ---------- Resultado ---------- */
+.result-card { text-align: left; }
+.result-kicker {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.flags-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14.5px;
+  color: var(--text);
+}
+
+.benefit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.benefit-card {
+  background: #F0FAF9;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.benefit-icon { font-size: 22px; }
+.benefit-title {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  margin: 2px 0 0;
+}
+.benefit-text {
+  font-size: 13.5px;
+  color: var(--text-soft);
+}
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 400px) {
+  .card { padding: 22px 16px 18px; }
+  h1 { font-size: 20px; }
+}
