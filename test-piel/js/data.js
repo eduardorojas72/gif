@@ -199,6 +199,9 @@ const DATA = {
     mujer: {}
   },
   resultFallbackImage: "img/skin-types.webp",
+  resultFallbackImageByGender: {
+    hombre: "img/skin-types-hombre.jpg"
+  },
 
   // Frase para el objetivo elegido, usada en el diagnóstico final.
   goalPhrases: {

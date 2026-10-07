@@ -191,7 +191,8 @@ const APP = {
     const gender = this.answers.gender;
     const skinType = this.answers.skinType;
     const byGender = DATA.resultImages[gender];
-    return (byGender && byGender[skinType]) || DATA.resultFallbackImage;
+    const fallback = (DATA.resultFallbackImageByGender && DATA.resultFallbackImageByGender[gender]) || DATA.resultFallbackImage;
+    return (byGender && byGender[skinType]) || fallback;
   },
 
   // ---------- Arquetipo del diagnóstico (según hábitos, no tipo de piel) ----------
