@@ -173,13 +173,14 @@ const APP = {
     } else if (q.type === "multi") {
       controlHTML = this.multiFieldHTML(q, this.answers[q.id]);
     }
+    const questionImage = (q.imageByGender && q.imageByGender[this.answers.gender]) || q.image;
     return `
       <section class="card">
         <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
         <p class="q-count">Pregunta ${i + 1} de ${this.totalSteps()}</p>
         <h1>${q.question}</h1>
         ${q.hint ? `<p class="muted-small">${q.hint}</p>` : ""}
-        ${q.image ? `<img src="${q.image}" alt="" class="question-img" />` : ""}
+        ${questionImage ? `<img src="${questionImage}" alt="" class="question-img" />` : ""}
         ${controlHTML}
         <button type="button" class="btn btn-ghost btn-block" id="back-btn">Atrás</button>
       </section>`;
