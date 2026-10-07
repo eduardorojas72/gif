@@ -156,6 +156,9 @@ const DATA = {
       question: "¿Has probado ya algún tratamiento o crema específica para esto?",
       summaryLabel: "Tratamientos previos",
       image: "img/triedbefore.jpg",
+      imageByGender: {
+        hombre: "img/triedbefore-hombre.webp"
+      },
       options: [
         { value: "variasSinResultado", label: "Sí, varias cosas, sin buenos resultados" },
         { value: "algunaVezNoSegui", label: "Sí, alguna vez, pero no seguí con nada" },
