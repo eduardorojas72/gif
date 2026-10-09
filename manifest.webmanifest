@@ -1,0 +1,15 @@
+{
+  "name": "Día de Impacto — Planificador diario de emprendedores",
+  "short_name": "Día de Impacto",
+  "description": "Planifica tu jornada diaria: prospección, equipo, comunicación, redes sociales, finanzas y cierre del día.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAF6F1",
+  "theme_color": "#FF6A45",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

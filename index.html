@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Día de Impacto</title>
+<meta name="description" content="Día de Impacto — planifica tu jornada diaria de emprendedor: prospección, equipo, comunicación, redes sociales, finanzas y cierre del día.">
+<meta name="theme-color" content="#FF6A45">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Día de Impacto">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app-root">
+    <div id="app-bg" aria-hidden="true"></div>
+
+    <div id="sidebar-slot"></div>
+
+    <div class="app-shell" id="app-shell">
+      <div id="header-slot"></div>
+      <div id="view-container" class="view-container">
+        <div class="loading-screen">Cargando…</div>
+      </div>
+    </div>
+
+    <div id="menu-slot"></div>
+    <div id="modal-slot"></div>
+    <div id="toast-slot"></div>
+  </div>
+
+  <script src="js/icons.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
