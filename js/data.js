@@ -280,6 +280,17 @@ const NEGOCIO_DOCUMENTOS = [
   { titulo: "Members Code Of Ethics - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
+const LIBROS_RECOMENDADOS = [
+  { titulo: "Rich Dad Poor Dad", autor: "Robert Kiyosaki", url: "https://www.goodreads.com/book/show/69571" },
+  { titulo: "Go Pro: 7 Steps to Becoming a Network Marketing Professional", autor: "Eric Worre", url: "https://www.goodreads.com/book/show/18903702" },
+  { titulo: "Think and Grow Rich", autor: "Napoleon Hill", url: "https://www.goodreads.com/book/show/238601951" },
+  { titulo: "Secrets of the Millionaire Mind", autor: "T. Harv Eker", url: "https://www.goodreads.com/book/show/208317" },
+  { titulo: "How to Win Friends and Influence People", autor: "Dale Carnegie", url: "https://www.goodreads.com/book/show/35675443" },
+  { titulo: "The Richest Man in Babylon", autor: "George S. Clason", url: "https://www.goodreads.com/book/show/221374069" },
+  { titulo: "The 7 Habits of Highly Effective People", autor: "Stephen Covey", url: "https://www.goodreads.com/book/show/40973334" },
+  { titulo: "Start with Why", autor: "Simon Sinek", url: "https://www.tiposinfames.com/libros/empieza-con-el-porque/92108/" },
+];
+
 const ESCENARIO_INTRO =
   "Your Life Scenario is the foundation of your whole journey: before you learn the route, define your destination. Before working just to work, decide what for. Write your goals in each of the 8 areas of your balanced life — the clearer and more detailed they are (numbers, places, dates), the more strength they'll give you on the hard days.";
 
@@ -469,50 +480,30 @@ const DIAS = [
       {
         h: "Your membership is 100% free",
         body: [
-          "Joining Atomy costs nothing: no enrollment fee, no monthly or annual fee, and never any mandatory purchases to keep your account active.",
-          "The only thing you do is change where you buy the everyday products you already always buy — the rest of the system (activation, commissions, ranks) is built on that consumption, not on extra payments.",
+          "Joining Atomy costs nothing: no enrollment, monthly, or annual fee, and no mandatory purchases to keep your account active. The only thing that changes is where you buy the everyday products you already always buy — your entire commission and rank system is built on that consumption.",
         ],
       },
       {
-        h: "Your first big milestone: 10,000 Personal PV (PPV)",
+        h: "Your Personal PV (PPV): your key and your multiplier",
         body: [
-          "PV (Point Value) is the value the company assigns to each product; you'll see it in blue under the price in the online store.",
-          "With just a couple of basic everyday products (e.g. an oral care kit and a shampoo) you already reach 10,000 PPV.",
-          "Reaching 10,000 PPV is the key that activates your partner account: from there, your profile is enabled to accumulate team volume and earn commissions.",
-          "Visit the official Atomy page: https://eu.atomy.com",
-          "Download the official Atomy app on your phone to place orders and check your PV from anywhere: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) or https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
+          "PV (Point Value) is the value the company assigns to each product — you'll see it in blue under the price. With just a couple of basic everyday products (e.g. an oral care kit and a shampoo) you already reach 10,000 PPV.",
+          "10,000 PPV activates your partner account. Once you reach 300,000 PPV you earn TRIPLE for the same team effort: about €50-60 per cycle instead of €15-20.",
+          "Your PPV NEVER get erased or reset: every purchase for your home adds to the previous total for life. There's no rush.",
+          "Place orders and check your PV at https://eu.atomy.com or in the official app: [Android app](https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es) · [iPhone app](https://apps.apple.com/es/app/official-atomy-shop/id1637879180).",
         ],
       },
       {
         h: "Your binary team: Left Line and Right Line",
         body: [
-          "You don't work alone: with your sponsor's help, you build your structure across two consumption lines, Left and Right, with unlimited depth (no matter how many levels down each line grows).",
-          "Every time people on your team buy for their homes, they generate Group PV (GPV).",
-          "A “Cycle” happens when your left line and your right line each accumulate 300,000 GPV: the system makes a “match” and the company pays a direct commission into your bank account.",
+          "You don't work alone: with your sponsor you build your structure across two lines, Left and Right, with unlimited depth.",
+          "When your team buys, it generates Group PV (GPV) — it resets after each commission paid. A “Cycle” happens when each line accumulates 300,000 GPV: the company pays a direct commission into your account.",
         ],
       },
       {
-        h: "Why the real target is 300,000 PPV — you earn triple!",
+        h: "The path to Sales Master",
         body: [
-          "With 10,000 PPV you already get paid when your teams reach 300,000 GPV on each side: a base commission of about €15-20 per cycle.",
-          "Once you personally reach 300,000 PPV, you earn TRIPLE for the exact same team effort: about €50-60 per cycle.",
-          "Your PPV NEVER get erased or reset: every purchase for your home adds to the previous total for life. There's no rush and no pressure.",
-          "Summary: 1) place your first order to reach 10,000 PPV and activate your account; 2) keep switching your everyday shopping to Atomy at your own pace until you hit 300,000 PPV while your lines grow; 3) enjoy commissions multiplied by three.",
-        ],
-      },
-      {
-        h: "Personal PV vs. Group PV",
-        body: [
-          "Personal PV: you generate these yourself by buying with your ID. They never get erased. They activate your account and determine your commission tier per cycle.",
-          "Group PV: generated by your team (Left and Right lines). They reset only after a commission is paid out. They add up the collective consumption used to settle commissions.",
-        ],
-      },
-      {
-        h: "The full path to Sales Master",
-        body: [
-          "Your personal progress moves through PV milestones that are never lost: 10,000 PPV activates your account, 300,000 PPV earns you Agent, and 700,000 PPV earns you Special Agent.",
-          "Sales Master — the goal of your 90-Day Plan — is reached when, on top of your 700,000 PPV, your Left line and your Right line each accumulate 2,500,000 GPV within the same qualifying pay period.",
-          "This Cumbre 90 journey takes you exactly there. The ranks above Sales Master (Diamond Master and beyond) sit outside these 90 days, but by then you'll already have the habit and the team to keep climbing.",
+          "Your PV progress is never lost: 10,000 PPV activates your account, 300,000 PPV makes you an Agent, 700,000 PPV makes you a Special Agent.",
+          "Sales Master — the goal of your 90-Day Plan — is reached with your 700,000 PPV + 2,500,000 GPV on each line, within the same pay period.",
         ],
       },
       {
@@ -524,7 +515,6 @@ const DIAS = [
       },
     ],
     campos: [],
-    nota: "Remember your two big milestones: 10,000 PPV (activates your account) and 300,000 PPV (triples your commission per cycle). Your personal PV never gets erased or reset.",
     checklist: [
       "I understood the importance of reaching 10,000 PV first and aiming for 300,000 personal PV.",
       "I understood how the binary balance (Left / Right) works.",
@@ -581,10 +571,21 @@ const DIAS = [
         ],
       },
       {
+        h: "Tips for Building Your Contact List",
+        body: [
+          "Initial brain dump, no filtering: write down everyone you know, without pre-judging who will say yes or no. Relatives, former coworkers or classmates, neighbors, service providers (mechanic, accountant, doctor), and the contacts in your phone all count.",
+          "Split your list into 3 markets: Hot (close family and friends — ask them for their opinion or support to practice your presentation), Warm (acquaintances you interact with rarely — rebuild the relationship first before presenting the project), and Cold (people you don't know yet — fed by social media, events, or everyday life).",
+          "Prioritize who to contact first based on their profile: a positive attitude open to learning, credibility or influence in their circle, a real need or desire for change (extra income, more free time), and the ability to afford the product or start the project.",
+          "The Rule of 2 a Day: naturally add at least two new people to your List of 250 every day, whether online or offline.",
+          "On social media, don't sell directly: ask open-ended questions in your posts or stories, offer a free resource (a mini-guide, a template) in exchange for a DM, and from there invite them to move the conversation to WhatsApp — that's how you turn an interaction into a real contact on your list.",
+          "Always note the date of your last interaction and what you agreed on (e.g. “Call on Thursday,” “Sent initial info”) so you never lose the thread with anyone.",
+        ],
+      },
+      {
         h: "7×7 Challenge — Day 1: Define and prepare",
         body: [
           "Starting today you also kick off the 7×7 Challenge, which will walk with you day by day through Day 9. “If I don't have a goal, I don't have direction.”",
-          "1. Define your goal for the next 7 days (how many conversations, presentations, or sign-ups you want to reach).",
+          "1. Define your goal for the next 7 days (how many conversations, presentations, or sign-ups you want to reach). E.g.: 10 calls a day, 4 presentations a day, 2 sign-ups a day.",
           "2. Make a list of 30 people.",
           "3. Sort your contacts: potential customers, people interested in wellness, people interested in generating income.",
           "4. Pick your first 10 contacts to start with tomorrow.",
@@ -626,17 +627,6 @@ const DIAS = [
     titulo: "The Art of Inviting (Storytelling)",
     objetivo: "Invite without pressure and share your personal story naturally.",
     contenido: [
-      {
-        h: "Tips for Building Your Contact List",
-        body: [
-          "Initial brain dump, no filtering: write down everyone you know, without pre-judging who will say yes or no. Relatives, former coworkers or classmates, neighbors, service providers (mechanic, accountant, doctor), and the contacts in your phone all count.",
-          "Split your list into 3 markets: Hot (close family and friends — ask them for their opinion or support to practice your presentation), Warm (acquaintances you interact with rarely — rebuild the relationship first before presenting the project), and Cold (people you don't know yet — fed by social media, events, or everyday life).",
-          "Prioritize who to contact first based on their profile: a positive attitude open to learning, credibility or influence in their circle, a real need or desire for change (extra income, more free time), and the ability to afford the product or start the project.",
-          "The Rule of 2 a Day: naturally add at least two new people to your List of 250 every day, whether online or offline.",
-          "On social media, don't sell directly: ask open-ended questions in your posts or stories, offer a free resource (a mini-guide, a template) in exchange for a DM, and from there invite them to move the conversation to WhatsApp — that's how you turn an interaction into a real contact on your list.",
-          "Always note the date of your last interaction and what you agreed on (e.g. “Call on Thursday,” “Sent initial info”) so you never lose the thread with anyone.",
-        ],
-      },
       {
         h: "4-step script for your personal story",
         body: [
@@ -683,8 +673,6 @@ const DIAS = [
     ],
     checklist: [
       "I put together my 3-minute personal story.",
-      "I sorted my first 30 names in the List of 250.",
-      "I made my first 5 sincere invitations.",
       "I watched at least one video about the Atomy Company.",
       "7×7 Challenge (Day 2): I personally contacted 10 people from my list.",
       "7×7 Challenge (Day 2): I used the conversation script instead of leading with a catalog.",
@@ -699,8 +687,8 @@ const DIAS = [
     id: 5,
     etapa: "The Direction",
     icono: "compass",
-    titulo: "Weekly Action Plan",
-    objetivo: "Organize your week sustainably, without overwhelm.",
+    titulo: "Organize Your Week and Recommend with Purpose",
+    objetivo: "Organize your week sustainably and use that time, starting now, to uncover real needs and recommend.",
     contenido: [
       {
         h: "Your sustainable work plan",
@@ -711,15 +699,16 @@ const DIAS = [
           "Your weekly check-in: schedule a short, fixed 15-20 minute call with your mentor to review progress, resolve doubts, and adjust whatever's needed.",
           "15 minutes of daily learning: keep watching content at ch.atomy.com/eu (CH.ATOMY Europe) at your own pace, just as you've been doing since Day 1.",
           "💡 Tip: a steady 3-hour-a-week project delivers 100 times more results than a one-day marathon. Do it at your own pace.",
+          "Use one of those hours you just blocked for today's activity: instead of selling blindly, you're going to uncover real needs.",
         ],
       },
       {
-        h: "7×7 Challenge — Day 3: Recommend",
+        h: "Today in action: uncover needs and recommend (7×7 Challenge — Day 3)",
         body: [
-          "“I don't sell products. I uncover needs.” Today you talk to discover: what product do they currently use?, what need do they want to address?, what products do they buy regularly?, are they interested in a buying alternative?",
+          "“I don't sell products. I uncover needs.” Talk to discover: what product do they currently use?, what need do they want to address?, what products do they buy regularly?, are they interested in a buying alternative?",
           "After listening, follow the sequence: Recommend → Explain → Invite.",
           "Example: “Tell me, what products do you normally use for personal care or wellness?” After listening: “I actually have an alternative that might interest you. Want me to show you how it works?”",
-          "Today's mission: present products to people with a real need.",
+          "Today's mission: within the hours you blocked, present products to at least one person with a real need you identified.",
         ],
       },
     ],
@@ -729,12 +718,10 @@ const DIAS = [
       { key: "llamada", label: "Day and time of your weekly call with your mentor" },
     ],
     checklist: [
-      "I defined my 30-day goal.",
-      "I blocked my weekly working hours.",
+      "I defined my 30-day goal and blocked my weekly working hours.",
       "I set up my weekly call with my mentor.",
       "I watched 1 Company video on CH.ATOMY Europe.",
-      "7×7 Challenge (Day 3): I talked to uncover real needs, instead of selling blindly.",
-      "7×7 Challenge (Day 3): I presented products to people with a real need I identified.",
+      "7×7 Challenge (Day 3): within my blocked hours, I talked to uncover real needs and presented products to someone I identified with a genuine need.",
     ],
     quiz: {
       pregunta: "What do you schedule today with your mentor?",
@@ -744,29 +731,11 @@ const DIAS = [
   },
   {
     id: 6,
-    etapa: "The Impact",
+    etapa: "The Presentation",
     icono: "trending-up",
-    titulo: "Ethical Leadership and Duplication",
-    objetivo: "Lay firm ethical foundations while you present your opportunity to new people.",
+    titulo: "7×7 Challenge — Present Your Opportunity",
+    objetivo: "Present your opportunity to new people with a clear, honest, no-pressure mini presentation.",
     contenido: [
-      {
-        h: "Ethical commitment",
-        body: [
-          "Working with Atomy is grounded in total respect for the consumer: zero pressure, zero deception, and total consistency by using what we recommend.",
-        ],
-      },
-      {
-        h: "Monthly review date",
-        body: [
-          "Set a day each month, starting now, to review how your team is growing, what's working, and adjust course together if any roadblock comes up.",
-        ],
-      },
-      {
-        h: "Learn to duplicate",
-        body: [
-          "Don't keep this startup process to yourself: when you sign up your first partner, walk them through this exact same path.",
-        ],
-      },
       {
         h: "Your video today",
         body: [
@@ -778,22 +747,24 @@ const DIAS = [
         body: [
           "“Not everyone wants to buy. Some want to build.” Look for people who want to: generate extra income, shop smarter, recommend products, or build a business.",
           "4-question mini presentation: What is Atomy? An international direct-sales company. What do we find? Products across different categories. How does it work? Consume → Recommend → Develop customers and team. What are we after? Building a business through a system we can repeat and teach.",
-          "Today's mission: present the opportunity to at least 3 people.",
+          "Always do it with zero pressure and total transparency: don't sell, invite them to learn.",
+          "Today's mission: present the opportunity to at least 4 people.",
         ],
       },
     ],
     campos: [],
     checklist: [
-      "I embraced the ethical commitment: zero pressure, total transparency, consistency by consuming what I recommend.",
-      "I marked a day each month on my calendar to review my team.",
-      "I have this 9-day plan on hand to guide my first partner.",
       "I watched a video on Atomy Culture or the Founder's Philosophy.",
-      "7×7 Challenge (Day 4): I presented the business opportunity to at least 3 people.",
+      "7×7 Challenge (Day 4): I presented my 4-question mini presentation to at least 4 people, with zero pressure and total transparency.",
     ],
     quiz: {
-      pregunta: "What is one of the 3 pillars of the ethical commitment?",
-      opciones: ["Sell fast without explaining", "Zero pressure and total transparency", "Pressure the consumer"],
-      correcta: 1,
+      pregunta: "According to the 4-question mini presentation, what are we after in Atomy?",
+      opciones: [
+        "A business through a system we can repeat and teach",
+        "A single, fast sale",
+        "A list of customers that can't be repeated",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -846,7 +817,8 @@ const DIAS = [
     ],
     campos: [{ key: "duplicado", label: "Person I helped start the process" }],
     checklist: [
-      "7×7 Challenge (Day 6): I invited an interested person to walk the process with me.",
+      "7×7 Challenge (Day 6): I chose the interested person I'm going to walk the process with.",
+      "7×7 Challenge (Day 6): I invited them to do it with me, following the cycle I do it → I teach you → You do it → You teach it.",
       "7×7 Challenge (Day 6): I helped that person start their own list, conversations, presentation, or follow-up.",
     ],
     quiz: {
@@ -861,10 +833,10 @@ const DIAS = [
   },
   {
     id: 9,
-    etapa: "The Close",
+    etapa: "The Repetition",
     icono: "check",
-    titulo: "7×7 Challenge — Evaluate, Close, and Repeat",
-    objetivo: "Measure your results and complete your 9-day Startup Plan.",
+    titulo: "Ethical Leadership and Duplication",
+    objetivo: "Measure your results, embrace your leadership commitment, and complete your 9-day Startup Plan by repeating and duplicating what you've learned.",
     contenido: [
       {
         h: "7×7 Challenge — Day 7: Evaluate, close, and repeat",
@@ -872,6 +844,14 @@ const DIAS = [
           "“Results get measured.” Today we review: how many people did I contact?, how many responded?, how many presentations did I make?, how many sales did I close?, how many people are interested in the business?, who should I keep following up with?",
           "The challenge doesn't end here: the cycle begins! Contact → Present → Recommend → Follow up → Close → Duplicate → Repeat.",
           "What would happen to your business if you did this process over and over for the next 90 days? You don't need to do it perfectly. You need to do it.",
+        ],
+      },
+      {
+        h: "Your leadership commitment: ethical and duplicable",
+        body: [
+          "Ethical commitment: Atomy is grounded in total respect for the consumer — zero pressure, zero deception, and total consistency by using what we recommend.",
+          "Learn to duplicate: don't keep this startup process to yourself. When you sign up your first partner, walk them through this exact same path, with this same 9-Day Plan.",
+          "Monthly review date: set a day each month, starting now, to review how your team is growing, what's working, and adjust course together if any roadblock comes up.",
         ],
       },
       {
@@ -887,6 +867,8 @@ const DIAS = [
       "7×7 Challenge (Day 7): I counted how many people I contacted, how many responded, and how many presentations I made.",
       "7×7 Challenge (Day 7): I identified who I should keep following up with.",
       "I understood that the Contact → Present → Recommend → Follow up → Close → Duplicate → Repeat cycle never ends, it repeats.",
+      "I embraced my ethical commitment (zero pressure, total transparency) and marked a monthly date on my calendar to review my team.",
+      "I have this 9-Day Plan on hand to guide my first partner when they arrive — that's how duplication begins.",
     ],
     quiz: {
       pregunta: "When the 7×7 Challenge ends, what should you do?",

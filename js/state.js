@@ -815,16 +815,25 @@ function escapeHtml(str) {
 }
 
 /* Same as escapeHtml, but also turns any domain/URL mentioned in the text
-   (e.g. "ch.atomy.com/eu") into a tappable link. Only used on the app's own
-   curated content (explanations, notes), never on text the partner types —
-   that still goes through escapeHtml alone. */
+   (e.g. "ch.atomy.com/eu") into a tappable link. Also supports the
+   [link text](https://url) syntax to show a short label instead of the
+   full URL. Only used on the app's own curated content (explanations,
+   notes), never on text the partner types — that still goes through
+   escapeHtml alone. */
 function linkifyText(str) {
   const escaped = escapeHtml(str);
+  const placeholders = [];
+  const withLabeledLinks = escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, function (_, label, url) {
+    const token = "\u0000LINK" + placeholders.length + "\u0000";
+    placeholders.push('<a href="' + url + '" target="_blank" rel="noreferrer" style="color:var(--gold-light);text-decoration:underline">' + label + "</a>");
+    return token;
+  });
   const urlPattern = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)+(?:com|net|org|us|io|app|co|info|es|mx|br|ca|eu|be)(?:\/[^\s<]*)?)/gi;
-  return escaped.replace(urlPattern, function (match) {
+  const autoLinked = withLabeledLinks.replace(urlPattern, function (match) {
     const href = /^https?:\/\//i.test(match) ? match : "https://" + match;
     return '<a href="' + href + '" target="_blank" rel="noreferrer" style="color:var(--gold-light);text-decoration:underline">' + match + "</a>";
   });
+  return autoLinked.replace(/\u0000LINK(\d+)\u0000/g, function (_, i) { return placeholders[Number(i)]; });
 }
 
 const Storage = {

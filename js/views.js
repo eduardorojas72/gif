@@ -6,8 +6,8 @@
 const MENU_ITEMS = [
   { id: "home", label: "Home", icon: "home" },
   { id: "perfil", label: "My Profile", icon: "user-badge" },
-  { id: "pasos", label: "The 8 Steps", icon: "footprints" },
   { id: "plan6", label: "9-Day Plan", icon: "trail-map" },
+  { id: "pasos", label: "The 8 Steps", icon: "footprints" },
   { id: "contactos", label: "List of 250", icon: "users" },
   { id: "clientes", label: "Customers", icon: "package" },
   { id: "agenda", label: "Weekly Agenda", icon: "calendar" },
@@ -30,7 +30,7 @@ const MENU_ITEMS = [
 // (perfil, contactos/equipo y ajustes). El menu movil (menu sheet) usa
 // MENU_ITEMS en su orden original, sin verse afectado por esto.
 const SIDEBAR_COLUMNAS = [
-  ["home", "pasos", "plan6", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
+  ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
   ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
 ];
 
@@ -688,6 +688,23 @@ function documentListCardHTML(documentos) {
   return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' + documentos.map(documentRowHTML).join("") + "</div>";
 }
 
+function libroRowHTML(b) {
+  return (
+    '<a class="card card-hover row gap-3" style="text-decoration:none;color:inherit;align-items:center" href="' + escapeHtml(b.url) + '" target="_blank" rel="noreferrer">' +
+    '<div style="flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">' + Icon("book-open", { size: 17, color: "var(--gold)" }) + "</div>" +
+    '<div style="flex:1">' +
+    '<div style="font-weight:600;font-size:13.5px;line-height:1.35">' + escapeHtml(b.titulo) + "</div>" +
+    '<div class="muted small" style="margin-top:1px">' + escapeHtml(b.autor) + "</div>" +
+    "</div>" +
+    Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+    "</a>"
+  );
+}
+
+function libroListCardHTML(libros) {
+  return '<div style="display:flex;flex-direction:column;gap:10px">' + libros.map(libroRowHTML).join("") + "</div>";
+}
+
 function renderRecursosAudiovisuales(state, ui) {
   const categorias = RECURSOS_AUDIOVISUALES.map(function (cat) {
     const documentos = cat.id === "negocio"
@@ -702,9 +719,17 @@ function renderRecursosAudiovisuales(state, ui) {
     );
   }).join("");
 
+  const libros =
+    '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("book-open", { size: 14, color: "var(--gold)" }) + " Recommended Books</div>" +
+    '<p class="muted small" style="margin-bottom:10px">Books suggested for your personal and professional growth. Tap a title to see its page.</p>' +
+    libroListCardHTML(LIBROS_RECOMENDADOS) +
+    "</div>";
+
   return (
     sectionHeaderHTML("Audiovisual Resources", "The most important videos to understand and share Atomy, organized by topic.", "video") +
-    categorias
+    categorias +
+    libros
   );
 }
 
@@ -1325,14 +1350,19 @@ function renderDiaDetalle(state, ui, diaId) {
     ? evaluacion7x7PanelHTML(state, "evaluacion7x7Inicial", state.evaluacion7x7Inicial, !!ui.evaluacion7x7InicialOpen, "toggle-evaluacion7x7-inicial", null, "Closing the initial 7×7 Challenge")
     : "";
 
+  const prevDia = DIAS.find(function (d) { return d.id === diaId - 1; });
+  const prevDayBtn = prevDia
+    ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + prevDia.id + '">' + Icon("chevron-left", { size: 16 }) + " Previous day</button>"
+    : "<div></div>";
   const nextDia = DIAS.find(function (d) { return d.id === diaId + 1; });
   const nextDayBtn = nextDia
     ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + nextDia.id + '">Next day ' + Icon("chevron-right", { size: 16 }) + "</button>"
     : "";
 
   return (
-    '<div class="row between">' +
-    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("chevron-left", { size: 16 }) + " Journey map</button>" +
+    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("trail-map", { size: 16 }) + " Journey map</button>" +
+    '<div class="row between" style="margin-top:4px">' +
+    prevDayBtn +
     nextDayBtn +
     "</div>" +
     '<div>' +
