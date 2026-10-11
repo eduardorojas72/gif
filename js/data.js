@@ -580,6 +580,17 @@ const DIAS = [
         ],
       },
       {
+        h: "Consejos para crear tu Lista de Contactos",
+        body: [
+          "Vaciado inicial sin filtros: anota a todas las personas que conozcas, sin prejuzgar quién dirá que sí o que no. Familiares, excompañeros de trabajo o estudio, vecinos, proveedores de servicios (mecánico, contador, médico) y los contactos de tu agenda telefónica cuentan.",
+          "Divide tu lista en 3 mercados: Caliente (familiares y amigos íntimos — pídeles su opinión o apoyo para practicar tu presentación), Tibio (conocidos con los que interactúas poco — retoma primero la relación antes de presentar el proyecto) y Frío (personas que aún no conoces — se alimenta con redes sociales, eventos o el día a día).",
+          "Prioriza a quién contactar primero según su perfil: actitud positiva y abierta a aprender, credibilidad o influencia en su entorno, necesidad o deseo real de cambio (ingresos extra, más tiempo libre) y capacidad de adquirir el producto o iniciar el proyecto.",
+          "Regla de los 2 diarios: agrega al menos dos personas nuevas a tu Lista de 250 cada día, de forma natural, ya sea online u offline.",
+          "En redes sociales, no vendas directo: haz preguntas abiertas en tus publicaciones o historias, ofrece un recurso gratuito (una mini-guía, una plantilla) a cambio de que te escriban al privado, y desde ahí invita a pasar la conversación a WhatsApp — así conviertes una interacción en un contacto real de tu lista.",
+          "Anota siempre la fecha de tu última interacción y el acuerdo alcanzado (ej. “Llamar el jueves”, “Enviada información inicial”) para no perder el hilo con nadie.",
+        ],
+      },
+      {
         h: "Reto 7×7 — Día 1: Define y prepárate",
         body: [
           "A partir de hoy arrancas también el Reto 7×7, que te acompañará día a día hasta el Día 9. “Si no tengo una meta, no tengo dirección.”",
@@ -626,17 +637,6 @@ const DIAS = [
     objetivo: "Invitar sin presionar y compartir tu historia personal con naturalidad.",
     contenido: [
       {
-        h: "Consejos para crear tu Lista de Contactos",
-        body: [
-          "Vaciado inicial sin filtros: anota a todas las personas que conozcas, sin prejuzgar quién dirá que sí o que no. Familiares, excompañeros de trabajo o estudio, vecinos, proveedores de servicios (mecánico, contador, médico) y los contactos de tu agenda telefónica cuentan.",
-          "Divide tu lista en 3 mercados: Caliente (familiares y amigos íntimos — pídeles su opinión o apoyo para practicar tu presentación), Tibio (conocidos con los que interactúas poco — retoma primero la relación antes de presentar el proyecto) y Frío (personas que aún no conoces — se alimenta con redes sociales, eventos o el día a día).",
-          "Prioriza a quién contactar primero según su perfil: actitud positiva y abierta a aprender, credibilidad o influencia en su entorno, necesidad o deseo real de cambio (ingresos extra, más tiempo libre) y capacidad de adquirir el producto o iniciar el proyecto.",
-          "Regla de los 2 diarios: agrega al menos dos personas nuevas a tu Lista de 250 cada día, de forma natural, ya sea online u offline.",
-          "En redes sociales, no vendas directo: haz preguntas abiertas en tus publicaciones o historias, ofrece un recurso gratuito (una mini-guía, una plantilla) a cambio de que te escriban al privado, y desde ahí invita a pasar la conversación a WhatsApp — así conviertes una interacción en un contacto real de tu lista.",
-          "Anota siempre la fecha de tu última interacción y el acuerdo alcanzado (ej. “Llamar el jueves”, “Enviada información inicial”) para no perder el hilo con nadie.",
-        ],
-      },
-      {
         h: "Guion de 4 pasos para tu historia personal",
         body: [
           "Paso 1 — Tu antecedente: comparte tu situación previa (económica, de tiempo, de salud) con la que la otra persona se identifique. Ej.: “Llevaba tiempo sintiendo que los gastos del mes subían pero mis ingresos seguían igual...”",
@@ -682,7 +682,6 @@ const DIAS = [
     ],
     checklist: [
       "Estructuré mi historia personal de 3 minutos.",
-      "Clasifiqué mis primeros 30 nombres en la Lista de 250.",
       "Realicé mis primeras 5 invitaciones sinceras.",
       "Vi al menos un video relacionado con la Compañía Atomy.",
       "Reto 7×7 (Día 2): contacté personalmente a 10 personas de mi lista.",
@@ -698,8 +697,8 @@ const DIAS = [
     id: 5,
     etapa: "La Dirección",
     icono: "compass",
-    titulo: "Plan de Acción Semanal",
-    objetivo: "Organizar tu semana de forma sostenible, sin agobios.",
+    titulo: "Organiza tu Semana y Recomienda con Propósito",
+    objetivo: "Organizar tu semana de forma sostenible y usar ese tiempo, desde ya, para descubrir necesidades reales y recomendar.",
     contenido: [
       {
         h: "Tu plan de trabajo sostenible",
@@ -710,15 +709,16 @@ const DIAS = [
           "Tu cita semanal: agenda una llamada corta y fija de 15-20 minutos con tu mentor para ver avances, resolver dudas y ajustar lo que necesites.",
           "15 minutos de aprendizaje diario: continúa viendo contenido en ch.atomy.com/eu (CH.ATOMY Europa) a tu ritmo, como ya vienes haciendo desde el Día 1.",
           "💡 Consejo: un proyecto constante de 3 horas a la semana da 100 veces más resultado que un maratón de un solo día. Hazlo a tu ritmo.",
+          "Usa una de esas horas que acabas de bloquear para la actividad de hoy: en vez de vender a ciegas, vas a descubrir necesidades reales.",
         ],
       },
       {
-        h: "Reto 7×7 — Día 3: Recomendar",
+        h: "Hoy en acción: descubre necesidades y recomienda (Reto 7×7 — Día 3)",
         body: [
-          "“No vendo productos. Descubro necesidades.” Hoy conversas para descubrir: ¿qué producto utilizan actualmente?, ¿qué necesidad quieren atender?, ¿qué productos compran regularmente?, ¿les interesa conocer una alternativa de compra?",
+          "“No vendo productos. Descubro necesidades.” Conversa para descubrir: ¿qué producto utilizan actualmente?, ¿qué necesidad quieren atender?, ¿qué productos compran regularmente?, ¿les interesa conocer una alternativa de compra?",
           "Después de escuchar, sigue la secuencia: Recomienda → Explica → Invita.",
           "Ejemplo: “Cuéntame, ¿qué productos utilizas normalmente para el cuidado personal o bienestar?” Después de escuchar: “Precisamente tengo una alternativa que podría interesarte. ¿Quieres que te muestre cómo funciona?”",
-          "Misión del día: presentar productos a personas con una necesidad real.",
+          "Misión del día: dentro de las horas que bloqueaste, presenta productos a al menos una persona con una necesidad real detectada.",
         ],
       },
     ],
@@ -728,12 +728,10 @@ const DIAS = [
       { key: "llamada", label: "Día y hora de tu llamada semanal con tu mentor" },
     ],
     checklist: [
-      "Definí mi meta a 30 días.",
-      "Bloqueé mis horas de trabajo semanal.",
+      "Definí mi meta a 30 días y bloqueé mis horas de trabajo semanal.",
       "Coordiné mi llamada semanal con mi mentor.",
       "Vi 1 video de la Compañía en CH.ATOMY Europa.",
-      "Reto 7×7 (Día 3): conversé para descubrir necesidades reales, sin vender a ciegas.",
-      "Reto 7×7 (Día 3): presenté productos a personas con una necesidad real detectada.",
+      "Reto 7×7 (Día 3): dentro de mis horas bloqueadas, conversé para descubrir necesidades reales y presenté productos a quien detecté con una necesidad genuina.",
     ],
     quiz: {
       pregunta: "¿Qué agendas hoy con tu mentor?",
