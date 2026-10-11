@@ -722,7 +722,7 @@ function renderRecursosAudiovisuales(state, ui) {
   const libros =
     '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
     '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("book-open", { size: 14, color: "var(--gold)" }) + " Libros Recomendados</div>" +
-    '<p class="muted small" style="margin-bottom:10px">Lecturas que complementan tu desarrollo como emprendedor. Toca un título para buscarlo en Amazon.</p>' +
+    '<p class="muted small" style="margin-bottom:10px">Libros sugeridos para tu crecimiento personal y profesional. Toca un título para ver su ficha.</p>' +
     libroListCardHTML(LIBROS_RECOMENDADOS) +
     "</div>";
 

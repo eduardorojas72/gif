@@ -280,14 +280,14 @@ const NEGOCIO_DOCUMENTOS = [
 ];
 
 const LIBROS_RECOMENDADOS = [
-  { titulo: "Padre Rico, Padre Pobre", autor: "Robert Kiyosaki", url: "https://www.amazon.com/s?k=Padre%20Rico%2C%20Padre%20Pobre%20Robert%20Kiyosaki" },
-  { titulo: "El Profesional del Network Marketing (Go Pro)", autor: "Eric Worre", url: "https://www.amazon.com/s?k=El%20Profesional%20del%20Network%20Marketing%20%28Go%20Pro%29%20Eric%20Worre" },
-  { titulo: "Piense y Hágase Rico", autor: "Napoleon Hill", url: "https://www.amazon.com/s?k=Piense%20y%20H%C3%A1gase%20Rico%20Napoleon%20Hill" },
-  { titulo: "Los Secretos de la Mente Millonaria", autor: "T. Harv Eker", url: "https://www.amazon.com/s?k=Los%20Secretos%20de%20la%20Mente%20Millonaria%20T.%20Harv%20Eker" },
-  { titulo: "Cómo Ganar Amigos e Influir sobre las Personas", autor: "Dale Carnegie", url: "https://www.amazon.com/s?k=C%C3%B3mo%20Ganar%20Amigos%20e%20Influir%20sobre%20las%20Personas%20Dale%20Carnegie" },
-  { titulo: "El Hombre Más Rico de Babilonia", autor: "George S. Clason", url: "https://www.amazon.com/s?k=El%20Hombre%20M%C3%A1s%20Rico%20de%20Babilonia%20George%20S.%20Clason" },
-  { titulo: "Los 7 Hábitos de la Gente Altamente Efectiva", autor: "Stephen Covey", url: "https://www.amazon.com/s?k=Los%207%20H%C3%A1bitos%20de%20la%20Gente%20Altamente%20Efectiva%20Stephen%20Covey" },
-  { titulo: "Empieza con el Porqué", autor: "Simon Sinek", url: "https://www.amazon.com/s?k=Empieza%20con%20el%20Porqu%C3%A9%20Simon%20Sinek" },
+  { titulo: "Padre Rico, Padre Pobre", autor: "Robert Kiyosaki", url: "https://www.goodreads.com/book/show/69571" },
+  { titulo: "El Profesional del Network Marketing (Go Pro)", autor: "Eric Worre", url: "https://www.goodreads.com/book/show/18903702" },
+  { titulo: "Piense y Hágase Rico", autor: "Napoleon Hill", url: "https://www.goodreads.com/book/show/238601951" },
+  { titulo: "Los Secretos de la Mente Millonaria", autor: "T. Harv Eker", url: "https://www.goodreads.com/book/show/208317" },
+  { titulo: "Cómo Ganar Amigos e Influir sobre las Personas", autor: "Dale Carnegie", url: "https://www.goodreads.com/book/show/35675443" },
+  { titulo: "El Hombre Más Rico de Babilonia", autor: "George S. Clason", url: "https://www.goodreads.com/book/show/221374069" },
+  { titulo: "Los 7 Hábitos de la Gente Altamente Efectiva", autor: "Stephen Covey", url: "https://www.goodreads.com/book/show/40973334" },
+  { titulo: "Empieza con el Porqué", autor: "Simon Sinek", url: "https://www.tiposinfames.com/libros/empieza-con-el-porque/92108/" },
 ];
 
 const ESCENARIO_INTRO =
