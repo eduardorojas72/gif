@@ -1,0 +1,15 @@
+{
+  "name": "Arranque 9 — Plan de Arranque con Atomy",
+  "short_name": "Arranque 9",
+  "description": "Tu Plan de Arranque de 9 días con Atomy: recorrido guiado, Lista de 250, Recursos Audiovisuales y el Lema de Atomy.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B2A4A",
+  "theme_color": "#0B2A4A",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
