@@ -6,8 +6,8 @@
 const MENU_ITEMS = [
   { id: "home", label: "Inicio", icon: "home" },
   { id: "perfil", label: "Mi Perfil", icon: "user-badge" },
-  { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
   { id: "plan6", label: "Plan 9 Días", icon: "trail-map" },
+  { id: "pasos", label: "Los 8 Pasos", icon: "footprints" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "clientes", label: "Clientes", icon: "package" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
@@ -30,7 +30,7 @@ const MENU_ITEMS = [
 // (perfil, contactos/equipo y ajustes). El menú móvil (menú sheet) usa
 // MENU_ITEMS en su orden original, sin verse afectado por esto.
 const SIDEBAR_COLUMNAS = [
-  ["home", "pasos", "plan6", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
+  ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
   ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
 ];
 
