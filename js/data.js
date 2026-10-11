@@ -741,29 +741,11 @@ const DIAS = [
   },
   {
     id: 6,
-    etapa: "El Impacto",
+    etapa: "La Presentación",
     icono: "trending-up",
-    titulo: "Liderazgo Ético y Duplicación",
-    objetivo: "Sentar bases éticas firmes mientras presentas tu oportunidad a nuevas personas.",
+    titulo: "Reto 7×7 — Presenta tu Oportunidad",
+    objetivo: "Presentar tu oportunidad a nuevas personas con una mini presentación clara, honesta y sin presión.",
     contenido: [
-      {
-        h: "Compromiso ético",
-        body: [
-          "Trabajar en Atomy se basa en el respeto total al consumidor: cero presiones, cero engaños y coherencia absoluta usando lo que recomendamos.",
-        ],
-      },
-      {
-        h: "Fecha de revisión mensual",
-        body: [
-          "Fija desde ya un día al mes para revisar cómo va creciendo tu equipo, qué está funcionando y ajustar el rumbo juntos si surge algún bloqueo.",
-        ],
-      },
-      {
-        h: "Aprende a duplicar",
-        body: [
-          "Este proceso de arranque no te lo quedes para ti: cuando registres a tu primer socio, acompáñalo a recorrer exactamente el mismo camino.",
-        ],
-      },
       {
         h: "Tu video de hoy",
         body: [
@@ -775,22 +757,24 @@ const DIAS = [
         body: [
           "“No todos quieren comprar. Algunos quieren construir.” Busca personas que quieran: generar ingresos adicionales, comprar inteligentemente, recomendar productos o construir un negocio.",
           "Mini presentación en 4 preguntas: ¿Qué es Atomy? Una empresa internacional de venta directa. ¿Qué encontramos? Productos de diferentes categorías. ¿Cómo funciona? Consumir → Recomendar → Desarrollar clientes y equipo. ¿Qué buscamos? Construir un negocio mediante un sistema que podamos repetir y enseñar.",
+          "Hazlo siempre con cero presión y total transparencia: no vendas, invita a conocer.",
           "Misión del día: presentar la oportunidad a mínimo 3 personas.",
         ],
       },
     ],
     campos: [],
     checklist: [
-      "Asumí el compromiso ético: cero presión, transparencia total, coherencia consumiendo lo que recomiendo.",
-      "Marqué en mi agenda un día al mes para revisar mi equipo.",
-      "Tengo a mano este plan de 9 días para guiar a mi primer socio.",
       "Vi un video sobre la Cultura Atomy o la Filosofía del Fundador.",
-      "Reto 7×7 (Día 4): presenté la oportunidad de negocio a mínimo 3 personas.",
+      "Reto 7×7 (Día 4): presenté mi mini presentación de 4 preguntas a mínimo 3 personas, con cero presión y total transparencia.",
     ],
     quiz: {
-      pregunta: "¿Cuál es uno de los 3 pilares del compromiso ético?",
-      opciones: ["Vender rápido sin explicar", "Cero presión y transparencia total", "Presionar al consumidor"],
-      correcta: 1,
+      pregunta: "Según la mini presentación de 4 preguntas, ¿qué buscamos construir en Atomy?",
+      opciones: [
+        "Un negocio mediante un sistema que podamos repetir y enseñar",
+        "Una venta única y rápida",
+        "Una lista de clientes que no se puede repetir",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -843,7 +827,8 @@ const DIAS = [
     ],
     campos: [{ key: "duplicado", label: "Persona a la que ayudé a comenzar el proceso" }],
     checklist: [
-      "Reto 7×7 (Día 6): invité a una persona interesada a recorrer el proceso conmigo.",
+      "Reto 7×7 (Día 6): elegí a la persona interesada con la que voy a recorrer el proceso.",
+      "Reto 7×7 (Día 6): la invité a hacerlo conmigo, siguiendo el ciclo Yo lo hago → Te enseño → Tú lo haces → Tú lo enseñas.",
       "Reto 7×7 (Día 6): ayudé a esa persona a comenzar su propia lista, conversaciones, presentación o seguimiento.",
     ],
     quiz: {
@@ -860,8 +845,8 @@ const DIAS = [
     id: 9,
     etapa: "El Cierre",
     icono: "check",
-    titulo: "Reto 7×7 — Evaluar, Cerrar y Repetir",
-    objetivo: "Medir tus resultados y completar tu Plan de Arranque de 9 días.",
+    titulo: "Liderazgo Ético y Duplicación",
+    objetivo: "Medir tus resultados, asumir tu compromiso de liderazgo y completar tu Plan de Arranque de 9 días repitiendo y duplicando lo aprendido.",
     contenido: [
       {
         h: "Reto 7×7 — Día 7: Evaluar, cerrar y repetir",
@@ -869,6 +854,14 @@ const DIAS = [
           "“Los resultados se miden.” Hoy revisamos: ¿cuántas personas contacté?, ¿cuántas respondieron?, ¿cuántas presentaciones hice?, ¿cuántas compras conseguí?, ¿cuántas personas están interesadas en el negocio?, ¿a quién debo seguir acompañando?",
           "El reto no termina aquí: ¡comienza el ciclo! Contactar → Presentar → Recomendar → Seguir → Cerrar → Duplicar → Repetir.",
           "¿Qué pasaría con tu negocio si durante los próximos 90 días hicieras este proceso una y otra vez? No necesitas hacerlo perfecto. Necesitas hacerlo.",
+        ],
+      },
+      {
+        h: "Tu compromiso de liderazgo: ético y duplicable",
+        body: [
+          "Compromiso ético: Atomy se basa en el respeto total al consumidor — cero presiones, cero engaños y coherencia absoluta usando lo que recomendamos.",
+          "Aprende a duplicar: este proceso de arranque no te lo quedes para ti. Cuando registres a tu primer socio, acompáñalo a recorrer exactamente el mismo camino, con este mismo Plan de 9 Días.",
+          "Fecha de revisión mensual: fija desde ya un día al mes para revisar cómo va creciendo tu equipo, qué está funcionando y ajustar el rumbo juntos si surge algún bloqueo.",
         ],
       },
       {
@@ -884,6 +877,8 @@ const DIAS = [
       "Reto 7×7 (Día 7): conté cuántas personas contacté, cuántas respondieron y cuántas presentaciones hice.",
       "Reto 7×7 (Día 7): identifiqué a quién debo seguir acompañando.",
       "Entendí que el ciclo Contactar → Presentar → Recomendar → Seguir → Cerrar → Duplicar → Repetir no termina, se repite.",
+      "Asumí mi compromiso ético (cero presión, transparencia total) y marqué en mi agenda una fecha mensual para revisar mi equipo.",
+      "Tengo a mano este Plan de 9 Días para guiar a mi primer socio cuando llegue — así empieza la duplicación.",
     ],
     quiz: {
       pregunta: "Al terminar el Reto 7×7, ¿qué corresponde hacer?",
