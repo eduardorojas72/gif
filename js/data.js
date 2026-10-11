@@ -832,7 +832,7 @@ const DIAS = [
   },
   {
     id: 9,
-    etapa: "La Repetición",
+    etapa: "El Compromiso",
     icono: "check",
     titulo: "Liderazgo Ético y Duplicación",
     objetivo: "Medir tus resultados, asumir tu compromiso de liderazgo y completar tu Plan de Arranque de 9 días repitiendo y duplicando lo aprendido.",
