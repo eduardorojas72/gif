@@ -1324,14 +1324,19 @@ function renderDiaDetalle(state, ui, diaId) {
     ? evaluacion7x7PanelHTML(state, "evaluacion7x7Inicial", state.evaluacion7x7Inicial, !!ui.evaluacion7x7InicialOpen, "toggle-evaluacion7x7-inicial", null, "Cierre del Reto 7×7 inicial")
     : "";
 
+  const prevDia = DIAS.find(function (d) { return d.id === diaId - 1; });
+  const prevDayBtn = prevDia
+    ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + prevDia.id + '">' + Icon("chevron-left", { size: 16 }) + " Día anterior</button>"
+    : "<div></div>";
   const nextDia = DIAS.find(function (d) { return d.id === diaId + 1; });
   const nextDayBtn = nextDia
     ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + nextDia.id + '">Siguiente día ' + Icon("chevron-right", { size: 16 }) + "</button>"
     : "";
 
   return (
-    '<div class="row between">' +
-    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("chevron-left", { size: 16 }) + " Mapa del recorrido</button>" +
+    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("trail-map", { size: 16 }) + " Mapa del recorrido</button>" +
+    '<div class="row between" style="margin-top:4px">' +
+    prevDayBtn +
     nextDayBtn +
     "</div>" +
     '<div>' +
