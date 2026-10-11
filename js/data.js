@@ -477,7 +477,7 @@ const DIAS = [
           "Los PV (Puntos de Valor) son el valor que la empresa asigna a cada producto — los ves en azul debajo del precio. Con un par de productos básicos de uso diario (ej. kit de cuidado bucal y champú) ya alcanzas los 10.000 PVP.",
           "10.000 PVP activa tu cuenta de socio. Al llegar a 300.000 PVP ganas el TRIPLE por el mismo trabajo de tu equipo: unos 50-60 € por ciclo en vez de 15-20 €.",
           "Tus PVP JAMÁS se borran ni se reinician: cada compra para tu casa se suma de por vida. No hay prisa.",
-          "Pide y revisa tus PV en https://eu.atomy.com o en la app oficial (Android: play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es · iPhone: apps.apple.com/es/app/official-atomy-shop/id1637879180).",
+          "Pide y revisa tus PV en https://eu.atomy.com o en la app oficial: [Aplicación para Android](https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es) · [Aplicación para iPhone](https://apps.apple.com/es/app/official-atomy-shop/id1637879180).",
         ],
       },
       {
