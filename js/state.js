@@ -810,17 +810,26 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
-/* Igual que escapeHtml, pero además convierte en enlace tocable cualquier
-   dominio/URL mencionado en el texto (p.ej. "ch.atomy.com/eu"). Solo se usa
-   sobre contenido propio y curado de la app (explicaciones, notas), nunca
-   sobre texto que el socio escriba — ese sigue pasando por escapeHtml solo. */
+/* Come escapeHtml, ma inoltre trasforma in link toccabile qualsiasi
+   dominio/URL menzionato nel testo (es. "ch.atomy.com/eu"). Supporta anche
+   la sintassi [testo del link](https://url) per mostrare un'etichetta breve
+   invece dell'URL completo. Si usa solo su contenuto proprio e curato
+   dell'app (spiegazioni, note), mai su testo scritto dal partner — quello
+   continua a passare solo per escapeHtml. */
 function linkifyText(str) {
   const escaped = escapeHtml(str);
+  const placeholders = [];
+  const withLabeledLinks = escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, function (_, label, url) {
+    const token = "\u0000LINK" + placeholders.length + "\u0000";
+    placeholders.push('<a href="' + url + '" target="_blank" rel="noreferrer" style="color:var(--gold-light);text-decoration:underline">' + label + "</a>");
+    return token;
+  });
   const urlPattern = /((?:https?:\/\/)?(?:[a-z0-9-]+\.)+(?:com|net|org|us|io|app|co|info|es|mx|br|ca|eu|be)(?:\/[^\s<]*)?)/gi;
-  return escaped.replace(urlPattern, function (match) {
+  const autoLinked = withLabeledLinks.replace(urlPattern, function (match) {
     const href = /^https?:\/\//i.test(match) ? match : "https://" + match;
     return '<a href="' + href + '" target="_blank" rel="noreferrer" style="color:var(--gold-light);text-decoration:underline">' + match + "</a>";
   });
+  return autoLinked.replace(/\u0000LINK(\d+)\u0000/g, function (_, i) { return placeholders[Number(i)]; });
 }
 
 const Storage = {
