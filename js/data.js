@@ -573,7 +573,7 @@ const DIAS = [
         h: "Reto 7×7 — Día 1: Define y prepárate",
         body: [
           "A partir de hoy arrancas también el Reto 7×7, que te acompañará día a día hasta el Día 9. “Si no tengo una meta, no tengo dirección.”",
-          "1. Define tu meta de los próximos 7 días (cuántas conversaciones, presentaciones o registros quieres lograr).",
+          "1. Define tu meta de los próximos 7 días (cuántas conversaciones, presentaciones o registros quieres lograr). Ej.: 10 llamadas diarias, 4 presentaciones diarias, 2 registros diarios.",
           "2. Haz una lista de 30 personas.",
           "3. Clasifica tus contactos: clientes potenciales, personas interesadas en bienestar, personas interesadas en generar ingresos.",
           "4. Elige tus primeros 10 contactos para empezar mañana.",
