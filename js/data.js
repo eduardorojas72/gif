@@ -736,14 +736,14 @@ const DIAS = [
           "“No todos quieren comprar. Algunos quieren construir.” Busca personas que quieran: generar ingresos adicionales, comprar inteligentemente, recomendar productos o construir un negocio.",
           "Mini presentación en 4 preguntas: ¿Qué es Atomy? Una empresa internacional de venta directa. ¿Qué encontramos? Productos de diferentes categorías. ¿Cómo funciona? Consumir → Recomendar → Desarrollar clientes y equipo. ¿Qué buscamos? Construir un negocio mediante un sistema que podamos repetir y enseñar.",
           "Hazlo siempre con cero presión y total transparencia: no vendas, invita a conocer.",
-          "Misión del día: presentar la oportunidad a mínimo 3 personas.",
+          "Misión del día: presentar la oportunidad a mínimo 4 personas.",
         ],
       },
     ],
     campos: [],
     checklist: [
       "Vi un video sobre la Cultura Atomy o la Filosofía del Fundador.",
-      "Reto 7×7 (Día 4): presenté mi mini presentación de 4 preguntas a mínimo 3 personas, con cero presión y total transparencia.",
+      "Reto 7×7 (Día 4): presenté mi mini presentación de 4 preguntas a mínimo 4 personas, con cero presión y total transparencia.",
     ],
     quiz: {
       pregunta: "Según la mini presentación de 4 preguntas, ¿qué buscamos construir en Atomy?",
