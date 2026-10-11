@@ -661,7 +661,6 @@ const DIAS = [
     ],
     checklist: [
       "Estructuré mi historia personal de 3 minutos.",
-      "Realicé mis primeras 5 invitaciones sinceras.",
       "Vi al menos un video relacionado con la Compañía Atomy.",
       "Reto 7×7 (Día 2): contacté personalmente a 10 personas de mi lista.",
       "Reto 7×7 (Día 2): usé el guion de conversación en lugar de enviar un catálogo directo.",
