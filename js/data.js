@@ -279,6 +279,17 @@ const NEGOCIO_DOCUMENTOS = [
   { titulo: "Codul De Etică Al Membrilor - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
+const LIBROS_RECOMENDADOS = [
+  { titulo: "Tată bogat, tată sărac", autor: "Robert Kiyosaki", url: "https://www.goodreads.com/book/show/69571" },
+  { titulo: "Go Pro (Profesionistul în Network Marketing)", autor: "Eric Worre", url: "https://www.goodreads.com/book/show/18903702" },
+  { titulo: "Gândește și îmbogățește-te", autor: "Napoleon Hill", url: "https://www.goodreads.com/book/show/238601951" },
+  { titulo: "Secrets of the Millionaire Mind", autor: "T. Harv Eker", url: "https://www.goodreads.com/book/show/208317" },
+  { titulo: "Cum să-ți faci prieteni și să influențezi oamenii", autor: "Dale Carnegie", url: "https://www.goodreads.com/book/show/35675443" },
+  { titulo: "Cel mai bogat om din Babilon", autor: "George S. Clason", url: "https://www.goodreads.com/book/show/221374069" },
+  { titulo: "Cele 7 deprinderi ale oamenilor eficace", autor: "Stephen Covey", url: "https://www.goodreads.com/book/show/40973334" },
+  { titulo: "Start with Why", autor: "Simon Sinek", url: "https://www.tiposinfames.com/libros/empieza-con-el-porque/92108/" },
+];
+
 const ESCENARIO_INTRO =
   "Scenariul de Viață este baza întregului tău drum: înainte să înveți traseul, definește-ți destinația. Înainte să muncești de dragul muncii, decide pentru ce anume. Scrie-ți obiectivele în fiecare dintre cele 8 domenii ale vieții tale echilibrate — cu cât sunt mai clare și mai detaliate (sume, locuri, date), cu atât vor avea mai multă forță să te susțină în zilele grele.";
 
@@ -468,50 +479,30 @@ const DIAS = [
       {
         h: "Calitatea ta de membru este 100% gratuită",
         body: [
-          "A te înscrie în Atomy nu costă nimic: nu există taxă de înscriere, nici taxă lunară, nici anuală, și nu există niciodată achiziții obligatorii pentru a-ți menține contul activ.",
-          "Tot ce faci este să schimbi de unde cumperi produsele de uz zilnic pe care le cumperi deja mereu — restul sistemului (activare, comisioane, ranguri) se construiește pe acest consum, nu pe plăți suplimentare.",
+          "A te înscrie în Atomy nu costă nimic: nu există taxă de înscriere, lunară sau anuală, nici achiziții obligatorii pentru a-ți menține contul activ. Singurul lucru care se schimbă este de unde cumperi produsele de uz zilnic pe care le cumperi deja mereu — pe acest consum se construiește tot sistemul de comisioane și ranguri.",
         ],
       },
       {
-        h: "Prima ta mare etapă: 10.000 PV Personale (PVP)",
+        h: "PV-urile tale Personale (PVP): cheia ta și multiplicatorul tău",
         body: [
-          "PV (Puncte de Valoare) sunt valoarea pe care compania o atribuie fiecărui produs; le vezi cu albastru sub preț, în magazinul online.",
-          "Cu doar câteva produse de bază, de uz zilnic (ex. un kit de îngrijire bucală și un șampon), ajungi deja la cele 10.000 PVP.",
-          "Atingerea celor 10.000 PVP este cheia care îți activează contul de partener: de acolo, profilul tău devine abilitat să acumuleze volum de echipă și să încaseze comisioane.",
-          "Vizitează pagina oficială Atomy: https://eu.atomy.com",
-          "Descarcă aplicația oficială Atomy pe telefon pentru a-ți face comenzile și a-ți verifica PV-urile de oriunde: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) sau https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
+          "PV (Puncte de Valoare) sunt valoarea pe care compania o atribuie fiecărui produs — le vezi cu albastru sub preț. Cu doar câteva produse de bază, de uz zilnic (ex. kit de îngrijire bucală și șampon), ajungi deja la cele 10.000 PVP.",
+          "10.000 PVP îți activează contul de partener. Când ajungi la 300.000 PVP, câștigi TRIPLU pentru exact aceeași muncă a echipei tale: aproximativ 50-60 € pe ciclu, față de 15-20 €.",
+          "PVP-urile tale NU se șterg NICIODATĂ și nici nu se resetează: fiecare achiziție pentru casa ta se adaugă pe viață. Nu există grabă.",
+          "Comandă și verifică-ți PV-urile pe https://eu.atomy.com sau în aplicația oficială: [Aplicația pentru Android](https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es) · [Aplicația pentru iPhone](https://apps.apple.com/es/app/official-atomy-shop/id1637879180).",
         ],
       },
       {
         h: "Echipa ta binară: Linia Stângă și Linia Dreaptă",
         body: [
-          "Nu lucrezi singur: cu ajutorul sponsorului tău, îți construiești structura pe două linii de consum, Stânga și Dreapta, cu profunzime nelimitată (nu importă câte niveluri în jos crește fiecare linie).",
-          "De fiecare dată când persoanele din echipa ta cumpără pentru gospodăriile lor, generează PV de Grup (PVG).",
-          "Un „Ciclu” sau „Ciclare” are loc atunci când linia ta stângă și linia ta dreaptă acumulează fiecare câte 300.000 PVG: sistemul face un „match” și compania plătește un comision direct în contul tău bancar.",
+          "Nu lucrezi singur: cu sponsorul tău îți construiești structura pe două linii, Stânga și Dreapta, cu profunzime nelimitată.",
+          "Când echipa ta cumpără, generează PV de Grup (PVG) — se resetează după fiecare comision plătit. Un „Ciclu” are loc atunci când fiecare linie acumulează 300.000 PVG: compania plătește un comision direct în contul tău.",
         ],
       },
       {
-        h: "De ce obiectivul real sunt 300.000 PVP — câștigi de trei ori mai mult!",
+        h: "Drumul până la Sales Master",
         body: [
-          "Cu 10.000 PVP încasezi deja atunci când echipele tale fac 300.000 PVG pe fiecare parte: un comision de bază de aproximativ 15-20 € pe ciclu.",
-          "Când ajungi tu personal la 300.000 PVP, câștigi TRIPLU pentru exact aceeași muncă a echipei: aproximativ 50-60 € pe ciclu.",
-          "PVP-urile tale NU se șterg NICIODATĂ și nici nu se resetează: fiecare achiziție pentru casa ta se adaugă pe viață la cele anterioare. Nu există grabă, nici presiune.",
-          "Rezumat: 1) fă-ți prima comandă pentru a ajunge la 10.000 PVP și a-ți activa contul; 2) continuă să-ți schimbi achizițiile din supermarket cu Atomy, în ritmul tău, până la 300.000 PVP, pe măsură ce liniile tale cresc; 3) bucură-te de comisioane triplate.",
-        ],
-      },
-      {
-        h: "PV Personale vs. PV de Grup",
-        body: [
-          "PV Personale: le generezi tu însuți, cumpărând cu ID-ul tău. Nu se șterg niciodată. Îți activează contul și determină nivelul tău de încasare pe ciclu.",
-          "PV de Grup: le generează echipa ta (liniile Stânga și Dreapta). Se resetează exclusiv după plata unui comision. Adună consumul colectiv pentru a lichida comisioane.",
-        ],
-      },
-      {
-        h: "Drumul complet până la Sales Master",
-        body: [
-          "Progresul tău personal avansează în etape de PV care nu se pierd niciodată: 10.000 PVP îți activează contul, 300.000 PVP te aduce la Agent, iar 700.000 PVP te aduce la Agent Special.",
-          "Sales Master — obiectivul Planului tău de 90 de Zile — se atinge atunci când, în plus față de cele 700.000 PVP ale tale, linia ta Stângă și linia ta Dreaptă acumulează fiecare câte 2.500.000 PVG în aceeași quincenă de calificare.",
-          "Acest traseu Cumbre 90 te duce exact până acolo. Rangurile care există peste Sales Master (Diamond Master și mai departe) rămân în afara acestor 90 de zile, dar până atunci vei avea deja obiceiul și echipa pentru a continua să avansezi.",
+          "Progresul tău în PV nu se pierde niciodată: 10.000 PVP îți activează contul, 300.000 PVP te aduce la Agent, 700.000 PVP te aduce la Agent Special.",
+          "Sales Master — obiectivul Planului tău de 90 de Zile — se atinge cu cele 700.000 PVP ale tale + 2.500.000 PVG pe fiecare linie, în aceeași quincenă.",
         ],
       },
       {
@@ -523,7 +514,6 @@ const DIAS = [
       },
     ],
     campos: [],
-    nota: "Nu uita cele două mari etape ale tale: 10.000 PVP (îți activează contul) și 300.000 PVP (îți triplezi comisionul pe ciclu). PV-urile tale personale nu se șterg niciodată și nici nu se resetează.",
     checklist: [
       "Am înțeles importanța de a atinge întâi 10.000 PV și de a viza cele 300.000 PV personale.",
       "Am înțeles cum funcționează echilibrul binar (Stânga / Dreapta).",
@@ -580,10 +570,21 @@ const DIAS = [
         ],
       },
       {
+        h: "Sfaturi pentru a-ți crea Lista de Contacte",
+        body: [
+          "Golire inițială fără filtre: notează toate persoanele pe care le cunoști, fără să prejudeci cine va spune da sau nu. Rude, foști colegi de muncă sau de studii, vecini, prestatori de servicii (mecanic, contabil, medic) și contactele din agenda telefonică contează.",
+          "Împarte-ți lista în 3 piețe: Caldă (rude și prieteni apropiați — cere-le opinia sau sprijinul pentru a-ți exersa prezentarea), Călduță (cunoștințe cu care interacționezi rar — reia întâi relația înainte de a prezenta proiectul) și Rece (persoane pe care încă nu le cunoști — se alimentează din rețele sociale, evenimente sau viața de zi cu zi).",
+          "Prioritizează pe cine să contactezi primul, în funcție de profilul său: atitudine pozitivă și deschisă spre a învăța, credibilitate sau influență în mediul său, nevoie sau dorință reală de schimbare (venit extra, mai mult timp liber) și capacitatea de a achiziționa produsul sau de a începe proiectul.",
+          "Regula celor 2 zilnic: adaugă cel puțin două persoane noi în Lista ta de 250 în fiecare zi, în mod natural, fie online, fie offline.",
+          "Pe rețelele sociale, nu vinde direct: pune întrebări deschise în postările sau story-urile tale, oferă o resursă gratuită (un mini-ghid, un șablon) în schimbul unui mesaj privat, și de acolo invită-l să continuați conversația pe WhatsApp — astfel transformi o interacțiune într-un contact real din lista ta.",
+          "Notează mereu data ultimei tale interacțiuni și înțelegerea la care ați ajuns (ex. „Sun joi”, „I-am trimis informația inițială”) ca să nu pierzi șirul cu nimeni.",
+        ],
+      },
+      {
         h: "Provocarea 7×7 — Ziua 1: Definește-ți obiectivul și pregătește-te",
         body: [
           "Din ziua de astăzi începi și Provocarea 7×7, care te va acompania zi de zi până în Ziua 9. „Dacă nu am o țintă, nu am o direcție.”",
-          "1. Definește-ți obiectivul pentru următoarele 7 zile (câte conversații, prezentări sau înregistrări vrei să obții).",
+          "1. Definește-ți obiectivul pentru următoarele 7 zile (câte conversații, prezentări sau înregistrări vrei să obții). Ex.: 10 apeluri zilnic, 4 prezentări zilnic, 2 înregistrări zilnic.",
           "2. Fă o listă cu 30 de persoane.",
           "3. Clasifică-ți contactele: potențiali clienți, persoane interesate de wellness, persoane interesate să genereze venituri.",
           "4. Alege-ți primele 10 contacte cu care să începi mâine.",
@@ -625,17 +626,6 @@ const DIAS = [
     titulo: "Arta de a Invita (Storytelling)",
     objetivo: "Invită fără să presezi și împarte-ți povestea personală cu naturalețe.",
     contenido: [
-      {
-        h: "Sfaturi pentru a-ți crea Lista de Contacte",
-        body: [
-          "Golire inițială fără filtre: notează toate persoanele pe care le cunoști, fără să prejudeci cine va spune da sau nu. Rude, foști colegi de muncă sau de studii, vecini, prestatori de servicii (mecanic, contabil, medic) și contactele din agenda telefonică contează.",
-          "Împarte-ți lista în 3 piețe: Caldă (rude și prieteni apropiați — cere-le opinia sau sprijinul pentru a-ți exersa prezentarea), Călduță (cunoștințe cu care interacționezi rar — reia întâi relația înainte de a prezenta proiectul) și Rece (persoane pe care încă nu le cunoști — se alimentează din rețele sociale, evenimente sau viața de zi cu zi).",
-          "Prioritizează pe cine să contactezi primul, în funcție de profilul său: atitudine pozitivă și deschisă spre a învăța, credibilitate sau influență în mediul său, nevoie sau dorință reală de schimbare (venit extra, mai mult timp liber) și capacitatea de a achiziționa produsul sau de a începe proiectul.",
-          "Regula celor 2 zilnic: adaugă cel puțin două persoane noi în Lista ta de 250 în fiecare zi, în mod natural, fie online, fie offline.",
-          "Pe rețelele sociale, nu vinde direct: pune întrebări deschise în postările sau story-urile tale, oferă o resursă gratuită (un mini-ghid, un șablon) în schimbul unui mesaj privat, și de acolo invită-l să continuați conversația pe WhatsApp — astfel transformi o interacțiune într-un contact real din lista ta.",
-          "Notează mereu data ultimei tale interacțiuni și înțelegerea la care ați ajuns (ex. „Sun joi”, „I-am trimis informația inițială”) ca să nu pierzi șirul cu nimeni.",
-        ],
-      },
       {
         h: "Script de 4 pași pentru povestea ta personală",
         body: [
@@ -682,8 +672,6 @@ const DIAS = [
     ],
     checklist: [
       "Mi-am structurat povestea personală de 3 minute.",
-      "Mi-am clasificat primele 30 de nume în Lista de 250.",
-      "Am făcut primele mele 5 invitații sincere.",
       "Am văzut cel puțin un video legat de Compania Atomy.",
       "Provocarea 7×7 (Ziua 2): am contactat personal 10 persoane din lista mea.",
       "Provocarea 7×7 (Ziua 2): am folosit scriptul de conversație în loc să trimit direct un catalog.",
@@ -698,8 +686,8 @@ const DIAS = [
     id: 5,
     etapa: "Direcția",
     icono: "compass",
-    titulo: "Plan de Acțiune Săptămânal",
-    objetivo: "Organizează-ți săptămâna într-un mod sustenabil, fără presiune.",
+    titulo: "Organizează-ți Săptămâna și Recomandă cu un Scop",
+    objetivo: "Organizează-ți săptămâna într-un mod sustenabil și folosește acel timp, de pe acum, pentru a descoperi nevoi reale și pentru a recomanda.",
     contenido: [
       {
         h: "Planul tău de lucru sustenabil",
@@ -710,15 +698,16 @@ const DIAS = [
           "Întâlnirea ta săptămânală: programează un apel scurt și fix de 15-20 de minute cu mentorul tău, pentru a vedea progresul, a rezolva îndoieli și a ajusta ce este necesar.",
           "15 minute de învățare zilnică: continuă să urmărești conținut pe ch.atomy.com/eu (CH.ATOMY Europa) în ritmul tău, așa cum ai făcut deja din Ziua 1.",
           "💡 Sfat: un proiect constant de 3 ore pe săptămână dă de 100 de ori mai mult rezultat decât un maraton de o singură zi. Fă-o în ritmul tău.",
+          "Folosește una dintre orele pe care tocmai le-ai blocat pentru activitatea de astăzi: în loc să vinzi la întâmplare, vei descoperi nevoi reale.",
         ],
       },
       {
-        h: "Provocarea 7×7 — Ziua 3: Recomandă",
+        h: "Astăzi în acțiune: descoperă nevoi și recomandă (Provocarea 7×7 — Ziua 3)",
         body: [
-          "„Nu vând produse. Descopăr nevoi.” Astăzi conversezi pentru a descoperi: ce produs folosesc în prezent?, ce nevoie vor să rezolve?, ce produse cumpără în mod regulat?, sunt interesați să cunoască o alternativă de cumpărare?",
+          "„Nu vând produse. Descopăr nevoi.” Conversează pentru a descoperi: ce produs folosesc în prezent?, ce nevoie vor să rezolve?, ce produse cumpără în mod regulat?, sunt interesați să cunoască o alternativă de cumpărare?",
           "După ce ai ascultat, urmează secvența: Recomandă → Explică → Invită.",
           "Exemplu: „Spune-mi, ce produse folosești de obicei pentru îngrijirea personală sau wellness?” După ce ai ascultat: „Chiar am o alternativă care te-ar putea interesa. Vrei să-ți arăt cum funcționează?”",
-          "Misiunea zilei: prezintă produse persoanelor cu o nevoie reală.",
+          "Misiunea zilei: în orele pe care le-ai blocat, prezintă produse la cel puțin o persoană cu o nevoie reală detectată.",
         ],
       },
     ],
@@ -728,12 +717,10 @@ const DIAS = [
       { key: "llamada", label: "Ziua și ora apelului tău săptămânal cu mentorul" },
     ],
     checklist: [
-      "Mi-am definit obiectivul la 30 de zile.",
-      "Mi-am blocat orele de lucru săptămânale.",
+      "Mi-am definit obiectivul la 30 de zile și mi-am blocat orele de lucru săptămânale.",
       "Mi-am coordonat apelul săptămânal cu mentorul.",
       "Am văzut 1 video al Companiei pe CH.ATOMY Europa.",
-      "Provocarea 7×7 (Ziua 3): am conversat pentru a descoperi nevoi reale, fără să vând la întâmplare.",
-      "Provocarea 7×7 (Ziua 3): am prezentat produse persoanelor la care am detectat o nevoie reală.",
+      "Provocarea 7×7 (Ziua 3): în orele mele blocate, am conversat pentru a descoperi nevoi reale și am prezentat produse persoanei la care am detectat o nevoie autentică.",
     ],
     quiz: {
       pregunta: "Ce programezi astăzi cu mentorul tău?",
@@ -743,29 +730,11 @@ const DIAS = [
   },
   {
     id: 6,
-    etapa: "Impactul",
+    etapa: "Prezentarea",
     icono: "trending-up",
-    titulo: "Leadership Etic și Duplicare",
-    objetivo: "Pune baze etice solide în timp ce îți prezinți oportunitatea unor persoane noi.",
+    titulo: "Provocarea 7×7 — Prezintă-ți Oportunitatea",
+    objetivo: "Prezintă-ți oportunitatea unor persoane noi cu o mini-prezentare clară, onestă și fără presiune.",
     contenido: [
-      {
-        h: "Angajament etic",
-        body: [
-          "A lucra în Atomy se bazează pe respectul total față de consumator: zero presiune, zero înșelăciune și coerență absolută folosind ceea ce recomandăm.",
-        ],
-      },
-      {
-        h: "Data revizuirii lunare",
-        body: [
-          "Stabilește deja o zi pe lună pentru a revizui cum crește echipa ta, ce funcționează și pentru a ajusta împreună direcția dacă apare vreun blocaj.",
-        ],
-      },
-      {
-        h: "Învață să duplici",
-        body: [
-          "Acest proces de start să nu-l ții doar pentru tine: când îți înregistrezi primul partener, acompaniază-l să parcurgă exact același drum.",
-        ],
-      },
       {
         h: "Videoul tău de astăzi",
         body: [
@@ -777,22 +746,24 @@ const DIAS = [
         body: [
           "„Nu toți vor să cumpere. Unii vor să construiască.” Caută persoane care vor: să genereze venituri adiționale, să cumpere inteligent, să recomande produse sau să construiască o afacere.",
           "Mini-prezentare în 4 întrebări: Ce este Atomy? O companie internațională de vânzare directă. Ce găsim? Produse din categorii diferite. Cum funcționează? Consumă → Recomandă → Dezvoltă clienți și echipă. Ce căutăm? Să construim o afacere printr-un sistem pe care să-l putem repeta și preda altora.",
-          "Misiunea zilei: prezintă oportunitatea la minimum 3 persoane.",
+          "Fă-o mereu cu zero presiune și transparență totală: nu vinde, invită să cunoască.",
+          "Misiunea zilei: prezintă oportunitatea la minimum 4 persoane.",
         ],
       },
     ],
     campos: [],
     checklist: [
-      "Mi-am asumat angajamentul etic: zero presiune, transparență totală, coerență consumând ceea ce recomand.",
-      "Am marcat în agenda mea o zi pe lună pentru a-mi revizui echipa.",
-      "Am la îndemână acest plan de 9 zile pentru a-mi ghida primul partener.",
       "Am văzut un video despre Cultura Atomy sau despre Filosofia Fondatorului.",
-      "Provocarea 7×7 (Ziua 4): am prezentat oportunitatea de afaceri la minimum 3 persoane.",
+      "Provocarea 7×7 (Ziua 4): am prezentat mini-prezentarea mea în 4 întrebări la minimum 4 persoane, cu zero presiune și transparență totală.",
     ],
     quiz: {
-      pregunta: "Care este unul dintre cei 3 piloni ai angajamentului etic?",
-      opciones: ["Să vinzi rapid fără să explici", "Zero presiune și transparență totală", "Să presezi consumatorul"],
-      correcta: 1,
+      pregunta: "Potrivit mini-prezentării în 4 întrebări, ce căutăm să construim în Atomy?",
+      opciones: [
+        "O afacere printr-un sistem pe care să-l putem repeta și preda altora",
+        "O vânzare unică și rapidă",
+        "O listă de clienți care nu se poate repeta",
+      ],
+      correcta: 0,
     },
   },
   {
@@ -845,7 +816,8 @@ const DIAS = [
     ],
     campos: [{ key: "duplicado", label: "Persoana pe care am ajutat-o să înceapă procesul" }],
     checklist: [
-      "Provocarea 7×7 (Ziua 6): am invitat o persoană interesată să parcurgă procesul împreună cu mine.",
+      "Provocarea 7×7 (Ziua 6): am ales persoana interesată cu care voi parcurge procesul.",
+      "Provocarea 7×7 (Ziua 6): am invitat-o să o facă împreună cu mine, urmând ciclul Eu o fac → Te învăț → Tu o faci → Tu îi înveți pe alții.",
       "Provocarea 7×7 (Ziua 6): am ajutat-o pe acea persoană să-și înceapă propria listă, conversații, prezentare sau urmărire.",
     ],
     quiz: {
@@ -860,10 +832,10 @@ const DIAS = [
   },
   {
     id: 9,
-    etapa: "Finalul",
+    etapa: "Repetiția",
     icono: "check",
-    titulo: "Provocarea 7×7 — Evaluează, Încheie și Repetă",
-    objetivo: "Măsoară-ți rezultatele și încheie-ți Planul de Start de 9 zile.",
+    titulo: "Leadership Etic și Duplicare",
+    objetivo: "Măsoară-ți rezultatele, asumă-ți angajamentul de leadership și încheie-ți Planul de Start de 9 zile repetând și duplicând ce ai învățat.",
     contenido: [
       {
         h: "Provocarea 7×7 — Ziua 7: Evaluează, încheie și repetă",
@@ -871,6 +843,14 @@ const DIAS = [
           "„Rezultatele se măsoară.” Astăzi revizuim: câte persoane am contactat?, câte au răspuns?, câte prezentări am făcut?, câte vânzări am obținut?, câte persoane sunt interesate de afacere?, pe cine trebuie să continui să acompaniez?",
           "Provocarea nu se termină aici: începe ciclul! Contactează → Prezintă → Recomandă → Urmărește → Încheie → Duplică → Repetă.",
           "Ce s-ar întâmpla cu afacerea ta dacă, în următoarele 90 de zile, ai repeta acest proces din nou și din nou? Nu trebuie să-l faci perfect. Trebuie să-l faci.",
+        ],
+      },
+      {
+        h: "Angajamentul tău de leadership: etic și duplicabil",
+        body: [
+          "Angajament etic: Atomy se bazează pe respectul total față de consumator — zero presiune, zero înșelăciune și coerență absolută folosind ceea ce recomandăm.",
+          "Învață să duplici: acest proces de start să nu-l ții doar pentru tine. Când îți înregistrezi primul partener, acompaniază-l să parcurgă exact același drum, cu acest același Plan de 9 Zile.",
+          "Data revizuirii lunare: stabilește deja o zi pe lună pentru a revizui cum crește echipa ta, ce funcționează și pentru a ajusta împreună direcția dacă apare vreun blocaj.",
         ],
       },
       {
@@ -886,6 +866,8 @@ const DIAS = [
       "Provocarea 7×7 (Ziua 7): am numărat câte persoane am contactat, câte au răspuns și câte prezentări am făcut.",
       "Provocarea 7×7 (Ziua 7): am identificat pe cine trebuie să continui să acompaniez.",
       "Am înțeles că ciclul Contactează → Prezintă → Recomandă → Urmărește → Încheie → Duplică → Repetă nu se termină, ci se repetă.",
+      "Mi-am asumat angajamentul etic (zero presiune, transparență totală) și am marcat în agenda mea o dată lunară pentru a-mi revizui echipa.",
+      "Am la îndemână acest Plan de 9 Zile pentru a-mi ghida primul partener atunci când va veni — așa începe duplicarea.",
     ],
     quiz: {
       pregunta: "La finalul Provocării 7×7, ce este de făcut?",
