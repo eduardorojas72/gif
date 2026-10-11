@@ -468,50 +468,30 @@ const DIAS = [
       {
         h: "Tu membresía es 100% gratuita",
         body: [
-          "Unirte a Atomy no cuesta nada: no hay cuota de inscripción, ni cuota mensual, ni anual, y nunca hay compras obligatorias para mantener tu cuenta activa.",
-          "Lo único que haces es cambiar dónde compras los productos de uso diario que ya compras siempre — el resto del sistema (activación, comisiones, rangos) se construye sobre ese consumo, no sobre pagos adicionales.",
+          "Unirte a Atomy no cuesta nada: no hay cuota de inscripción, mensual ni anual, ni compras obligatorias para mantener tu cuenta activa. Lo único que cambia es dónde compras los productos de uso diario que ya compras siempre — sobre ese consumo se construye todo el sistema de comisiones y rangos.",
         ],
       },
       {
-        h: "Tu primer gran hito: 10.000 PV Personales (PVP)",
+        h: "Tus PV Personales (PVP): tu llave y tu multiplicador",
         body: [
-          "Los PV (Puntos de Valor) son el valor que la empresa asigna a cada producto; los ves en azul debajo del precio en la tienda online.",
-          "Con un par de productos básicos de uso diario (ej. un kit de cuidado bucal y un champú) ya alcanzas los 10.000 PVP.",
-          "Alcanzar los 10.000 PVP es la llave que activa tu cuenta de socio: a partir de ahí tu perfil queda habilitado para acumular volumen de equipo y cobrar comisiones.",
-          "Visita la página oficial de Atomy: https://eu.atomy.com",
-          "Descarga la app oficial de Atomy en tu teléfono para hacer tus pedidos y revisar tus PV desde cualquier lugar: https://play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es (Android) o https://apps.apple.com/es/app/official-atomy-shop/id1637879180 (iPhone).",
+          "Los PV (Puntos de Valor) son el valor que la empresa asigna a cada producto — los ves en azul debajo del precio. Con un par de productos básicos de uso diario (ej. kit de cuidado bucal y champú) ya alcanzas los 10.000 PVP.",
+          "10.000 PVP activa tu cuenta de socio. Al llegar a 300.000 PVP ganas el TRIPLE por el mismo trabajo de tu equipo: unos 50-60 € por ciclo en vez de 15-20 €.",
+          "Tus PVP JAMÁS se borran ni se reinician: cada compra para tu casa se suma de por vida. No hay prisa.",
+          "Pide y revisa tus PV en https://eu.atomy.com o en la app oficial (Android: play.google.com/store/apps/details?id=com.atomy.android.shop&hl=es · iPhone: apps.apple.com/es/app/official-atomy-shop/id1637879180).",
         ],
       },
       {
         h: "Tu equipo binario: Línea Izquierda y Línea Derecha",
         body: [
-          "No trabajas solo: con la ayuda de tu patrocinador vas construyendo tu estructura en dos líneas de consumo, Izquierda y Derecha, con profundidad ilimitada (no importa cuántos niveles hacia abajo crezca cada línea).",
-          "Cada vez que las personas de tu equipo compran para sus hogares, generan PV Grupales (PVG).",
-          "Un “Ciclo” o “Ciclaje” ocurre cuando tu línea izquierda y tu línea derecha acumulan cada una 300.000 PVG: el sistema hace un “match” y la empresa paga una comisión directa a tu cuenta bancaria.",
+          "No trabajas solo: con tu patrocinador construyes tu estructura en dos líneas, Izquierda y Derecha, con profundidad ilimitada.",
+          "Cuando tu equipo compra, genera PV Grupales (PVG) — se reinician tras cada comisión pagada. Un “Ciclo” ocurre cuando cada línea acumula 300.000 PVG: la empresa paga una comisión directa a tu cuenta.",
         ],
       },
       {
-        h: "Por qué la meta real son 300.000 PVP — ¡ganas el triple!",
+        h: "El camino hasta Sales Master",
         body: [
-          "Con 10.000 PVP ya cobras cuando tus equipos hacen 300.000 PVG en cada lado: una comisión base de unos 15-20 € por ciclo.",
-          "Al llegar tú personalmente a 300.000 PVP ganas el TRIPLE por exactamente el mismo trabajo del equipo: unos 50-60 € por ciclo.",
-          "Tus PVP JAMÁS se borran ni se reinician: cada compra para tu casa se suma de por vida a las anteriores. No hay prisa ni presión.",
-          "Resumen: 1) haz tu primer pedido para llegar a 10.000 PVP y activar tu cuenta; 2) sigue cambiando tus compras del súper a Atomy a tu ritmo hasta los 300.000 PVP mientras tus líneas crecen; 3) disfruta comisiones multiplicadas por tres.",
-        ],
-      },
-      {
-        h: "PV Personales vs. PV Grupales",
-        body: [
-          "PV Personales: los generas tú mismo comprando con tu ID. Nunca se borran. Habilitan tu cuenta y determinan tu nivel de cobro por ciclo.",
-          "PV Grupales: los genera tu equipo (líneas Izquierda y Derecha). Se reinician únicamente tras pagar una comisión. Suman el consumo colectivo para liquidar comisiones.",
-        ],
-      },
-      {
-        h: "El camino completo hasta Sales Master",
-        body: [
-          "Tu progreso personal avanza en hitos de PV que nunca se pierden: 10.000 PVP activa tu cuenta, 300.000 PVP te da Agente, y 700.000 PVP te da Agente Especial.",
-          "Sales Master —la meta de tu Plan de 90 Días— se alcanza cuando, además de tus 700.000 PVP, tu línea Izquierda y tu línea Derecha acumulan cada una 2.500.000 PVG en la misma quincena de calificación.",
-          "Este recorrido de Cumbre 90 te lleva exactamente hasta ahí. Los rangos que existen por encima de Sales Master (Diamond Master en adelante) quedan fuera de estos 90 días, pero para entonces ya tendrás el hábito y el equipo para seguir subiendo.",
+          "Tu progreso en PV nunca se pierde: 10.000 PVP activa tu cuenta, 300.000 PVP te da Agente, 700.000 PVP te da Agente Especial.",
+          "Sales Master —meta de tu Plan de 90 Días— se alcanza con tus 700.000 PVP + 2.500.000 PVG en cada línea, en la misma quincena.",
         ],
       },
       {
@@ -523,7 +503,6 @@ const DIAS = [
       },
     ],
     campos: [],
-    nota: "Recuerda tus dos grandes hitos: 10.000 PVP (activa tu cuenta) y 300.000 PVP (triplicas tu comisión por ciclo). Tus PV personales nunca se borran ni se reinician.",
     checklist: [
       "Entendí la importancia de alcanzar primero 10.000 PV y proyectar los 300.000 PV personales.",
       "Comprendí el funcionamiento del equilibrio binario (Izquierda / Derecha).",
