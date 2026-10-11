@@ -6,8 +6,8 @@
 const MENU_ITEMS = [
   { id: "home", label: "Início", icon: "home" },
   { id: "perfil", label: "Meu Perfil", icon: "user-badge" },
-  { id: "pasos", label: "Os 8 Passos", icon: "footprints" },
   { id: "plan6", label: "Plano 9 Dias", icon: "trail-map" },
+  { id: "pasos", label: "Os 8 Passos", icon: "footprints" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
   { id: "clientes", label: "Clientes", icon: "package" },
   { id: "agenda", label: "Agenda Semanal", icon: "calendar" },
@@ -30,7 +30,7 @@ const MENU_ITEMS = [
 // (perfil, contactos/equipo y ajustes). El menu movil (menu sheet) usa
 // MENU_ITEMS en su orden original, sin verse afectado por esto.
 const SIDEBAR_COLUMNAS = [
-  ["home", "pasos", "plan6", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
+  ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
   ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
 ];
 
@@ -688,6 +688,23 @@ function documentListCardHTML(documentos) {
   return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' + documentos.map(documentRowHTML).join("") + "</div>";
 }
 
+function libroRowHTML(b) {
+  return (
+    '<a class="card card-hover row gap-3" style="text-decoration:none;color:inherit;align-items:center" href="' + escapeHtml(b.url) + '" target="_blank" rel="noreferrer">' +
+    '<div style="flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">' + Icon("book-open", { size: 17, color: "var(--gold)" }) + "</div>" +
+    '<div style="flex:1">' +
+    '<div style="font-weight:600;font-size:13.5px;line-height:1.35">' + escapeHtml(b.titulo) + "</div>" +
+    '<div class="muted small" style="margin-top:1px">' + escapeHtml(b.autor) + "</div>" +
+    "</div>" +
+    Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+    "</a>"
+  );
+}
+
+function libroListCardHTML(libros) {
+  return '<div style="display:flex;flex-direction:column;gap:10px">' + libros.map(libroRowHTML).join("") + "</div>";
+}
+
 function renderRecursosAudiovisuales(state, ui) {
   const categorias = RECURSOS_AUDIOVISUALES.map(function (cat) {
     const documentos = cat.id === "negocio"
@@ -702,9 +719,17 @@ function renderRecursosAudiovisuales(state, ui) {
     );
   }).join("");
 
+  const libros =
+    '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("book-open", { size: 14, color: "var(--gold)" }) + " Livros Recomendados</div>" +
+    '<p class="muted small" style="margin-bottom:10px">Livros sugeridos para o seu crescimento pessoal e profissional. Toque em um título para ver sua ficha.</p>' +
+    libroListCardHTML(LIBROS_RECOMENDADOS) +
+    "</div>";
+
   return (
     sectionHeaderHTML("Recursos Audiovisuais", "Os vídeos mais importantes para entender e compartilhar a Atomy, organizados por tema.", "video") +
-    categorias
+    categorias +
+    libros
   );
 }
 
@@ -1325,14 +1350,19 @@ function renderDiaDetalle(state, ui, diaId) {
     ? evaluacion7x7PanelHTML(state, "evaluacion7x7Inicial", state.evaluacion7x7Inicial, !!ui.evaluacion7x7InicialOpen, "toggle-evaluacion7x7-inicial", null, "Encerramento do Desafio 7×7 inicial")
     : "";
 
+  const prevDia = DIAS.find(function (d) { return d.id === diaId - 1; });
+  const prevDayBtn = prevDia
+    ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + prevDia.id + '">' + Icon("chevron-left", { size: 16 }) + " Dia anterior</button>"
+    : "<div></div>";
   const nextDia = DIAS.find(function (d) { return d.id === diaId + 1; });
   const nextDayBtn = nextDia
     ? '<button class="link-btn row gap-2" style="width:fit-content" data-action="open-day" data-arg="' + nextDia.id + '">Próximo dia ' + Icon("chevron-right", { size: 16 }) + "</button>"
     : "";
 
   return (
-    '<div class="row between">' +
-    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("chevron-left", { size: 16 }) + " Mapa da jornada</button>" +
+    '<button class="link-btn row gap-2" style="width:fit-content" data-action="back-to-map">' + Icon("trail-map", { size: 16 }) + " Mapa da jornada</button>" +
+    '<div class="row between" style="margin-top:4px">' +
+    prevDayBtn +
     nextDayBtn +
     "</div>" +
     '<div>' +
