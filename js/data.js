@@ -490,7 +490,7 @@ const DIAS = [
       {
         h: "El camino hasta Sales Master",
         body: [
-          "Tu progreso en PV nunca se pierde: 10.000 PVP activa tu cuenta, 300.000 PVP te da Agente, 700.000 PVP te da Agente Especial.",
+          "Tu progreso en PV nunca se pierde: 10.000 PVP activa tu cuenta, 300.000 PVP te convierte en Agente, 700.000 PVP te convierte en Agente Especial.",
           "Sales Master —meta de tu Plan de 90 Días— se alcanza con tus 700.000 PVP + 2.500.000 PVG en cada línea, en la misma quincena.",
         ],
       },
