@@ -688,6 +688,23 @@ function documentListCardHTML(documentos) {
   return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' + documentos.map(documentRowHTML).join("") + "</div>";
 }
 
+function libroRowHTML(b) {
+  return (
+    '<a class="card card-hover row gap-3" style="text-decoration:none;color:inherit;align-items:center" href="' + escapeHtml(b.url) + '" target="_blank" rel="noreferrer">' +
+    '<div style="flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center">' + Icon("book-open", { size: 17, color: "var(--gold)" }) + "</div>" +
+    '<div style="flex:1">' +
+    '<div style="font-weight:600;font-size:13.5px;line-height:1.35">' + escapeHtml(b.titulo) + "</div>" +
+    '<div class="muted small" style="margin-top:1px">' + escapeHtml(b.autor) + "</div>" +
+    "</div>" +
+    Icon("chevron-right", { size: 16, color: "var(--text-soft)" }) +
+    "</a>"
+  );
+}
+
+function libroListCardHTML(libros) {
+  return '<div style="display:flex;flex-direction:column;gap:10px">' + libros.map(libroRowHTML).join("") + "</div>";
+}
+
 function renderRecursosAudiovisuales(state, ui) {
   const categorias = RECURSOS_AUDIOVISUALES.map(function (cat) {
     const documentos = cat.id === "negocio"
@@ -702,9 +719,17 @@ function renderRecursosAudiovisuales(state, ui) {
     );
   }).join("");
 
+  const libros =
+    '<div class="card" style="background:transparent;border:none;padding:0;margin-top:18px">' +
+    '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("book-open", { size: 14, color: "var(--gold)" }) + " Libros Recomendados</div>" +
+    '<p class="muted small" style="margin-bottom:10px">Lecturas que complementan tu desarrollo como emprendedor. Toca un título para buscarlo en Amazon.</p>' +
+    libroListCardHTML(LIBROS_RECOMENDADOS) +
+    "</div>";
+
   return (
     sectionHeaderHTML("Recursos Audiovisuales", "Los videos más importantes para entender y compartir Atomy, organizados por tema.", "video") +
-    categorias
+    categorias +
+    libros
   );
 }
 

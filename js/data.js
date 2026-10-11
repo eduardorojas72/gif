@@ -279,6 +279,17 @@ const NEGOCIO_DOCUMENTOS = [
   { titulo: "Código De Ética Miembros - Sept. 2025", url: "docs/codigo-de-etica-miembros.pdf" },
 ];
 
+const LIBROS_RECOMENDADOS = [
+  { titulo: "Padre Rico, Padre Pobre", autor: "Robert Kiyosaki", url: "https://www.amazon.com/s?k=Padre%20Rico%2C%20Padre%20Pobre%20Robert%20Kiyosaki" },
+  { titulo: "El Profesional del Network Marketing (Go Pro)", autor: "Eric Worre", url: "https://www.amazon.com/s?k=El%20Profesional%20del%20Network%20Marketing%20%28Go%20Pro%29%20Eric%20Worre" },
+  { titulo: "Piense y Hágase Rico", autor: "Napoleon Hill", url: "https://www.amazon.com/s?k=Piense%20y%20H%C3%A1gase%20Rico%20Napoleon%20Hill" },
+  { titulo: "Los Secretos de la Mente Millonaria", autor: "T. Harv Eker", url: "https://www.amazon.com/s?k=Los%20Secretos%20de%20la%20Mente%20Millonaria%20T.%20Harv%20Eker" },
+  { titulo: "Cómo Ganar Amigos e Influir sobre las Personas", autor: "Dale Carnegie", url: "https://www.amazon.com/s?k=C%C3%B3mo%20Ganar%20Amigos%20e%20Influir%20sobre%20las%20Personas%20Dale%20Carnegie" },
+  { titulo: "El Hombre Más Rico de Babilonia", autor: "George S. Clason", url: "https://www.amazon.com/s?k=El%20Hombre%20M%C3%A1s%20Rico%20de%20Babilonia%20George%20S.%20Clason" },
+  { titulo: "Los 7 Hábitos de la Gente Altamente Efectiva", autor: "Stephen Covey", url: "https://www.amazon.com/s?k=Los%207%20H%C3%A1bitos%20de%20la%20Gente%20Altamente%20Efectiva%20Stephen%20Covey" },
+  { titulo: "Empieza con el Porqué", autor: "Simon Sinek", url: "https://www.amazon.com/s?k=Empieza%20con%20el%20Porqu%C3%A9%20Simon%20Sinek" },
+];
+
 const ESCENARIO_INTRO =
   "El Escenario de Vida es la base de todo tu recorrido: antes de aprender la ruta, define tu destino. Antes de trabajar por trabajar, decide para qué. Escribe tus metas en cada una de las 8 áreas de tu vida balanceada — cuanto más claras y detalladas (cifras, lugares, fechas), más fuerza tendrán para sostenerte en los días difíciles.";
 
@@ -821,7 +832,7 @@ const DIAS = [
   },
   {
     id: 9,
-    etapa: "El Cierre",
+    etapa: "La Repetición",
     icono: "check",
     titulo: "Liderazgo Ético y Duplicación",
     objetivo: "Medir tus resultados, asumir tu compromiso de liderazgo y completar tu Plan de Arranque de 9 días repitiendo y duplicando lo aprendido.",
