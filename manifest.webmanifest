@@ -1,7 +1,7 @@
 {
-  "name": "Cumbre 90 — Les 8 Étapes vers le Succès",
-  "short_name": "Cumbre 90",
-  "description": "Un parcours guidé à travers les 8 Étapes vers le Succès, le Plan de Démarrage de 6 Jours et le Plan de 90 Jours vers Sales Master.",
+  "name": "Arranque 9 — Plan de Démarrage avec Atomy",
+  "short_name": "Arranque 9",
+  "description": "Ton Plan de Démarrage de 9 jours avec Atomy : Plan de Démarrage, Liste de 250 Contacts, Ressources Audiovisuelles et la Devise d'Atomy.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

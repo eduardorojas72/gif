@@ -5,33 +5,17 @@
 
 const MENU_ITEMS = [
   { id: "home", label: "Accueil", icon: "home" },
-  { id: "perfil", label: "Mon Profil", icon: "user-badge" },
-  { id: "plan6", label: "Plan de 9 Jours", icon: "trail-map" },
-  { id: "pasos", label: "Les 8 Étapes", icon: "footprints" },
+  { id: "plan6", label: "Plan de Démarrage", icon: "trail-map" },
   { id: "contactos", label: "Liste de 250", icon: "users" },
-  { id: "clientes", label: "Clients", icon: "package" },
-  { id: "agenda", label: "Agenda Hebdomadaire", icon: "calendar" },
-  { id: "informe", label: "Rapport Hebdomadaire", icon: "trending-up" },
-  { id: "enfoque", label: "Réunion de Mise au Point", icon: "target" },
-  { id: "plan90", label: "Plan de 90 Jours", icon: "mountain-flag" },
   { id: "recursos", label: "Ressources Audiovisuelles", icon: "video" },
-  { id: "arbol", label: "Mon Arbre Généalogique", icon: "crown" },
-  { id: "socios", label: "Mes Partenaires", icon: "users" },
-  { id: "sos", label: "Appels S.O.S.", icon: "bell" },
-  { id: "eventos", label: "Liste de Contacts", icon: "users" },
   { id: "lema", label: "La Devise d'Atomy", icon: "heart" },
-  { id: "premios", label: "Récompenses", icon: "gift" },
-  { id: "logros", label: "Succès", icon: "award" },
   { id: "ajustes", label: "Réglages", icon: "settings" },
 ];
 
-// Orden del menu lateral de escritorio, en 2 columnas: la primera agrupa el
-// recorrido del negocio (entrenamiento y medios), la segunda el resto
-// (perfil, contactos/equipo y ajustes). El menu movil (menu sheet) usa
-// MENU_ITEMS en su orden original, sin verse afectado por esto.
+// Orden du menu latéral de bureau, en 2 colonnes.
 const SIDEBAR_COLUMNAS = [
-  ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
-  ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
+  ["home", "plan6", "recursos", "lema"],
+  ["contactos", "ajustes"],
 ];
 
 const TOUR_PASOS = [
@@ -72,13 +56,17 @@ function mountainMarkHTML(size, lit) {
 
 /* ---------------- Bienvenue / Accueil initial ---------------- */
 
+const MENSAJE_BIENVENIDA_ARRANQUE9 =
+  "Bienvenue chez Atomy ! Les 9 prochains jours sont ton Plan de Démarrage : un parcours guidé, jour après jour, pour comprendre l'activité, essayer les produits, construire ta liste de contacts et faire tes premiers pas avec le Défi 7×7.\n\n" +
+  "Tu n'as pas besoin de tout savoir dès le premier jour. Il te suffit d'avancer un jour à la fois — et ton parrain/ta marraine n'est qu'à un message de distance si quelque chose n'est pas clair.";
+
 function renderWelcome() {
   return (
     '<div class="center-screen cover-screen">' +
     mountainMarkHTML(64, true) +
-    '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
-    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Les 8 Étapes vers le Succès</p>' +
-    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
+    '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Arranque 9</h1>' +
+    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Ton Plan de Démarrage avec Atomy</p>' +
+    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA_ARRANQUE9) + "</p>" +
     '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Commencer mon parcours ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copie sous licence exclusive pour ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"
@@ -86,36 +74,45 @@ function renderWelcome() {
 }
 
 function renderOnboarding(ui) {
-  const foto = ui.onboardingFoto;
-  const avatarInner = foto ? '<img src="' + foto + '" alt="Ta photo"/>' : Icon("camera", { size: 26 });
   return (
     '<div class="center-screen" style="justify-content:center">' +
-    '<div style="display:flex;flex-direction:column;align-items:center">' +
-    '<button class="photo-picker" data-action="trigger-file" data-arg="onboarding-file">' + avatarInner + "</button>" +
-    '<input id="onboarding-file" type="file" accept="image/*" class="hidden" data-target="__onboardingFoto">' +
-    '<span class="link-btn" style="margin-top:8px;font-size:12px">' + (foto ? "Changer la photo" : "Ajouter une photo (facultatif)") + "</span>" +
-    "</div>" +
-    '<h2 style="margin-top:22px;font-size:20px;font-weight:700">Comment t\'appelles-tu ?</h2>' +
-    '<p class="muted small" style="margin-top:4px">Cela nous permet de personnaliser ton parcours.</p>' +
+    '<h2 style="font-size:20px;font-weight:700">Comment t\'appelles-tu ?</h2>' +
+    '<p class="muted small" style="margin-top:4px">Pour personnaliser ton parcours.</p>' +
     '<input id="onboarding-name-input" type="text" placeholder="Ton prénom" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<div style="width:100%;max-width:320px;margin-top:26px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
-    '<h3 style="font-size:14px;font-weight:700">Tes données Atomy <span class="muted" style="font-weight:400">(facultatif)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">On les enregistre dans ton Arbre Généalogique, comme ça tu n\'as plus à les chercher ni à les redemander.</p>' +
-    '<input id="onboarding-atomy-id-input" type="text" placeholder="Ton ID Atomy" ' +
-    'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    '<input id="onboarding-atomy-pass-input" type="text" placeholder="Ton mot de passe Atomy" ' +
-    'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    "</div>" +
-    '<div style="width:100%;max-width:320px;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
     '<h3 style="font-size:14px;font-weight:700">Ton parrain / ta marraine <span class="muted" style="font-weight:400">(facultatif)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">Ça active tout de suite le bouton WhatsApp pour lui écrire, et on l\'enregistre dans ton Arbre Généalogique. Tu peux passer cette étape et la compléter plus tard.</p>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">Cela active tout de suite le bouton WhatsApp pour lui écrire. Tu peux passer cette étape et la compléter plus tard dans Réglages.</p>' +
     '<input id="onboarding-sponsor-name-input" type="text" placeholder="Nom de ton parrain / ta marraine" ' +
     'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="Son WhatsApp, ex. 33600000000" ' +
+    '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="Son WhatsApp, ex. 34600000000" ' +
     'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     "</div>" +
     '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Commencer ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    "</div>"
+  );
+}
+
+/* ---------------- Écran de clôture (Jour 9 terminé) ---------------- */
+
+function renderCierre(state) {
+  const mensajeShare = encodeURIComponent(
+    "Je viens de terminer mon Plan de Démarrage de 9 jours avec Atomy ! 🎉" + (state.nombre ? " — " + state.nombre : "") + ". Merci de m'avoir accompagné(e), on continue ensemble vers la prochaine étape ?"
+  );
+  const shareUrl = state.whatsapp
+    ? "https://wa.me/" + state.whatsapp.replace(/[^0-9]/g, "") + "?text=" + mensajeShare
+    : "https://wa.me/?text=" + mensajeShare;
+
+  return (
+    '<div class="center-screen cover-screen">' +
+    Icon("award", { size: 56, color: "var(--gold)" }) +
+    '<h1 style="margin-top:18px;font-size:24px;font-weight:700;letter-spacing:-.02em;text-align:center">Tu as terminé ton Plan de Démarrage !</h1>' +
+    '<p class="muted" style="margin-top:10px;max-width:340px;font-size:14.5px;line-height:1.6;text-align:center">' +
+    "9 jours, 9 étapes, un Défi 7×7 complet et une Liste de 250 qui a déjà commencé à grandir. Ce n'est que le début." +
+    "</p>" +
+    '<a class="btn-primary" style="margin-top:30px;max-width:320px;width:100%;justify-content:center" href="' + shareUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 18, color: "#fff" }) + " Partager cette réussite avec mon parrain/ma marraine</a>" +
+    '<a class="btn-secondary" style="margin-top:12px;max-width:320px;width:100%;justify-content:center" href="https://cumbre90-fr.vercel.app" target="_blank" rel="noreferrer">' + Icon("mountain-flag", { size: 16 }) + " Continuer à grandir avec Cumbre 90</a>" +
+    '<button class="link-btn small" style="margin-top:22px" data-action="goto" data-arg="home">Retour à l\'accueil</button>' +
     "</div>"
   );
 }
@@ -127,7 +124,7 @@ function renderHeader(state, ui) {
   return (
     '<div class="app-header">' +
     '<button class="icon-btn menu-toggle" data-action="open-menu">' + Icon("menu", { size: 22 }) + "</button>" +
-    '<div class="brand">' + mountainMarkHTML(18) + '<span>CUMBRE 90</span></div>' +
+    '<div class="brand">' + mountainMarkHTML(18) + '<span>ARRANQUE 9</span></div>' +
     '<div class="actions">' +
     '<button class="icon-btn" style="position:relative" data-action="open-bell">' + Icon("bell", { size: 18 }) +
     (hasReminders ? '<span style="position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:999px;background:var(--warn)"></span>' : "") +
@@ -171,7 +168,7 @@ function renderMenuSheet(ui) {
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
     '<div class="menu-sheet">' +
     '<div class="menu-handle"></div>' +
-    '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">CUMBRE 90</span></div>' +
+    '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">ARRANQUE 9</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
     '<div class="menu-list">' + items + salir + "</div>" +
     (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licencia exclusiva: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
@@ -304,87 +301,36 @@ function renderLogroModal(state, ui) {
 /* ---------------- Accueil ---------------- */
 
 function renderHome(state) {
-  const quincenasMap = derivarQuincenas(state);
   const etapasHechas = DIAS.filter(function (d) { return state.dias[d.id].done; }).length;
-  const campamentosHechos = Object.values(quincenasMap).filter(Boolean).length;
-  const totalPasos = DIAS.length + QUINCENAS.length;
-  const pctGeneral = Math.round(((etapasHechas + campamentosHechos) / totalPasos) * 100);
-  const cumbreLograda = campamentosHechos === QUINCENAS.length;
+  const pctGeneral = Math.round((etapasHechas / DIAS.length) * 100);
+  const diaActualNum = Math.min(etapasHechas + 1, DIAS.length);
 
-  const nextEtapa = DIAS.find(function (d) { return !state.dias[d.id].done; });
-  const nextCampamento = QUINCENAS.find(function (q) { return !quincenasMap[q.n]; });
-  const nextPremioIdx = state.premios.findIndex(function (_, i) { return !quincenasMap[i + 1]; });
-
-  const proximos = [];
-  if (nextEtapa) {
-    const est = state.dias[nextEtapa.id];
-    const total = nextEtapa.checklist.length + 1;
-    const hecho = est.checks.filter(Boolean).length + (est.quizOk ? 1 : 0);
-    proximos.push({ titulo: nextEtapa.etapa, sub: hecho + "/" + total, pct: Math.round((hecho / total) * 100), goTo: "plan6" });
-  }
-  if (nextCampamento) proximos.push({ titulo: nextCampamento.nombre, sub: "0/1", pct: 0, goTo: "plan90" });
-  if (nextPremioIdx !== -1) proximos.push({ titulo: state.premios[nextPremioIdx].premio, sub: "0/1", pct: 0, goTo: "premios" });
-
-  let mensaje = "Continue, chaque étape compte !";
-  if (pctGeneral === 0) mensaje = "Ton parcours commence aujourd'hui. En route !";
-  else if (pctGeneral === 100) mensaje = "Tu as terminé tout ce qui était disponible ! Continue ainsi.";
-  else if (pctGeneral >= 70) mensaje = "Tu es presque au Sommet, ne relâche pas l'effort.";
+  let mensaje = "Ton parcours commence aujourd'hui. En avant !";
+  if (etapasHechas === DIAS.length) mensaje = "Tu as terminé ton Plan de Démarrage ! Continue comme ça.";
+  else if (etapasHechas > 0) mensaje = "Continue comme ça, chaque jour compte !";
 
   const chips = DIAS.map(function (d) { return '<div class="seg' + (state.dias[d.id].done ? " on" : "") + '"></div>'; }).join("");
 
-  const avatarInner = state.foto ? '<img src="' + state.foto + '" alt="Ta photo"/>' : Icon("user-badge", { size: 20, color: "var(--accent)" });
-
-  const proximosHtml = proximos.length
-    ? '<div class="card">' +
-      '<div class="row gap-2">' + Icon("target", { size: 14, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">À venir</span></div>' +
-      '<div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">' +
-      proximos.map(function (it) {
-        return (
-          '<button data-action="goto" data-arg="' + it.goTo + '" style="text-align:left;width:100%">' +
-          '<div class="row between"><span style="font-size:13.5px;font-weight:600;color:var(--text)">' + escapeHtml(it.titulo) + '</span><span class="muted small">' + it.sub + "</span></div>" +
-          '<div class="progressbar gold thin" style="margin-top:6px"><div style="width:' + Math.max(it.pct, 4) + '%"></div></div>' +
-          "</button>"
-        );
-      }).join("") +
-      "</div>" +
-      '<button class="link-btn small" style="margin-top:12px" data-action="goto" data-arg="logros">Voir tous les succès →</button>' +
-      "</div>"
-    : "";
-
   return (
-    '<button class="row gap-3" style="text-align:left;width:100%" data-action="goto" data-arg="perfil">' +
-    '<div style="width:48px;height:48px;border-radius:999px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:var(--card)">' + avatarInner + "</div>" +
-    '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(RANGOS[state.rangoIndex].nombre) + '</div>' +
-    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Salut, ' + escapeHtml(state.nombre || "partenaire") + ' 👋</h1></div>' +
-    "</button>" +
+    '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + saludoHora() + '</div>' +
+    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Salut, ' + escapeHtml(state.nombre || "") + ' 👋</h1></div>' +
 
     '<div class="card">' +
-    '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
-    '<div style="font-size:17px;font-weight:700;margin-top:2px">Bienvenue sur Cumbre 90</div>' +
-    '<div class="muted small" style="margin-top:4px">9 Étapes · 6 Camps · Accès illimité</div>' +
+    '<div style="font-size:17px;font-weight:700">' +
+    (etapasHechas < DIAS.length ? "Jour " + diaActualNum + " sur " + DIAS.length : "Plan de Démarrage terminé !") +
+    "</div>" +
     '<div class="chip-row" style="margin-top:16px">' + chips + "</div>" +
-    '<div class="row between" style="margin-top:16px"><span class="muted small">' + (etapasHechas + campamentosHechos) + "/" + totalPasos + ' jalons atteints</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
+    '<div class="row between" style="margin-top:16px"><span class="muted small">' + etapasHechas + "/" + DIAS.length + ' jours complétés</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
     '<div class="progressbar" style="margin-top:8px"><div style="width:' + pctGeneral + '%"></div></div>' +
     '<div class="muted small" style="margin-top:12px">' + mensaje + "</div>" +
     "</div>" +
 
-    escenarioVidaHomeCardHTML(state) +
-
     enlacesUtilesHomeCardHTML() +
 
-    proximosHtml +
-
-    mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
-
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Les 8 Étapes vers le Succès</div><div class="nc-desc">Ta référence permanente</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">La Devise d\'Atomy</div><div class="nc-desc">Philosophie et code d\'éthique</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Liste de 250 Contacts</div><div class="nc-desc">' + (state.contactos || []).length + ' enregistrés · programmer des suivis</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Démarrage — 9 Jours</div><div class="nc-desc">Parcours ta carte jour après jour</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Récompenses de ton parrain</div><div class="nc-desc">Découvre ce que tu peux gagner</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-
-    (cumbreLograda
-      ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' Tu as atteint le Sommet ! Voir le succès</button>'
-      : "")
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Démarrage — 9 Jours</div><div class="nc-desc">Parcours ta carte jour par jour</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Liste de 250 Contacts</div><div class="nc-desc">' + (state.contactos || []).length + ' enregistrés · programme tes suivis</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="recursos">' + medallionHTML("video", 44) + '<div class="nc-body"><div class="nc-title">Ressources Audiovisuelles</div><div class="nc-desc">Vidéos, documents et livres recommandés</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">La Devise d\'Atomy</div><div class="nc-desc">Philosophie et code d\'éthique</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>"
   );
 }
 
@@ -1069,58 +1015,33 @@ function renderCarteleraModal() {
 }
 
 function renderLema(state, ui) {
-  const vueltos = ui.lemaVueltos || {};
   const cards = LEMA_ATOMY.pilares.map(function (p) {
-    const flipped = !!vueltos[p.n];
-    const front =
-      '<div class="flip-face flip-front">' +
-      medallionHTML(p.icon, 68) +
-      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">Pilier ' + p.n + "</div>" +
-      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
-      (p.sub ? '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div>" : "") +
-      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Touche pour voir l\'explication complète</span></div>' +
-      "</div>";
     const acciones = p.acciones && p.acciones.length
-      ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Acciones diarias</div>' +
+      ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Actions quotidiennes</div>' +
         "<ul style=\"margin:5px 0 0;padding-left:18px\">" + p.acciones.map(function (a) { return '<li style="font-size:13px;line-height:1.55;margin-top:4px">' + escapeHtml(a) + "</li>"; }).join("") + "</ul>"
       : "";
-    const marcos = p.marcos && p.marcos.length
-      ? p.marcos.map(function (m) {
-          return (
-            '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(m.nombre) + "</div>" +
-            '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
-            '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
-          );
-        }).join("") +
-        '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Partager</div>"
-      : "";
-    const back =
-      '<div class="flip-face flip-back">' +
-      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Pilier " + p.n + " — " + escapeHtml(p.t) + "</div>" +
-      (p.sub ? '<div class="muted small" style="font-style:italic;margin-top:4px">' + escapeHtml(p.sub) + "</div>" : "") +
-      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
-      acciones + marcos +
-      "</div>";
     return (
-      '<button class="flip-card' + (flipped ? " is-open" : "") + '" data-action="flip-lema" data-arg="' + p.n + '">' +
-      '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
-      "</button>"
+      '<div class="card">' +
+      '<div class="row gap-3">' + medallionHTML(p.icon, 48) +
+      '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Pilier ' + p.n + "</div>" +
+      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div></div></div>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
+      acciones +
+      "</div>"
     );
   }).join("");
   const header =
     '<div class="section-header">' + medallionHTML("heart", 64) +
-    '<div><h2>La Devise d\'Atomy</h2><p>Philosophie d\'Entreprise et Code d\'Éthique — Président Han-Gill Park. Touche chaque pilier pour voir l\'explication complète.</p></div></div>';
+    '<div><h2>La Devise d\'Atomy</h2><p>Philosophie d\'entreprise et code d\'éthique — Président Han-Gill Park.</p></div></div>';
   const intro = '<p class="muted small" style="line-height:1.6;margin-top:-4px">' + escapeHtml(LEMA_ATOMY.intro) + "</p>";
-  const carteleraBtn =
-    '<button class="btn-secondary" style="margin-top:12px" data-action="open-cartelera">' + Icon("image-plus", { size: 15 }) + " Voir l'affiche à mettre bien en vue</button>";
   const exclamacion =
     '<div class="card" style="margin-top:14px;text-align:center;border-color:var(--gold)">' +
-    '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)">Cri Officiel de la Devise</div>' +
+    '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)">Cri officiel de la devise</div>' +
     '<p style="font-size:14px;line-height:1.6;margin-top:6px;font-weight:600">' + escapeHtml(LEMA_ATOMY.exclamacion) + "</p></div>";
-  return header + intro + carteleraBtn +
+  return header + intro +
     '<div class="view-stack gap-sm" style="margin-top:14px">' + cards + "</div>" +
-    exclamacion +
-    lemaFocoHTML(state);
+    exclamacion;
 }
 
 /* ---------------- Plan de 9 jours — carte ---------------- */
@@ -1217,7 +1138,7 @@ function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
 
 function evaluacion7x7ResumenTexto(ev, periodoLabel) {
   return (
-    "📊 " + periodoLabel + " — Défi 7×7 (Cumbre 90) :\n" +
+    "📊 " + periodoLabel + " — Défi 7×7 (Arranque 9) :\n" +
     "• Personnes contactées : " + (ev.contactados || "0") + "\n" +
     "• Ont répondu : " + (ev.respondieron || "0") + "\n" +
     "• Présentations faites : " + (ev.presentaciones || "0") + "\n" +
@@ -1971,43 +1892,39 @@ function renderCumbre(state) {
 /* ---------------- Réglages ---------------- */
 
 function renderAjustes(state, ui) {
+  const nombreField =
+    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Ton prénom</label>' +
+    '<input type="text" placeholder="Ton prénom" value="' + escapeHtml(state.nombre) + '" data-field="nombre" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
+
   const whatsappField =
-    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">WhatsApp de ton parrain / ta marraine</label>' +
-    '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">Le bouton vert flottant lui écrit directement à ce numéro.</p>' +
-    '<input type="text" inputmode="numeric" placeholder="Ex. 33600000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
+    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">WhatsApp de ton parrain/ta marraine</label>' +
+    '<input type="text" inputmode="numeric" placeholder="Ex. 33600000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none">' +
+    (state.whatsapp
+      ? '<a class="btn-secondary" style="margin-top:10px;width:100%;justify-content:center" href="' + waHref(state.whatsapp) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15 }) + " Écrire à mon parrain/ma marraine</a>"
+      : "") +
+    "</div>";
 
-  const notifSupported = "Notification" in window;
-  const notifRow = notifSupported
-    ? '<div class="card row between"><div><div style="font-size:14px;font-weight:600">Notifications du navigateur</div><div class="muted small" style="margin-top:2px">Alertes de rappel en dehors de l\'application</div></div><div class="toggle' + (state.notifOn && Notification.permission === "granted" ? " on" : "") + '" data-action="toggle-notif"><div class="knob"></div></div></div>'
-    : "";
+  const modoOscuroField =
+    '<div class="card row between">' +
+    '<div style="font-size:14px;font-weight:600">Mode sombre</div>' +
+    '<div class="toggle' + (state.dark ? " on" : "") + '" data-action="toggle-dark"><div class="knob"></div></div>' +
+    "</div>";
 
-  const resetLabel = ui.confirmReset ? "Tu es sûr ? Touche à nouveau pour réinitialiser" : "Réinitialiser ma progression";
+  const resetLabel = ui.confirmReset ? "Sûr(e) ? Appuie à nouveau pour réinitialiser" : "Réinitialiser ma progression";
 
   const licenciaCard = LICENCIA_TITULAR
     ? '<div class="card">' +
       '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Licence de cette copie</span></div>' +
-      '<p class="muted small" style="margin-top:6px;line-height:1.5">Cette copie de Cumbre 90 est sous licence exclusive pour <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> et sa propre équipe. Son partage avec d\'autres leaders ou équipes n\'est pas autorisé.</p>' +
+      '<p class="muted small" style="margin-top:6px;line-height:1.5">Cette copie est sous licence exclusive pour <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> et sa propre équipe. Elle n\'est pas autorisée à être partagée avec d\'autres leaders ou équipes.</p>' +
       "</div>"
     : "";
 
   return (
     sectionHeaderHTML("Réglages", "", "settings") +
     licenciaCard +
-    '<div class="card row between">' +
-    '<div><div style="font-size:14px;font-weight:600">Mode parrain</div><div class="muted small" style="margin-top:2px">Active-le si tu accompagnes aussi ta propre équipe — ajoute le Rapport de mes partenaires</div></div>' +
-    '<div class="toggle' + (state.mentorMode ? " on" : "") + '" data-action="toggle-mentor"><div class="knob"></div></div>' +
-    "</div>" +
+    nombreField +
     whatsappField +
-    notifRow +
-    '<div class="card">' +
-    '<div class="row gap-2">' + Icon("download", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Copie de sauvegarde</span></div>' +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">Toutes tes données (Liste de 250, Arbre Généalogique, ta progression) vivent uniquement sur cet appareil. Télécharge une sauvegarde et garde-la où tu veux (ton Google Drive, ta messagerie, etc.) — comme ça tu ne la perds pas si tu changes de téléphone ou si tu effaces les données du navigateur.</p>' +
-    '<div class="row gap-2" style="margin-top:10px">' +
-    '<button class="btn-secondary" style="flex:1" data-action="descargar-respaldo">' + Icon("download", { size: 15 }) + " Télécharger la sauvegarde</button>" +
-    '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="importar-respaldo-input">' + Icon("repeat", { size: 15 }) + " Restaurer depuis un fichier</button>" +
-    "</div>" +
-    '<input id="importar-respaldo-input" type="file" accept="application/json,.json" class="hidden" data-target="__importBackup">' +
-    "</div>" +
+    modoOscuroField +
     '<button class="btn-secondary" style="border-color:var(--warn);color:var(--warn)" data-action="reset-progress">' + Icon("rotate-ccw", { size: 16 }) + " " + resetLabel + "</button>"
   );
 }
@@ -2096,7 +2013,7 @@ function renderContactos(state, ui) {
 
   return (
     sectionHeaderHTML("Liste de 250 Contacts", contactos.length + " sur 250 enregistrés", "users") +
-    '<p class="muted small" style="margin-top:-4px">Touche « Appel » ou « Message » sur chaque contact pour que ça s\'enregistre dans ton Rapport Hebdomadaire.</p>' +
+    '<p class="muted small" style="margin-top:-4px">Ajoute et organise les personnes de ta liste par niveau (Chaud, Tiède, Froid) et programme ton prochain suivi avec chacune.</p>' +
     '<input id="contacto-search" type="text" placeholder="Rechercher par nom ou téléphone..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +

@@ -1,10 +1,10 @@
-/* Service worker de Cumbre 90 — cachea los archivos estáticos para uso offline.
+/* Service worker de Arranque 9 — cachea los archivos estáticos para uso offline.
    Estrategia "network-first": siempre intenta traer la versión más reciente
    del servidor primero, y solo usa la copia en caché si no hay red. Así,
    cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
    vieja atascada en el caché del navegador. */
 
-const CACHE_NAME = "cumbre90-cache-v20";
+const CACHE_NAME = "arranque9-fr-cache-v1";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -20,17 +20,7 @@ const CORE_ASSETS = [
   "./js/app.js",
   "./icons/icon.svg",
   "./img/cover-cumbre90.png",
-  "./img/hero-plan6dias.png",
   "./img/fondo-app.png",
-  "./img/fondo-logros.png",
-  "./img/montana-plan90.png",
-  "./img/montana-quincena.png",
-  "./img/logro-cumbre.png",
-  "./img/consumidor-vip.png",
-  "./img/miembro-atomy.png",
-  "./img/agente.png",
-  "./img/agente-especial.png",
-  "./img/sales-master.png",
 ];
 
 self.addEventListener("install", (event) => {
