@@ -1,7 +1,7 @@
 {
-  "name": "Cumbre 90 — Os 8 Passos para o Sucesso",
-  "short_name": "Cumbre 90",
-  "description": "Jornada guiada pelos 8 Passos para o Sucesso, o Plano de Arranque de 6 Dias e o Plano de 90 Dias rumo a Sales Master.",
+  "name": "Arranque 9 — Plano de Arranque com a Atomy",
+  "short_name": "Arranque 9",
+  "description": "Seu Plano de Arranque de 9 dias com a Atomy: treinamento diário, Lista de 250 Contatos, Recursos Audiovisuais e o Lema da Atomy.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
