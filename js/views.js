@@ -5,33 +5,16 @@
 
 const MENU_ITEMS = [
   { id: "home", label: "Acasă", icon: "home" },
-  { id: "perfil", label: "Profilul meu", icon: "user-badge" },
-  { id: "plan6", label: "Plan 9 Zile", icon: "trail-map" },
-  { id: "pasos", label: "Cei 8 Pași", icon: "footprints" },
+  { id: "plan6", label: "Planul de Start", icon: "trail-map" },
   { id: "contactos", label: "Lista de 250", icon: "users" },
-  { id: "clientes", label: "Clienți", icon: "package" },
-  { id: "agenda", label: "Agenda Săptămânală", icon: "calendar" },
-  { id: "informe", label: "Raport Săptămânal", icon: "trending-up" },
-  { id: "enfoque", label: "Întâlnire de Focalizare", icon: "target" },
-  { id: "plan90", label: "Plan 90 Zile", icon: "mountain-flag" },
   { id: "recursos", label: "Resurse Audiovizuale", icon: "video" },
-  { id: "arbol", label: "Arborele meu Genealogic", icon: "crown" },
-  { id: "socios", label: "Partenerii mei", icon: "users" },
-  { id: "sos", label: "Apeluri S.O.S.", icon: "bell" },
-  { id: "eventos", label: "Lista de Contacte", icon: "users" },
   { id: "lema", label: "Deviza Atomy", icon: "heart" },
-  { id: "premios", label: "Premii", icon: "gift" },
-  { id: "logros", label: "Realizări", icon: "award" },
   { id: "ajustes", label: "Setări", icon: "settings" },
 ];
 
-// Orden del menu lateral de escritorio, en 2 columnas: la primera agrupa el
-// recorrido del negocio (entrenamiento y medios), la segunda el resto
-// (perfil, contactos/equipo y ajustes). El menu movil (menu sheet) usa
-// MENU_ITEMS en su orden original, sin verse afectado por esto.
 const SIDEBAR_COLUMNAS = [
-  ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
-  ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
+  ["home", "plan6", "recursos", "lema"],
+  ["contactos", "ajustes"],
 ];
 
 const TOUR_PASOS = [
@@ -72,50 +55,63 @@ function mountainMarkHTML(size, lit) {
 
 /* ---------------- Welcome / Onboarding ---------------- */
 
+const MENSAJE_BIENVENIDA_ARRANQUE9 =
+  "Bun venit la Atomy! Următoarele 9 zile reprezintă Planul tău de Start: un parcurs ghidat, zi de zi, pentru a înțelege afacerea, a încerca produsele, a-ți construi lista de contacte și a face primii pași cu Provocarea 7×7.\n\n" +
+  "Nu trebuie să știi totul din prima zi. Trebuie doar să avansezi o zi pe rând — iar sponsorul tău este la un mesaj distanță dacă ceva nu este clar.";
+
 function renderWelcome() {
   return (
     '<div class="center-screen cover-screen">' +
     mountainMarkHTML(64, true) +
-    '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
-    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Cei 8 Pași ai Succesului</p>' +
-    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
-    '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Începe drumul meu ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Arranque 9</h1>' +
+    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Planul tău de Start cu Atomy</p>' +
+    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA_ARRANQUE9) + "</p>" +
+    '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Începe parcursul meu ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
     (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copie cu licență exclusivă pentru ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"
   );
 }
 
 function renderOnboarding(ui) {
-  const foto = ui.onboardingFoto;
-  const avatarInner = foto ? '<img src="' + foto + '" alt="Fotografia ta"/>' : Icon("camera", { size: 26 });
   return (
     '<div class="center-screen" style="justify-content:center">' +
-    '<div style="display:flex;flex-direction:column;align-items:center">' +
-    '<button class="photo-picker" data-action="trigger-file" data-arg="onboarding-file">' + avatarInner + "</button>" +
-    '<input id="onboarding-file" type="file" accept="image/*" class="hidden" data-target="__onboardingFoto">' +
-    '<span class="link-btn" style="margin-top:8px;font-size:12px">' + (foto ? "Schimbă fotografia" : "Adaugă o fotografie (opțional)") + "</span>" +
-    "</div>" +
-    '<h2 style="margin-top:22px;font-size:20px;font-weight:700">Cum te numești?</h2>' +
-    '<p class="muted small" style="margin-top:4px">Așa îți personalizăm drumul.</p>' +
+    '<h2 style="font-size:20px;font-weight:700">Cum te numești?</h2>' +
+    '<p class="muted small" style="margin-top:4px">Așa îți personalizăm parcursul.</p>' +
     '<input id="onboarding-name-input" type="text" placeholder="Numele tău" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<div style="width:100%;max-width:320px;margin-top:26px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
-    '<h3 style="font-size:14px;font-weight:700">Datele tale Atomy <span class="muted" style="font-weight:400">(opțional)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">Le lăsăm notate în Arborele tău Genealogic, așa nu mai trebuie să le cauți sau să le ceri din nou.</p>' +
-    '<input id="onboarding-atomy-id-input" type="text" placeholder="ID-ul tău Atomy" ' +
-    'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    '<input id="onboarding-atomy-pass-input" type="text" placeholder="Parola ta Atomy" ' +
-    'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    "</div>" +
-    '<div style="width:100%;max-width:320px;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
     '<h3 style="font-size:14px;font-weight:700">Sponsorul tău <span class="muted" style="font-weight:400">(opțional)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">Așa activăm din prima butonul de WhatsApp ca să-i scrii și îl lăsăm notat în Arborele tău Genealogic. Poți sări peste asta și îl completezi mai târziu.</p>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">Astfel activăm imediat butonul de WhatsApp pentru a-i scrie. Poți sări peste acest pas și îl poți completa mai târziu în Setări.</p>' +
     '<input id="onboarding-sponsor-name-input" type="text" placeholder="Numele sponsorului tău" ' +
     'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="WhatsApp-ul lui, ex. 40712345678" ' +
     'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     "</div>" +
     '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Începe ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    "</div>"
+  );
+}
+
+/* ---------------- Ecran de final (Ziua 9 finalizată) ---------------- */
+
+function renderCierre(state) {
+  const mensajeShare = encodeURIComponent(
+    "Tocmai am finalizat Planul meu de Start de 9 zile cu Atomy! 🎉" + (state.nombre ? " — " + state.nombre : "") + ". Mulțumesc că m-ai însoțit, continuăm împreună cu următorul pas?"
+  );
+  const shareUrl = state.whatsapp
+    ? "https://wa.me/" + state.whatsapp.replace(/[^0-9]/g, "") + "?text=" + mensajeShare
+    : "https://wa.me/?text=" + mensajeShare;
+
+  return (
+    '<div class="center-screen cover-screen">' +
+    Icon("award", { size: 56, color: "var(--gold)" }) +
+    '<h1 style="margin-top:18px;font-size:24px;font-weight:700;letter-spacing:-.02em;text-align:center">Ai finalizat Planul tău de Start!</h1>' +
+    '<p class="muted" style="margin-top:10px;max-width:340px;font-size:14.5px;line-height:1.6;text-align:center">' +
+    "9 zile, 9 etape, o Provocare 7×7 completă și o Listă de 250 care deja a început să crească. Acesta este doar începutul." +
+    "</p>" +
+    '<a class="btn-primary" style="margin-top:30px;max-width:320px;width:100%;justify-content:center" href="' + shareUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 18, color: "#fff" }) + " Distribuie realizarea cu sponsorul meu</a>" +
+    '<a class="btn-secondary" style="margin-top:12px;max-width:320px;width:100%;justify-content:center" href="https://cumbre90-ro.vercel.app" target="_blank" rel="noreferrer">' + Icon("mountain-flag", { size: 16 }) + " Continuă să crești cu Cumbre 90</a>" +
+    '<button class="link-btn small" style="margin-top:22px" data-action="goto" data-arg="home">Înapoi la pagina principală</button>' +
     "</div>"
   );
 }
@@ -127,7 +123,7 @@ function renderHeader(state, ui) {
   return (
     '<div class="app-header">' +
     '<button class="icon-btn menu-toggle" data-action="open-menu">' + Icon("menu", { size: 22 }) + "</button>" +
-    '<div class="brand">' + mountainMarkHTML(18) + '<span>CUMBRE 90</span></div>' +
+    '<div class="brand">' + mountainMarkHTML(18) + '<span>ARRANQUE 9</span></div>' +
     '<div class="actions">' +
     '<button class="icon-btn" style="position:relative" data-action="open-bell">' + Icon("bell", { size: 18 }) +
     (hasReminders ? '<span style="position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:999px;background:var(--warn)"></span>' : "") +
@@ -171,7 +167,7 @@ function renderMenuSheet(ui) {
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
     '<div class="menu-sheet">' +
     '<div class="menu-handle"></div>' +
-    '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">CUMBRE 90</span></div>' +
+    '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">ARRANQUE 9</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
     '<div class="menu-list">' + items + salir + "</div>" +
     (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Licență exclusivă: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
@@ -304,87 +300,36 @@ function renderLogroModal(state, ui) {
 /* ---------------- Home ---------------- */
 
 function renderHome(state) {
-  const quincenasMap = derivarQuincenas(state);
   const etapasHechas = DIAS.filter(function (d) { return state.dias[d.id].done; }).length;
-  const campamentosHechos = Object.values(quincenasMap).filter(Boolean).length;
-  const totalPasos = DIAS.length + QUINCENAS.length;
-  const pctGeneral = Math.round(((etapasHechas + campamentosHechos) / totalPasos) * 100);
-  const cumbreLograda = campamentosHechos === QUINCENAS.length;
+  const pctGeneral = Math.round((etapasHechas / DIAS.length) * 100);
+  const diaActualNum = Math.min(etapasHechas + 1, DIAS.length);
 
-  const nextEtapa = DIAS.find(function (d) { return !state.dias[d.id].done; });
-  const nextCampamento = QUINCENAS.find(function (q) { return !quincenasMap[q.n]; });
-  const nextPremioIdx = state.premios.findIndex(function (_, i) { return !quincenasMap[i + 1]; });
-
-  const proximos = [];
-  if (nextEtapa) {
-    const est = state.dias[nextEtapa.id];
-    const total = nextEtapa.checklist.length + 1;
-    const hecho = est.checks.filter(Boolean).length + (est.quizOk ? 1 : 0);
-    proximos.push({ titulo: nextEtapa.etapa, sub: hecho + "/" + total, pct: Math.round((hecho / total) * 100), goTo: "plan6" });
-  }
-  if (nextCampamento) proximos.push({ titulo: nextCampamento.nombre, sub: "0/1", pct: 0, goTo: "plan90" });
-  if (nextPremioIdx !== -1) proximos.push({ titulo: state.premios[nextPremioIdx].premio, sub: "0/1", pct: 0, goTo: "premios" });
-
-  let mensaje = "Continuă așa, fiecare pas contează!";
-  if (pctGeneral === 0) mensaje = "Drumul tău începe astăzi. Înainte!";
-  else if (pctGeneral === 100) mensaje = "Ai completat tot ce era disponibil! Continuă așa.";
-  else if (pctGeneral >= 70) mensaje = "Ești aproape de Culme, nu ceda.";
+  let mensaje = "Parcursul tău începe azi. Hai să începem!";
+  if (etapasHechas === DIAS.length) mensaje = "Ai finalizat Planul tău de Start! Continuă tot așa.";
+  else if (etapasHechas > 0) mensaje = "Continuă tot așa, fiecare zi contează!";
 
   const chips = DIAS.map(function (d) { return '<div class="seg' + (state.dias[d.id].done ? " on" : "") + '"></div>'; }).join("");
 
-  const avatarInner = state.foto ? '<img src="' + state.foto + '" alt="Tu foto"/>' : Icon("user-badge", { size: 20, color: "var(--accent)" });
-
-  const proximosHtml = proximos.length
-    ? '<div class="card">' +
-      '<div class="row gap-2">' + Icon("target", { size: 14, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Următoarele realizări</span></div>' +
-      '<div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">' +
-      proximos.map(function (it) {
-        return (
-          '<button data-action="goto" data-arg="' + it.goTo + '" style="text-align:left;width:100%">' +
-          '<div class="row between"><span style="font-size:13.5px;font-weight:600;color:var(--text)">' + escapeHtml(it.titulo) + '</span><span class="muted small">' + it.sub + "</span></div>" +
-          '<div class="progressbar gold thin" style="margin-top:6px"><div style="width:' + Math.max(it.pct, 4) + '%"></div></div>' +
-          "</button>"
-        );
-      }).join("") +
-      "</div>" +
-      '<button class="link-btn small" style="margin-top:12px" data-action="goto" data-arg="logros">Vezi toate realizările →</button>' +
-      "</div>"
-    : "";
-
   return (
-    '<button class="row gap-3" style="text-align:left;width:100%" data-action="goto" data-arg="perfil">' +
-    '<div style="width:48px;height:48px;border-radius:999px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:var(--card)">' + avatarInner + "</div>" +
-    '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(RANGOS[state.rangoIndex].nombre) + '</div>' +
-    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Salut, ' + escapeHtml(state.nombre || "partener") + ' 👋</h1></div>' +
-    "</button>" +
+    '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + saludoHora() + '</div>' +
+    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Salut, ' + escapeHtml(state.nombre || "") + ' 👋</h1></div>' +
 
     '<div class="card">' +
-    '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
-    '<div style="font-size:17px;font-weight:700;margin-top:2px">Bine ai venit în Cumbre 90</div>' +
-    '<div class="muted small" style="margin-top:4px">9 Etape · 6 Tabere · Acces nelimitat</div>' +
+    '<div style="font-size:17px;font-weight:700">' +
+    (etapasHechas < DIAS.length ? "Ziua " + diaActualNum + " din " + DIAS.length : "Plan de Start complet!") +
+    "</div>" +
     '<div class="chip-row" style="margin-top:16px">' + chips + "</div>" +
-    '<div class="row between" style="margin-top:16px"><span class="muted small">' + (etapasHechas + campamentosHechos) + "/" + totalPasos + ' etape finalizate</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
+    '<div class="row between" style="margin-top:16px"><span class="muted small">' + etapasHechas + "/" + DIAS.length + ' zile finalizate</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
     '<div class="progressbar" style="margin-top:8px"><div style="width:' + pctGeneral + '%"></div></div>' +
     '<div class="muted small" style="margin-top:12px">' + mensaje + "</div>" +
     "</div>" +
 
-    escenarioVidaHomeCardHTML(state) +
-
     enlacesUtilesHomeCardHTML() +
 
-    proximosHtml +
-
-    mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
-
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">Cei 8 Pași ai Succesului</div><div class="nc-desc">Referința ta permanentă</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">Deviza Atomy</div><div class="nc-desc">Filosofie și cod etic</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Planul de Start — 9 Zile</div><div class="nc-desc">Parcurge-ți harta zi de zi</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
     '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">Lista de 250 de Contacte</div><div class="nc-desc">' + (state.contactos || []).length + ' înregistrate · programează urmăriri</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Plan de Start — 9 Zile</div><div class="nc-desc">Parcurge-ți harta zi de zi</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Premiile sponsorului tău</div><div class="nc-desc">Vezi ce poți câștiga</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-
-    (cumbreLograda
-      ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' Ai ajuns pe Culme! Vezi realizarea</button>'
-      : "")
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="recursos">' + medallionHTML("video", 44) + '<div class="nc-body"><div class="nc-title">Resurse Audiovizuale</div><div class="nc-desc">Videoclipuri, documente și cărți recomandate</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">Deviza Atomy</div><div class="nc-desc">Filosofie și cod etic</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>"
   );
 }
 
@@ -1069,58 +1014,33 @@ function renderCarteleraModal() {
 }
 
 function renderLema(state, ui) {
-  const vueltos = ui.lemaVueltos || {};
   const cards = LEMA_ATOMY.pilares.map(function (p) {
-    const flipped = !!vueltos[p.n];
-    const front =
-      '<div class="flip-face flip-front">' +
-      medallionHTML(p.icon, 68) +
-      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">Pilonul ' + p.n + "</div>" +
-      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
-      '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div>" +
-      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Apasă pentru explicația completă</span></div>' +
-      "</div>";
     const acciones = p.acciones && p.acciones.length
       ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Acțiuni zilnice</div>' +
         "<ul style=\"margin:5px 0 0;padding-left:18px\">" + p.acciones.map(function (a) { return '<li style="font-size:13px;line-height:1.55;margin-top:4px">' + escapeHtml(a) + "</li>"; }).join("") + "</ul>"
       : "";
-    const marcos = p.marcos && p.marcos.length
-      ? p.marcos.map(function (m) {
-          return (
-            '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(m.nombre) + "</div>" +
-            '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
-            '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
-          );
-        }).join("") +
-        '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Împarte</div>"
-      : "";
-    const back =
-      '<div class="flip-face flip-back">' +
-      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Pilonul " + p.n + " — " + escapeHtml(p.t) + "</div>" +
-      '<div class="muted small" style="font-style:italic;margin-top:4px">' + escapeHtml(p.sub) + "</div>" +
-      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
-      acciones + marcos +
-      "</div>";
     return (
-      '<button class="flip-card' + (flipped ? " is-open" : "") + '" data-action="flip-lema" data-arg="' + p.n + '">' +
-      '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
-      "</button>"
+      '<div class="card">' +
+      '<div class="row gap-3">' + medallionHTML(p.icon, 48) +
+      '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Pilonul ' + p.n + "</div>" +
+      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div></div></div>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
+      acciones +
+      "</div>"
     );
   }).join("");
   const header =
     '<div class="section-header">' + medallionHTML("heart", 64) +
-    '<div><h2>Deviza Atomy</h2><p>Filosofia Corporativă și Codul Etic — Președintele Han-Gill Park. Apasă pe fiecare pilon pentru explicația completă.</p></div></div>';
+    '<div><h2>Deviza Atomy</h2><p>Filosofia Corporativă și Codul Etic — Președintele Han-Gill Park.</p></div></div>';
   const intro = '<p class="muted small" style="line-height:1.6;margin-top:-4px">' + escapeHtml(LEMA_ATOMY.intro) + "</p>";
-  const carteleraBtn =
-    '<button class="btn-secondary" style="margin-top:12px" data-action="open-cartelera">' + Icon("image-plus", { size: 15 }) + " Vezi afișul de pus într-un loc vizibil</button>";
   const exclamacion =
     '<div class="card" style="margin-top:14px;text-align:center;border-color:var(--gold)">' +
     '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)">Exclamația Oficială a Devizei</div>' +
     '<p style="font-size:14px;line-height:1.6;margin-top:6px;font-weight:600">' + escapeHtml(LEMA_ATOMY.exclamacion) + "</p></div>";
-  return header + intro + carteleraBtn +
+  return header + intro +
     '<div class="view-stack gap-sm" style="margin-top:14px">' + cards + "</div>" +
-    exclamacion +
-    lemaFocoHTML(state);
+    exclamacion;
 }
 
 /* ---------------- Planul de 9 zile — harta ---------------- */
@@ -1217,7 +1137,7 @@ function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
 
 function evaluacion7x7ResumenTexto(ev, periodoLabel) {
   return (
-    "📊 " + periodoLabel + " — Provocarea 7×7 (Cumbre 90):\n" +
+    "📊 " + periodoLabel + " — Provocarea 7×7 (Arranque 9):\n" +
     "• Persoane contactate: " + (ev.contactados || "0") + "\n" +
     "• Au răspuns: " + (ev.respondieron || "0") + "\n" +
     "• Prezentări făcute: " + (ev.presentaciones || "0") + "\n" +
@@ -1971,43 +1891,39 @@ function renderCumbre(state) {
 /* ---------------- Ajustes ---------------- */
 
 function renderAjustes(state, ui) {
+  const nombreField =
+    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Numele tău</label>' +
+    '<input type="text" placeholder="Numele tău" value="' + escapeHtml(state.nombre) + '" data-field="nombre" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
+
   const whatsappField =
     '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">WhatsApp-ul sponsorului tău</label>' +
-    '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">Butonul verde flotant îi scrie direct la acest număr.</p>' +
-    '<input type="text" inputmode="numeric" placeholder="Ex. 40712345678" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
+    '<input type="text" inputmode="numeric" placeholder="Ex. 40712345678" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none">' +
+    (state.whatsapp
+      ? '<a class="btn-secondary" style="margin-top:10px;width:100%;justify-content:center" href="' + waHref(state.whatsapp) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15 }) + " Scrie-i sponsorului meu</a>"
+      : "") +
+    "</div>";
 
-  const notifSupported = "Notification" in window;
-  const notifRow = notifSupported
-    ? '<div class="card row between"><div><div style="font-size:14px;font-weight:600">Notificări din browser</div><div class="muted small" style="margin-top:2px">Recordatoare în afara aplicației</div></div><div class="toggle' + (state.notifOn && Notification.permission === "granted" ? " on" : "") + '" data-action="toggle-notif"><div class="knob"></div></div></div>'
-    : "";
+  const modoOscuroField =
+    '<div class="card row between">' +
+    '<div style="font-size:14px;font-weight:600">Mod întunecat</div>' +
+    '<div class="toggle' + (state.dark ? " on" : "") + '" data-action="toggle-dark"><div class="knob"></div></div>' +
+    "</div>";
 
   const resetLabel = ui.confirmReset ? "Sigur? Apasă din nou pentru a reseta" : "Resetează-mi progresul";
 
   const licenciaCard = LICENCIA_TITULAR
     ? '<div class="card">' +
       '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">Licența acestei copii</span></div>' +
-      '<p class="muted small" style="margin-top:6px;line-height:1.5">Această copie a Cumbre 90 este licențiată exclusiv pentru <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> și echipa proprie. Nu este autorizată pentru a fi împărțită cu alți lideri sau echipe.</p>' +
+      '<p class="muted small" style="margin-top:6px;line-height:1.5">Această copie este licențiată exclusiv pentru <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> și echipa proprie. Nu este autorizată pentru a fi împărțită cu alți lideri sau echipe.</p>' +
       "</div>"
     : "";
 
   return (
     sectionHeaderHTML("Setări", "", "settings") +
     licenciaCard +
-    '<div class="card row between">' +
-    '<div><div style="font-size:14px;font-weight:600">Mod sponsor</div><div class="muted small" style="margin-top:2px">Activează-l dacă îți acompaniezi și tu propria echipă — adaugă Raportul partenerilor mei</div></div>' +
-    '<div class="toggle' + (state.mentorMode ? " on" : "") + '" data-action="toggle-mentor"><div class="knob"></div></div>' +
-    "</div>" +
+    nombreField +
     whatsappField +
-    notifRow +
-    '<div class="card">' +
-    '<div class="row gap-2">' + Icon("download", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Copie de siguranță</span></div>' +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">Toate datele tale (Lista de 250, Arborele Genealogic, progresul tău) trăiesc doar pe acest dispozitiv. Descarcă o copie de siguranță și salveaz-o unde vrei (Google Drive-ul tău, email etc.) — astfel nu o pierzi dacă îți schimbi telefonul sau ștergi datele browserului.</p>' +
-    '<div class="row gap-2" style="margin-top:10px">' +
-    '<button class="btn-secondary" style="flex:1" data-action="descargar-respaldo">' + Icon("download", { size: 15 }) + " Descarcă copia de siguranță</button>" +
-    '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="importar-respaldo-input">' + Icon("repeat", { size: 15 }) + " Restaurează din fișier</button>" +
-    "</div>" +
-    '<input id="importar-respaldo-input" type="file" accept="application/json,.json" class="hidden" data-target="__importBackup">' +
-    "</div>" +
+    modoOscuroField +
     '<button class="btn-secondary" style="border-color:var(--warn);color:var(--warn)" data-action="reset-progress">' + Icon("rotate-ccw", { size: 16 }) + " " + resetLabel + "</button>"
   );
 }
@@ -2096,7 +2012,7 @@ function renderContactos(state, ui) {
 
   return (
     sectionHeaderHTML("Lista de 250 de Contacte", contactos.length + " din 250 înregistrate", "users") +
-    '<p class="muted small" style="margin-top:-4px">Apasă „Apel” sau „Mesaj” la fiecare contact ca acțiunea să apară în Raportul tău Săptămânal.</p>' +
+    '<p class="muted small" style="margin-top:-4px">Adaugă și organizează persoanele din lista ta pe niveluri (Cald, Călduț, Rece) și programează următoarea urmărire cu fiecare.</p>' +
     '<input id="contacto-search" type="text" placeholder="Caută după nume sau telefon..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +

@@ -1,7 +1,7 @@
 {
-  "name": "Cumbre 90 — Cei 8 Pași ai Succesului",
-  "short_name": "Cumbre 90",
-  "description": "Drum ghidat prin cei 8 Pași ai Succesului, Planul de Start de 6 Zile și Planul de 90 de Zile spre Sales Master.",
+  "name": "Arranque 9 — Plan de Start cu Atomy",
+  "short_name": "Arranque 9",
+  "description": "Planul tău de Start de 9 zile cu Atomy: Plan de Start, Lista de 250 de Contacte, Resurse Audiovizuale și Deviza Atomy.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
