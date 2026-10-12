@@ -166,7 +166,7 @@ function downloadDiaCard(state, diaId) {
     '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
     '<rect width="' + width + '" height="' + height + '" fill="' + t.bg + '"/>' +
     '<rect x="20" y="20" width="' + (width - 40) + '" height="' + (height - 40) + '" rx="20" fill="none" stroke="' + t.gold + '" stroke-width="2.5"/>' +
-    '<text x="60" y="90" font-family="Arial" font-size="13" letter-spacing="4" font-weight="bold" fill="' + t.gold + '">CUMBRE 90 · STAGE ' + dia.id + "</text>" +
+    '<text x="60" y="90" font-family="Arial" font-size="13" letter-spacing="4" font-weight="bold" fill="' + t.gold + '">ARRANQUE 9 · DAY ' + dia.id + "</text>" +
     '<text x="60" y="140" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="' + t.text + '">' + safeXml(dia.etapa) + "</text>" +
     '<text x="60" y="170" font-family="Arial" font-size="15" fill="' + t.accent + '">' + safeXml(dia.titulo) + "</text>" +
     '<line x1="60" y1="200" x2="' + (width - 60) + '" y2="200" stroke="' + t.border + '" stroke-width="1"/>' +

@@ -5,33 +5,17 @@
 
 const MENU_ITEMS = [
   { id: "home", label: "Home", icon: "home" },
-  { id: "perfil", label: "My Profile", icon: "user-badge" },
-  { id: "plan6", label: "9-Day Plan", icon: "trail-map" },
-  { id: "pasos", label: "The 8 Steps", icon: "footprints" },
+  { id: "plan6", label: "Starter Plan", icon: "trail-map" },
   { id: "contactos", label: "List of 250", icon: "users" },
-  { id: "clientes", label: "Customers", icon: "package" },
-  { id: "agenda", label: "Weekly Agenda", icon: "calendar" },
-  { id: "informe", label: "Weekly Report", icon: "trending-up" },
-  { id: "enfoque", label: "Focus Meeting", icon: "target" },
-  { id: "plan90", label: "90-Day Plan", icon: "mountain-flag" },
   { id: "recursos", label: "Audiovisual Resources", icon: "video" },
-  { id: "arbol", label: "My Genealogy Tree", icon: "crown" },
-  { id: "socios", label: "My Partners", icon: "users" },
-  { id: "sos", label: "S.O.S. Calls", icon: "bell" },
-  { id: "eventos", label: "Contact List", icon: "users" },
   { id: "lema", label: "Atomy's Motto", icon: "heart" },
-  { id: "premios", label: "Rewards", icon: "gift" },
-  { id: "logros", label: "Achievements", icon: "award" },
   { id: "ajustes", label: "Settings", icon: "settings" },
 ];
 
-// Orden del menu lateral de escritorio, en 2 columnas: la primera agrupa el
-// recorrido del negocio (entrenamiento y medios), la segunda el resto
-// (perfil, contactos/equipo y ajustes). El menu movil (menu sheet) usa
-// MENU_ITEMS en su orden original, sin verse afectado por esto.
+// Desktop sidebar order, in 2 columns.
 const SIDEBAR_COLUMNAS = [
-  ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
-  ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
+  ["home", "plan6", "recursos", "lema"],
+  ["contactos", "ajustes"],
 ];
 
 const TOUR_PASOS = [
@@ -72,50 +56,63 @@ function mountainMarkHTML(size, lit) {
 
 /* ---------------- Welcome / Onboarding ---------------- */
 
+const MENSAJE_BIENVENIDA_ARRANQUE9 =
+  "Welcome to Atomy! The next 9 days are your Starter Plan: a guided, day-by-day journey to understand the business, try the products, build your contact list, and take your first steps with the 7x7 Challenge.\n\n" +
+  "You don't need to know everything from day one. Just take it one day at a time — and your sponsor is one message away if anything isn't clear.";
+
 function renderWelcome() {
   return (
     '<div class="center-screen cover-screen">' +
     mountainMarkHTML(64, true) +
-    '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Cumbre 90</h1>' +
-    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">The 8 Steps to Success</p>' +
-    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA) + "</p>" +
+    '<h1 style="margin-top:22px;font-size:30px;font-weight:700;letter-spacing:-.02em">Arranque 9</h1>' +
+    '<p style="color:var(--accent);margin-top:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.15em">Your Starter Plan with Atomy</p>' +
+    '<p class="muted" style="margin-top:22px;max-width:340px;font-size:14.5px;line-height:1.6;white-space:pre-line;text-align:left">' + escapeHtml(MENSAJE_BIENVENIDA_ARRANQUE9) + "</p>" +
     '<button class="btn-primary" style="margin-top:38px;max-width:280px" data-action="start-app">Start my journey ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
-    (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Copy exclusively licensed to ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
+    (LICENCIA_TITULAR ? '<p class="muted small" style="margin-top:26px;opacity:.6">Exclusively licensed copy for ' + escapeHtml(LICENCIA_TITULAR) + "</p>" : "") +
     "</div>"
   );
 }
 
 function renderOnboarding(ui) {
-  const foto = ui.onboardingFoto;
-  const avatarInner = foto ? '<img src="' + foto + '" alt="Your photo"/>' : Icon("camera", { size: 26 });
   return (
     '<div class="center-screen" style="justify-content:center">' +
-    '<div style="display:flex;flex-direction:column;align-items:center">' +
-    '<button class="photo-picker" data-action="trigger-file" data-arg="onboarding-file">' + avatarInner + "</button>" +
-    '<input id="onboarding-file" type="file" accept="image/*" class="hidden" data-target="__onboardingFoto">' +
-    '<span class="link-btn" style="margin-top:8px;font-size:12px">' + (foto ? "Change photo" : "Add photo (optional)") + "</span>" +
-    "</div>" +
-    '<h2 style="margin-top:22px;font-size:20px;font-weight:700">What\'s your name?</h2>' +
-    '<p class="muted small" style="margin-top:4px">This helps us personalize your journey.</p>' +
+    '<h2 style="font-size:20px;font-weight:700">What\'s your name?</h2>' +
+    '<p class="muted small" style="margin-top:4px">So we can personalize your journey.</p>' +
     '<input id="onboarding-name-input" type="text" placeholder="Your name" autofocus ' +
     'style="margin-top:22px;width:100%;max-width:320px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<div style="width:100%;max-width:320px;margin-top:26px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
-    '<h3 style="font-size:14px;font-weight:700">Your Atomy details <span class="muted" style="font-weight:400">(optional)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">We\'ll save them in your Genealogy Tree, so you won\'t have to look them up or ask for them again.</p>' +
-    '<input id="onboarding-atomy-id-input" type="text" placeholder="Your Atomy ID" ' +
-    'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    '<input id="onboarding-atomy-pass-input" type="text" placeholder="Your Atomy password" ' +
-    'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
-    "</div>" +
-    '<div style="width:100%;max-width:320px;margin-top:18px;padding-top:18px;border-top:1px solid var(--border-soft)">' +
     '<h3 style="font-size:14px;font-weight:700">Your sponsor <span class="muted" style="font-weight:400">(optional)</span></h3>' +
-    '<p class="muted small" style="margin-top:2px;line-height:1.5">This way we activate the WhatsApp button to message them right away, and save it in your Genealogy Tree. You can skip this and fill it in later.</p>' +
+    '<p class="muted small" style="margin-top:2px;line-height:1.5">This sets up the WhatsApp button to message them right away. You can skip this and fill it in later in Settings.</p>' +
     '<input id="onboarding-sponsor-name-input" type="text" placeholder="Your sponsor\'s name" ' +
     'style="margin-top:12px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     '<input id="onboarding-sponsor-phone-input" type="text" inputmode="numeric" placeholder="Their WhatsApp, e.g. 34600000000" ' +
     'style="margin-top:10px;width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;outline:none">' +
     "</div>" +
     '<button id="onboarding-submit" class="btn-primary" style="margin-top:22px;max-width:320px;opacity:.55" disabled data-action="finish-onboarding">Start ' + Icon("chevron-right", { size: 18, color: "#fff" }) + "</button>" +
+    "</div>"
+  );
+}
+
+/* ---------------- Closing screen (Day 9 completed) ---------------- */
+
+function renderCierre(state) {
+  const mensajeShare = encodeURIComponent(
+    "I just completed my 9-day Starter Plan with Atomy! 🎉" + (state.nombre ? " — " + state.nombre : "") + ". Thanks for being with me on this — ready for the next step?"
+  );
+  const shareUrl = state.whatsapp
+    ? "https://wa.me/" + state.whatsapp.replace(/[^0-9]/g, "") + "?text=" + mensajeShare
+    : "https://wa.me/?text=" + mensajeShare;
+
+  return (
+    '<div class="center-screen cover-screen">' +
+    Icon("award", { size: 56, color: "var(--gold)" }) +
+    '<h1 style="margin-top:18px;font-size:24px;font-weight:700;letter-spacing:-.02em;text-align:center">You completed your Starter Plan!</h1>' +
+    '<p class="muted" style="margin-top:10px;max-width:340px;font-size:14.5px;line-height:1.6;text-align:center">' +
+    "9 days, 9 stages, a full 7x7 Challenge, and a 250-Contact List that's already growing. This is just the beginning." +
+    "</p>" +
+    '<a class="btn-primary" style="margin-top:30px;max-width:320px;width:100%;justify-content:center" href="' + shareUrl + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 18, color: "#fff" }) + " Share this with my sponsor</a>" +
+    '<a class="btn-secondary" style="margin-top:12px;max-width:320px;width:100%;justify-content:center" href="https://cumbre90-en.vercel.app" target="_blank" rel="noreferrer">' + Icon("mountain-flag", { size: 16 }) + " Keep growing with Cumbre 90</a>" +
+    '<button class="link-btn small" style="margin-top:22px" data-action="goto" data-arg="home">Back to home</button>' +
     "</div>"
   );
 }
@@ -127,7 +124,7 @@ function renderHeader(state, ui) {
   return (
     '<div class="app-header">' +
     '<button class="icon-btn menu-toggle" data-action="open-menu">' + Icon("menu", { size: 22 }) + "</button>" +
-    '<div class="brand">' + mountainMarkHTML(18) + '<span>CUMBRE 90</span></div>' +
+    '<div class="brand">' + mountainMarkHTML(18) + '<span>ARRANQUE 9</span></div>' +
     '<div class="actions">' +
     '<button class="icon-btn" style="position:relative" data-action="open-bell">' + Icon("bell", { size: 18 }) +
     (hasReminders ? '<span style="position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:999px;background:var(--warn)"></span>' : "") +
@@ -171,7 +168,7 @@ function renderMenuSheet(ui) {
     '<div class="menu-backdrop" data-action="close-menu"></div>' +
     '<div class="menu-sheet">' +
     '<div class="menu-handle"></div>' +
-    '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">CUMBRE 90</span></div>' +
+    '<div class="menu-head"><div class="row gap-2">' + mountainMarkHTML(18) + '<span style="font-weight:700;font-size:14px">ARRANQUE 9</span></div>' +
     '<button class="icon-btn" data-action="close-menu">' + Icon("x", { size: 20 }) + "</button></div>" +
     '<div class="menu-list">' + items + salir + "</div>" +
     (LICENCIA_TITULAR ? '<div class="muted small" style="text-align:center;margin-top:14px;opacity:.65">Exclusive license: ' + escapeHtml(LICENCIA_TITULAR) + "</div>" : "") +
@@ -304,87 +301,36 @@ function renderLogroModal(state, ui) {
 /* ---------------- Home ---------------- */
 
 function renderHome(state) {
-  const quincenasMap = derivarQuincenas(state);
   const etapasHechas = DIAS.filter(function (d) { return state.dias[d.id].done; }).length;
-  const campamentosHechos = Object.values(quincenasMap).filter(Boolean).length;
-  const totalPasos = DIAS.length + QUINCENAS.length;
-  const pctGeneral = Math.round(((etapasHechas + campamentosHechos) / totalPasos) * 100);
-  const cumbreLograda = campamentosHechos === QUINCENAS.length;
+  const pctGeneral = Math.round((etapasHechas / DIAS.length) * 100);
+  const diaActualNum = Math.min(etapasHechas + 1, DIAS.length);
 
-  const nextEtapa = DIAS.find(function (d) { return !state.dias[d.id].done; });
-  const nextCampamento = QUINCENAS.find(function (q) { return !quincenasMap[q.n]; });
-  const nextPremioIdx = state.premios.findIndex(function (_, i) { return !quincenasMap[i + 1]; });
-
-  const proximos = [];
-  if (nextEtapa) {
-    const est = state.dias[nextEtapa.id];
-    const total = nextEtapa.checklist.length + 1;
-    const hecho = est.checks.filter(Boolean).length + (est.quizOk ? 1 : 0);
-    proximos.push({ titulo: nextEtapa.etapa, sub: hecho + "/" + total, pct: Math.round((hecho / total) * 100), goTo: "plan6" });
-  }
-  if (nextCampamento) proximos.push({ titulo: nextCampamento.nombre, sub: "0/1", pct: 0, goTo: "plan90" });
-  if (nextPremioIdx !== -1) proximos.push({ titulo: state.premios[nextPremioIdx].premio, sub: "0/1", pct: 0, goTo: "premios" });
-
-  let mensaje = "Keep going, every step counts!";
-  if (pctGeneral === 0) mensaje = "Your journey starts today. Let's go!";
-  else if (pctGeneral === 100) mensaje = "You've completed everything available! Keep it up.";
-  else if (pctGeneral >= 70) mensaje = "You're almost at the Summit — don't let up.";
+  let mensaje = "Your journey starts today. Let's go!";
+  if (etapasHechas === DIAS.length) mensaje = "You completed your Starter Plan! Keep it up.";
+  else if (etapasHechas > 0) mensaje = "Keep going, every day counts!";
 
   const chips = DIAS.map(function (d) { return '<div class="seg' + (state.dias[d.id].done ? " on" : "") + '"></div>'; }).join("");
 
-  const avatarInner = state.foto ? '<img src="' + state.foto + '" alt="Your photo"/>' : Icon("user-badge", { size: 20, color: "var(--accent)" });
-
-  const proximosHtml = proximos.length
-    ? '<div class="card">' +
-      '<div class="row gap-2">' + Icon("target", { size: 14, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Coming up next</span></div>' +
-      '<div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">' +
-      proximos.map(function (it) {
-        return (
-          '<button data-action="goto" data-arg="' + it.goTo + '" style="text-align:left;width:100%">' +
-          '<div class="row between"><span style="font-size:13.5px;font-weight:600;color:var(--text)">' + escapeHtml(it.titulo) + '</span><span class="muted small">' + it.sub + "</span></div>" +
-          '<div class="progressbar gold thin" style="margin-top:6px"><div style="width:' + Math.max(it.pct, 4) + '%"></div></div>' +
-          "</button>"
-        );
-      }).join("") +
-      "</div>" +
-      '<button class="link-btn small" style="margin-top:12px" data-action="goto" data-arg="logros">View all achievements →</button>' +
-      "</div>"
-    : "";
-
   return (
-    '<button class="row gap-3" style="text-align:left;width:100%" data-action="goto" data-arg="perfil">' +
-    '<div style="width:48px;height:48px;border-radius:999px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:var(--card)">' + avatarInner + "</div>" +
-    '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(RANGOS[state.rangoIndex].nombre) + '</div>' +
-    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Hi, ' + escapeHtml(state.nombre || "partner") + ' 👋</h1></div>' +
-    "</button>" +
+    '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">' + saludoHora() + '</div>' +
+    '<h1 style="font-size:18px;font-weight:700;margin-top:1px">Hi, ' + escapeHtml(state.nombre || "there") + ' 👋</h1></div>' +
 
     '<div class="card">' +
-    '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">' + saludoHora() + "</div>" +
-    '<div style="font-size:17px;font-weight:700;margin-top:2px">Welcome to Cumbre 90</div>' +
-    '<div class="muted small" style="margin-top:4px">9 Stages · 6 Camps · Unlimited access</div>' +
+    '<div style="font-size:17px;font-weight:700">' +
+    (etapasHechas < DIAS.length ? "Day " + diaActualNum + " of " + DIAS.length : "Starter Plan complete!") +
+    "</div>" +
     '<div class="chip-row" style="margin-top:16px">' + chips + "</div>" +
-    '<div class="row between" style="margin-top:16px"><span class="muted small">' + (etapasHechas + campamentosHechos) + "/" + totalPasos + ' milestones completed</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
+    '<div class="row between" style="margin-top:16px"><span class="muted small">' + etapasHechas + "/" + DIAS.length + ' days completed</span><span style="font-size:24px;font-weight:700">' + pctGeneral + "%</span></div>" +
     '<div class="progressbar" style="margin-top:8px"><div style="width:' + pctGeneral + '%"></div></div>' +
     '<div class="muted small" style="margin-top:12px">' + mensaje + "</div>" +
     "</div>" +
 
-    escenarioVidaHomeCardHTML(state) +
-
     enlacesUtilesHomeCardHTML() +
 
-    proximosHtml +
-
-    mountainSceneHTML(quincenasMap, cumbreLograda, 190).replace('<div class="mountain-wrap">', '<button class="mountain-wrap card-hover" data-action="goto" data-arg="plan90" style="cursor:pointer">').replace(/<\/div>$/, '</button>') +
-
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="pasos">' + pasosHeaderMedallionHTML(44) + '<div class="nc-body"><div class="nc-title">The 8 Steps to Success</div><div class="nc-desc">Your permanent reference</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">Atomy\'s Motto</div><div class="nc-desc">Philosophy and code of ethics</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">List of 250 Contacts</div><div class="nc-desc">' + (state.contactos || []).length + ' registered · schedule follow-ups</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">9-Day Startup Plan</div><div class="nc-desc">Walk your map day by day</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
-    '<button class="nav-card card card-hover" data-action="goto" data-arg="premios">' + medallionHTML("gift", 44) + '<div class="nc-body"><div class="nc-title">Rewards from your sponsor</div><div class="nc-desc">See what you can earn</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
-
-    (cumbreLograda
-      ? '<button class="btn-primary" style="background:var(--success)" data-action="goto" data-arg="cumbre">' + Icon("award", { size: 18, color: "#fff" }) + ' You reached the Summit! View achievement</button>'
-      : "")
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="plan6">' + medallionHTML("trail-map", 44) + '<div class="nc-body"><div class="nc-title">Starter Plan — 9 Days</div><div class="nc-desc">Walk your map day by day</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="contactos">' + medallionHTML("users", 44) + '<div class="nc-body"><div class="nc-title">250-Contact List</div><div class="nc-desc">' + (state.contactos || []).length + ' registered · schedule follow-ups</div></div>' + clicaAquiBadgeHTML(false, "accent") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="recursos">' + medallionHTML("video", 44) + '<div class="nc-body"><div class="nc-title">Audiovisual Resources</div><div class="nc-desc">Videos, documents, and recommended books</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>" +
+    '<button class="nav-card card card-hover" data-action="goto" data-arg="lema">' + medallionHTML("heart", 44) + '<div class="nc-body"><div class="nc-title">The Atomy Motto</div><div class="nc-desc">Philosophy and code of ethics</div></div>' + clicaAquiBadgeHTML(false, "gold") + "</button>"
   );
 }
 
@@ -1069,58 +1015,33 @@ function renderCarteleraModal() {
 }
 
 function renderLema(state, ui) {
-  const vueltos = ui.lemaVueltos || {};
   const cards = LEMA_ATOMY.pilares.map(function (p) {
-    const flipped = !!vueltos[p.n];
-    const front =
-      '<div class="flip-face flip-front">' +
-      medallionHTML(p.icon, 68) +
-      '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:6px">Pillar ' + p.n + "</div>" +
-      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
-      (p.sub ? '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div>" : "") +
-      '<div class="row gap-2" style="margin-top:auto;padding-top:10px;color:var(--gold-light)">' + Icon("rotate-ccw", { size: 12, color: "var(--gold-light)" }) + '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Tap to see the full explanation</span></div>' +
-      "</div>";
     const acciones = p.acciones && p.acciones.length
       ? '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">Daily actions</div>' +
         "<ul style=\"margin:5px 0 0;padding-left:18px\">" + p.acciones.map(function (a) { return '<li style="font-size:13px;line-height:1.55;margin-top:4px">' + escapeHtml(a) + "</li>"; }).join("") + "</ul>"
       : "";
-    const marcos = p.marcos && p.marcos.length
-      ? p.marcos.map(function (m) {
-          return (
-            '<div style="font-weight:700;font-size:12.5px;color:var(--gold-light);margin-top:14px">' + escapeHtml(m.nombre) + "</div>" +
-            '<p style="font-size:13px;line-height:1.55;margin-top:5px">' + escapeHtml(m.explicacion) + "</p>" +
-            '<p class="muted small" style="line-height:1.5;margin-top:5px;font-style:italic">' + escapeHtml(m.ejemplo) + "</p>"
-          );
-        }).join("") +
-        '<div class="btn-secondary" style="margin-top:10px;padding:8px 12px;width:fit-content;cursor:pointer" data-action="share-paso-reflexion" data-arg="' + escapeHtml(smartOkrShareText()) + '">' + Icon("share2", { size: 13 }) + " Share</div>"
-      : "";
-    const back =
-      '<div class="flip-face flip-back">' +
-      '<div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em">' + Icon("sparkles", { size: 13, color: "var(--gold)" }) + "Pillar " + p.n + " — " + escapeHtml(p.t) + "</div>" +
-      '<div class="muted small" style="font-style:italic;margin-top:4px">' + escapeHtml(p.sub) + "</div>" +
-      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
-      acciones + marcos +
-      "</div>";
     return (
-      '<button class="flip-card' + (flipped ? " is-open" : "") + '" data-action="flip-lema" data-arg="' + p.n + '">' +
-      '<div class="flip-inner' + (flipped ? " flipped" : "") + '">' + front + back + "</div>" +
-      "</button>"
+      '<div class="card">' +
+      '<div class="row gap-3">' + medallionHTML(p.icon, 48) +
+      '<div><div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Pillar ' + p.n + "</div>" +
+      '<div style="font-size:15px;font-weight:700;line-height:1.3;margin-top:2px">' + escapeHtml(p.t) + "</div>" +
+      '<div class="muted small" style="font-style:italic;margin-top:2px">' + escapeHtml(p.sub) + "</div></div></div>" +
+      '<p style="font-size:13px;line-height:1.55;margin-top:14px">' + escapeHtml(p.explicacion) + "</p>" +
+      acciones +
+      "</div>"
     );
   }).join("");
   const header =
     '<div class="section-header">' + medallionHTML("heart", 64) +
-    '<div><h2>Atomy\'s Motto</h2><p>Corporate Philosophy and Code of Ethics — President Han-Gill Park. Tap each pillar to see the full explanation.</p></div></div>';
+    '<div><h2>The Atomy Motto</h2><p>Corporate Philosophy and Code of Ethics — President Han-Gill Park.</p></div></div>';
   const intro = '<p class="muted small" style="line-height:1.6;margin-top:-4px">' + escapeHtml(LEMA_ATOMY.intro) + "</p>";
-  const carteleraBtn =
-    '<button class="btn-secondary" style="margin-top:12px" data-action="open-cartelera">' + Icon("image-plus", { size: 15 }) + " View poster to display somewhere visible</button>";
   const exclamacion =
     '<div class="card" style="margin-top:14px;text-align:center;border-color:var(--gold)">' +
     '<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold)">Official Motto Chant</div>' +
     '<p style="font-size:14px;line-height:1.6;margin-top:6px;font-weight:600">' + escapeHtml(LEMA_ATOMY.exclamacion) + "</p></div>";
-  return header + intro + carteleraBtn +
+  return header + intro +
     '<div class="view-stack gap-sm" style="margin-top:14px">' + cards + "</div>" +
-    exclamacion +
-    lemaFocoHTML(state);
+    exclamacion;
 }
 
 /* ---------------- 9-Day Plan — map ---------------- */
@@ -1217,7 +1138,7 @@ function contactos10TablaHTML(pathPrefix, rows, open, toggleAction, toggleArg) {
 
 function evaluacion7x7ResumenTexto(ev, periodoLabel) {
   return (
-    "📊 " + periodoLabel + " — 7×7 Challenge (Cumbre 90):\n" +
+    "📊 " + periodoLabel + " — 7×7 Challenge (Arranque 9):\n" +
     "• People contacted: " + (ev.contactados || "0") + "\n" +
     "• Responded: " + (ev.respondieron || "0") + "\n" +
     "• Presentations made: " + (ev.presentaciones || "0") + "\n" +
@@ -1972,43 +1893,39 @@ function renderCumbre(state) {
 /* ---------------- Settings ---------------- */
 
 function renderAjustes(state, ui) {
+  const nombreField =
+    '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Your name</label>' +
+    '<input type="text" placeholder="Your name" value="' + escapeHtml(state.nombre) + '" data-field="nombre" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
+
   const whatsappField =
     '<div class="card"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Your sponsor\'s WhatsApp</label>' +
-    '<p class="muted small" style="margin-top:-2px;margin-bottom:8px;line-height:1.5">The floating green button messages this number directly.</p>' +
-    '<input type="text" inputmode="numeric" placeholder="E.g. 34600000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none"></div>';
+    '<input type="text" inputmode="numeric" placeholder="E.g. 34600000000" value="' + escapeHtml(state.whatsapp) + '" data-field="whatsapp" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13.5px;outline:none">' +
+    (state.whatsapp
+      ? '<a class="btn-secondary" style="margin-top:10px;width:100%;justify-content:center" href="' + waHref(state.whatsapp) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15 }) + " Message my sponsor</a>"
+      : "") +
+    "</div>";
 
-  const notifSupported = "Notification" in window;
-  const notifRow = notifSupported
-    ? '<div class="card row between"><div><div style="font-size:14px;font-weight:600">Browser notifications</div><div class="muted small" style="margin-top:2px">Reminder alerts outside the app</div></div><div class="toggle' + (state.notifOn && Notification.permission === "granted" ? " on" : "") + '" data-action="toggle-notif"><div class="knob"></div></div></div>'
-    : "";
+  const modoOscuroField =
+    '<div class="card row between">' +
+    '<div style="font-size:14px;font-weight:600">Dark mode</div>' +
+    '<div class="toggle' + (state.dark ? " on" : "") + '" data-action="toggle-dark"><div class="knob"></div></div>' +
+    "</div>";
 
-  const resetLabel = ui.confirmReset ? "Are you sure? Tap again to reset" : "Reset my progress";
+  const resetLabel = ui.confirmReset ? "Sure? Tap again to reset" : "Reset my progress";
 
   const licenciaCard = LICENCIA_TITULAR
     ? '<div class="card">' +
-      '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">This copy\'s license</span></div>' +
-      '<p class="muted small" style="margin-top:6px;line-height:1.5">This copy of Cumbre 90 is licensed exclusively to <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> and their own team. It is not authorized to be shared with other leaders or teams.</p>' +
+      '<div class="row gap-2">' + Icon("award", { size: 15, color: "var(--gold)" }) + '<span style="font-weight:700;font-size:14px">License for this copy</span></div>' +
+      '<p class="muted small" style="margin-top:6px;line-height:1.5">This copy is exclusively licensed to <strong>' + escapeHtml(LICENCIA_TITULAR) + '</strong> and their own team. It is not authorized to be shared with other leaders or teams.</p>' +
       "</div>"
     : "";
 
   return (
     sectionHeaderHTML("Settings", "", "settings") +
     licenciaCard +
-    '<div class="card row between">' +
-    '<div><div style="font-size:14px;font-weight:600">Sponsor mode</div><div class="muted small" style="margin-top:2px">Turn it on if you also mentor your own team — adds the My Team\'s Report section</div></div>' +
-    '<div class="toggle' + (state.mentorMode ? " on" : "") + '" data-action="toggle-mentor"><div class="knob"></div></div>' +
-    "</div>" +
+    nombreField +
     whatsappField +
-    notifRow +
-    '<div class="card">' +
-    '<div class="row gap-2">' + Icon("download", { size: 15, color: "var(--gold-light)" }) + '<span style="font-weight:700;font-size:14px">Backup</span></div>' +
-    '<p class="muted small" style="margin-top:6px;line-height:1.5">All your data (List of 250, Genealogy Tree, your progress) lives only on this device. Download a backup and save it wherever you like (your Google Drive, email, etc.) — that way you won\'t lose it if you switch phones or clear your browser data.</p>' +
-    '<div class="row gap-2" style="margin-top:10px">' +
-    '<button class="btn-secondary" style="flex:1" data-action="descargar-respaldo">' + Icon("download", { size: 15 }) + " Download backup</button>" +
-    '<button class="btn-secondary" style="flex:1" data-action="trigger-file" data-arg="importar-respaldo-input">' + Icon("repeat", { size: 15 }) + " Restore from file</button>" +
-    "</div>" +
-    '<input id="importar-respaldo-input" type="file" accept="application/json,.json" class="hidden" data-target="__importBackup">' +
-    "</div>" +
+    modoOscuroField +
     '<button class="btn-secondary" style="border-color:var(--warn);color:var(--warn)" data-action="reset-progress">' + Icon("rotate-ccw", { size: 16 }) + " " + resetLabel + "</button>"
   );
 }
@@ -2097,7 +2014,7 @@ function renderContactos(state, ui) {
 
   return (
     sectionHeaderHTML("List of 250 Contacts", contactos.length + " of 250 registered", "users") +
-    '<p class="muted small" style="margin-top:-4px">Tap “Call” or “Message” on each contact to log it in your Weekly Report.</p>' +
+    '<p class="muted small" style="margin-top:-4px">Add and organize the people on your list by level (Hot, Warm, Cold) and schedule your next follow-up with each one.</p>' +
     '<input id="contacto-search" type="text" placeholder="Search by name or phone..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +

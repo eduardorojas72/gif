@@ -1,7 +1,7 @@
 {
-  "name": "Cumbre 90 — The 8 Steps to Success",
-  "short_name": "Cumbre 90",
-  "description": "A guided journey through the 8 Steps to Success, the 6-Day Startup Plan, and the 90-Day Plan toward Sales Master.",
+  "name": "Arranque 9 — Starter Plan with Atomy",
+  "short_name": "Arranque 9",
+  "description": "Your 9-day Starter Plan with Atomy: Starter Plan, 250-Contact List, Audiovisual Resources, and the Atomy Motto.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
