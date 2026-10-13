@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Cuánto cobraré?</title>
+<meta name="description" content="Calcula tu sueldo neto, finiquito, indemnización por despido, paro y baja médica en España (datos 2026).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: una columna estrecha. Arriba el sueldo común, debajo pestañas;
+   cada pestaña = formulario + "recibo" con el formato de una nómina española. */
+:root {
+  --bg: #EEF3F2;
+  --surface: #FFFFFF;
+  --ink: #12302E;
+  --ink-soft: #55706D;
+  --line: #CFDCDA;
+  --accent: #0E6B5C;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #D9ECE8;
+  --highlight: #F2B33D;
+  --warn: #9A5B00;
+  --warn-soft: #FBEFD9;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1817; --surface: #132422; --ink: #E4EFED; --ink-soft: #93AEAA;
+    --line: #26403D; --accent: #3FBFA6; --accent-ink: #062320; --accent-soft: #173A35;
+    --highlight: #F2B33D; --warn: #F2B33D; --warn-soft: #2E2615;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1817; --surface: #132422; --ink: #E4EFED; --ink-soft: #93AEAA;
+  --line: #26403D; --accent: #3FBFA6; --accent-ink: #062320; --accent-soft: #173A35;
+  --highlight: #F2B33D; --warn: #F2B33D; --warn-soft: #2E2615;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 0 16px;
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+header h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  text-wrap: balance;
+}
+header h1 span { color: var(--accent); }
+header p { margin: 0; color: var(--ink-soft); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.base { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.base .field:first-child { grid-column: 1 / -1; }
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label, .field .lbl {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.field small { color: var(--ink-soft); font-size: 0.85rem; }
+input, select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  width: 100%;
+  min-width: 0;
+}
+input[type="number"] { font-family: var(--font-num); }
+.money { position: relative; }
+.money input { padding-right: 34px; font-size: 1.35rem; font-weight: 600; }
+.money::after { content: "€"; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-family: var(--font-num); }
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 3px solid var(--highlight);
+  outline-offset: 1px;
+}
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 0.95rem; }
+.check input { width: auto; margin-top: 4px; accent-color: var(--accent); }
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px;
+}
+.tabs button {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 4px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+
+.panel { display: flex; flex-direction: column; gap: 16px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid2 .full { grid-column: 1 / -1; }
+
+/* Recibo con formato de nómina */
+.recibo {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.recibo .hero {
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 18px;
+}
+.recibo .hero .lbl {
+  font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85;
+}
+.recibo .hero .big {
+  font-family: var(--font-num);
+  font-weight: 600;
+  font-size: clamp(2rem, 9vw, 2.6rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.recibo .hero .sub { font-size: 0.95rem; opacity: 0.9; }
+.recibo .body { padding: 6px 18px 16px; }
+.recibo h3 {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-soft); margin: 14px 0 4px;
+}
+.row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 5px 0;
+  font-size: 0.97rem;
+}
+.row .k { min-width: 0; }
+.row .dots { flex: 1; border-bottom: 1px dotted var(--line); transform: translateY(-4px); min-width: 12px; }
+.row .v { font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row.neg .v { color: var(--ink-soft); }
+.row.total { border-top: 2px solid var(--ink); margin-top: 6px; padding-top: 9px; font-weight: 700; }
+.row.total .v { font-weight: 600; }
+
+.note {
+  background: var(--warn-soft);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  border-left: 4px solid var(--warn);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-size: 0.8rem; font-weight: 700;
+  background: var(--accent-soft); color: var(--ink);
+  border-radius: 999px; padding: 3px 10px;
+}
+footer { color: var(--ink-soft); font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; }
+footer p { margin: 0; }
+@media (max-width: 420px) {
+  .grid2, .base { grid-template-columns: 1fr; }
+  .tabs button { font-size: 0.82rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tabs button { transition: background 0.15s, color 0.15s; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>¿Cuánto <span>cobraré?</span></h1>
+    <p>Sueldo neto, finiquito, despido, paro y bajas en España, con los datos de 2026. Rellena tu sueldo y elige qué quieres calcular.</p>
+  </header>
+
+  <section class="card base" aria-label="Tu sueldo">
+    <div class="field">
+      <label for="bruto">Sueldo bruto anual</label>
+      <div class="money"><input id="bruto" type="number" inputmode="decimal" min="0" step="100" value="26000"></div>
+      <small>Lo que pone tu contrato al año, antes de impuestos. Los valores iniciales son un ejemplo.</small>
+    </div>
+    <div class="field">
+      <label for="pagas">Número de pagas</label>
+      <select id="pagas">
+        <option value="14" selected>14 (2 pagas extra)</option>
+        <option value="12">12 (extras prorrateadas)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="contrato">Tipo de contrato</label>
+      <select id="contrato">
+        <option value="indefinido" selected>Indefinido</option>
+        <option value="temporal">Temporal</option>
+      </select>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist" aria-label="Qué quieres calcular">
+    <button role="tab" id="tab-neto" aria-controls="p-neto" aria-selected="true">Neto</button>
+    <button role="tab" id="tab-finiquito" aria-controls="p-finiquito" aria-selected="false">Finiquito</button>
+    <button role="tab" id="tab-despido" aria-controls="p-despido" aria-selected="false">Despido</button>
+    <button role="tab" id="tab-paro" aria-controls="p-paro" aria-selected="false">Paro</button>
+    <button role="tab" id="tab-baja" aria-controls="p-baja" aria-selected="false">Baja</button>
+  </nav>
+
+  <!-- SUELDO NETO -->
+  <section class="panel" id="p-neto" role="tabpanel" aria-labelledby="tab-neto">
+    <div class="card grid2">
+      <div class="field">
+        <label for="edad">Edad</label>
+        <input id="edad" type="number" inputmode="numeric" min="16" max="99" value="35">
+      </div>
+      <div class="field">
+        <label for="hijos">Hijos menores de 25</label>
+        <input id="hijos" type="number" inputmode="numeric" min="0" max="10" value="0">
+      </div>
+      <div class="field">
+        <label for="hijos3">De ellos, menores de 3</label>
+        <input id="hijos3" type="number" inputmode="numeric" min="0" max="10" value="0">
+      </div>
+      <div class="field">
+        <span class="lbl">Hijos</span>
+        <label class="check" for="compartidos"><input id="compartidos" type="checkbox" checked> Los comparto con el otro progenitor</label>
+      </div>
+    </div>
+    <div class="recibo" id="r-neto" aria-live="polite"></div>
+  </section>
+
+  <!-- FINIQUITO -->
+  <section class="panel" id="p-finiquito" role="tabpanel" aria-labelledby="tab-finiquito" hidden>
+    <div class="card grid2">
+      <div class="field">
+        <label for="f-inicio">Empecé a trabajar el</label>
+        <input id="f-inicio" type="date" value="2021-03-01">
+      </div>
+      <div class="field">
+        <label for="f-baja">Último día de trabajo</label>
+        <input id="f-baja" type="date" value="2026-10-15">
+      </div>
+      <div class="field">
+        <label for="f-vacaciones">Días de vacaciones al año</label>
+        <input id="f-vacaciones" type="number" inputmode="numeric" min="0" max="60" value="30">
+        <small>Por ley, 30 días naturales.</small>
+      </div>
+      <div class="field">
+        <label for="f-disfrutadas">Días ya disfrutados este año</label>
+        <input id="f-disfrutadas" type="number" inputmode="numeric" min="0" max="60" value="15">
+      </div>
+      <div class="field full">
+        <label class="check" for="f-mespagado"><input id="f-mespagado" type="checkbox"> Ya me han pagado la nómina de este mes</label>
+      </div>
+    </div>
+    <div class="recibo" id="r-finiquito" aria-live="polite"></div>
+  </section>
+
+  <!-- DESPIDO -->
+  <section class="panel" id="p-despido" role="tabpanel" aria-labelledby="tab-despido" hidden>
+    <div class="card grid2">
+      <div class="field full">
+        <label for="d-tipo">Tipo de despido o salida</label>
+        <select id="d-tipo">
+          <option value="improcedente" selected>Despido improcedente (33 días por año)</option>
+          <option value="objetivo">Despido objetivo o ERE (20 días por año)</option>
+          <option value="temporal">Fin de contrato temporal (12 días por año)</option>
+          <option value="disciplinario">Despido disciplinario procedente (sin indemnización)</option>
+          <option value="voluntaria">Baja voluntaria (sin indemnización)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="d-inicio">Empecé a trabajar el</label>
+        <input id="d-inicio" type="date" value="2021-03-01">
+      </div>
+      <div class="field">
+        <label for="d-fin">Fecha del despido</label>
+        <input id="d-fin" type="date" value="2026-10-15">
+      </div>
+    </div>
+    <div class="recibo" id="r-despido" aria-live="polite"></div>
+  </section>
+
+  <!-- PARO -->
+  <section class="panel" id="p-paro" role="tabpanel" aria-labelledby="tab-paro" hidden>
+    <div class="card grid2">
+      <div class="field">
+        <label for="p-meses">Meses cotizados (últimos 6 años)</label>
+        <input id="p-meses" type="number" inputmode="numeric" min="0" max="72" value="48">
+        <small>Sin contar los que ya usaste para otro paro.</small>
+      </div>
+      <div class="field">
+        <label for="p-hijos">Hijos menores de 26 a cargo</label>
+        <input id="p-hijos" type="number" inputmode="numeric" min="0" max="10" value="0">
+      </div>
+    </div>
+    <div class="recibo" id="r-paro" aria-live="polite"></div>
+  </section>
+
+  <!-- BAJA (INCAPACIDAD TEMPORAL) -->
+  <section class="panel" id="p-baja" role="tabpanel" aria-labelledby="tab-baja" hidden>
+    <div class="card grid2">
+      <div class="field full">
+        <label for="b-tipo">Motivo de la baja</label>
+        <select id="b-tipo">
+          <option value="comun" selected>Enfermedad común o accidente no laboral</option>
+          <option value="laboral">Accidente de trabajo o enfermedad profesional</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="b-dias">Días de baja</label>
+        <input id="b-dias" type="number" inputmode="numeric" min="1" max="545" value="30">
+        <small>Cuenta desde el primer día de baja.</small>
+      </div>
+      <div class="field">
+        <span class="lbl">Convenio</span>
+        <label class="check" for="b-complemento"><input id="b-complemento" type="checkbox"> Mi convenio me complementa hasta el 100 %</label>
+      </div>
+    </div>
+    <div class="recibo" id="r-baja" aria-live="polite"></div>
+  </section>
+
+  <footer>
+    <p><strong>Es una estimación orientativa, no un cálculo oficial.</strong> El IRPF real cambia según tu comunidad autónoma y tu situación personal, y tu convenio puede mejorar las condiciones. Confirma las cifras con tu gestoría, tu empresa o el SEPE.</p>
+    <p>Datos 2026: base máxima de cotización 5.101,20 €/mes, SMI 1.221 €/mes en 14 pagas, IPREM 600 €/mes, MEI 0,15 % a cargo del trabajador.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Parámetros 2026 ----------
+  var BASE_MAX = 5101.20;                    // €/mes
+  var SS = { cc: 0.047, fp: 0.001, mei: 0.0015, desempleo: { indefinido: 0.0155, temporal: 0.016 } };
+  var SOLIDARIDAD = [ [0.10, 0.0019], [0.50, 0.0021], [Infinity, 0.0024] ]; // tramos sobre exceso de base máxima (parte trabajador)
+  var ESCALA_IRPF = [ [12450, 0.19], [20200, 0.24], [35200, 0.30], [60000, 0.37], [300000, 0.45], [Infinity, 0.47] ];
+  var LIMITE_SIN_RETENCION = 15876;
+  var MIN_PERSONAL = 5550, MIN_65 = 1150, MIN_75 = 1400;
+  var MIN_HIJOS = [2400, 2700, 4000, 4500], MIN_HIJO_MENOR_3 = 2800;
+  var OTROS_GASTOS = 2000;
+  var IPREM_14 = 600 * 7 / 6;                // IPREM mensual con prorrata de pagas = 700 €
+
+  var eur = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+  var num = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 2 });
+  function $(id) { return document.getElementById(id); }
+  function val(id) { var n = parseFloat($(id).value); return isFinite(n) && n > 0 ? n : 0; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // ---------- Cálculos ----------
+  function escala(base) {
+    var cuota = 0, prev = 0;
+    for (var i = 0; i < ESCALA_IRPF.length && base > prev; i++) {
+      var tope = ESCALA_IRPF[i][0];
+      cuota += (Math.min(base, tope) - prev) * ESCALA_IRPF[i][1];
+      prev = tope;
+    }
+    return cuota;
+  }
+
+  function tipoSS(contrato) { return SS.cc + SS.fp + SS.mei + SS.desempleo[contrato]; }
+
+  // Cotización anual del trabajador (incluye cotización de solidaridad por encima de la base máxima)
+  function cotizacionAnual(bruto, contrato) {
+    var mensual = bruto / 12;
+    var base = Math.min(mensual, BASE_MAX);
+    var ordinaria = base * tipoSS(contrato) * 12;
+    var exceso = Math.max(0, mensual - BASE_MAX), solidaridad = 0, prev = 0;
+    for (var i = 0; i < SOLIDARIDAD.length && exceso > prev * BASE_MAX; i++) {
+      var tope = SOLIDARIDAD[i][0] * BASE_MAX;
+      solidaridad += (Math.min(exceso, tope) - prev * BASE_MAX) * SOLIDARIDAD[i][1];
+      prev = SOLIDARIDAD[i][0];
+    }
+    return { ordinaria: ordinaria, solidaridad: solidaridad * 12, total: ordinaria + solidaridad * 12 };
+  }
+
+  // Reducción por obtención de rendimientos del trabajo (art. 20 LIRPF)
+  function reduccionTrabajo(rn) {
+    if (rn <= 14852) return 7302;
+    if (rn <= 19747.5) return 7302 - 1.75 * (rn - 14852);
+    return 0;
+  }
+
+  function minimoFamiliar(edad, hijos, hijos3, compartidos) {
+    var m = MIN_PERSONAL + (edad >= 65 ? MIN_65 : 0) + (edad >= 75 ? MIN_75 : 0);
+    var h = 0;
+    for (var i = 0; i < hijos; i++) h += MIN_HIJOS[Math.min(i, 3)];
+    h += Math.min(hijos3, hijos) * MIN_HIJO_MENOR_3;
+    return m + (compartidos ? h / 2 : h);
+  }
+
+  // Tipo de retención de IRPF (procedimiento general simplificado, art. 85 RIRPF)
+  function retencionIRPF(bruto, ss, p) {
+    if (bruto <= LIMITE_SIN_RETENCION) return 0;
+    var rn = bruto - ss;
+    var base = Math.max(0, rn - reduccionTrabajo(rn) - OTROS_GASTOS);
+    var minimo = minimoFamiliar(p.edad, p.hijos, p.hijos3, p.compartidos);
+    var cuota = Math.max(0, escala(base) - escala(Math.min(minimo, base)));
+    cuota = Math.min(cuota, 0.43 * (bruto - LIMITE_SIN_RETENCION));
+    return Math.round(cuota / bruto * 10000) / 100; // porcentaje con 2 decimales
+  }
+
+  function datosPersonales() {
+    return { edad: val("edad") || 35, hijos: Math.floor(val("hijos")), hijos3: Math.floor(val("hijos3")), compartidos: $("compartidos").checked };
+  }
+
+  function parseDate(id) {
+    var v = $(id).value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return null;
+    var p = v.split("-").map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+  }
+  var DAY = 86400000;
+  function diasEntre(a, b) { return Math.round((b - a) / DAY) + 1; } // ambos incluidos
+
+  // ---------- Pintado ----------
+  function row(k, v, cls) {
+    return '<div class="row' + (cls ? " " + cls : "") + '"><span class="k">' + k + '</span><span class="dots"></span><span class="v">' + v + "</span></div>";
+  }
+  function hero(lbl, big, sub) {
+    return '<div class="hero"><div class="lbl">' + lbl + '</div><div class="big">' + big + "</div>" + (sub ? '<div class="sub">' + sub + "</div>" : "") + "</div>";
+  }
+
+  function renderNeto() {
+    var bruto = val("bruto"), pagas = +$("pagas").value, contrato = $("contrato").value;
+    var el = $("r-neto");
+    if (!bruto) { el.innerHTML = '<div class="body"><p>Escribe tu sueldo bruto anual para ver el cálculo.</p></div>'; return; }
+    var ss = cotizacionAnual(bruto, contrato);
+    var tipo = retencionIRPF(bruto, ss.total, datosPersonales());
+    var irpf = bruto * tipo / 100;
+    var neto = bruto - ss.total - irpf;
+    var paga = bruto / pagas;
+    var ssMes = ss.total / 12;
+    var netoMes = paga - ssMes - paga * tipo / 100;
+    var netoExtra = paga - paga * tipo / 100;
+
+    var h = hero("Cobrarás cada mes", eur.format(netoMes),
+      pagas === 14 ? "y dos pagas extra de " + eur.format(netoExtra) + " (junio y diciembre)" : "en 12 pagas con las extras incluidas");
+    h += '<div class="body"><h3>Nómina mensual</h3>';
+    h += row("Salario bruto mensual", eur.format(paga));
+    h += row("Seguridad Social (" + num.format(tipoSS(contrato) * 100) + " %)", "− " + eur.format(ssMes), "neg");
+    h += row("Retención IRPF (" + num.format(tipo) + " %)", "− " + eur.format(paga * tipo / 100), "neg");
+    h += row("Líquido a percibir", eur.format(netoMes), "total");
+    h += "<h3>Resumen del año</h3>";
+    h += row("Bruto anual", eur.format(bruto));
+    h += row("Seguridad Social", "− " + eur.format(ss.total), "neg");
+    if (ss.solidaridad > 0) h += row("de ello, cotización de solidaridad", eur.format(ss.solidaridad), "neg");
+    h += row("IRPF retenido", "− " + eur.format(irpf), "neg");
+    h += row("Neto anual", eur.format(neto), "total");
+    h += '<div class="chips" style="margin-top:12px"><span class="chip">Te quedas el ' + num.format(neto / bruto * 100) + ' % del bruto</span><span class="chip">Tipo IRPF ' + num.format(tipo) + " %</span></div>";
+    if (bruto < 17094) h += '<p class="note">Este sueldo está por debajo del salario mínimo de 2026 (17.094 € al año a jornada completa). Si trabajas a jornada completa, revisa tu contrato.</p>';
+    h += "</div>";
+    el.innerHTML = h;
+  }
+
+  function renderFiniquito() {
+    var el = $("r-finiquito");
+    var bruto = val("bruto"), pagas = +$("pagas").value, contrato = $("contrato").value;
+    var inicio = parseDate("f-inicio"), baja = parseDate("f-baja");
+    if (!bruto || !inicio || !baja || baja < inicio) {
+      el.innerHTML = '<div class="body"><p>Revisa el sueldo y las fechas: el último día de trabajo debe ser posterior a la fecha de inicio.</p></div>';
+      return;
+    }
+    var anio = baja.getUTCFullYear(), mes = baja.getUTCMonth();
+    var mensualOrdinario = bruto / 14;             // salario base sin pagas extra
+    var mensualCobrado = bruto / pagas;            // lo que se cobra en una nómina normal
+
+    // 1) Días trabajados del último mes
+    var diaMes = Math.min(baja.getUTCDate(), 30);
+    var inicioMes = new Date(Date.UTC(anio, mes, 1));
+    if (inicio > inicioMes) diaMes = Math.min(diasEntre(inicio, baja), 30);
+    var salarioMes = $("f-mespagado").checked ? 0 : mensualCobrado / 30 * diaMes;
+
+    // 2) Vacaciones no disfrutadas
+    var ini1 = new Date(Date.UTC(anio, 0, 1));
+    var desde = inicio > ini1 ? inicio : ini1;
+    var diasAnio = (anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0 ? 366 : 365;
+    var generadas = val("f-vacaciones") * diasEntre(desde, baja) / diasAnio;
+    var pendientes = Math.max(0, generadas - val("f-disfrutadas"));
+    var vacaciones = pendientes * mensualOrdinario / 30;
+
+    // 3) Parte proporcional de la paga extra (devengo semestral: ene-jun y jul-dic)
+    var extra = 0, diasExtra = 0, nombreExtra = "";
+    if (pagas === 14) {
+      var iniSem = mes < 6 ? new Date(Date.UTC(anio, 0, 1)) : new Date(Date.UTC(anio, 6, 1));
+      var finSem = mes < 6 ? new Date(Date.UTC(anio, 5, 30)) : new Date(Date.UTC(anio, 11, 31));
+      var desdeSem = inicio > iniSem ? inicio : iniSem;
+      diasExtra = diasEntre(desdeSem, baja);
+      extra = mensualOrdinario * diasExtra / diasEntre(iniSem, finSem);
+      nombreExtra = mes < 6 ? "paga de verano" : "paga de Navidad";
+    }
+
+    var total = salarioMes + vacaciones + extra;
+    var ss = cotizacionAnual(bruto, contrato);
+    var tipo = retencionIRPF(bruto, ss.total, datosPersonales());
+    var descSS = total * tipoSS(contrato);
+    var descIRPF = total * tipo / 100;
+
+    var h = hero("Tu finiquito", eur.format(total - descSS - descIRPF), "neto aproximado · " + eur.format(total) + " brutos");
+    h += '<div class="body"><h3>Conceptos</h3>';
+    h += row("Salario de " + diaMes + " días de este mes", eur.format(salarioMes));
+    h += row("Vacaciones pendientes (" + num.format(Math.round(pendientes * 10) / 10) + " días)", eur.format(vacaciones));
+    if (pagas === 14) h += row("Parte de la " + nombreExtra + " (" + diasExtra + " días)", eur.format(extra));
+    h += row("Total bruto", eur.format(total), "total");
+    h += "<h3>Descuentos aproximados</h3>";
+    h += row("Seguridad Social", "− " + eur.format(descSS), "neg");
+    h += row("IRPF (" + num.format(tipo) + " %)", "− " + eur.format(descIRPF), "neg");
+    h += row("Neto aproximado", eur.format(total - descSS - descIRPF), "total");
+    if (pagas === 12) h += '<p class="note">Con pagas prorrateadas ya cobras las extras cada mes, así que no hay parte de paga extra pendiente.</p>';
+    h += '<p class="note">El finiquito se cobra siempre, también si te vas voluntariamente. La indemnización por despido es aparte: mírala en la pestaña Despido.</p>';
+    h += "</div>";
+    el.innerHTML = h;
+  }
+
+  function renderDespido() {
+    var el = $("r-despido");
+    var bruto = val("bruto"), tipo = $("d-tipo").value;
+    var inicio = parseDate("d-inicio"), fin = parseDate("d-fin");
+    if (!bruto || !inicio || !fin || fin < inicio) {
+      el.innerHTML = '<div class="body"><p>Revisa el sueldo y las fechas: la fecha del despido debe ser posterior a la de inicio.</p></div>';
+      return;
+    }
+    var salarioDia = bruto / 365;
+    var dias = diasEntre(inicio, fin);
+    var anios = dias / 365;
+    var diasIndem = 0, detalle = [], tope = "";
+
+    if (tipo === "improcedente") {
+      var reforma = new Date(Date.UTC(2012, 1, 12));
+      var pre = 0, post = dias;
+      if (inicio < reforma) {
+        pre = Math.round((Math.min(fin, reforma) - inicio) / DAY);
+        post = Math.max(0, dias - pre);
+      }
+      var dPre = pre / 365 * 45, dPost = post / 365 * 33;
+      if (pre > 0) {
+        detalle.push(row("Hasta 12/02/2012: " + num.format(pre / 365) + " años × 45 días", num.format(dPre) + " días"));
+        detalle.push(row("Desde 12/02/2012: " + num.format(post / 365) + " años × 33 días", num.format(dPost) + " días"));
+      } else {
+        detalle.push(row(num.format(anios) + " años × 33 días", num.format(dPost) + " días"));
+      }
+      if (dPre > 720) { diasIndem = Math.min(dPre, 1260); tope = "Se aplica el tope de 42 mensualidades por la antigüedad anterior a 2012."; }
+      else { diasIndem = Math.min(dPre + dPost, 720); if (dPre + dPost > 720) tope = "Se aplica el tope legal de 24 mensualidades (720 días)."; }
+    } else if (tipo === "objetivo") {
+      diasIndem = Math.min(anios * 20, 360);
+      detalle.push(row(num.format(anios) + " años × 20 días", num.format(anios * 20) + " días"));
+      if (anios * 20 > 360) tope = "Se aplica el tope legal de 12 mensualidades (360 días).";
+    } else if (tipo === "temporal") {
+      diasIndem = anios * 12;
+      detalle.push(row(num.format(anios) + " años × 12 días", num.format(diasIndem) + " días"));
+    }
+
+    var importe = diasIndem * salarioDia;
+    var h = hero("Indemnización", eur.format(importe), importe > 0 ? "libre de impuestos hasta el límite legal" : "este tipo de salida no da derecho a indemnización");
+    h += '<div class="body"><h3>Cálculo</h3>';
+    h += row("Antigüedad", num.format(anios) + " años");
+    h += row("Salario por día (bruto anual ÷ 365)", eur.format(salarioDia));
+    h += detalle.join("");
+    if (importe > 0) {
+      h += row("Días de indemnización", num.format(diasIndem));
+      h += row("Total", eur.format(importe), "total");
+    }
+    if (tope) h += '<p class="note">' + esc(tope) + "</p>";
+    if (tipo === "improcedente") h += '<p class="note">Si el despido es improcedente, la empresa puede elegir entre readmitirte o pagarte esta indemnización. Tienes 20 días hábiles para reclamar (papeleta de conciliación).</p>';
+    if (tipo === "voluntaria" || tipo === "disciplinario") h += '<p class="note">Sin indemnización, pero sí cobras el finiquito (pestaña Finiquito).' + (tipo === "disciplinario" ? " Si no estás de acuerdo con el despido, puedes reclamar en 20 días hábiles." : " Si te vas voluntariamente no tienes derecho a paro.") + "</p>";
+    h += '<p class="note" style="border-left-color:var(--accent)">Además de la indemnización, te corresponde el finiquito.</p>';
+    h += "</div>";
+    el.innerHTML = h;
+  }
+
+  function duracionParo(diasCot) {
+    if (diasCot < 360) return 0;
+    return Math.min(720, 120 + Math.floor((diasCot - 360) / 180) * 60);
+  }
+
+  function renderParo() {
+    var el = $("r-paro");
+    var bruto = val("bruto");
+    var meses = Math.min(72, Math.floor(val("p-meses")));
+    var hijos = Math.floor(val("p-hijos"));
+    if (!bruto) { el.innerHTML = '<div class="body"><p>Escribe tu sueldo bruto anual para ver el cálculo.</p></div>'; return; }
+    var diasCot = meses * 30;
+    var duracion = duracionParo(diasCot);
+    if (!duracion) {
+      el.innerHTML = hero("Prestación por desempleo", "Sin paro contributivo", "necesitas al menos 12 meses cotizados") +
+        '<div class="body"><p class="note">Con menos de 12 meses cotizados no tienes paro contributivo, pero puedes tener derecho a un subsidio por desempleo. Consúltalo en el SEPE.</p></div>';
+      return;
+    }
+    var base = Math.min(bruto / 12, BASE_MAX);
+    var brDia = base / 30;
+    var minimo = IPREM_14 * (hijos > 0 ? 1.07 : 0.80);
+    var maximo = IPREM_14 * (hijos === 0 ? 1.75 : hijos === 1 ? 2.00 : 2.25);
+    function cuantia(pct) { return Math.min(maximo, Math.max(minimo, brDia * 30 * pct)); }
+    var m1 = cuantia(0.70), m2 = cuantia(0.60), m3 = cuantia(0.50);
+    var mesesTotales = duracion / 30;
+    var tramo1 = Math.min(6, mesesTotales), tramo2 = Math.min(6, Math.max(0, mesesTotales - 6)), tramo3 = Math.max(0, mesesTotales - 12);
+    var total = m1 * tramo1 + m2 * tramo2 + m3 * tramo3;
+    var descuento = 0.047;
+
+    var h = hero("Cobrarás de paro", eur.format(m1) + "/mes", "durante los primeros 6 meses · " + duracion + " días en total");
+    h += '<div class="body"><h3>Base de cálculo</h3>';
+    h += row("Base reguladora mensual", eur.format(base));
+    h += row("Tope mínimo / máximo", eur.format(minimo) + " / " + eur.format(maximo));
+    h += "<h3>Cuantía bruta mensual</h3>";
+    h += row("Meses 1 a 6 (70 %)", eur.format(m1));
+    if (tramo2) h += row("Meses 7 a 12 (60 %)", eur.format(m2));
+    if (tramo3) h += row("Desde el mes 13 (50 %)", eur.format(m3));
+    h += row("Total de la prestación", eur.format(total), "total");
+    h += '<div class="chips" style="margin-top:12px"><span class="chip">' + num.format(mesesTotales) + ' meses de paro</span><span class="chip">Neto aprox. ' + eur.format(m1 * (1 - descuento)) + "/mes al inicio</span></div>";
+    h += '<p class="note">El SEPE descuenta tu parte de la cotización a la Seguridad Social (alrededor del 4,7 %) y, si corresponde, IRPF. La base reguladora real es la media de tus últimos 180 días cotizados, sin horas extra.</p>';
+    h += "</div>";
+    el.innerHTML = h;
+  }
+
+  // Incapacidad temporal: porcentaje de la base reguladora para el día n (1 = primer día de baja)
+  function porcentajeBaja(tipo, n) {
+    if (tipo === "laboral") return n === 1 ? null : 0.75;  // el día del accidente lo paga la empresa como salario
+    if (n <= 3) return 0;
+    return n <= 20 ? 0.60 : 0.75;
+  }
+
+  function renderBaja() {
+    var el = $("r-baja");
+    var bruto = val("bruto"), contrato = $("contrato").value, tipo = $("b-tipo").value;
+    var dias = Math.min(545, Math.floor(val("b-dias")));
+    var complemento = $("b-complemento").checked;
+    if (!bruto || !dias) { el.innerHTML = '<div class="body"><p>Escribe tu sueldo bruto anual y los días de baja.</p></div>'; return; }
+    var brDia = Math.min(bruto / 12, BASE_MAX) / 30;   // base reguladora diaria (base de cotización del mes anterior ÷ 30)
+    var salarioDia = bruto / 365;
+    var tramos = [];                                   // agrupa días consecutivos con el mismo porcentaje
+    var total = 0;
+    for (var n = 1; n <= dias; n++) {
+      var pct = porcentajeBaja(tipo, n);
+      var importe = complemento ? salarioDia : (pct === null ? salarioDia : brDia * pct);
+      var clave = complemento ? "c" : String(pct);
+      var ult = tramos[tramos.length - 1];
+      if (ult && ult.clave === clave) { ult.hasta = n; ult.importe += importe; }
+      else tramos.push({ clave: clave, pct: pct, desde: n, hasta: n, importe: importe });
+      total += importe;
+    }
+    var normal = salarioDia * dias;
+    var perdida = Math.max(0, normal - total);
+    var ss = cotizacionAnual(bruto, contrato);
+    var tipoIRPF = retencionIRPF(bruto, ss.total, datosPersonales());
+    var neto = total * (1 - tipoSS(contrato) - tipoIRPF / 100);
+    var mesLargo = brDia * 30 * 0.75;
+
+    function etiqueta(t) {
+      var r = t.desde === t.hasta ? "Día " + t.desde : "Días " + t.desde + " a " + t.hasta;
+      if (t.clave === "c") return r + " (100 %, complemento del convenio)";
+      if (t.pct === null) return r + " (salario íntegro, lo paga la empresa)";
+      if (t.pct === 0) return r + " (sin cobrar)";
+      return r + " (" + Math.round(t.pct * 100) + " % de la base)";
+    }
+
+    var h = hero("Cobrarás durante la baja", eur.format(total),
+      "brutos por " + dias + " días · neto aprox. " + eur.format(neto));
+    h += '<div class="body"><h3>Día a día</h3>';
+    tramos.forEach(function (t) { h += row(etiqueta(t), eur.format(t.importe)); });
+    h += row("Total bruto de la baja", eur.format(total), "total");
+    h += "<h3>Comparado con trabajar</h3>";
+    h += row("Sueldo normal de esos días", eur.format(normal));
+    h += row("Dejas de cobrar", perdida > 0 ? "− " + eur.format(perdida) : eur.format(0), "neg");
+    h += row("Base reguladora diaria", eur.format(brDia));
+    h += '<div class="chips" style="margin-top:12px"><span class="chip">Un mes completo al 75 %: ' + eur.format(mesLargo) + ' brutos</span></div>';
+    if (tipo === "comun") {
+      h += '<p class="note">En enfermedad común los 3 primeros días no se cobran (salvo que lo mejore tu convenio). Del día 4 al 15 paga la empresa y desde el día 16 la Seguridad Social, normalmente a través de tu nómina. Para cobrarla necesitas 180 días cotizados en los últimos 5 años; si es accidente no laboral no hace falta.</p>';
+    } else {
+      h += '<p class="note">En accidente de trabajo o enfermedad profesional cobras desde el día siguiente a la baja, sin carencia: no hace falta haber cotizado un mínimo. El día del accidente la empresa te paga el salario completo. La base real incluye también las horas extra del año anterior.</p>';
+    }
+    h += '<p class="note" style="border-left-color:var(--accent)">Mucha gente tiene un complemento por convenio que sube la baja al 100 %. Busca "incapacidad temporal" en tu convenio colectivo.</p>';
+    if (dias > 365) h += '<p class="note">A partir de los 365 días el INSS revisa la baja y decide si la prorroga hasta 545 días, te da el alta o inicia una incapacidad permanente.</p>';
+    h += "</div>";
+    el.innerHTML = h;
+  }
+
+  function renderAll() { renderNeto(); renderFiniquito(); renderDespido(); renderParo(); renderBaja(); }
+
+  // ---------- Pestañas ----------
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function selectTab(id) {
+    tabs.forEach(function (t) {
+      var on = t.id === id;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      $(t.getAttribute("aria-controls")).hidden = !on;
+    });
+    try { localStorage.setItem("cc-tab", id); } catch (e) {}
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { selectTab(t.id); });
+    t.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      var next = tabs[(i + d + tabs.length) % tabs.length];
+      selectTab(next.id); next.focus();
+    });
+  });
+  var hash = (location.hash || "").slice(1);
+  var saved = null;
+  try { saved = localStorage.getItem("cc-tab"); } catch (e) {}
+  var start = $("tab-" + hash) ? "tab-" + hash : (saved && $(saved) ? saved : "tab-neto");
+  selectTab(start);
+
+  // Las fechas del finiquito y del despido van sincronizadas (suelen ser las mismas)
+  function sync(a, b) { $(a).addEventListener("input", function () { $(b).value = $(a).value; }); }
+  sync("f-inicio", "d-inicio"); sync("d-inicio", "f-inicio");
+  sync("f-baja", "d-fin"); sync("d-fin", "f-baja");
+
+  document.addEventListener("input", renderAll);
+  document.addEventListener("change", renderAll);
+  renderAll();
+
+  // Exponer para pruebas
+  window.__cc = { escala: escala, cotizacionAnual: cotizacionAnual, retencionIRPF: retencionIRPF, duracionParo: duracionParo, porcentajeBaja: porcentajeBaja };
+})();
+</script>
+</body>
+</html>
