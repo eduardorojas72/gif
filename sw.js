@@ -1,10 +1,11 @@
-/* Service worker de Cumbre 90 — cachea los archivos estáticos para uso offline.
-   Estrategia "network-first": siempre intenta traer la versión más reciente
-   del servidor primero, y solo usa la copia en caché si no hay red. Así,
-   cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
-   vieja atascada en el caché del navegador. */
+/* Service Worker von Cumbre 90 — speichert statische Dateien für die
+   Offline-Nutzung im Cache. Strategie "network-first": versucht immer
+   zuerst, die neueste Version vom Server zu holen, und nutzt die
+   zwischengespeicherte Kopie nur, wenn kein Netzwerk verfügbar ist. So wird
+   jede neue Bereitstellung sofort sichtbar, ohne dass eine alte Version im
+   Browser-Cache hängen bleibt. */
 
-const CACHE_NAME = "cumbre90-cache-v33";
+const CACHE_NAME = "cumbre90-de-cache-v1";
 const CORE_ASSETS = [
   "./",
   "./index.html",

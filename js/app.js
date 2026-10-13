@@ -7,15 +7,15 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola, tengo una duda sobre mi recorrido en Cumbre 90");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hallo, ich habe eine Frage zu meiner Reise bei Cumbre 90");
 }
 
 function waHrefPersonal(numero, nombre) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hola" + (nombre ? " " + nombre : "") + "! ¿Cómo estás?");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hallo" + (nombre ? " " + nombre : "") + "! Wie geht's dir?");
 }
 
 function shareTextForLogro(titulo) {
-  return "🏆 ¡He conseguido el logro de \"" + titulo + "\" en mi recorrido hacia Sales Master con Atomy! 🚀 Si tienes curiosidad, pregúntame de qué se trata.";
+  return "🏆 Ich habe den Erfolg \"" + titulo + "\" auf meiner Reise zum Sales Master mit Atomy erreicht! 🚀 Wenn du neugierig bist, frag mich, worum es geht.";
 }
 
 /* Instagram, TikTok y YouTube no tienen una URL pública para prellenar un
@@ -36,7 +36,7 @@ function shareLogroLinksHTML(titulo) {
     '<button class="share-chip" data-action="share-logro-plataforma" data-arg="tiktok|' + escapeHtml(titulo) + '">' + Icon("tiktok", { size: 15 }) + "<span>TikTok</span></button>" +
     '<a class="share-chip" href="' + fbUrl + '" target="_blank" rel="noreferrer">' + Icon("facebook", { size: 15, color: "#1877F2" }) + "<span>Facebook</span></a>" +
     '<a class="share-chip" href="' + liUrl + '" target="_blank" rel="noreferrer">' + Icon("linkedin", { size: 15, color: "#0A66C2" }) + "<span>LinkedIn</span></a>" +
-    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Copiar</span></button>" +
+    '<button class="share-chip" data-action="share-logro-copy" data-arg="' + escapeHtml(titulo) + '">' + Icon("copy", { size: 15 }) + "<span>Kopieren</span></button>" +
     "</div>"
   );
 }
@@ -160,10 +160,10 @@ const App = {
 
     (dia.actividades || []).forEach((a) => {
       const tipo = agendaTipoInfo(a.tipo);
-      revisar(a, "Cumbre 90 — " + tipo.label, a.nota || "Tienes esto programado a las " + a.hora + ".");
+      revisar(a, "Cumbre 90 — " + tipo.label, a.nota || "Du hast das für " + a.hora + " Uhr geplant.");
     });
     (dia.zooms || []).forEach((z) => {
-      revisar(z, "Cumbre 90 — Zoom: " + (z.titulo || "Reunión"), "Empieza a las " + z.hora + ".");
+      revisar(z, "Cumbre 90 — Zoom: " + (z.titulo || "Meeting"), "Beginnt um " + z.hora + " Uhr.");
     });
   },
 
@@ -232,15 +232,15 @@ const App = {
     const hayCumpleanosHoy = isAuth && cumpleanosHoy(state.clientes).length > 0;
     const grupoWhatsapp = state.arbolGenealogico && state.arbolGenealogico.patrocinador && state.arbolGenealogico.patrocinador.grupoWhatsapp;
     document.getElementById("fab-slot").innerHTML = isAuth
-      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Escribir a tu patrocinador/a">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
+      ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Deinem Sponsor schreiben">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
         (!ui.tourAbierto
-          ? '<button class="fab-tour" data-action="iniciar-tour" title="Ver recorrido explicativo">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
+          ? '<button class="fab-tour" data-action="iniciar-tour" title="Erklärende Tour ansehen">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
           : "") +
         (hayCumpleanosHoy
-          ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Cumpleaños de hoy">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
+          ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Heutige Geburtstage">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
           : "") +
         (grupoWhatsapp && grupoWhatsapp.trim()
-          ? '<button class="fab-whatsapp-group" data-action="abrir-whatsapp-grupo-fab" title="Grupo de WhatsApp de soporte">' + Icon("users", { size: 20, color: "#fff" }) + "</button>"
+          ? '<button class="fab-whatsapp-group" data-action="abrir-whatsapp-grupo-fab" title="WhatsApp-Supportgruppe">' + Icon("users", { size: 20, color: "#fff" }) + "</button>"
           : "")
       : "";
     document.getElementById("app-root").classList.toggle("has-sidebar", isAuth);
@@ -438,17 +438,17 @@ const App = {
           try {
             parsed = JSON.parse(reader.result);
           } catch (e) {
-            this.showToast("Ese archivo no es un respaldo válido de Cumbre 90.");
+            this.showToast("Diese Datei ist keine gültige Cumbre-90-Sicherung.");
             return;
           }
-          if (!window.confirm("Esto reemplazará todos tus datos actuales (Lista de 250, Árbol Genealógico, progreso) por los del archivo de respaldo. ¿Continuar?")) return;
+          if (!window.confirm("Dies wird alle deine aktuellen Daten (Liste der 250, Stammbaum, Fortschritt) durch die der Sicherungsdatei ersetzen. Fortfahren?")) return;
           const rh = calcularRacha(parsed.racha, parsed.ultimaFecha);
           this.state = hydrateState(parsed);
           this.state.racha = rh.racha;
           this.state.ultimaFecha = rh.ultimaFecha;
           this.persist(true);
           this.render();
-          this.showToast("Datos restaurados correctamente ✨");
+          this.showToast("Daten erfolgreich wiederhergestellt ✨");
         };
         reader.readAsText(file);
         return;
@@ -488,7 +488,7 @@ function importarContactosDesdeListado(entradas) {
     if (yaExiste) { duplicados++; return; }
     App.state.contactos.push({
       id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      nombre: nombre, telefono: (e.telefono || "").trim(), pais: "", nivel: "Tibio", estado: "Por contactar",
+      nombre: nombre, telefono: (e.telefono || "").trim(), pais: "", nivel: "Lauwarm", estado: "Zu kontaktieren",
       notas: "", notaSeguimiento: "", proximoSeguimiento: null,
       creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [],
     });
@@ -497,9 +497,9 @@ function importarContactosDesdeListado(entradas) {
   App.persist(true);
   App.render();
   const partes = [];
-  if (agregados) partes.push(agregados + " contacto" + (agregados === 1 ? "" : "s") + " importado" + (agregados === 1 ? "" : "s"));
-  if (duplicados) partes.push(duplicados + " ya estaba" + (duplicados === 1 ? "" : "n") + " en tu lista");
-  App.showToast(partes.length ? partes.join(" · ") : "No se importó ningún contacto nuevo");
+  if (agregados) partes.push(agregados + " Kontakt" + (agregados === 1 ? "" : "e") + " importiert");
+  if (duplicados) partes.push(duplicados + " waren schon in deiner Liste");
+  App.showToast(partes.length ? partes.join(" · ") : "Es wurde kein neuer Kontakt importiert");
 }
 
 const Actions = {
@@ -612,7 +612,7 @@ const Actions = {
     App.ui.tourAbierto = false;
     App.state.tourVisto = true;
     App.persist(true);
-    App.showToast("Puedes volver a ver el recorrido con el botón flotante");
+    App.showToast("Du kannst die Tour jederzeit mit der schwebenden Schaltfläche erneut ansehen");
     App.render();
   },
 
@@ -633,7 +633,7 @@ const Actions = {
     App.ui.menuOpen = false;
     App.render();
     window.close();
-    App.showToast("Si no se cerró sola, ya puedes cerrar esta pestaña o volver atrás.");
+    App.showToast("Falls sie sich nicht von selbst geschlossen hat, kannst du diesen Tab jetzt schließen oder zurückgehen.");
   },
 
   "open-menu": function () { App.ui.menuOpen = true; App.render(); },
@@ -717,9 +717,9 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const dia = DIAS.find((d) => d.id === dayId);
-    App.addActividad("Completaste la Etapa: " + dia.etapa);
+    App.addActividad("Du hast die Etappe abgeschlossen: " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etapa " + dia.id + " del Plan de Arranque — 9 Días conquistada.", tipo: "generic" };
+    App.ui.logro = { titulo: dia.etapa, sub: "Etappe " + dia.id + " des Startplans — 9 Tage erobert.", tipo: "generic" };
     App.persist(true);
     App.render();
   },
@@ -746,17 +746,17 @@ const Actions = {
     if (est.done) return;
     est.done = true;
     const semana = SEMANAS.find((s) => s.n === weekN);
-    App.addActividad("Completaste la Semana " + weekN + " (" + semana.paso + ")");
+    App.addActividad("Du hast die Woche " + weekN + " abgeschlossen (" + semana.paso + ")");
     App.celebrate();
 
     const q = QUINCENAS.find((qq) => qq.n === semana.q);
     const semanasQ = SEMANAS.filter((s) => s.q === q.n);
     const quincenaCompleta = semanasQ.every((s) => App.state.semanas[s.n].done);
     if (quincenaCompleta) {
-      App.addActividad("Conquistaste el Campamento: " + q.nombre);
+      App.addActividad("Du hast das Camp erobert: " + q.nombre);
       const premio = App.state.premios[q.n - 1];
-      let sub = "Campamento del Plan de 90 Días conquistado.";
-      if (premio) sub += " Desbloqueaste el premio: " + premio.premio + ".";
+      let sub = "Camp des 90-Tage-Plans erobert.";
+      if (premio) sub += " Du hast die Prämie freigeschaltet: " + premio.premio + ".";
       App.ui.logro = { titulo: q.nombre, sub: sub, tipo: "generic" };
 
       const totalCompletas = QUINCENAS.filter((qq2) => {
@@ -765,7 +765,7 @@ const Actions = {
       }).length;
       if (totalCompletas === QUINCENAS.length && !App.state.codigoCumbre) {
         App.state.codigoCumbre = "C90-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "¡Completaste las 6 quincenas del Plan de 90 Días!", tipo: "cumbre" };
+        App.ui.logro = { titulo: "Cumbre 90 — Sales Master", sub: "Du hast die 6 Zwei-Wochen-Perioden des 90-Tage-Plans abgeschlossen!", tipo: "cumbre" };
       }
     }
     App.persist(true);
@@ -778,8 +778,8 @@ const Actions = {
     App.state.rangoIndex = i;
     if (avanza) {
       App.celebrate();
-      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Nuevo rango alcanzado en Atomy.", tipo: "rango", rangoIndex: i };
-      App.addActividad("Alcanzaste el rango: " + RANGOS[i].nombre);
+      App.ui.logro = { titulo: RANGOS[i].nombre, sub: "Neuer Rang bei Atomy erreicht.", tipo: "rango", rangoIndex: i };
+      App.addActividad("Rang erreicht: " + RANGOS[i].nombre);
     }
     App.persist(true);
     App.render();
@@ -800,7 +800,7 @@ const Actions = {
     const d = App.ui.compartirImagenDraft;
     if (!d) return;
     downloadBlob(d.blob, d.filename);
-    App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+    App.showToast("Das Bild wurde heruntergeladen — du kannst es jetzt überall anhängen, wo du es teilen möchtest.");
     App.ui.compartirImagenDraft = null;
     App.render();
   },
@@ -813,11 +813,11 @@ const Actions = {
       navigator.share({ files: [file], title: "Cumbre 90", text: d.shareText }).catch(function (err) {
         if (err && err.name === "AbortError") return;
         downloadBlob(d.blob, d.filename);
-        App.showToast("No se pudo abrir el panel de compartir — se descargó la imagen.");
+        App.showToast("Das Teilen-Fenster konnte nicht geöffnet werden — das Bild wurde heruntergeladen.");
       });
     } else {
       downloadBlob(d.blob, d.filename);
-      App.showToast("Se descargó la imagen — ya puedes adjuntarla donde quieras compartirla.");
+      App.showToast("Das Bild wurde heruntergeladen — du kannst es jetzt überall anhängen, wo du es teilen möchtest.");
     }
     App.ui.compartirImagenDraft = null;
     App.render();
@@ -840,7 +840,7 @@ const Actions = {
     };
     const labels = { whatsapp: "WhatsApp", facebook: "Facebook", instagram: "Instagram", tiktok: "TikTok", linkedin: "LinkedIn", youtube: "YouTube" };
     if (urls[arg]) window.open(urls[arg], "_blank");
-    App.showToast("Se descargó la imagen — ábrela en " + (labels[arg] || arg) + " y adjúntala ahí.");
+    App.showToast("Das Bild wurde heruntergeladen — öffne " + (labels[arg] || arg) + " und hänge es dort an.");
     App.ui.compartirImagenDraft = null;
     App.render();
   },
@@ -1013,7 +1013,7 @@ const Actions = {
         App.render();
       });
     } else {
-      App.showToast("Activa los permisos de notificación desde los ajustes de tu navegador.");
+      App.showToast("Aktiviere die Benachrichtigungsberechtigung in den Einstellungen deines Browsers.");
     }
   },
 
@@ -1021,7 +1021,7 @@ const Actions = {
     const blob = new Blob([JSON.stringify(App.state, null, 2)], { type: "application/json" });
     const fecha = hoyISO();
     downloadBlob(blob, "Cumbre90-Respaldo-" + slugFile(App.state.nombre || "socio") + "-" + fecha + ".json");
-    App.showToast("Copia de seguridad descargada");
+    App.showToast("Sicherungskopie heruntergeladen");
   },
 
   "reset-progress": function () {
@@ -1036,7 +1036,7 @@ const Actions = {
     App.ui.activeDay = null;
     App.ui.onboardingFoto = null;
     App.ui.view = "welcome";
-    App.showToast("Progreso reiniciado");
+    App.showToast("Fortschritt zurückgesetzt");
     App.render();
   },
 
@@ -1077,11 +1077,11 @@ const Actions = {
     foco.ultimaFecha = rh.ultimaFecha;
     const pilar = LEMA_ATOMY.pilares.find((p) => p.n === foco.pilar);
     if (foco.racha === 7) {
-      App.showToast("¡1 semana seguida viviendo “" + pilar.t + "”! 🔥");
+      App.showToast("1 Woche in Folge nach „" + pilar.t + "“ gelebt! 🔥");
     } else if (foco.racha === 21) {
       App.celebrate();
-      App.ui.logro = { titulo: pilar.t, sub: "21 días seguidos — ya es un hábito.", tipo: "generic" };
-      App.addActividad("Convertiste “" + pilar.t + "” en un hábito de 21 días.");
+      App.ui.logro = { titulo: pilar.t, sub: "21 Tage in Folge — das ist jetzt eine Gewohnheit.", tipo: "generic" };
+      App.addActividad("Du hast „" + pilar.t + "“ zu einer 21-Tage-Gewohnheit gemacht.");
     }
     App.persist(true);
     App.render();
@@ -1102,11 +1102,11 @@ const Actions = {
     const abrir = { instagram: "https://www.instagram.com/", tiktok: "https://www.tiktok.com/upload" };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Texto copiado — pégalo en tu historia o publicación."),
-        () => App.showToast("No se pudo copiar el texto.")
+        () => App.showToast("Text kopiert — füge ihn in deine Story oder deinen Beitrag ein."),
+        () => App.showToast("Der Text konnte nicht kopiert werden.")
       );
     } else {
-      App.showToast("No se pudo copiar el texto.");
+      App.showToast("Der Text konnte nicht kopiert werden.");
     }
     if (abrir[platform]) window.open(abrir[platform], "_blank");
   },
@@ -1115,16 +1115,16 @@ const Actions = {
     const text = shareTextForLogro(arg) + " " + window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        () => App.showToast("Mensaje copiado — ¡pégalo donde quieras!"),
-        () => App.showToast("No se pudo copiar el mensaje")
+        () => App.showToast("Nachricht kopiert — füge sie ein, wo du möchtest!"),
+        () => App.showToast("Die Nachricht konnte nicht kopiert werden")
       );
     } else {
-      App.showToast("No se pudo copiar el mensaje");
+      App.showToast("Die Nachricht konnte nicht kopiert werden");
     }
   },
 
   "add-contacto": function () {
-    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Tibio", estado: "Por contactar", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
+    App.ui.contactoDraft = { nombre: "", telefono: "", pais: "", nivel: "Lauwarm", estado: "Zu kontaktieren", notas: "", notaSeguimiento: "", proximoSeguimiento: null };
     App.ui.contactoEditId = null;
     App.render();
   },
@@ -1163,11 +1163,11 @@ const Actions = {
       App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [] }, d));
     }
     const nombreRegistrado = d.nombre.trim();
-    const quedoComoSocio = d.estado === "Socio" && estadoAnterior !== "Socio";
+    const quedoComoSocio = d.estado === "Partner" && estadoAnterior !== "Partner";
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Kontakt gespeichert");
     if (quedoComoSocio) {
       App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: DIAS.length }, () => ({ hora: "" })) };
     }
@@ -1185,7 +1185,7 @@ const Actions = {
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Kontakt gelöscht");
     App.render();
   },
 
@@ -1237,18 +1237,18 @@ const Actions = {
     App.render();
   },
 
-  // Registra una llamada o mensaje hecho a un contacto de la Lista de 250: suma al
-  // contador diario (Informe Semanal → "Hoy"), avanza el contacto a "Contactado" si
-  // seguía "Por contactar", y si tenía un seguimiento pendiente lo marca como hecho.
-  // Así el trabajo real con la lista sí queda reflejado en el informe a compartir.
+  // Registriert einen Anruf oder eine Nachricht an einen Kontakt der Liste der 250: zählt
+  // zum Tageszähler (Wochenbericht → "Heute"), bewegt den Kontakt zu "Kontaktiert", falls
+  // er noch "Zu kontaktieren" war, und markiert eine ausstehende Nachverfolgung als erledigt.
+  // So spiegelt sich die echte Arbeit mit der Liste im zu teilenden Bericht wider.
   "registrar-contacto": function (arg, el) {
     const tipo = el.dataset.tipo === "mensaje" ? "mensajes" : "llamadas";
     const c = App.state.contactos.find((x) => x.id === arg);
     if (!c) return;
     const dia = getRegistroDia(App.state, hoyISO());
     dia[tipo] = (Number(dia[tipo]) || 0) + 1;
-    if (c.estado === "Por contactar") {
-      c.estado = "Contactado";
+    if (c.estado === "Zu kontaktieren") {
+      c.estado = "Kontaktiert";
       c.estadoFecha = hoyISO();
     }
     if (c.proximoSeguimiento) {
@@ -1302,7 +1302,7 @@ const Actions = {
         Object.assign(nuevaActividadAgenda(), {
           tipo: "plan6",
           hora: hora,
-          nota: "Día " + (i + 1) + " — " + diaInfo.titulo + " — con " + d.contactoNombre,
+          nota: "Tag " + (i + 1) + " — " + diaInfo.titulo + " — mit " + d.contactoNombre,
           recordar: !!hora,
           recordarMin: 10,
         })
@@ -1310,7 +1310,7 @@ const Actions = {
     }
     App.ui.agenda6Draft = null;
     App.persist(true);
-    App.showToast("Agenda del Plan de " + DIAS.length + " Días creada con " + d.contactoNombre);
+    App.showToast("Terminplan des " + DIAS.length + "-Tage-Plans mit " + d.contactoNombre + " erstellt");
     App.render();
   },
 
@@ -1356,7 +1356,7 @@ const Actions = {
     App.state.distribuidoresDuplicado = App.state.distribuidoresDuplicado.filter((d) => d.id !== arg);
     App.ui.confirmDeleteDistribuidor = null;
     App.persist(true);
-    App.showToast("Distribuidor eliminado");
+    App.showToast("Vertriebspartner gelöscht");
     App.render();
   },
 
@@ -1376,11 +1376,11 @@ const Actions = {
       navigator.share({ title: "Cumbre 90", text: texto }).catch(() => {});
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(texto).then(
-        () => App.showToast("Reflexión copiada — ¡pégala donde quieras!"),
-        () => App.showToast("No se pudo copiar el texto")
+        () => App.showToast("Reflexion kopiert — füge sie ein, wo du möchtest!"),
+        () => App.showToast("Der Text konnte nicht kopiert werden")
       );
     } else {
-      App.showToast("No se pudo copiar el texto");
+      App.showToast("Der Text konnte nicht kopiert werden");
     }
   },
 
@@ -1400,8 +1400,8 @@ const Actions = {
     if (completo && !App.state.escenarioCompletado) {
       App.state.escenarioCompletado = true;
       App.celebrate();
-      App.ui.logro = { titulo: "Escenario de Vida", sub: "Uniste los 8 puntos en un círculo perfecto — ya tienes claro tu “por qué”.", tipo: "generic" };
-      App.addActividad("Completaste tu Escenario de Vida — ¡círculo perfecto!");
+      App.ui.logro = { titulo: "Lebensszenario", sub: "Du hast die 8 Punkte zu einem perfekten Kreis verbunden — jetzt ist dein „Warum“ klar.", tipo: "generic" };
+      App.addActividad("Du hast dein Lebensszenario vervollständigt — perfekter Kreis!");
     } else if (!completo) {
       App.state.escenarioCompletado = false;
     }
@@ -1450,7 +1450,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad guardada");
+    App.showToast("Aktivität gespeichert");
     App.render();
   },
 
@@ -1466,7 +1466,7 @@ const Actions = {
     App.ui.actividadDraft = null;
     App.ui.actividadEditId = null;
     App.persist(true);
-    App.showToast("Actividad eliminada");
+    App.showToast("Aktivität gelöscht");
     App.render();
   },
 
@@ -1515,7 +1515,7 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión guardada");
+    App.showToast("Meeting gespeichert");
     App.render();
   },
 
@@ -1531,18 +1531,18 @@ const Actions = {
     App.ui.zoomDraft = null;
     App.ui.zoomEditId = null;
     App.persist(true);
-    App.showToast("Reunión eliminada");
+    App.showToast("Meeting gelöscht");
     App.render();
   },
 
   "copy-zoom-link": function (arg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(arg).then(
-        () => App.showToast("Enlace copiado"),
-        () => App.showToast("No se pudo copiar el enlace")
+        () => App.showToast("Link kopiert"),
+        () => App.showToast("Der Link konnte nicht kopiert werden")
       );
     } else {
-      App.showToast("No se pudo copiar el enlace");
+      App.showToast("Der Link konnte nicht kopiert werden");
     }
   },
 
@@ -1624,7 +1624,7 @@ const Actions = {
     }
     App.ui.personaEnfoqueDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Person gespeichert");
     App.render();
   },
 
@@ -1641,7 +1641,7 @@ const Actions = {
     App.ui.confirmDeletePersonaEnfoque = null;
     App.ui.personaEnfoqueDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Person gelöscht");
     App.render();
   },
 
@@ -1685,7 +1685,7 @@ const Actions = {
     }
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona guardada");
+    App.showToast("Person gespeichert");
     App.render();
   },
 
@@ -1699,7 +1699,7 @@ const Actions = {
     App.ui.confirmDeleteAscendente = null;
     App.ui.ascendenteDraft = null;
     App.persist(true);
-    App.showToast("Persona eliminada");
+    App.showToast("Person gelöscht");
     App.render();
   },
 
@@ -1741,7 +1741,7 @@ const Actions = {
     }
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Kontakt gespeichert");
     App.render();
   },
 
@@ -1755,7 +1755,7 @@ const Actions = {
     App.ui.confirmDeleteSOS = null;
     App.ui.sosDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Kontakt gelöscht");
     App.render();
   },
 
@@ -1798,7 +1798,7 @@ const Actions = {
     }
     App.ui.socioDraft = null;
     App.persist(true);
-    App.showToast("Socio guardado");
+    App.showToast("Partner gespeichert");
     App.render();
   },
 
@@ -1815,7 +1815,7 @@ const Actions = {
     App.ui.confirmDeleteSocio = null;
     App.ui.socioDraft = null;
     App.persist(true);
-    App.showToast("Socio eliminado");
+    App.showToast("Partner gelöscht");
     App.render();
   },
 
@@ -1862,7 +1862,7 @@ const Actions = {
     App.ui.clienteDraft = null;
     App.ui.clienteEditId = null;
     App.persist(true);
-    App.showToast("Cliente guardado");
+    App.showToast("Kunde gespeichert");
     App.render();
   },
 
@@ -1877,7 +1877,7 @@ const Actions = {
     App.ui.clienteDraft = null;
     App.ui.clienteEditId = null;
     App.persist(true);
-    App.showToast("Cliente eliminado");
+    App.showToast("Kunde gelöscht");
     App.render();
   },
 
@@ -1952,7 +1952,7 @@ const Actions = {
     }
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto guardado");
+    App.showToast("Kontakt gespeichert");
     App.render();
   },
 
@@ -1966,7 +1966,7 @@ const Actions = {
     App.ui.confirmDeleteContactoEvento = null;
     App.ui.contactoEventoDraft = null;
     App.persist(true);
-    App.showToast("Contacto eliminado");
+    App.showToast("Kontakt gelöscht");
     App.render();
   },
 
