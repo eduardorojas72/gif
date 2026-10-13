@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>¿Cuánto cobraré?</title>
-<meta name="description" content="Calcula tu sueldo neto, finiquito, indemnización por despido, paro y baja médica en España (datos 2026).">
+<meta name="description" content="Calcula tu sueldo neto, finiquito, despido, paro y baja, conoce tus derechos laborales y prepara cartas para tu empresa (España, 2026).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -88,7 +88,7 @@ header p { margin: 0; color: var(--ink-soft); }
   color: var(--ink-soft);
 }
 .field small { color: var(--ink-soft); font-size: 0.85rem; }
-input, select {
+input, select, textarea {
   font: inherit;
   color: var(--ink);
   background: var(--bg);
@@ -102,7 +102,7 @@ input[type="number"] { font-family: var(--font-num); }
 .money { position: relative; }
 .money input { padding-right: 34px; font-size: 1.35rem; font-weight: 600; }
 .money::after { content: "€"; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-family: var(--font-num); }
-input:focus-visible, select:focus-visible, button:focus-visible {
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, summary:focus-visible, a:focus-visible {
   outline: 3px solid var(--highlight);
   outline-offset: 1px;
 }
@@ -189,6 +189,59 @@ input:focus-visible, select:focus-visible, button:focus-visible {
   background: var(--accent-soft); color: var(--ink);
   border-radius: 999px; padding: 3px 10px;
 }
+/* Secciones principales */
+.volver { color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.95rem; display: inline-block; margin-bottom: 8px; }
+.secciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.secciones button {
+  font: inherit; font-weight: 700; font-size: 0.95rem;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 10px 6px; border-radius: 12px; cursor: pointer;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+}
+.secciones button small { font-weight: 400; color: var(--ink-soft); font-size: 0.78rem; }
+.secciones button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+.seccion { display: flex; flex-direction: column; gap: 20px; }
+
+/* Guía de derechos */
+.buscar { position: relative; }
+.buscar input { padding-left: 38px; }
+.buscar svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); }
+.grupo-titulo { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; margin: 10px 0 0; }
+.guia { display: flex; flex-direction: column; gap: 10px; }
+.guia details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.guia summary {
+  cursor: pointer; list-style: none; padding: 14px 44px 14px 16px; position: relative;
+  font-weight: 700; font-size: 1.02rem; line-height: 1.35; text-wrap: balance;
+}
+.guia summary::-webkit-details-marker { display: none; }
+.guia summary::after {
+  content: "+"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-family: var(--font-num); font-size: 1.3rem; color: var(--accent);
+}
+.guia details[open] summary::after { content: "−"; }
+.guia details[open] summary { border-bottom: 1px solid var(--line); }
+.guia .contenido { padding: 4px 16px 16px; }
+.guia .contenido p, .guia .contenido li { max-width: 65ch; }
+.guia .contenido h4 { margin: 16px 0 4px; font-size: 0.95rem; }
+.guia ul, .guia ol { padding-left: 1.2em; margin: 8px 0; }
+.guia li { margin: 4px 0; }
+.tabla-wrap { overflow-x: auto; margin: 10px 0; }
+.tabla { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+.tabla th, .tabla td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.tabla th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+.tabla td:last-child { font-weight: 600; }
+.sin-resultados { color: var(--ink-soft); text-align: center; padding: 16px; }
+
+/* Cartas */
+.carta-out { line-height: 1.55; min-height: 380px; resize: vertical; background: var(--surface); }
+.btn {
+  font: inherit; font-weight: 700; cursor: pointer; border: 0;
+  background: var(--accent); color: var(--accent-ink);
+  border-radius: 10px; padding: 12px 16px;
+}
+.acciones { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.acciones .ok { color: var(--accent); font-weight: 700; }
+
 footer { color: var(--ink-soft); font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; }
 footer p { margin: 0; }
 @media (max-width: 420px) {
@@ -203,10 +256,18 @@ footer p { margin: 0; }
 <body>
 <div class="wrap">
   <header>
+    <a class="volver" id="volver" href="../index.html" hidden>← Volver a Cumbre 90</a>
     <h1>¿Cuánto <span>cobraré?</span></h1>
-    <p>Sueldo neto, finiquito, despido, paro y bajas en España, con los datos de 2026. Rellena tu sueldo y elige qué quieres calcular.</p>
+    <p>Calcula lo que vas a cobrar y conoce tus derechos laborales en España, con los datos de 2026.</p>
   </header>
 
+  <nav class="secciones" aria-label="Secciones">
+    <button type="button" id="ver-calcular" data-seccion="s-calcular" aria-pressed="true">Calcular<small>sueldo, paro…</small></button>
+    <button type="button" id="ver-derechos" data-seccion="s-derechos" aria-pressed="false">Tus derechos<small>guía práctica</small></button>
+    <button type="button" id="ver-cartas" data-seccion="s-cartas" aria-pressed="false">Cartas<small>modelos listos</small></button>
+  </nav>
+
+  <div class="seccion" id="s-calcular">
   <section class="card base" aria-label="Tu sueldo">
     <div class="field">
       <label for="bruto">Sueldo bruto anual</label>
@@ -351,8 +412,509 @@ footer p { margin: 0; }
     <div class="recibo" id="r-baja" aria-live="polite"></div>
   </section>
 
+  </div>
+
+  <div class="seccion" id="s-derechos" hidden>
+    <div class="buscar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="20.5" y2="20.5"/></svg>
+      <label for="g-buscar" class="sr-only" style="position:absolute;left:-9999px">Buscar en la guía</label>
+      <input id="g-buscar" type="search" placeholder="Buscar: médico, despido, vacaciones…" autocomplete="off">
+    </div>
+
+    <div class="guia" id="guia">
+
+      <h2 class="grupo-titulo">Accidentes y bajas</h2>
+
+      <details id="g-laboral-o-comun">
+        <summary>¿Accidente de trabajo o enfermedad común? Cómo saber cuál es el tuyo</summary>
+        <div class="contenido">
+          <p>La diferencia es importante porque cambia lo que cobras, quién te atiende y las indemnizaciones a las que puedes tener derecho.</p>
+          <h4>Es accidente de trabajo</h4>
+          <p>Cualquier lesión que sufres <strong>con ocasión o a consecuencia de tu trabajo</strong> (art. 156 de la Ley General de la Seguridad Social). Incluye:</p>
+          <ul>
+            <li><strong>En tu puesto y en tu horario.</strong> La ley presume que es laboral cualquier lesión ocurrida en tiempo y lugar de trabajo, incluso un infarto o un ictus. Si la mutua dice lo contrario, es ella quien tiene que demostrarlo.</li>
+            <li><strong>Al ir o volver del trabajo</strong> (accidente <em>in itinere</em>): por el trayecto habitual, en un tiempo razonable y sin desvíos por asuntos personales.</li>
+            <li><strong>En desplazamientos por trabajo</strong> (accidente en misión): visitas a clientes, viajes, recados de la empresa.</li>
+            <li>Haciendo <strong>tareas que te encarga la empresa</strong> aunque no sean las tuyas, o ayudando en un accidente relacionado con el trabajo.</li>
+            <li>Mientras ejerces un <strong>cargo sindical</strong> o de representación.</li>
+            <li>Enfermedades que no están en la lista oficial pero que se demuestra que <strong>las causa solo el trabajo</strong>, por ejemplo algunos casos de ansiedad por acoso laboral, y el empeoramiento de una enfermedad que ya tenías a causa del accidente.</li>
+          </ul>
+          <h4>No es accidente de trabajo</h4>
+          <ul>
+            <li>Si lo causa una <strong>fuerza mayor ajena al trabajo</strong>, como un terremoto. Una insolación trabajando al aire libre sí es laboral.</li>
+            <li>Si lo provocas a propósito o por <strong>imprudencia temeraria</strong>, por ejemplo conducir ebrio. Un despiste o exceso de confianza normal del día a día (imprudencia profesional) <strong>no</strong> quita el carácter laboral.</li>
+          </ul>
+          <p><strong>Enfermedad profesional</strong> es la que aparece en la lista oficial (Real Decreto 1299/2006) para tu actividad, por ejemplo una tendinitis en ciertos oficios o la sordera por ruido. Se trata igual que un accidente de trabajo.</p>
+          <h4>Qué cambia</h4>
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th></th><th>Accidente de trabajo</th><th>Enfermedad común</th></tr></thead>
+            <tbody>
+              <tr><td>Primeros días</td><td>Cobras desde el día siguiente</td><td>Días 1 a 3 sin cobrar</td></tr>
+              <tr><td>Cuánto</td><td>75 % de la base</td><td>60 % hasta el día 20, luego 75 %</td></tr>
+              <tr><td>Cotización mínima</td><td>No se exige</td><td>180 días en los últimos 5 años</td></tr>
+              <tr><td>Quién te atiende</td><td>La mutua de la empresa</td><td>Tu centro de salud</td></tr>
+              <tr><td>Indemnizaciones</td><td>Por secuelas, recargo si faltó seguridad y seguro del convenio</td><td>Normalmente no</td></tr>
+            </tbody>
+          </table></div>
+          <p>Calcula lo que cobrarías en la pestaña <strong>Baja</strong> de la sección Calcular.</p>
+        </div>
+      </details>
+
+      <details id="g-que-hacer-accidente">
+        <summary>Qué hacer si tienes un accidente de trabajo</summary>
+        <div class="contenido">
+          <ol>
+            <li><strong>Si es grave, llama al 112.</strong> Si no, avisa enseguida a tu responsable.</li>
+            <li><strong>Pide que te envíen a la mutua</strong> de la empresa, no al centro de salud. La empresa debe darte el volante de asistencia. En una urgencia ve al hospital más cercano y di que es un accidente de trabajo.</li>
+            <li><strong>Explica bien cómo pasó</strong> y que fue trabajando o de camino al trabajo. Lee lo que escriben en el informe y pide que corrijan errores.</li>
+            <li><strong>Reúne pruebas:</strong> fotos del lugar y de la lesión, nombres y teléfonos de testigos, mensajes al encargado, tu registro de jornada.</li>
+            <li><strong>Pide copia del parte de accidente.</strong> Si hay baja, la empresa debe comunicarlo en 5 días hábiles por el sistema Delt@. Tienes derecho a una copia.</li>
+            <li><strong>Avisa a tus representantes</strong> o a tu sindicato. También deben investigar el accidente para que no se repita.</li>
+            <li><strong>Si la mutua no te da la baja o dice que no es laboral,</strong> ve a tu médico de cabecera. Te dará la baja por enfermedad común y después podrás reclamar (mira el siguiente apartado).</li>
+          </ol>
+          <p class="note">Guarda todos los informes médicos desde el primer día. Son la base de cualquier reclamación o indemnización.</p>
+        </div>
+      </details>
+
+      <details id="g-reclamar-contingencia">
+        <summary>Si no te reconocen el accidente como laboral: cómo reclamar</summary>
+        <div class="contenido">
+          <p>Es frecuente que la mutua diga que una lesión es "común" para no pagarla. Puedes reclamarlo gratis.</p>
+          <ol>
+            <li><strong>Reclama a la mutua.</strong> Pide por escrito el motivo y pon una queja en la Oficina Virtual de Reclamaciones de las mutuas (en la web de la Seguridad Social).</li>
+            <li><strong>Pide al INSS la "determinación de contingencia".</strong> Hay un formulario en la sede electrónica de la Seguridad Social y también puedes pedirlo en un centro de atención (CAISS). Adjunta informes médicos, el parte de accidente y las pruebas. El INSS decidirá si es laboral o común.</li>
+            <li><strong>Si el INSS dice que es común,</strong> presenta una <strong>reclamación previa</strong> en un plazo de <strong>30 días hábiles</strong> desde que te lo notifiquen.</li>
+            <li><strong>Si la rechazan,</strong> puedes presentar una demanda en el <strong>Juzgado de lo Social</strong> en otros 30 días hábiles. Para el trabajador es gratis.</li>
+          </ol>
+          <p>Si al final se reconoce como laboral, te pagarán la diferencia de lo que dejaste de cobrar. Un sindicato o un abogado laboralista te pueden ayudar con los escritos.</p>
+        </div>
+      </details>
+
+      <details id="g-trafico">
+        <summary>Accidente de tráfico trabajando o yendo al trabajo</summary>
+        <div class="contenido">
+          <h4>Es accidente de trabajo</h4>
+          <p>Si ocurre al ir o volver del trabajo, o conduciendo por trabajo, se considera accidente de trabajo. Te atiende la mutua y cobras el 75 % desde el día siguiente, aunque la culpa haya sido tuya, salvo imprudencia temeraria como conducir bajo los efectos del alcohol.</p>
+          <h4>Además puedes cobrar del seguro del coche</h4>
+          <p>Si la culpa fue de otro conductor, su seguro te debe indemnizar según el <strong>baremo de tráfico</strong> (Ley 35/2015): por los días de baja, las secuelas, los gastos médicos y el dinero que dejas de ganar. <strong>Es compatible</strong> con la baja laboral: cobras las dos cosas.</p>
+          <ul>
+            <li>Haz el parte amistoso o pide un atestado a la policía.</li>
+            <li>Ve a urgencias cuanto antes (idealmente en las primeras 72 horas). Las aseguradoras ponen pegas si tardas.</li>
+            <li>Comunícalo a tu seguro en 7 días y reclama al del culpable. Para reclamar por vía judicial tienes 1 año desde que te dan el alta con secuelas.</li>
+          </ul>
+          <h4>Otras indemnizaciones posibles</h4>
+          <ul>
+            <li><strong>Seguro colectivo del convenio:</strong> muchos convenios obligan a la empresa a tener un seguro que paga una cantidad si hay muerte o incapacidad permanente. Revisa el tuyo.</li>
+            <li><strong>Recargo de prestaciones (30 % a 50 %):</strong> si la empresa no cumplió las medidas de seguridad, por ejemplo con un vehículo de empresa en mal estado, paga un extra sobre tus prestaciones.</li>
+            <li><strong>Lesiones permanentes no incapacitantes:</strong> si te quedan secuelas que no te impiden trabajar, la mutua te paga una cantidad fija según un baremo.</li>
+          </ul>
+          <h4>Si la baja es larga</h4>
+          <ul>
+            <li>La baja dura hasta 365 días y se puede prorrogar 180 más (545 en total). Después, el INSS te da el alta o valora una <strong>incapacidad permanente</strong>, que da derecho a pensión o indemnización.</li>
+            <li><strong>No pierdes las vacaciones:</strong> puedes disfrutarlas al volver (mira el apartado de vacaciones y bajas).</li>
+            <li><strong>No te pueden despedir por estar de baja.</strong> Si lo hacen, el despido puede ser nulo por discriminación por enfermedad (Ley 15/2022).</li>
+          </ul>
+        </div>
+      </details>
+
+      <details id="g-vacaciones-baja">
+        <summary>Vacaciones y bajas: qué pasa con tus días</summary>
+        <div class="contenido">
+          <ul>
+            <li><strong>Mientras estás de baja sigues generando vacaciones.</strong></li>
+            <li><strong>Si la baja coincide con tus vacaciones,</strong> tienes derecho a disfrutarlas después, aunque haya terminado el año. Por enfermedad o accidente tienes hasta <strong>18 meses</strong> desde el final del año en que las generaste. Por embarazo, parto o lactancia no hay ese límite.</li>
+            <li><strong>Si te pones de baja durante las vacaciones,</strong> avisa a la empresa y entrega el parte: los días de baja no cuentan como vacaciones y los recuperas.</li>
+            <li><strong>Si terminas el contrato sin haberlas disfrutado,</strong> te las tienen que pagar en el finiquito.</li>
+            <li>Las vacaciones son de <strong>30 días naturales</strong> al año como mínimo. Debes conocer tus fechas con al menos <strong>2 meses</strong> de antelación y no se pueden cambiar por dinero mientras sigues trabajando.</li>
+          </ul>
+        </div>
+      </details>
+
+      <h2 class="grupo-titulo">Despido</h2>
+
+      <details id="g-despido">
+        <summary>Cómo reclamar un despido improcedente</summary>
+        <div class="contenido">
+          <p class="note"><strong>Tienes 20 días hábiles</strong> desde el día siguiente al despido. No cuentan sábados, domingos ni festivos. Si se pasa el plazo, pierdes el derecho a reclamar.</p>
+          <ol>
+            <li><strong>Firma la carta de despido y el finiquito como "No conforme"</strong> con la fecha. Firmar solo significa que lo has recibido, no que estés de acuerdo.</li>
+            <li><strong>Pide el paro</strong> en los 15 días hábiles siguientes. Pedirlo no te impide reclamar.</li>
+            <li><strong>Presenta la papeleta de conciliación</strong> en el servicio de mediación de tu comunidad autónoma (SMAC, CMAC o similar; muchas permiten hacerlo por internet). Esto detiene el plazo de 20 días.</li>
+            <li><strong>Acude al acto de conciliación.</strong> Es una reunión con la empresa ante un mediador. Si llegáis a un acuerdo, por ejemplo una indemnización, se firma y es obligatorio cumplirlo.</li>
+            <li><strong>Si no hay acuerdo, presenta la demanda</strong> en el Juzgado de lo Social con el plazo que te quede.</li>
+            <li><strong>Juicio.</strong> El juez puede declarar el despido:
+              <ul>
+                <li><strong>Procedente:</strong> la empresa tenía razón.</li>
+                <li><strong>Improcedente:</strong> la empresa elige en 5 días entre readmitirte o pagarte la indemnización (33 días por año).</li>
+                <li><strong>Nulo:</strong> te tienen que readmitir y pagarte los salarios desde el despido.</li>
+              </ul>
+            </li>
+          </ol>
+          <h4>Cuándo puede ser nulo</h4>
+          <p>Si te despiden por estar embarazada o de permiso por nacimiento, por tener reducción de jornada por cuidado de hijos, por discriminación (origen, sexo, orientación, enfermedad…), por estar de baja médica o como represalia por haber reclamado tus derechos.</p>
+          <h4>Cuánto cuesta</h4>
+          <p>En primera instancia es <strong>gratis</strong> y no es obligatorio ir con abogado, aunque es muy recomendable. Los sindicatos lo ofrecen a sus afiliados y puedes pedir abogado de oficio si tus ingresos son bajos (justicia gratuita).</p>
+          <p>Calcula tu indemnización en la pestaña <strong>Despido</strong> de la sección Calcular.</p>
+        </div>
+      </details>
+
+      <h2 class="grupo-titulo">Permisos y ausencias</h2>
+
+      <details id="g-permisos">
+        <summary>Permisos pagados: muerte o enfermedad de familiares, boda, mudanza…</summary>
+        <div class="contenido">
+          <p>Son los mínimos del Estatuto de los Trabajadores (art. 37). Tu convenio puede darte más días, nunca menos. Avisa con antelación cuando puedas y guarda un justificante.</p>
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th>Motivo</th><th>Tiempo pagado</th></tr></thead>
+            <tbody>
+              <tr><td>Boda o registro como pareja de hecho</td><td>15 días naturales</td></tr>
+              <tr><td>Fallecimiento de cónyuge, pareja o familiar hasta 2.º grado</td><td>2 días (4 si tienes que desplazarte)</td></tr>
+              <tr><td>Accidente o enfermedad grave, hospitalización u operación con reposo en casa de cónyuge, pareja, familiar hasta 2.º grado o persona que conviva contigo</td><td>5 días hábiles</td></tr>
+              <tr><td>Urgencia familiar imprevista por enfermedad o accidente (fuerza mayor)</td><td>Hasta 4 días al año, se pueden coger por horas</td></tr>
+              <tr><td>Mudanza</td><td>1 día</td></tr>
+              <tr><td>Deber público: mesa electoral, jurado, citación judicial</td><td>El tiempo necesario</td></tr>
+              <tr><td>Exámenes prenatales y preparación al parto</td><td>El tiempo necesario</td></tr>
+              <tr><td>Lactancia de un hijo menor de 9 meses</td><td>1 hora al día, o acumulada en días si lo permite el convenio o lo pactas</td></tr>
+              <tr><td>Nacimiento o adopción</td><td>19 semanas (32 en familias monoparentales), pagadas al 100 % por la Seguridad Social</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Familiares hasta 2.º grado:</strong> padres, hijos, hermanos, abuelos y nietos, tuyos y también de tu pareja (suegros, cuñados, yernos, nueras).</p>
+          <p><strong>Si el hecho ocurre en tu día libre,</strong> el permiso empieza a contar desde tu primer día laborable.</p>
+          <p class="note">Hay una reforma anunciada para ampliar el permiso por fallecimiento a 10 días. Antes de pedirlo, comprueba si ya está en vigor.</p>
+          <h4>Permisos que no son pagados por ley</h4>
+          <ul>
+            <li><strong>Permiso parental:</strong> hasta 8 semanas para cuidar a un hijo menor de 8 años. Por ahora sin sueldo.</li>
+            <li><strong>Reducción de jornada</strong> por cuidado de un hijo menor de 12 años o de un familiar: cobras menos en proporción.</li>
+            <li><strong>Excedencias</strong> por cuidado de hijos o familiares.</li>
+            <li>Cuidar a un familiar con una enfermedad leve: no hay permiso, salvo que lo dé tu convenio.</li>
+          </ul>
+          <p>Prepara tu solicitud en la sección <strong>Cartas</strong>.</p>
+        </div>
+      </details>
+
+      <details id="g-medico">
+        <summary>Ir al médico: a qué tienes derecho y a qué no</summary>
+        <div class="contenido">
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th>Situación</th><th>¿Pagado?</th></tr></thead>
+            <tbody>
+              <tr><td>Tu propia consulta (cabecera, especialista, dentista)</td><td>Solo si lo dice tu convenio</td></tr>
+              <tr><td>Exámenes prenatales y preparación al parto</td><td>Sí, por ley</td></tr>
+              <tr><td>Reconocimiento médico de la empresa</td><td>Sí, en tu jornada y sin coste</td></tr>
+              <tr><td>Citación de la mutua o del tribunal médico del INSS</td><td>Sí, el tiempo necesario</td></tr>
+              <tr><td>Acompañar a un hijo o familiar al médico</td><td>Solo si lo dice tu convenio</td></tr>
+              <tr><td>Hospitalización u operación de un familiar</td><td>Sí, 5 días hábiles (ver Permisos)</td></tr>
+              <tr><td>Urgencia de un familiar</td><td>Sí, dentro de los 4 días al año por fuerza mayor</td></tr>
+              <tr><td>Si el médico te da la baja</td><td>Pasa a ser baja médica</td></tr>
+            </tbody>
+          </table></div>
+          <ul>
+            <li><strong>El Estatuto no da horas pagadas para tu propio médico.</strong> Muchos convenios sí, a menudo entre 16 y 35 horas al año o "el tiempo necesario" con justificante. Busca "consulta médica" en tu convenio.</li>
+            <li>Si tu convenio no dice nada, la empresa puede pedirte que recuperes las horas o descontártelas, pero no sancionarte si avisas y lo justificas.</li>
+            <li><strong>Pide siempre un justificante</strong> con la hora de entrada y de salida.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details id="g-asuntos-propios">
+        <summary>Días de asuntos propios (AP) según el sector</summary>
+        <div class="contenido">
+          <p>Los días de asuntos propios <strong>no están en el Estatuto de los Trabajadores</strong>. Solo los tienes si te los da tu convenio colectivo o tu contrato. Por eso cambian tanto de un sector a otro, e incluso de una provincia a otra.</p>
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th>Sector</th><th>Lo habitual</th></tr></thead>
+            <tbody>
+              <tr><td>Administración General del Estado</td><td>6 días al año, más 2 al cumplir 6 trienios y 1 más por cada trienio desde el 8.º</td></tr>
+              <tr><td>Comunidades autónomas y ayuntamientos</td><td>Suelen seguir al Estado: 6 días o más</td></tr>
+              <tr><td>Enseñanza pública</td><td>Depende de cada comunidad, con condiciones (no en evaluaciones)</td></tr>
+              <tr><td>Limpieza de edificios y locales</td><td>Varios días en muchos convenios provinciales (en Madrid se han reconocido 6)</td></tr>
+              <tr><td>Comercio y hostelería</td><td>Depende del convenio provincial: lo normal es entre 0 y 2 días</td></tr>
+              <tr><td>Industria (metal, química) y construcción</td><td>Muchas veces 0 o 1 día, a veces como "días de libre disposición" en el calendario</td></tr>
+              <tr><td>Banca, seguros y oficinas</td><td>Algunos convenios incluyen días de libre disposición</td></tr>
+            </tbody>
+          </table></div>
+          <p class="note">La tabla es orientativa. Lo que vale es lo que diga tu convenio concreto.</p>
+          <h4>Cómo encontrar tu convenio</h4>
+          <ol>
+            <li>Mira tu <strong>nómina o tu contrato</strong>: suele aparecer el nombre del convenio.</li>
+            <li>Búscalo en <strong>REGCON</strong>, el registro de convenios del Ministerio de Trabajo, en el BOE (estatales) o en el boletín de tu provincia o comunidad.</li>
+            <li>Pregunta a tus <strong>representantes</strong> o a un sindicato: suelen publicar resúmenes fáciles de leer.</li>
+          </ol>
+          <h4>Reglas habituales</h4>
+          <ul>
+            <li>Hay que pedirlos con unos días de antelación.</li>
+            <li>A veces no se pueden unir a las vacaciones o a puentes.</li>
+            <li>La empresa puede negarlos solo si el convenio lo permite, normalmente por necesidades del servicio.</li>
+          </ul>
+        </div>
+      </details>
+
+      <h2 class="grupo-titulo">Sindicatos y representación</h2>
+
+      <details id="g-sindicato">
+        <summary>Cómo afiliarte a un sindicato y qué ganas</summary>
+        <div class="contenido">
+          <p>Afiliarte es un <strong>derecho fundamental</strong> (art. 28 de la Constitución). No te pueden despedir, sancionar ni discriminar por ello. Si pagas la cuota por banco, la empresa ni siquiera tiene por qué enterarse.</p>
+          <h4>Beneficios</h4>
+          <ul>
+            <li><strong>Asesoría laboral y jurídica</strong> gratis o con descuento: revisión de contratos, nóminas y finiquitos.</li>
+            <li><strong>Abogado para juicios</strong> por despido, cantidades o accidentes, gratis o a precio reducido.</li>
+            <li>Información sobre tu convenio y tus derechos.</li>
+            <li>Cursos de formación, a menudo gratuitos.</li>
+            <li>Descuentos en seguros, viajes, ópticas y otros servicios, según el sindicato.</li>
+            <li><strong>La cuota desgrava:</strong> se resta de tus ingresos en la declaración de la renta.</li>
+          </ul>
+          <h4>Cómo afiliarte</h4>
+          <ol>
+            <li><strong>Elige un sindicato.</strong> Los más grandes son CCOO y UGT. Hay otros generales (USO, CGT, CNT), de empleo público (CSIF), autonómicos (ELA y LAB en el País Vasco y Navarra, CIG en Galicia) y profesionales (SATSE en enfermería, ANPE en docentes…). Elige el que tenga más presencia en tu sector o tu empresa.</li>
+            <li><strong>Date de alta</strong> en su web o en una de sus oficinas con tu DNI y una cuenta bancaria.</li>
+            <li><strong>Paga la cuota:</strong> suele estar entre 10 y 20 € al mes, con cuota reducida si estás en paro o cobras poco.</li>
+          </ol>
+          <p class="note">Afíliate <strong>antes</strong> de tener un problema. Muchos sindicatos exigen unos meses de antigüedad para cubrirte gratis un juicio.</p>
+        </div>
+      </details>
+
+      <details id="g-sin-sindicato">
+        <summary>¿Qué hacer si en tu empresa no hay sindicato ni representantes?</summary>
+        <div class="contenido">
+          <ul>
+            <li><strong>Puedes afiliarte igual.</strong> El sindicato te asesora y defiende aunque no haya nadie en tu empresa.</li>
+            <li><strong>Podéis elegir representantes.</strong> Según el tamaño de la plantilla:
+              <ul>
+                <li>De 6 a 10 personas: 1 delegado de personal si la mayoría lo decide.</li>
+                <li>De 11 a 30: 1 delegado. De 31 a 49: 3 delegados.</li>
+                <li>Desde 50: comité de empresa.</li>
+              </ul>
+              Las elecciones las puede convocar un sindicato o la mayoría de la plantilla. Contacta con un sindicato y ellos te ayudan con los trámites. Las personas candidatas tienen protección especial frente al despido.
+            </li>
+            <li><strong>Denuncia ante la Inspección de Trabajo.</strong> La denuncia es gratuita y la Inspección no le dice a la empresa quién denunció. También existe el <strong>Buzón de la Inspección</strong> para avisar de forma anónima.</li>
+            <li><strong>No te pueden castigar por reclamar.</strong> Es la "garantía de indemnidad": un despido o una sanción como represalia es nulo.</li>
+            <li>Guarda pruebas por escrito: correos, mensajes, nóminas, registro de jornada.</li>
+          </ul>
+        </div>
+      </details>
+
+      <h2 class="grupo-titulo">Dinero extra y formación</h2>
+
+      <details id="g-retribucion-flexible">
+        <summary>Beneficios fiscales: lo que tu empresa puede darte pagando menos impuestos</summary>
+        <div class="contenido">
+          <p>Con la <strong>retribución flexible</strong>, parte de tu sueldo se paga en servicios que no tributan por IRPF (o tributan menos). Así cobras lo mismo pero te quedas con más. Pregunta en tu empresa si la ofrece.</p>
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th>Beneficio</th><th>Exento de IRPF hasta</th></tr></thead>
+            <tbody>
+              <tr><td>Tarjeta o ticket restaurante</td><td>11 € por día laborable</td></tr>
+              <tr><td>Transporte público (abono)</td><td>1.500 € al año</td></tr>
+              <tr><td>Seguro médico (tú, tu pareja e hijos)</td><td>500 € al año por persona (1.500 € con discapacidad)</td></tr>
+              <tr><td>Guardería o escuela infantil (0 a 3 años)</td><td>Totalmente exento</td></tr>
+              <tr><td>Formación relacionada con tu trabajo</td><td>Totalmente exenta</td></tr>
+              <tr><td>Acciones de la empresa</td><td>12.000 € al año, con condiciones</td></tr>
+              <tr><td>Ordenador o móvil para trabajar</td><td>No es sueldo, no tributa</td></tr>
+            </tbody>
+          </table></div>
+          <ul>
+            <li>El total en especie no puede superar el <strong>30 % de tu salario</strong>, y lo que cobras en dinero no puede bajar del salario mínimo.</li>
+            <li>Aunque no paguen IRPF, la mayoría de estos conceptos sí cotizan a la Seguridad Social.</li>
+          </ul>
+          <h4>Ventajas para la empresa (útil si negocias)</h4>
+          <ul>
+            <li><strong>Bonificaciones por contratar</strong> a personas en paro de larga duración, mayores de 45 años, con discapacidad o víctimas de violencia de género.</li>
+            <li><strong>Crédito de formación (FUNDAE):</strong> la empresa recupera en cotizaciones lo que gasta en formarte, así que formarte le sale casi gratis.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details id="g-formacion">
+        <summary>Formación pagada por la empresa: tus derechos</summary>
+        <div class="contenido">
+          <ul>
+            <li><strong>20 horas al año de formación pagada</strong> relacionada con tu puesto si llevas al menos 1 año en la empresa. Se pueden acumular hasta 5 años (100 horas).</li>
+            <li><strong>Formación para adaptarte a cambios</strong> en tu puesto (nuevas máquinas, programas): la paga la empresa y cuenta como tiempo de trabajo.</li>
+            <li><strong>Prevención de riesgos laborales:</strong> formación obligatoria, gratis y dentro de tu jornada.</li>
+            <li><strong>Permiso Individual de Formación (PIF):</strong> hasta 200 horas pagadas por curso para estudiar algo oficial (un título o un certificado de profesionalidad). La empresa lo recupera de FUNDAE. Pídelo por escrito.</li>
+            <li><strong>Cursos con el crédito de FUNDAE:</strong> tu empresa tiene cada año un dinero para formación que se pierde si no lo usa. Pregunta a Recursos Humanos.</li>
+            <li><strong>Exámenes y estudios:</strong> tienes derecho a los permisos necesarios para presentarte a exámenes oficiales (si se pagan depende del convenio) y preferencia para elegir turno.</li>
+            <li><strong>Cursos gratis</strong> del SEPE, de tu comunidad autónoma y de los sindicatos, tanto si trabajas como si estás en paro.</li>
+          </ul>
+          <p class="note"><strong>Pacto de permanencia:</strong> si la empresa te paga una especialización cara, puede pedirte por escrito que te quedes hasta 2 años. Si te vas antes, podrían reclamarte una compensación. Lee bien lo que firmas.</p>
+        </div>
+      </details>
+
+      <h2 class="grupo-titulo">Además, conviene que sepas</h2>
+
+      <details id="g-jornada">
+        <summary>Horas extra, registro de jornada y descansos</summary>
+        <div class="contenido">
+          <ul>
+            <li>La empresa <strong>debe registrar cada día</strong> tu hora de entrada y de salida, y guardar ese registro 4 años. Pide copia si haces horas sin cobrar.</li>
+            <li><strong>Horas extra:</strong> como máximo 80 al año. Se pagan (nunca por debajo de la hora normal) o se compensan con descanso en los 4 meses siguientes.</li>
+            <li><strong>Jornada máxima</strong> de 40 horas semanales de media al año y 9 horas diarias de trabajo efectivo, salvo que el convenio diga otra cosa.</li>
+            <li><strong>Descansos:</strong> al menos 12 horas entre jornadas, día y medio seguido a la semana y 15 minutos si trabajas más de 6 horas seguidas.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details id="g-hijos">
+        <summary>Hijos y conciliación</summary>
+        <div class="contenido">
+          <ul>
+            <li><strong>Permiso por nacimiento:</strong> 19 semanas para cada progenitor (32 en familias monoparentales), pagadas al 100 % por la Seguridad Social. Las 6 primeras son obligatorias justo después del parto.</li>
+            <li><strong>Adaptación de jornada:</strong> puedes pedir cambiar tu horario o teletrabajar para cuidar de hijos o familiares. La empresa tiene que negociarlo contigo y, si dice que no, explicar por qué por escrito.</li>
+            <li><strong>Reducción de jornada:</strong> por cuidado de un hijo menor de 12 años o de un familiar que lo necesite, cobrando en proporción.</li>
+            <li><strong>Lactancia:</strong> 1 hora al día hasta los 9 meses, para cada progenitor.</li>
+            <li><strong>Excedencia:</strong> hasta 3 años por cuidado de hijos, con reserva del puesto el primer año.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details id="g-baja-voluntaria">
+        <summary>Si quieres irte de la empresa (baja voluntaria)</summary>
+        <div class="contenido">
+          <ul>
+            <li>Avisa por escrito con el <strong>preaviso</strong> de tu convenio, normalmente 15 días. Si no lo das, pueden descontarte del finiquito los días que faltaron.</li>
+            <li>Te pagarán el <strong>finiquito</strong> (días trabajados, vacaciones pendientes y parte de las pagas extra), pero <strong>no tendrás indemnización ni paro</strong>.</li>
+            <li>Si te vas por incumplimientos graves de la empresa (impagos, cambios graves de condiciones, acoso), no te vayas sin más: un juez puede extinguir el contrato con indemnización de despido. Consúltalo antes.</li>
+          </ul>
+          <p>Tienes un modelo de carta en la sección <strong>Cartas</strong>.</p>
+        </div>
+      </details>
+
+      <details id="g-plazos">
+        <summary>Plazos que no se te pueden pasar</summary>
+        <div class="contenido">
+          <div class="tabla-wrap"><table class="tabla">
+            <thead><tr><th>Para</th><th>Plazo</th></tr></thead>
+            <tbody>
+              <tr><td>Reclamar un despido</td><td>20 días hábiles</td></tr>
+              <tr><td>Recurrir una sanción</td><td>20 días hábiles</td></tr>
+              <tr><td>Pedir el paro</td><td>15 días hábiles</td></tr>
+              <tr><td>Reclamar al INSS (baja, contingencia)</td><td>30 días hábiles</td></tr>
+              <tr><td>Reclamar dinero que te deben (horas, pagas, salarios)</td><td>1 año</td></tr>
+              <tr><td>Disfrutar vacaciones tras una baja larga</td><td>18 meses desde el final del año</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </details>
+
+      <details id="g-ayuda">
+        <summary>Dónde pedir ayuda</summary>
+        <div class="contenido">
+          <ul>
+            <li><strong>Inspección de Trabajo:</strong> denuncias por impagos, horas sin pagar, falta de seguridad o contratos fraudulentos.</li>
+            <li><strong>Servicio de mediación de tu comunidad:</strong> conciliaciones por despido y reclamaciones de dinero.</li>
+            <li><strong>Sindicatos:</strong> asesoría y abogados.</li>
+            <li><strong>Colegio de Abogados:</strong> abogado de oficio gratis si tus ingresos son bajos.</li>
+            <li><strong>Seguridad Social e INSS:</strong> bajas, incapacidades y determinación de contingencia.</li>
+            <li><strong>SEPE:</strong> paro y subsidios.</li>
+            <li><strong>Teléfono 016:</strong> violencia de género, también si ocurre en el trabajo. No deja rastro en la factura.</li>
+          </ul>
+        </div>
+      </details>
+
+      <p class="sin-resultados" id="g-vacio" hidden>No hay apartados con esa palabra. Prueba con otra, por ejemplo "permiso" o "baja".</p>
+    </div>
+  </div>
+
+  <div class="seccion" id="s-cartas" hidden>
+    <div class="card grid2">
+      <div class="field full">
+        <label for="c-tipo">¿Qué carta necesitas?</label>
+        <select id="c-tipo">
+          <option value="permiso" selected>Solicitar un permiso pagado</option>
+          <option value="medico">Avisar de una visita médica</option>
+          <option value="vacaciones">Pedir un cambio de vacaciones</option>
+          <option value="ap">Pedir días de asuntos propios</option>
+          <option value="adaptacion">Pedir adaptación de jornada (conciliación)</option>
+          <option value="formacion">Pedir permiso de formación</option>
+          <option value="voluntaria">Comunicar la baja voluntaria</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="c-nombre">Tu nombre y apellidos</label>
+        <input id="c-nombre" type="text" autocomplete="name" value="Ana García López">
+      </div>
+      <div class="field">
+        <label for="c-dni">DNI / NIE</label>
+        <input id="c-dni" type="text" value="12345678A">
+      </div>
+      <div class="field">
+        <label for="c-empresa">Empresa</label>
+        <input id="c-empresa" type="text" autocomplete="organization" value="Comercial Ejemplo, S.L.">
+      </div>
+      <div class="field">
+        <label for="c-puesto">Tu puesto</label>
+        <input id="c-puesto" type="text" value="dependienta">
+      </div>
+      <div class="field">
+        <label for="c-ciudad">Ciudad</label>
+        <input id="c-ciudad" type="text" value="Valencia">
+      </div>
+      <div class="field" data-cartas="permiso">
+        <label for="c-motivo">Motivo del permiso</label>
+        <select id="c-motivo">
+          <option value="hospital" selected>Hospitalización u operación de un familiar</option>
+          <option value="fallecimiento">Fallecimiento de un familiar</option>
+          <option value="fuerza">Urgencia familiar (fuerza mayor)</option>
+          <option value="boda">Boda o registro de pareja de hecho</option>
+          <option value="mudanza">Mudanza</option>
+          <option value="deber">Deber público (mesa electoral, juicio)</option>
+          <option value="prenatal">Exámenes prenatales</option>
+        </select>
+      </div>
+      <div class="field" data-cartas="permiso">
+        <label for="c-familiar">Familiar (si aplica)</label>
+        <input id="c-familiar" type="text" value="mi madre">
+      </div>
+      <div class="field" data-cartas="permiso medico vacaciones ap formacion voluntaria adaptacion">
+        <label for="c-desde" id="c-desde-lbl">Desde</label>
+        <input id="c-desde" type="date" value="2026-10-19">
+      </div>
+      <div class="field" data-cartas="permiso vacaciones ap formacion">
+        <label for="c-hasta" id="c-hasta-lbl">Hasta</label>
+        <input id="c-hasta" type="date" value="2026-10-23">
+      </div>
+      <div class="field" data-cartas="vacaciones">
+        <label for="c-desde2">Nuevas fechas: desde</label>
+        <input id="c-desde2" type="date" value="2026-11-09">
+      </div>
+      <div class="field" data-cartas="vacaciones">
+        <label for="c-hasta2">Nuevas fechas: hasta</label>
+        <input id="c-hasta2" type="date" value="2026-11-13">
+      </div>
+      <div class="field" data-cartas="medico">
+        <label for="c-hora1">Hora de salida</label>
+        <input id="c-hora1" type="time" value="10:00">
+      </div>
+      <div class="field" data-cartas="medico">
+        <label for="c-hora2">Hora de vuelta</label>
+        <input id="c-hora2" type="time" value="12:30">
+      </div>
+      <div class="field" data-cartas="medico">
+        <label for="c-quien">¿Para quién es la cita?</label>
+        <select id="c-quien">
+          <option value="yo" selected>Para mí</option>
+          <option value="familiar">Acompañar a un familiar</option>
+        </select>
+      </div>
+      <div class="field full" data-cartas="vacaciones adaptacion formacion">
+        <label for="c-texto" id="c-texto-lbl">Detalle</label>
+        <input id="c-texto" type="text" value="">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="c-salida">Tu carta</label>
+      <textarea id="c-salida" class="carta-out" rows="18"></textarea>
+      <small>Puedes editar el texto aquí mismo antes de copiarlo. Los datos iniciales son un ejemplo.</small>
+    </div>
+    <div class="acciones">
+      <button type="button" class="btn" id="c-copiar">Copiar carta</button>
+      <span class="ok" id="c-copiado" hidden>Copiada. Pégala en un correo o documento.</span>
+    </div>
+    <p class="note">Entrega la carta por escrito y quédate una copia firmada con la fecha de recepción, o envíala por correo electrónico para tener prueba. Si la empresa no responde o lo niega sin motivo, consulta con un sindicato.</p>
+  </div>
+
   <footer>
-    <p><strong>Es una estimación orientativa, no un cálculo oficial.</strong> El IRPF real cambia según tu comunidad autónoma y tu situación personal, y tu convenio puede mejorar las condiciones. Confirma las cifras con tu gestoría, tu empresa o el SEPE.</p>
+    <p><strong>Información orientativa, no es asesoramiento legal.</strong> Los cálculos son estimaciones: el IRPF real cambia según tu comunidad autónoma y tu situación personal. Tu convenio colectivo puede mejorar lo que aquí se explica. Para un caso concreto, consulta con un sindicato, un abogado laboralista, tu gestoría o el SEPE.</p>
     <p>Datos 2026: base máxima de cotización 5.101,20 €/mes, SMI 1.221 €/mes en 14 pagas, IPREM 600 €/mes, MEI 0,15 % a cargo del trabajador.</p>
   </footer>
 </div>
@@ -733,13 +1295,175 @@ footer p { margin: 0; }
   var start = $("tab-" + hash) ? "tab-" + hash : (saved && $(saved) ? saved : "tab-neto");
   selectTab(start);
 
+  // ---------- Secciones (Calcular / Tus derechos / Cartas) ----------
+  var botonesSeccion = Array.prototype.slice.call(document.querySelectorAll("[data-seccion]"));
+  function verSeccion(id) {
+    botonesSeccion.forEach(function (b) {
+      var on = b.getAttribute("data-seccion") === id;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      $(b.getAttribute("data-seccion")).hidden = !on;
+    });
+    try { localStorage.setItem("cc-seccion", id); } catch (e) {}
+  }
+  botonesSeccion.forEach(function (b) {
+    b.addEventListener("click", function () { verSeccion(b.getAttribute("data-seccion")); });
+  });
+  var seccionGuardada = null;
+  try { seccionGuardada = localStorage.getItem("cc-seccion"); } catch (e) {}
+  if ($("tab-" + hash)) verSeccion("s-calcular");
+  else if (hash === "derechos" || hash === "cartas") verSeccion("s-" + hash);
+  else if (/^g-[a-z-]+$/.test(hash) && $(hash)) { verSeccion("s-derechos"); $(hash).open = true; }
+  else verSeccion(seccionGuardada && $(seccionGuardada) ? seccionGuardada : "s-calcular");
+
+  // Enlace de vuelta solo cuando se llega desde la app principal
+  try {
+    if (document.referrer && new URL(document.referrer).origin === location.origin) $("volver").hidden = false;
+  } catch (e) {}
+
+  // ---------- Buscador de la guía ----------
+  function normaliza(t) { return t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  var apartados = Array.prototype.slice.call(document.querySelectorAll("#guia details"));
+  var titulosGrupo = Array.prototype.slice.call(document.querySelectorAll("#guia .grupo-titulo"));
+  $("g-buscar").addEventListener("input", function () {
+    var q = normaliza(this.value.trim());
+    var visibles = 0;
+    apartados.forEach(function (d) {
+      var coincide = !q || normaliza(d.textContent).indexOf(q) !== -1;
+      d.hidden = !coincide;
+      if (q) d.open = coincide;
+      if (coincide) visibles++;
+    });
+    titulosGrupo.forEach(function (h) { h.hidden = !!q; });
+    $("g-vacio").hidden = visibles > 0;
+  });
+
+  // ---------- Cartas ----------
+  function fechaLarga(id) {
+    var d = parseDate(id);
+    return d ? d.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }) : "[fecha]";
+  }
+  function txt(id, porDefecto) { var v = $(id).value.trim(); return v || porDefecto; }
+  function rango(a, b) {
+    var da = $(a).value, db = $(b).value;
+    return !db || da === db ? "el día " + fechaLarga(a) : "del " + fechaLarga(a) + " al " + fechaLarga(b) + ", ambos incluidos";
+  }
+
+  var DETALLE = {
+    vacaciones: { lbl: "Motivo del cambio", valor: "un asunto familiar que no puedo aplazar" },
+    adaptacion: { lbl: "Motivo y horario que propones", valor: "el cuidado de mi hijo de 6 años; propongo trabajar de 8:00 a 15:00 de lunes a viernes" },
+    formacion: { lbl: "Curso o estudios", valor: "asistir al curso oficial «Certificado de profesionalidad en Actividades de venta»" }
+  };
+  var ETIQUETA_DESDE = { permiso: "Desde", medico: "Fecha de la cita", vacaciones: "Vacaciones actuales: desde", ap: "Desde", formacion: "Desde", voluntaria: "Último día de trabajo", adaptacion: "A partir del" };
+  var MOTIVO_UN_DIA = { mudanza: 1, deber: 1, prenatal: 1 };
+  var CON_FAMILIAR = { hospital: 1, fallecimiento: 1, fuerza: 1 };
+
+  function cuerpoPermiso() {
+    var fam = txt("c-familiar", "mi familiar");
+    switch ($("c-motivo").value) {
+      case "hospital":
+        return "Solicito el permiso retribuido previsto en el artículo 37.3.b) del Estatuto de los Trabajadores por la hospitalización (o intervención quirúrgica con reposo domiciliario) de " + fam + ", " + rango("c-desde", "c-hasta") + ".\n\nAportaré el justificante médico correspondiente.";
+      case "fallecimiento":
+        return "Solicito el permiso retribuido previsto en el artículo 37.3.b bis) del Estatuto de los Trabajadores por el fallecimiento de " + fam + ", " + rango("c-desde", "c-hasta") + ".\n\nAportaré el documento que lo acredite.";
+      case "fuerza":
+        return "Les comunico que, por motivos familiares urgentes relacionados con una enfermedad o accidente de " + fam + " que hacen indispensable mi presencia inmediata, necesito ausentarme " + rango("c-desde", "c-hasta") + ", conforme al artículo 37.9 del Estatuto de los Trabajadores (permiso por causa de fuerza mayor).\n\nAportaré la documentación que lo justifique.";
+      case "boda":
+        return "Solicito el permiso retribuido de 15 días naturales previsto en el artículo 37.3.a) del Estatuto de los Trabajadores con motivo de mi matrimonio (o registro como pareja de hecho), " + rango("c-desde", "c-hasta") + ".\n\nAportaré el certificado correspondiente.";
+      case "mudanza":
+        return "Solicito el permiso retribuido de 1 día previsto en el artículo 37.3.c) del Estatuto de los Trabajadores por traslado de mi domicilio habitual, el día " + fechaLarga("c-desde") + ".\n\nAportaré el justificante del cambio de domicilio.";
+      case "deber":
+        return "Solicito el permiso retribuido previsto en el artículo 37.3.d) del Estatuto de los Trabajadores para cumplir un deber inexcusable de carácter público y personal el día " + fechaLarga("c-desde") + ", durante el tiempo indispensable.\n\nAdjunto la citación oficial.";
+      case "prenatal":
+        return "Solicito el permiso retribuido previsto en el artículo 37.3.f) del Estatuto de los Trabajadores para la realización de exámenes prenatales o técnicas de preparación al parto que deben realizarse dentro de la jornada de trabajo, el día " + fechaLarga("c-desde") + ", durante el tiempo indispensable.\n\nAportaré el justificante de la cita.";
+    }
+    return "";
+  }
+
+  function generarCarta() {
+    var tipo = $("c-tipo").value;
+    var nombre = txt("c-nombre", "[tu nombre]"), dni = txt("c-dni", "[DNI]");
+    var empresa = txt("c-empresa", "[empresa]"), puesto = txt("c-puesto", "[puesto]");
+    var ciudad = txt("c-ciudad", "[ciudad]");
+    var detalle = txt("c-texto", DETALLE[tipo] ? DETALLE[tipo].valor : "");
+    var hoy = new Date().toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+    var intro = "Yo, " + nombre + ", con DNI/NIE " + dni + ", que trabajo en esta empresa como " + puesto + ", ";
+    var asunto, cuerpo;
+
+    switch (tipo) {
+      case "permiso":
+        asunto = $("c-motivo").value === "fuerza" ? "Comunicación de ausencia por fuerza mayor" : "Solicitud de permiso retribuido";
+        cuerpo = intro + "me dirijo a ustedes para lo siguiente:\n\n" + cuerpoPermiso();
+        break;
+      case "medico":
+        var paraQuien = $("c-quien").value === "yo" ? "una cita médica" : "que acompañar a un familiar a una cita médica";
+        asunto = "Aviso de ausencia por visita médica";
+        cuerpo = intro + "les comunico que el día " + fechaLarga("c-desde") + " tengo " + paraQuien + " que no ha sido posible concertar fuera de mi horario de trabajo, por lo que necesitaré ausentarme de " + txt("c-hora1", "[hora]") + " a " + txt("c-hora2", "[hora]") + ".\n\nSolicito que esta ausencia se trate según lo previsto en el convenio colectivo aplicable. Aportaré el justificante de asistencia con la hora de entrada y de salida.";
+        break;
+      case "vacaciones":
+        asunto = "Solicitud de cambio de vacaciones";
+        cuerpo = intro + "tengo asignadas mis vacaciones " + rango("c-desde", "c-hasta") + ".\n\nDebido a " + detalle + ", solicito cambiarlas al periodo " + rango("c-desde2", "c-hasta2") + ".\n\nSé que el cambio debe acordarse con la empresa, por lo que quedo a su disposición para buscar otra alternativa si estas fechas no fueran posibles. Les agradecería una respuesta por escrito.";
+        break;
+      case "ap":
+        asunto = "Solicitud de días de asuntos propios";
+        cuerpo = intro + "solicito disfrutar de días de asuntos propios, conforme a lo previsto en el convenio colectivo aplicable, " + rango("c-desde", "c-hasta") + ".\n\nLes agradecería que me confirmen la concesión por escrito.";
+        break;
+      case "adaptacion":
+        asunto = "Solicitud de adaptación de jornada por conciliación (art. 34.8 ET)";
+        cuerpo = intro + "solicito, al amparo del artículo 34.8 del Estatuto de los Trabajadores, la adaptación de mi jornada de trabajo para hacer efectivo mi derecho a la conciliación de la vida familiar y laboral, a partir del " + fechaLarga("c-desde") + ".\n\nMotivo y propuesta: " + detalle + ".\n\nQuedo a la espera de abrir el periodo de negociación previsto en dicho artículo, que no podrá superar los 15 días. En caso de que la empresa no acepte mi propuesta, les ruego que me lo comuniquen por escrito indicando las razones objetivas y, si es posible, una propuesta alternativa.";
+        break;
+      case "formacion":
+        asunto = "Solicitud de permiso para formación";
+        cuerpo = intro + "solicito permiso para " + detalle + ", " + rango("c-desde", "c-hasta") + ".\n\nLo solicito al amparo del artículo 23 del Estatuto de los Trabajadores, como permiso retribuido de formación vinculada a mi puesto o, en su caso, como Permiso Individual de Formación financiado a través de FUNDAE. Adjunto la información del curso y la matrícula.";
+        break;
+      case "voluntaria":
+        asunto = "Comunicación de baja voluntaria";
+        cuerpo = intro + "les comunico mi decisión de causar baja voluntaria en la empresa, siendo mi último día de trabajo el " + fechaLarga("c-desde") + ", respetando así el plazo de preaviso del convenio colectivo aplicable.\n\nLes ruego que preparen la liquidación (finiquito) con el salario pendiente, las vacaciones no disfrutadas y la parte proporcional de las pagas extra, así como el certificado de empresa.";
+        break;
+    }
+
+    return nombre + "\nDNI/NIE: " + dni + "\n\nA la atención de: Dirección / Recursos Humanos\n" + empresa +
+      "\n\nEn " + ciudad + ", a " + hoy + "\n\nAsunto: " + asunto + "\n\nMuy señores míos:\n\n" + cuerpo +
+      "\n\nAtentamente,\n\n\n\nFdo.: " + nombre + "\n\n\nRecibí por la empresa (firma, sello y fecha):";
+  }
+
+  function actualizarFormularioCarta(cambioTipo) {
+    var tipo = $("c-tipo").value;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-cartas]"), function (f) {
+      f.hidden = f.getAttribute("data-cartas").split(" ").indexOf(tipo) === -1;
+    });
+    if (tipo === "permiso" && MOTIVO_UN_DIA[$("c-motivo").value]) $("c-hasta").parentNode.hidden = true;
+    if (tipo === "permiso" && !CON_FAMILIAR[$("c-motivo").value]) $("c-familiar").parentNode.hidden = true;
+    $("c-desde-lbl").textContent = ETIQUETA_DESDE[tipo];
+    $("c-hasta-lbl").textContent = tipo === "vacaciones" ? "Vacaciones actuales: hasta" : "Hasta";
+    if (DETALLE[tipo]) {
+      $("c-texto-lbl").textContent = DETALLE[tipo].lbl;
+      if (cambioTipo) $("c-texto").value = DETALLE[tipo].valor;
+    }
+    $("c-salida").value = generarCarta();
+    $("c-copiado").hidden = true;
+  }
+  $("c-tipo").addEventListener("change", function () { actualizarFormularioCarta(true); });
+  Array.prototype.forEach.call(document.querySelectorAll("#s-cartas input, #c-motivo, #c-quien"), function (el) {
+    el.addEventListener("input", function () { actualizarFormularioCarta(false); });
+    el.addEventListener("change", function () { actualizarFormularioCarta(false); });
+  });
+  actualizarFormularioCarta(true);
+
+  $("c-copiar").addEventListener("click", function () {
+    var area = $("c-salida");
+    function hecho() { $("c-copiado").hidden = false; }
+    function seleccionar() { area.focus(); area.select(); try { if (document.execCommand("copy")) hecho(); } catch (e) {} }
+    try {
+      navigator.clipboard.writeText(area.value).then(hecho, seleccionar);
+    } catch (e) { seleccionar(); }
+  });
+
   // Las fechas del finiquito y del despido van sincronizadas (suelen ser las mismas)
   function sync(a, b) { $(a).addEventListener("input", function () { $(b).value = $(a).value; }); }
   sync("f-inicio", "d-inicio"); sync("d-inicio", "f-inicio");
   sync("f-baja", "d-fin"); sync("d-fin", "f-baja");
 
-  document.addEventListener("input", renderAll);
-  document.addEventListener("change", renderAll);
+  $("s-calcular").addEventListener("input", renderAll);
+  $("s-calcular").addEventListener("change", renderAll);
   renderAll();
 
   // Exponer para pruebas
