@@ -1,11 +1,11 @@
-/* Service Worker von Cumbre 90 — speichert statische Dateien für die
+/* Service Worker von Arranque 9 — speichert statische Dateien für die
    Offline-Nutzung im Cache. Strategie "network-first": versucht immer
    zuerst, die neueste Version vom Server zu holen, und nutzt die
    zwischengespeicherte Kopie nur, wenn kein Netzwerk verfügbar ist. So wird
    jede neue Bereitstellung sofort sichtbar, ohne dass eine alte Version im
    Browser-Cache hängen bleibt. */
 
-const CACHE_NAME = "cumbre90-de-cache-v1";
+const CACHE_NAME = "arranque9-de-cache-v1";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -21,17 +21,7 @@ const CORE_ASSETS = [
   "./js/app.js",
   "./icons/icon.svg",
   "./img/cover-cumbre90.png",
-  "./img/hero-plan6dias.png",
   "./img/fondo-app.png",
-  "./img/fondo-logros.png",
-  "./img/montana-plan90.png",
-  "./img/montana-quincena.png",
-  "./img/logro-cumbre.png",
-  "./img/consumidor-vip.png",
-  "./img/miembro-atomy.png",
-  "./img/agente.png",
-  "./img/agente-especial.png",
-  "./img/sales-master.png",
 ];
 
 self.addEventListener("install", (event) => {

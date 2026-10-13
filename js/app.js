@@ -7,7 +7,7 @@ function applyTheme(dark) {
 }
 
 function waHref(numero) {
-  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hallo, ich habe eine Frage zu meiner Reise bei Cumbre 90");
+  return "https://wa.me/" + (numero || "").replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent("Hallo, ich habe eine Frage zu meinem Startplan");
 }
 
 function waHrefPersonal(numero, nombre) {
@@ -233,9 +233,6 @@ const App = {
     const grupoWhatsapp = state.arbolGenealogico && state.arbolGenealogico.patrocinador && state.arbolGenealogico.patrocinador.grupoWhatsapp;
     document.getElementById("fab-slot").innerHTML = isAuth
       ? '<button class="fab-whatsapp" data-action="abrir-whatsapp-fab" title="Deinem Sponsor schreiben">' + Icon("message-circle", { size: 24, color: "#fff" }) + "</button>" +
-        (!ui.tourAbierto
-          ? '<button class="fab-tour" data-action="iniciar-tour" title="Erklärende Tour ansehen">' + Icon("compass", { size: 22, color: "#fff" }) + "</button>"
-          : "") +
         (hayCumpleanosHoy
           ? '<button class="fab-birthday" data-action="open-cumpleanos" title="Heutige Geburtstage">' + Icon("party", { size: 20, color: "#fff" }) + "</button>"
           : "") +
@@ -250,6 +247,7 @@ const App = {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
+      case "cierre": mainHtml = renderCierre(state); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "informe": mainHtml = renderInformeSemanal(state, ui); break;
       case "pasos": mainHtml = renderPasos(state, ui); break;
@@ -517,32 +515,22 @@ const Actions = {
     const input = document.getElementById("onboarding-name-input");
     const nombre = input ? input.value.trim() : "";
     if (!nombre) return;
-    const atomyIdInput = document.getElementById("onboarding-atomy-id-input");
-    const atomyPassInput = document.getElementById("onboarding-atomy-pass-input");
-    const atomyId = atomyIdInput ? atomyIdInput.value.trim() : "";
-    const atomyPass = atomyPassInput ? atomyPassInput.value.trim() : "";
     const sponsorNameInput = document.getElementById("onboarding-sponsor-name-input");
     const sponsorPhoneInput = document.getElementById("onboarding-sponsor-phone-input");
     const sponsorNombre = sponsorNameInput ? sponsorNameInput.value.trim() : "";
     const sponsorTelefono = sponsorPhoneInput ? sponsorPhoneInput.value.replace(/[^0-9]/g, "") : "";
     const rh = calcularRacha(0, null);
     App.state.nombre = nombre;
-    App.state.foto = App.ui.onboardingFoto;
     App.state.onboarded = true;
     App.state.racha = rh.racha;
     App.state.ultimaFecha = rh.ultimaFecha;
-    if (atomyId) App.state.arbolGenealogico.yo.atomyId = atomyId;
-    if (atomyPass) App.state.arbolGenealogico.yo.contrasena = atomyPass;
     if (sponsorNombre) App.state.arbolGenealogico.patrocinador.nombre = sponsorNombre;
     if (sponsorTelefono) {
       App.state.whatsapp = sponsorTelefono;
       App.state.arbolGenealogico.patrocinador.telefono = sponsorTelefono;
     }
     App.ui.view = "home";
-    if (!App.state.tourVisto) {
-      App.ui.tourAbierto = true;
-      App.ui.tourPaso = 0;
-    }
+    App.state.tourVisto = true;
     App.persist(true);
     App.render();
   },
@@ -719,7 +707,11 @@ const Actions = {
     const dia = DIAS.find((d) => d.id === dayId);
     App.addActividad("Du hast die Etappe abgeschlossen: " + dia.etapa);
     App.celebrate();
-    App.ui.logro = { titulo: dia.etapa, sub: "Etappe " + dia.id + " des Startplans — 9 Tage erobert.", tipo: "generic" };
+    if (dayId === DIAS.length) {
+      App.ui.view = "cierre";
+    } else {
+      App.ui.logro = { titulo: dia.etapa, sub: "Etappe " + dia.id + " des Startplans — 9 Tage erobert.", tipo: "generic" };
+    }
     App.persist(true);
     App.render();
   },
@@ -810,7 +802,7 @@ const Actions = {
     if (!d) return;
     const file = new File([d.blob], d.filename, { type: "image/png" });
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      navigator.share({ files: [file], title: "Cumbre 90", text: d.shareText }).catch(function (err) {
+      navigator.share({ files: [file], title: "Arranque 9", text: d.shareText }).catch(function (err) {
         if (err && err.name === "AbortError") return;
         downloadBlob(d.blob, d.filename);
         App.showToast("Das Teilen-Fenster konnte nicht geöffnet werden — das Bild wurde heruntergeladen.");
@@ -1162,15 +1154,10 @@ const Actions = {
     } else {
       App.state.contactos.push(Object.assign({ id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), creado: hoyISO(), estadoFecha: hoyISO(), seguimientosRealizados: [] }, d));
     }
-    const nombreRegistrado = d.nombre.trim();
-    const quedoComoSocio = d.estado === "Partner" && estadoAnterior !== "Partner";
     App.ui.contactoDraft = null;
     App.ui.contactoEditId = null;
     App.persist(true);
     App.showToast("Kontakt gespeichert");
-    if (quedoComoSocio) {
-      App.ui.agenda6Draft = { contactoNombre: nombreRegistrado, dias: Array.from({ length: DIAS.length }, () => ({ hora: "" })) };
-    }
     App.render();
   },
 
