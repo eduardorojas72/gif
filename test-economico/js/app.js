@@ -26,9 +26,15 @@ const APP = {
     return DATA.questions.length;
   },
 
-  formatMoney(n) {
+  currencySymbol() {
+    const id = this.answers.currency || DATA.defaultCurrency;
+    const c = DATA.currencies.find((x) => x.id === id);
+    return c ? c.symbol : "€";
+  },
+
+  formatMoney(n, symbol) {
     const v = Number(n) || 0;
-    return v.toLocaleString("es-ES", { maximumFractionDigits: 0 }) + " €";
+    return v.toLocaleString("es-ES", { maximumFractionDigits: 0 }) + " " + (symbol || this.currencySymbol());
   },
 
   start() {
@@ -170,15 +176,22 @@ const APP = {
         </div>`;
     } else if (q.type === "calculator") {
       const a = this.answers;
+      const selectedCurrency = a.currency || DATA.defaultCurrency;
       controlHTML = `
         <form id="calc-form" class="calc-form">
+          <label class="calc-field">
+            Tu país / moneda
+            <select name="currency" id="calc-currency">
+              ${DATA.currencies.map((c) => `<option value="${c.id}"${c.id === selectedCurrency ? " selected" : ""}>${c.label}</option>`).join("")}
+            </select>
+          </label>
           <h2 class="calc-section-title">Tus ingresos</h2>
           ${q.income.map((f) => this.calculatorFieldHTML(f, a[f.id])).join("")}
           <h2 class="calc-section-title">Tus gastos fijos</h2>
           ${q.expenses.map((f) => this.calculatorFieldHTML(f, a[f.id])).join("")}
           <div class="calc-balance" id="calc-balance">
             <span>Saldo mensual estimado</span>
-            <strong id="calc-balance-amount">0 €</strong>
+            <strong id="calc-balance-amount">${this.formatMoney(0, DATA.currencies.find((c) => c.id === selectedCurrency).symbol)}</strong>
           </div>
           <button type="submit" class="btn btn-primary btn-block">Continuar</button>
         </form>`;
@@ -246,7 +259,9 @@ const APP = {
         const updateBalance = () => {
           const fd = new FormData(form);
           const { margin } = this.calcBalance((id) => fd.get(id));
-          amountEl.textContent = (margin >= 0 ? "+" : "") + this.formatMoney(margin);
+          const currencyId = fd.get("currency") || DATA.defaultCurrency;
+          const symbol = DATA.currencies.find((c) => c.id === currencyId).symbol;
+          amountEl.textContent = (margin >= 0 ? "+" : "") + this.formatMoney(margin, symbol);
           amountEl.className = margin < 0 ? "text-danger" : "text-ok";
         };
         updateBalance();
@@ -254,7 +269,7 @@ const APP = {
         form.addEventListener("submit", (e) => {
           e.preventDefault();
           const fd = new FormData(form);
-          const patch = {};
+          const patch = { currency: fd.get("currency") || DATA.defaultCurrency };
           q.income.concat(q.expenses).forEach((f) => {
             patch[f.id] = fd.get(f.id) || 0;
           });

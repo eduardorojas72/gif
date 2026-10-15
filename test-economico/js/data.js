@@ -3,6 +3,21 @@
 // pasos a seguir; el único "siguiente paso" que ofrece es la invitación
 // a hablar por WhatsApp al final.
 const DATA = {
+  // Países que puede elegir quien hace el test, con el símbolo de moneda
+  // que se usa para mostrar todos los importes (ingresos, gastos y el
+  // resultado final). Es solo una etiqueta visual, no hace conversión.
+  currencies: [
+    { id: "brasil", label: "Brasil (R$)", symbol: "R$" },
+    { id: "panama", label: "Panamá ($)", symbol: "$" },
+    { id: "mexico", label: "México (MX$)", symbol: "MX$" },
+    { id: "chile", label: "Chile (CL$)", symbol: "CL$" },
+    { id: "usa", label: "USA ($)", symbol: "$" },
+    { id: "canada", label: "Canadá (CA$)", symbol: "CA$" },
+    { id: "europa", label: "Europa (€)", symbol: "€" },
+    { id: "colombia", label: "Colombia (COL$)", symbol: "COL$" }
+  ],
+  defaultCurrency: "europa",
+
   questions: [
     {
       id: "finances",
@@ -73,7 +88,7 @@ const DATA = {
       options: [
         { value: "hours", letter: "a", label: "Trabajar más horas y ganar más" },
         { value: "recurring", letter: "b", label: "Ganar más de forma recurrente, trabajando pocas horas extra" },
-        { value: "double", letter: "c", label: "Tener otro empleo que me permita ganar al menos el doble, en las mismas horas que ahora" }
+        { value: "double", letter: "c", label: "Cambiar de empleo a uno que me permita ganar el doble, en las mismas horas que ahora" }
       ]
     }
   ],
