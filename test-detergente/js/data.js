@@ -6,6 +6,14 @@
 const DATA = {
   questions: [
     {
+      id: "name",
+      type: "text",
+      question: "¿Cómo te llamas?",
+      hint: "Así podemos dirigirnos a ti por tu nombre.",
+      placeholder: "Tu nombre",
+      summaryLabel: "Nombre"
+    },
+    {
       id: "usualDetergent",
       type: "choice",
       question: "¿Qué tipo de detergente usas normalmente para lavar la ropa?",
@@ -58,17 +66,6 @@ const DATA = {
         { value: "muchoSi", label: "Sí, me preocupa bastante" },
         { value: "algoSi", label: "Algo, pero no mucho" },
         { value: "noLoHabiaPensado", label: "No lo había pensado" }
-      ]
-    },
-    {
-      id: "monthlySpend",
-      type: "choice",
-      question: "¿Cuánto gastas al mes, aproximadamente, en detergente y suavizante?",
-      summaryLabel: "Gasto mensual aprox.",
-      options: [
-        { value: "menos10", label: "Menos de 10 €" },
-        { value: "entre10y20", label: "Entre 10 € y 20 €" },
-        { value: "masDe20", label: "Más de 20 €" }
       ]
     }
   ],

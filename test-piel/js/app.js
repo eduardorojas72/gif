@@ -87,7 +87,7 @@ const APP = {
 
   // ---------- Resumen completo para WhatsApp ----------
   buildSummaryLines() {
-    return this.visibleQuestions().map((q) => {
+    return this.visibleQuestions().filter((q) => q.id !== "name").map((q) => {
       const raw = this.answers[q.id];
       let value;
       if (q.type === "multi") {
@@ -106,7 +106,8 @@ const APP = {
 
   whatsappLink() {
     const lines = this.buildSummaryLines();
-    const text = "Hola, acabo de hacer el test de piel y me gustaría recibir una recomendación personalizada. Aquí van mis respuestas:\n\n"
+    const name = this.answers.name;
+    const text = "Hola" + (name ? ", soy " + name : "") + ", acabo de hacer el test de piel y me gustaría recibir una recomendación personalizada. Aquí van mis respuestas:\n\n"
       + lines.join("\n");
     return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
   },
@@ -137,10 +138,11 @@ const APP = {
   },
 
   numberFieldHTML(q, savedValue) {
+    const inputType = q.type === "text" ? "text" : "number";
     return `
       <form id="number-form" class="number-form">
         <label class="number-field">
-          <input type="number" name="${q.id}" min="0" step="1" placeholder="${q.placeholder || ""}" value="${savedValue != null ? savedValue : ""}" autofocus />
+          <input type="${inputType}" name="${q.id}" ${inputType === "number" ? 'min="0" step="1" ' : ""}placeholder="${q.placeholder || ""}" value="${savedValue != null ? savedValue : ""}" autofocus />
         </label>
         <button type="submit" class="btn btn-primary btn-block">Continuar</button>
       </form>`;
@@ -169,7 +171,7 @@ const APP = {
               <span>${o.label}</span>
             </button>`).join("")}
         </div>`;
-    } else if (q.type === "number") {
+    } else if (q.type === "number" || q.type === "text") {
       controlHTML = this.numberFieldHTML(q, this.answers[q.id]);
     } else if (q.type === "multi") {
       controlHTML = this.multiFieldHTML(q, this.answers[q.id]);
@@ -265,7 +267,7 @@ const APP = {
       );
     }
 
-    if (q && q.type === "number") {
+    if (q && (q.type === "number" || q.type === "text")) {
       const form = document.getElementById("number-form");
       if (form) {
         form.addEventListener("submit", (e) => {

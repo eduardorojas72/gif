@@ -6,6 +6,14 @@
 const DATA = {
   questions: [
     {
+      id: "name",
+      type: "text",
+      question: "¿Cómo te llamas?",
+      hint: "Así podemos dirigirnos a ti por tu nombre.",
+      placeholder: "Tu nombre",
+      summaryLabel: "Nombre"
+    },
+    {
       id: "gender",
       type: "choice",
       question: "Para adaptar el test, ¿cómo te identificas?",

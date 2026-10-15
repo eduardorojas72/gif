@@ -106,7 +106,7 @@ const APP = {
 
   // ---------- Resumen completo para WhatsApp ----------
   buildSummaryLines() {
-    return DATA.questions.map((q) => {
+    return DATA.questions.filter((q) => q.id !== "name").map((q) => {
       const raw = this.answers[q.id];
       const value = raw != null ? this.optionLabel(q, raw) : "-";
       return (q.summaryLabel || q.question) + ": " + value;
@@ -115,7 +115,8 @@ const APP = {
 
   whatsappLink() {
     const lines = this.buildSummaryLines();
-    const text = "Hola, acabo de hacer el test de lavado consciente y me gustaría recibir información sobre la alternativa más saludable, económica y sostenible. Aquí van mis respuestas:\n\n"
+    const name = this.answers.name;
+    const text = "Hola" + (name ? ", soy " + name : "") + ", acabo de hacer el test de lavado consciente y me gustaría recibir información sobre la alternativa más saludable, económica y sostenible. Aquí van mis respuestas:\n\n"
       + lines.join("\n");
     return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
   },
@@ -145,9 +146,21 @@ const APP = {
       </section>`;
   },
 
+  numberFieldHTML(q, savedValue) {
+    return `
+      <form id="number-form" class="number-form">
+        <label class="number-field">
+          <input type="text" name="${q.id}" placeholder="${q.placeholder || ""}" value="${savedValue != null ? savedValue : ""}" autofocus />
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Continuar</button>
+      </form>`;
+  },
+
   questionHTML(q, i) {
     const pct = Math.round((i / this.totalSteps()) * 100);
-    const controlHTML = `
+    const controlHTML = q.type === "text"
+      ? this.numberFieldHTML(q, this.answers[q.id])
+      : `
       <div class="choice-grid">
         ${q.options.map((o) => `<button class="choice-btn" data-value="${o.value}">${o.label}</button>`).join("")}
       </div>`;
@@ -156,6 +169,7 @@ const APP = {
         <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
         <p class="q-count">Pregunta ${i + 1} de ${this.totalSteps()}</p>
         <h1>${q.question}</h1>
+        ${q.hint ? `<p class="muted-small">${q.hint}</p>` : ""}
         ${controlHTML}
         <button type="button" class="btn btn-ghost btn-block" id="back-btn">Atrás</button>
       </section>`;
@@ -208,9 +222,21 @@ const APP = {
 
     if (this.step >= 0 && this.step < this.totalSteps()) {
       const q = DATA.questions[this.step];
-      document.querySelectorAll(".choice-btn").forEach((btn) =>
-        btn.addEventListener("click", () => this.answerAndNext(q.id, btn.dataset.value))
-      );
+      if (q.type === "text") {
+        const form = document.getElementById("number-form");
+        if (form) {
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const value = new FormData(form).get(q.id);
+            if (!value) return;
+            this.answerAndNext(q.id, value);
+          });
+        }
+      } else {
+        document.querySelectorAll(".choice-btn").forEach((btn) =>
+          btn.addEventListener("click", () => this.answerAndNext(q.id, btn.dataset.value))
+        );
+      }
     }
 
     const waBtn = document.getElementById("whatsapp-btn");

@@ -5,6 +5,14 @@
 const DATA = {
   questions: [
     {
+      id: "name",
+      type: "text",
+      question: "¿Cómo te llamas?",
+      hint: "Así podemos dirigirnos a ti por tu nombre.",
+      placeholder: "Tu nombre",
+      summaryLabel: "Nombre"
+    },
+    {
       id: "situation",
       type: "choice",
       question: "¿Dónde te encuentras ahora mismo?",

@@ -20,6 +20,14 @@ const DATA = {
 
   questions: [
     {
+      id: "name",
+      type: "text",
+      question: "¿Cómo te llamas?",
+      hint: "Así podemos dirigirnos a ti por tu nombre.",
+      placeholder: "Tu nombre",
+      summaryLabel: "Nombre"
+    },
+    {
       id: "finances",
       type: "calculator",
       question: "Calculemos tu saldo mensual",

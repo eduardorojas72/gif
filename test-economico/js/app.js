@@ -125,7 +125,8 @@ const APP = {
   whatsappLink(profile) {
     const goalQuestion = DATA.questions.find((q) => q.id === "incomeGoal");
     const chosenOption = goalQuestion && goalQuestion.options.find((o) => o.value === this.answers.incomeGoal);
-    let text = "Hola, acabo de hacer el test «Cómo está tu economía» y mi resultado fue: " + profile.label + ".";
+    const name = this.answers.name;
+    let text = "Hola" + (name ? ", soy " + name : "") + ", acabo de hacer el test «Cómo está tu economía» y mi resultado fue: " + profile.label + ".";
     if (chosenOption) {
       text += "\n\nEn la pregunta \"" + goalQuestion.question + "\" he elegido la opción "
         + chosenOption.letter.toUpperCase() + ": \"" + chosenOption.label + "\". Con base en eso, me gustaría que me respondieras.";
@@ -166,10 +167,22 @@ const APP = {
       </label>`;
   },
 
+  textFieldHTML(q, savedValue) {
+    return `
+      <form id="text-form" class="calc-form">
+        <label class="calc-field">
+          <input type="text" name="${q.id}" placeholder="${q.placeholder || ""}" value="${savedValue != null ? savedValue : ""}" autofocus />
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Continuar</button>
+      </form>`;
+  },
+
   questionHTML(q, i) {
     const pct = Math.round(((i) / this.totalSteps()) * 100);
     let controlHTML = "";
-    if (q.type === "choice") {
+    if (q.type === "text") {
+      controlHTML = this.textFieldHTML(q, this.answers[q.id]);
+    } else if (q.type === "choice") {
       controlHTML = `
         <div class="choice-grid">
           ${q.options.map((o) => `<button class="choice-btn" data-value="${o.value}">${o.label}</button>`).join("")}
@@ -252,6 +265,17 @@ const APP = {
     if (restartBtn) restartBtn.addEventListener("click", () => this.restart());
 
     const q = DATA.questions[this.step];
+    if (q && q.type === "text") {
+      const form = document.getElementById("text-form");
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const value = new FormData(form).get(q.id);
+          if (!value) return;
+          this.answerAndNext(q.id, value);
+        });
+      }
+    }
     if (q && q.type === "calculator") {
       const form = document.getElementById("calc-form");
       if (form) {
