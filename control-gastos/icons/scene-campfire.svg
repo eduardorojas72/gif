@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#182B4A"/>
+      <stop offset="55%" stop-color="#3B3B63"/>
+      <stop offset="80%" stop-color="#8A5A5A"/>
+      <stop offset="100%" stop-color="#D98A4F"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="100%" r="75%">
+      <stop offset="0%" stop-color="#FFB25E" stop-opacity="0.85"/>
+      <stop offset="55%" stop-color="#F2C94C" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#F2C94C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="flame" cx="50%" cy="100%" r="100%">
+      <stop offset="0%" stop-color="#FFF3B0"/>
+      <stop offset="45%" stop-color="#F2994A"/>
+      <stop offset="100%" stop-color="#C0392B"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="300" fill="url(#sky)"/>
+
+  <!-- luna -->
+  <circle cx="690" cy="55" r="22" fill="#FFF3D6" opacity="0.9"/>
+  <!-- estrellas -->
+  <g fill="#FFFFFF">
+    <circle cx="80" cy="40" r="1.6" opacity="0.8"/>
+    <circle cx="150" cy="70" r="1.2" opacity="0.6"/>
+    <circle cx="260" cy="35" r="1.6" opacity="0.7"/>
+    <circle cx="340" cy="60" r="1.2" opacity="0.5"/>
+    <circle cx="470" cy="30" r="1.6" opacity="0.7"/>
+    <circle cx="590" cy="50" r="1.2" opacity="0.6"/>
+    <circle cx="45" cy="90" r="1.2" opacity="0.5"/>
+  </g>
+
+  <!-- montañas lejanas -->
+  <path d="M0 200 L100 130 L200 190 L300 110 L430 195 L560 120 L680 185 L800 140 L800 300 L0 300 Z" fill="#12233B" opacity="0.75"/>
+  <!-- montañas cercanas -->
+  <path d="M0 230 L140 160 L260 220 L420 150 L600 225 L760 165 L800 200 L800 300 L0 300 Z" fill="#0E3B2E" opacity="0.9"/>
+
+  <!-- pinos -->
+  <g fill="#0A2A20">
+    <path d="M90 240 l14 -34 14 34 z"/>
+    <path d="M90 250 l14 -30 14 30 z"/>
+    <rect x="101" y="250" width="6" height="10"/>
+    <path d="M700 235 l12 -30 12 30 z"/>
+    <path d="M700 245 l12 -26 12 26 z"/>
+    <rect x="709" y="245" width="6" height="10"/>
+    <path d="M640 245 l10 -24 10 24 z"/>
+    <rect x="647" y="245" width="5" height="8"/>
+  </g>
+
+  <!-- resplandor de la fogata -->
+  <ellipse cx="400" cy="290" rx="220" ry="110" fill="url(#glow)"/>
+
+  <!-- familia en silueta, sentada alrededor del fuego -->
+  <g fill="#0A2018">
+    <!-- adulto izq -->
+    <circle cx="300" cy="222" r="12"/>
+    <path d="M282 262c0-22 12-34 18-34s18 12 18 34z"/>
+    <!-- adulto der -->
+    <circle cx="500" cy="222" r="12"/>
+    <path d="M482 262c0-22 12-34 18-34s18 12 18 34z"/>
+    <!-- niño -->
+    <circle cx="360" cy="238" r="9"/>
+    <path d="M348 264c0-15 8-24 12-24s12 9 12 24z"/>
+    <!-- perro -->
+    <path d="M446 264c0-10 14-16 20-10 4 4 2 10-4 10h-4v8h-12z"/>
+  </g>
+
+  <!-- troncos -->
+  <g fill="#5C3D2E">
+    <rect x="386" y="258" width="30" height="7" rx="3" transform="rotate(-8 400 260)"/>
+    <rect x="386" y="262" width="30" height="7" rx="3" transform="rotate(10 400 264)"/>
+  </g>
+  <!-- llama -->
+  <path d="M400 268c-10-14-6-28 2-36-2 10 4 14 8 10 2-8-2-16-8-22 14 4 22 18 20 32-1 6-4 10-8 12 4-4 4-10 0-14 0 8-6 14-14 18z" fill="url(#flame)"/>
+</svg>
