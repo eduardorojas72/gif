@@ -18,6 +18,16 @@ function resolveWhatsappNumber() {
 
 const WHATSAPP_NUMBER = resolveWhatsappNumber();
 
+// Nombre de quien recibe el mensaje (para el saludo "Hola, Eduardo...").
+// Cada socio puede personalizarlo con ?name=<su nombre> en el enlace.
+const DEFAULT_GREETER_NAME = "Eduardo";
+function resolveGreeterName() {
+  const override = new URLSearchParams(window.location.search).get("name");
+  return override ? override.trim() : DEFAULT_GREETER_NAME;
+}
+
+const GREETER_NAME = resolveGreeterName();
+
 const APP = {
   step: -1, // -1 = portada, 0..N-1 = preguntas visibles, N = resultado
   answers: {},
@@ -97,7 +107,7 @@ const APP = {
     const lines = this.buildSummaryLines();
     const wants = this.answers.wantsToReceive;
     const greeting = DATA.receiveGreetings[wants] || DATA.defaultReceiveGreeting;
-    const text = greeting + " Aquí van mis respuestas:\n\n" + lines.join("\n");
+    const text = "Hola, " + GREETER_NAME + ", " + greeting + " Aquí van mis respuestas:\n\n" + lines.join("\n");
     return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
   },
 

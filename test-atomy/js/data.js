@@ -140,10 +140,10 @@ const DATA = {
   // Saludo del mensaje de WhatsApp según lo que pidió recibir (permiso
   // explícito, para no enviar nada que no haya pedido).
   receiveGreetings: {
-    infoProductos: "Hola, acabo de hacer tu test y me gustaría recibir información sobre productos que encajen con mis intereses.",
-    preciosOpciones: "Hola, acabo de hacer tu test y me gustaría recibir precios y opciones para comparar.",
-    comoFuncionaRecomendar: "Hola, acabo de hacer tu test y me gustaría que me cuentes cómo funciona recomendar productos y las posibles comisiones.",
-    soloResponder: "Hola, acabo de hacer tu test. Por ahora solo quería responderlo, pero aquí tienes mis respuestas por si te sirven."
+    infoProductos: "acabo de hacer tu test y me gustaría recibir información sobre productos que encajen con mis intereses.",
+    preciosOpciones: "acabo de hacer tu test y me gustaría recibir precios y opciones para comparar.",
+    comoFuncionaRecomendar: "acabo de hacer tu test y me gustaría que me cuentes cómo funciona recomendar productos y las posibles comisiones.",
+    soloResponder: "acabo de hacer tu test. Por ahora solo quería responderlo, pero aquí tienes mis respuestas por si te sirven."
   },
-  defaultReceiveGreeting: "Hola, acabo de hacer tu test rápido y me gustaría que me cuentes más."
+  defaultReceiveGreeting: "acabo de hacer tu test rápido y me gustaría que me cuentes más."
 };

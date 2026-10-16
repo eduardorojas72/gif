@@ -1,16 +1,16 @@
 :root {
-  --bg: #3A2317;
-  --bg-soft: #5C3A22;
+  --bg: #0E3B3C;
+  --bg-soft: #175C56;
   --card-bg: #FFFFFF;
-  --text: #3A2317;
-  --text-soft: #8A6F5C;
-  --primary: #C9742F;
-  --primary-dark: #A85F22;
-  --accent: #F3D9B1;
+  --text: #123532;
+  --text-soft: #5C8A85;
+  --primary: #1A8A7A;
+  --primary-dark: #126359;
+  --accent: #B9E4DD;
   --danger: #E5484D;
   --whatsapp: #25D366;
   --whatsapp-dark: #1EBE57;
-  --border: #F1E2CE;
+  --border: #D6ECE8;
   --radius: 18px;
 }
 
@@ -20,7 +20,7 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  background-image: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 45%, #7A4B2A 100%);
+  background-image: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 45%, #2E8B84 100%);
   background-attachment: fixed;
   color: var(--text);
   font-family: "Inter", system-ui, -apple-system, sans-serif;
@@ -111,7 +111,7 @@ p { margin: 0; line-height: 1.5; }
   font-family: inherit;
   font-size: 15px;
   border: 1.5px solid var(--border);
-  background: #FDF6EC;
+  background: #F0FAF8;
   color: var(--text);
   border-radius: 12px;
   padding: 14px 16px;
@@ -119,7 +119,7 @@ p { margin: 0; line-height: 1.5; }
   text-align: left;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.choice-btn:hover { border-color: var(--primary); background: #FBEBD4; }
+.choice-btn:hover { border-color: var(--primary); background: #DDF0EC; }
 
 /* ---------- Selección múltiple ---------- */
 .multi-grid {
@@ -132,7 +132,7 @@ p { margin: 0; line-height: 1.5; }
   font-family: inherit;
   font-size: 15px;
   border: 1.5px solid var(--border);
-  background: #FDF6EC;
+  background: #F0FAF8;
   color: var(--text);
   border-radius: 12px;
   padding: 14px 16px 14px 44px;
@@ -155,7 +155,7 @@ p { margin: 0; line-height: 1.5; }
 }
 .multi-btn.selected {
   border-color: var(--primary);
-  background: #FBEBD4;
+  background: #DDF0EC;
 }
 .multi-btn.selected::before {
   background: var(--primary);
@@ -184,7 +184,7 @@ p { margin: 0; line-height: 1.5; }
 .btn-primary:hover { background: var(--primary-dark); }
 .btn-primary:disabled { opacity: 0.5; cursor: default; }
 .btn-ghost { background: transparent; color: var(--text-soft); }
-.btn-ghost:hover { background: #FBEBD4; }
+.btn-ghost:hover { background: #DDF0EC; }
 .btn-whatsapp { background: var(--whatsapp); color: #fff; font-size: 16.5px; padding: 16px 18px; }
 .btn-whatsapp:hover { background: var(--whatsapp-dark); }
 
