@@ -1,7 +1,7 @@
-// Lógica del test: estado, navegación entre preguntas, mensaje de
-// resultado según la pregunta clave y envío de las respuestas por
-// WhatsApp. Sin frameworks, sin backend: todo vive en memoria del
-// navegador y se pierde al recargar.
+// Lógica del test: estado, navegación entre preguntas (algunas
+// condicionales según la pregunta clave), mensaje de resultado y envío
+// de las respuestas por WhatsApp. Sin frameworks, sin backend: todo vive
+// en memoria del navegador y se pierde al recargar.
 
 // Número de WhatsApp por defecto, en formato internacional sin "+" ni
 // espacios (país + número). Ahora mismo asume España (+34).
@@ -19,11 +19,17 @@ function resolveWhatsappNumber() {
 const WHATSAPP_NUMBER = resolveWhatsappNumber();
 
 const APP = {
-  step: -1, // -1 = portada, 0..N-1 = preguntas, N = resultado
+  step: -1, // -1 = portada, 0..N-1 = preguntas visibles, N = resultado
   answers: {},
 
+  // Algunas preguntas (6 y 7) solo aparecen según la respuesta a la
+  // pregunta clave (interest).
+  visibleQuestions() {
+    return DATA.questions.filter((q) => !q.showIf || q.showIf(this.answers));
+  },
+
   totalSteps() {
-    return DATA.questions.length;
+    return this.visibleQuestions().length;
   },
 
   start() {
@@ -74,7 +80,7 @@ const APP = {
 
   // ---------- Resumen completo para WhatsApp ----------
   buildSummaryLines() {
-    return DATA.questions.map((q) => {
+    return this.visibleQuestions().filter((q) => q.id !== "wantsToReceive").map((q) => {
       const raw = this.answers[q.id];
       let value;
       if (q.type === "multi") {
@@ -89,8 +95,9 @@ const APP = {
 
   whatsappLink() {
     const lines = this.buildSummaryLines();
-    const text = "Hola, acabo de hacer tu test rápido y me gustaría que me cuentes más. Aquí van mis respuestas:\n\n"
-      + lines.join("\n");
+    const wants = this.answers.wantsToReceive;
+    const greeting = DATA.receiveGreetings[wants] || DATA.defaultReceiveGreeting;
+    const text = greeting + " Aquí van mis respuestas:\n\n" + lines.join("\n");
     return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
   },
 
@@ -100,7 +107,7 @@ const APP = {
     if (this.step === -1) {
       root.innerHTML = this.introHTML();
     } else if (this.step < this.totalSteps()) {
-      root.innerHTML = this.questionHTML(DATA.questions[this.step], this.step);
+      root.innerHTML = this.questionHTML(this.visibleQuestions()[this.step], this.step);
     } else {
       root.innerHTML = this.resultHTML();
     }
@@ -113,7 +120,7 @@ const APP = {
       <section class="card intro-card">
         <span class="intro-emoji">🛍️</span>
         <h1>¿Qué tanto cuidas tu día a día?</h1>
-        <p class="muted">Un test rapidísimo (1 minuto) sobre tus hábitos de cuidado diario: cosmética, higiene, hogar, café y bienestar.</p>
+        <p class="muted">Un test rápido (menos de 2 minutos) sobre tus hábitos de cuidado diario: cosmética, higiene, hogar, café y bienestar.</p>
         <button class="btn btn-primary btn-block" id="start-btn">Empezar</button>
       </section>`;
   },
@@ -174,7 +181,7 @@ const APP = {
     const restartBtn = document.getElementById("restart-btn");
     if (restartBtn) restartBtn.addEventListener("click", () => this.restart());
 
-    const q = this.step >= 0 && this.step < this.totalSteps() ? DATA.questions[this.step] : null;
+    const q = this.step >= 0 && this.step < this.totalSteps() ? this.visibleQuestions()[this.step] : null;
 
     if (q && q.type === "choice") {
       document.querySelectorAll(".choice-btn").forEach((btn) =>
@@ -186,7 +193,18 @@ const APP = {
       const grid = document.getElementById("multi-grid");
       const continueBtn = document.getElementById("multi-continue-btn");
       const selected = new Set(Array.isArray(this.answers[q.id]) ? this.answers[q.id] : []);
+      const maxSelect = q.maxSelect || Infinity;
+
+      const updateCapState = () => {
+        if (!grid) return;
+        grid.querySelectorAll(".multi-btn").forEach((btn) => {
+          const isSelected = selected.has(btn.dataset.value);
+          btn.classList.toggle("multi-btn-capped", !isSelected && selected.size >= maxSelect);
+        });
+      };
+
       if (grid) {
+        updateCapState();
         grid.querySelectorAll(".multi-btn").forEach((btn) => {
           btn.addEventListener("click", () => {
             const value = btn.dataset.value;
@@ -194,10 +212,12 @@ const APP = {
               selected.delete(value);
               btn.classList.remove("selected");
             } else {
+              if (selected.size >= maxSelect) return;
               selected.add(value);
               btn.classList.add("selected");
             }
             continueBtn.disabled = selected.size === 0;
+            updateCapState();
           });
         });
       }

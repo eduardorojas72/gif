@@ -1,8 +1,11 @@
 // Contenido estático del test: preguntas y textos de resultado.
-// Test corto (5 preguntas) pensado para acompañar un saludo a un amigo,
-// no un cuestionario largo tipo diagnóstico. La pregunta clave es la
-// última: separa a quien solo quiere comprar de quien también podría
-// interesarse en recomendar los productos para un ingreso extra.
+// Test pensado para acompañar un saludo a un amigo, no un cuestionario
+// largo tipo diagnóstico. La pregunta clave ("interest") separa a quien
+// solo quiere comprar de quien también podría interesarse en recomendar
+// los productos para un ingreso extra; las preguntas 6 y 7 solo aparecen
+// si esa respuesta lo justifica, para no alargar el test a quien solo
+// quiere comprar. La última pregunta es de permiso: qué quiere recibir,
+// para no enviar nada que no haya pedido.
 const DATA = {
   questions: [
     {
@@ -20,38 +23,47 @@ const DATA = {
       ]
     },
     {
-      id: "satisfaction",
-      type: "choice",
-      question: "¿Qué tal estás con los productos que utilizas actualmente?",
-      summaryLabel: "Satisfacción actual",
+      id: "priorities",
+      type: "multi",
+      maxSelect: 3,
+      question: "¿Qué es lo más importante para ti al elegir un producto?",
+      hint: "Puedes marcar hasta 3 opciones.",
+      summaryLabel: "Lo más importante al elegir",
       options: [
-        { value: "satisfecho", label: "Estoy satisfecho; por ahora no cambiaría" },
-        { value: "mejoraria", label: "Estoy bien, pero mejoraría algunas cosas" },
-        { value: "alternativas", label: "Me gustaría tener otras alternativas" }
+        { value: "precio", label: "El precio y el ahorro" },
+        { value: "calidad", label: "La calidad y los ingredientes" },
+        { value: "necesidad", label: "Que responda a una necesidad concreta" },
+        { value: "comodidad", label: "La comodidad de comprarlo" },
+        { value: "ambiental", label: "El impacto ambiental" },
+        { value: "opiniones", label: "Las opiniones y experiencias de otras personas" }
       ]
     },
     {
       id: "improvements",
       type: "multi",
-      question: "¿Qué mejorarías en esos productos?",
+      question: "¿Qué te gustaría mejorar o encontrar en los productos que utilizas?",
       hint: "Puedes elegir varias opciones.",
-      summaryLabel: "Qué mejoraría",
+      summaryLabel: "Qué le gustaría mejorar o encontrar",
       options: [
-        { value: "precio", label: "Mejor relación calidad-precio" },
-        { value: "calidad", label: "Mejor calidad e ingredientes sin importar el precio" },
-        { value: "adaptados", label: "Que se adapten a mis necesidades" },
-        { value: "naturales", label: "Que sean naturales y amigables con el medio ambiente, pero que a la vez no sean tan caros" }
+        { value: "presupuesto", label: "Encontrar opciones que se ajusten mejor a mi presupuesto" },
+        { value: "rutina", label: "Mejorar mi rutina de cuidado personal" },
+        { value: "hogar", label: "Encontrar productos para el hogar que me convenzan" },
+        { value: "bienestar", label: "Conocer alternativas para mis necesidades de bienestar" },
+        { value: "descubrir", label: "Descubrir productos nuevos" },
+        { value: "satisfecho", label: "Estoy satisfecho con lo que utilizo actualmente" }
       ]
     },
     {
-      id: "openToOptions",
+      id: "discoveryBehavior",
       type: "choice",
-      question: "¿Estarías dispuesto/a a conocer otras opciones?",
-      summaryLabel: "Abierto a nuevas opciones",
+      question: "Si descubrieras un producto que te interesa, ¿qué preferirías hacer?",
+      summaryLabel: "Ante un producto nuevo prefiere",
       options: [
-        { value: "siComparo", label: "Sí, me gusta comparar antes de decidir" },
-        { value: "dependePrecio", label: "Depende del precio y las características" },
-        { value: "noBusco", label: "Ahora mismo no busco cambiar" }
+        { value: "caracteristicas", label: "Conocer sus características y su precio" },
+        { value: "comparar", label: "Compararlo con los que utilizo actualmente" },
+        { value: "probar", label: "Probarlo antes de decidir, si es posible" },
+        { value: "recomendacion", label: "Recibir una recomendación personalizada" },
+        { value: "informarme", label: "De momento, solo quiero informarme" }
       ]
     },
     {
@@ -65,6 +77,46 @@ const DATA = {
         { value: "soloComprar", label: "Solo me interesa conocer y comprar productos para mí" },
         { value: "ingresoExtra", label: "Me interesa comprar y explorar cómo obtener ingresos recomendándolos" },
         { value: "comoFunciona", label: "Quiero saber primero cómo funciona" }
+      ]
+    },
+    {
+      id: "recommendMotivation",
+      type: "multi",
+      showIf: (a) => a.interest === "ingresoExtra" || a.interest === "comoFunciona",
+      question: "Si encontraras productos que encajaran contigo, ¿qué te motivaría a recomendarlos a otras personas?",
+      hint: "Puedes marcar varias opciones.",
+      summaryLabel: "Qué le motivaría a recomendar",
+      options: [
+        { value: "comision", label: "Obtener una comisión extra" },
+        { value: "compartir", label: "Compartir productos que utilizo y me gustan" },
+        { value: "bienestarInfo", label: "Dar a conocer opciones relacionadas con el bienestar y el cuidado personal" },
+        { value: "ambientalElegir", label: "Elegir productos teniendo en cuenta su impacto ambiental" },
+        { value: "ayudar", label: "Ayudar a otras personas a encontrar productos adecuados para sus necesidades" },
+        { value: "emprender", label: "Explorar una actividad de emprendimiento y desarrollar mi propio equipo" }
+      ]
+    },
+    {
+      id: "timeCommitment",
+      type: "choice",
+      showIf: (a) => a.interest === "ingresoExtra",
+      question: "¿Cuánto tiempo estarías dispuesto/a a dedicar a explorar esta posibilidad?",
+      summaryLabel: "Tiempo que dedicaría",
+      options: [
+        { value: "soloInfo", label: "Solo quiero conocer la información, sin compromiso" },
+        { value: "horasSemana", label: "Unas horas a la semana" },
+        { value: "masTiempo", label: "Podría dedicarle más tiempo si veo que encaja conmigo" }
+      ]
+    },
+    {
+      id: "wantsToReceive",
+      type: "choice",
+      question: "¿Qué te gustaría recibir de mi parte?",
+      summaryLabel: "Qué le gustaría recibir",
+      options: [
+        { value: "infoProductos", label: "Información sobre productos que encajen con mis intereses" },
+        { value: "preciosOpciones", label: "Precios y opciones para comparar" },
+        { value: "comoFuncionaRecomendar", label: "Información sobre cómo funciona la recomendación de productos y las posibles comisiones" },
+        { value: "soloResponder", label: "Por ahora, solo quería responder al cuestionario" }
       ]
     }
   ],
@@ -83,5 +135,15 @@ const DATA = {
       title: "Sin problema, te lo explico con calma",
       body: "Te cuento cómo funciona la tienda, qué categorías de productos tiene y cómo es recomendarlos, para que decidas con toda la información."
     }
-  }
+  },
+
+  // Saludo del mensaje de WhatsApp según lo que pidió recibir (permiso
+  // explícito, para no enviar nada que no haya pedido).
+  receiveGreetings: {
+    infoProductos: "Hola, acabo de hacer tu test y me gustaría recibir información sobre productos que encajen con mis intereses.",
+    preciosOpciones: "Hola, acabo de hacer tu test y me gustaría recibir precios y opciones para comparar.",
+    comoFuncionaRecomendar: "Hola, acabo de hacer tu test y me gustaría que me cuentes cómo funciona recomendar productos y las posibles comisiones.",
+    soloResponder: "Hola, acabo de hacer tu test. Por ahora solo quería responderlo, pero aquí tienes mis respuestas por si te sirven."
+  },
+  defaultReceiveGreeting: "Hola, acabo de hacer tu test rápido y me gustaría que me cuentes más."
 };
