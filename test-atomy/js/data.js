@@ -74,15 +74,14 @@ const DATA = {
       question: "¿Te gustaría que te explicara un poco sobre ellos?",
       summaryLabel: "Interés principal",
       options: [
-        { value: "soloComprar", label: "Solo me interesa conocer y comprar productos para mí" },
-        { value: "ingresoExtra", label: "Me interesa comprar y explorar cómo obtener ingresos recomendándolos" },
-        { value: "comoFunciona", label: "Quiero saber primero cómo funciona" }
+        { value: "soloInfo", label: "Sí, pero solo como información" },
+        { value: "conocerMas", label: "Sí, me interesa mucho conocer otras opciones y si es posible cambiar los que ya uso" }
       ]
     },
     {
       id: "recommendMotivation",
       type: "multi",
-      showIf: (a) => a.interest === "ingresoExtra" || a.interest === "comoFunciona",
+      showIf: (a) => a.interest === "conocerMas",
       question: "Si encontraras productos que encajaran contigo, ¿qué te motivaría a recomendarlos a otras personas?",
       hint: "Puedes marcar varias opciones.",
       summaryLabel: "Qué le motivaría a recomendar",
@@ -98,7 +97,7 @@ const DATA = {
     {
       id: "timeCommitment",
       type: "choice",
-      showIf: (a) => a.interest === "ingresoExtra",
+      showIf: (a) => a.interest === "conocerMas",
       question: "¿Cuánto tiempo estarías dispuesto/a a dedicar a explorar esta posibilidad?",
       summaryLabel: "Tiempo que dedicaría",
       options: [
@@ -123,17 +122,13 @@ const DATA = {
 
   // Mensaje de resultado según la respuesta a la pregunta clave (interest).
   archetypes: {
-    soloComprar: {
-      title: "¡Genial! Te cuento sobre los productos",
-      body: "Perfecto, te paso el catálogo y resolvemos cualquier duda que tengas para que elijas lo que mejor te encaje."
+    soloInfo: {
+      title: "¡Perfecto! Te paso la información",
+      body: "Te cuento brevemente sobre la tienda y los productos, sin compromiso, para que la veas con calma."
     },
-    ingresoExtra: {
-      title: "¡Me encanta que te intereses por ambas cosas!",
-      body: "Te cuento primero de los productos y, si te gusta lo que ves, te explico cómo funciona la parte de recomendarlos y generar un ingreso extra con ello."
-    },
-    comoFunciona: {
-      title: "Sin problema, te lo explico con calma",
-      body: "Te cuento cómo funciona la tienda, qué categorías de productos tiene y cómo es recomendarlos, para que decidas con toda la información."
+    conocerMas: {
+      title: "¡Genial que te interese conocer más!",
+      body: "Te cuento sobre los productos y, si te gusta lo que ves, te explico también cómo funciona recomendarlos y generar un ingreso extra con ello."
     }
   },
 

@@ -85,7 +85,7 @@ const APP = {
   // ---------- Mensaje de resultado (según la pregunta clave) ----------
   buildArchetype() {
     const key = this.answers.interest;
-    return DATA.archetypes[key] || DATA.archetypes.comoFunciona;
+    return DATA.archetypes[key] || DATA.archetypes.conocerMas;
   },
 
   // ---------- Resumen completo para WhatsApp ----------
