@@ -1933,7 +1933,23 @@ function renderAjustes(state, ui) {
 
 function contactoNivelBadge(nivel) {
   const cls = nivel === "Heiß" ? "warn" : nivel === "Lauwarm" ? "gold" : "soft";
-  return '<span class="badge ' + cls + '">' + escapeHtml(nivel) + "</span>";
+  const prefijo = nivel === "Heiß" ? "🔥 " : "";
+  return '<span class="badge ' + cls + '" style="font-size:10.5px;padding:3px 7px">' + prefijo + escapeHtml(nivel) + "</span>";
+}
+
+// Hintergrund-/Textfarben für das <select> des Status, je nach Phase — so
+// wirkt es wie eine farbige Pille, genau wie das Stufen-Badge, ohne eine
+// eigene Dropdown-Komponente zu benötigen.
+function contactoEstadoColores(estado) {
+  const mapa = {
+    "Zu kontaktieren": { bg: "rgba(255,255,255,0.08)", fg: "var(--text-soft)" },
+    "Kontaktiert": { bg: "var(--accent-soft)", fg: "var(--accent)" },
+    "Präsentation": { bg: "rgba(232,185,78,0.18)", fg: "var(--gold-light)" },
+    "Partner": { bg: "var(--success-soft)", fg: "var(--success)" },
+    "Konsument": { bg: "var(--success-soft)", fg: "var(--success)" },
+    "Verworfen": { bg: "var(--warn-soft)", fg: "var(--warn)" },
+  };
+  return mapa[estado] || mapa["Zu kontaktieren"];
 }
 
 function renderContactos(state, ui) {
@@ -1941,16 +1957,25 @@ function renderContactos(state, ui) {
   const filtro = ui.contactoFiltro || "todos";
   const hoy = hoyISO();
 
-  const counts = { "Heiß": 0, "Lauwarm": 0, "Kalt": 0 };
-  contactos.forEach(function (c) { if (counts[c.nivel] != null) counts[c.nivel]++; });
+  const countsNivel = { "Heiß": 0, "Lauwarm": 0, "Kalt": 0 };
+  const countsEstado = {};
+  CONTACTO_ESTADOS.forEach(function (e) { countsEstado[e] = 0; });
+  contactos.forEach(function (c) {
+    if (countsNivel[c.nivel] != null) countsNivel[c.nivel]++;
+    if (countsEstado[c.estado] != null) countsEstado[c.estado]++;
+  });
 
-  const filterBtns = ["todos"].concat(CONTACTO_NIVELES).map(function (f) {
-    const active = filtro === f;
-    const label = f === "todos" ? "Alle · " + contactos.length : f + " · " + counts[f];
-    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="filter-contactos" data-arg="' + f + '">' + label + "</button>";
+  // Filter-Tabs: Alle, Heiße (nach Stufe) und jede Phase des Trichters (nach
+  // Status) — dieselben Bezeichnungen, die der Rest der App schon verwendet.
+  const filterDefs = [{ id: "todos", label: "Alle", count: contactos.length }]
+    .concat([{ id: "Heiß", label: "🔥 Heiße", count: countsNivel["Heiß"] }])
+    .concat(CONTACTO_ESTADOS.map(function (e) { return { id: e, label: e, count: countsEstado[e] }; }));
+  const filterBtns = filterDefs.map(function (f) {
+    const active = filtro === f.id;
+    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="filter-contactos" data-arg="' + f.id + '">' + escapeHtml(f.label) + " · " + f.count + "</button>";
   }).join(" ");
 
-  const filtered = filtro === "todos" ? contactos : contactos.filter(function (c) { return c.nivel === filtro; });
+  const filtered = filtro === "todos" ? contactos : filtro === "Heiß" ? contactos.filter(function (c) { return c.nivel === "Heiß"; }) : contactos.filter(function (c) { return c.estado === filtro; });
   const sorted = filtered.slice().sort(function (a, b) {
     if (filtro === "todos") {
       const an = CONTACTO_NIVELES.indexOf(a.nivel), bn = CONTACTO_NIVELES.indexOf(b.nivel);
@@ -1962,65 +1987,80 @@ function renderContactos(state, ui) {
     return (a.nombre || "").localeCompare(b.nombre || "");
   });
 
-  let lastNivel = null;
+  const thStyle = "text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-soft);border-bottom:1px solid var(--border-soft);white-space:nowrap";
+  const tdStyle = "padding:10px;vertical-align:top;border-bottom:1px solid var(--border-soft)";
+
   const rows = sorted.length
     ? sorted.map(function (c) {
-        let nivelHeader = "";
-        if (filtro === "todos" && c.nivel !== lastNivel) {
-          lastNivel = c.nivel;
-          nivelHeader = '<div class="row gap-2" style="margin-top:16px;margin-bottom:2px;color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(c.nivel) + " · " + (counts[c.nivel] || 0) + "</div>";
-        }
         const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
         const esHoy = c.proximoSeguimiento === hoy;
-        const fechaTxt = c.proximoSeguimiento ? (vencido ? "Überfällig · " : esHoy ? "Heute · " : "") + c.proximoSeguimiento : "Keine Nachverfolgung";
-        const fechaColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
-        const waLink = c.telefono
+        const seguimientoTxt = c.proximoSeguimiento ? (vencido ? "Überfällig · " : esHoy ? "Heute · " : "Nachverfolgung ") + c.proximoSeguimiento : "";
+        const seguimientoColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
+        const waLinkTxt = c.telefono
+          ? '<a href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer" style="color:var(--success);font-weight:600;font-size:12.5px;white-space:nowrap">' + escapeHtml(c.telefono) + "</a>"
+          : '<span class="muted small">Kein Telefon</span>';
+        const waIconBtn = c.telefono
           ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
           : "";
-        return nivelHeader + (
-          '<div class="card contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
-          '<div class="row between" style="align-items:flex-start">' +
-          '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre) + "</div>" +
-          '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono || "Kein Telefon") + (c.pais ? " · " + escapeHtml(c.pais) : "") + "</div></div>" +
-          contactoNivelBadge(c.nivel) +
-          "</div>" +
-          '<div class="row between" style="margin-top:10px;align-items:center">' +
-          '<span class="small" style="font-weight:600' + ((c.estado === "Partner" || c.estado === "Konsument") ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
-          '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
-          "</div>" +
-          (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">„' + escapeHtml(c.notaSeguimiento) + '“</div>' : "") +
-          (c.proximoSeguimiento
-            ? '<div class="row gap-2" style="margin-top:6px;align-items:center;cursor:pointer" data-action="marcar-seguimiento-hecho" data-arg="' + c.id + '">' +
-              Icon("check-circle", { size: 13, color: "var(--success)" }) +
-              '<span class="small" style="color:var(--success);font-weight:600">Nachverfolgung als erledigt markieren</span></div>'
-            : "") +
-          '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="3">+3 Tage</button>' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="7">+1 Wo.</button>' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="30">+1 Monat</button>' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="60">+2 Monate</button>' +
-          waLink +
+        const estadoColores = contactoEstadoColores(c.estado);
+        const estadoOpts = CONTACTO_ESTADOS.map(function (s) { return '<option value="' + s + '"' + (c.estado === s ? " selected" : "") + ">" + s + "</option>"; }).join("");
+        return (
+          '<tr class="contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '">' +
+          '<td style="' + tdStyle + '">' +
+          '<div style="font-weight:700;font-size:13.5px">' + escapeHtml(c.nombre) + "</div>" +
+          '<div style="margin-top:4px">' + contactoNivelBadge(c.nivel) + "</div>" +
+          (seguimientoTxt ? '<div class="small" style="margin-top:4px;font-weight:600;color:' + seguimientoColor + '">' + seguimientoTxt + "</div>" : "") +
+          "</td>" +
+          '<td style="' + tdStyle + '">' + waLinkTxt + "</td>" +
+          '<td style="' + tdStyle + '">' + (c.pais ? escapeHtml(c.pais) : '<span class="muted small">—</span>') + "</td>" +
+          '<td style="' + tdStyle + '">' +
+          '<select data-action="set-contacto-estado" data-arg="' + c.id + '" style="background:' + estadoColores.bg + ";color:" + estadoColores.fg + ';border:none;border-radius:999px;padding:6px 24px 6px 10px;font-size:12px;font-weight:700;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'10\' viewBox=\'0 0 10 10\'%3E%3Cpath fill=\'' + encodeURIComponent(estadoColores.fg.indexOf("var(") === 0 ? "#8FB0CE" : estadoColores.fg) + '\' d=\'M1 3l4 4 4-4\'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center">' +
+          estadoOpts +
+          "</select>" +
+          "</td>" +
+          '<td style="' + tdStyle + ';min-width:170px">' +
+          '<input type="text" value="' + escapeHtml(c.notaSeguimiento || "") + '" data-contacto-nota-id="' + c.id + '" placeholder="Notiz hinzufügen..." style="width:100%;background:transparent;border:none;color:var(--text);font-size:12.5px;outline:none;padding:4px 0">' +
+          "</td>" +
+          '<td style="' + tdStyle + ';white-space:nowrap">' +
+          '<div class="row gap-1">' +
+          waIconBtn +
+          '<button class="icon-btn" title="Anruf registrieren" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 14, color: "var(--text-soft)" }) + "</button>" +
+          '<button class="icon-btn" title="Nachricht registrieren" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 14, color: "var(--accent)" }) + "</button>" +
           '<button class="icon-btn" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
           "</div>" +
-          '<div class="row gap-2" style="margin-top:6px">' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 13 }) + " Anruf</button>" +
-          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 13 }) + " Nachricht</button>" +
-          "</div>" +
-          "</div>"
+          "</td>" +
+          "</tr>"
         );
       }).join("")
-    : '<p class="muted small" style="text-align:center;padding:24px 0">Du hast noch keine Kontakte registriert. Tippe auf „+ Neuer Kontakt“, um deine Liste der 250 zu beginnen.</p>';
+    : '<tr><td colspan="6"><p class="muted small" style="text-align:center;padding:24px 0">Du hast noch keine Kontakte registriert. Tippe auf „+ Neu“, um deine Liste der 250 zu beginnen.</p></td></tr>';
+
+  const table =
+    '<div class="card" style="padding:0">' +
+    '<div style="overflow-x:auto">' +
+    '<table style="border-collapse:collapse;width:100%;min-width:620px">' +
+    '<thead><tr>' +
+    '<th style="' + thStyle + '">Interessent</th>' +
+    '<th style="' + thStyle + '">WhatsApp</th>' +
+    '<th style="' + thStyle + '">Land</th>' +
+    '<th style="' + thStyle + '">Status</th>' +
+    '<th style="' + thStyle + '">Notizen</th>' +
+    '<th style="' + thStyle + '"></th>' +
+    "</tr></thead>" +
+    "<tbody>" + rows + "</tbody>" +
+    "</table>" +
+    "</div>" +
+    "</div>";
 
   return (
     sectionHeaderHTML("Liste der 250 Kontakte", contactos.length + " von 250 registriert", "users") +
-    '<p class="muted small" style="margin-top:-4px">Füge die Personen deiner Liste hinzu und sortiere sie nach Stufe (Heiß, Lauwarm, Kalt) und plane deine nächste Nachverfolgung mit jeder von ihnen.</p>' +
+    '<p class="muted small" style="margin-top:-4px">Füge die Personen deiner Liste hinzu und sortiere sie nach Stufe (Heiß, Lauwarm, Kalt) und Status, und bearbeite Status oder Notiz direkt in der Tabelle.</p>' +
     '<input id="contacto-search" type="text" placeholder="Nach Name oder Telefon suchen..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +
     '<button class="btn-primary" style="flex:1" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Neu</button>" +
     '<button class="btn-secondary" style="flex:1" data-action="importar-contactos">' + Icon("download", { size: 16 }) + " Kontakte importieren</button>" +
     "</div>" +
-    '<div class="view-stack gap-sm">' + rows + "</div>"
+    table
   );
 }
 
