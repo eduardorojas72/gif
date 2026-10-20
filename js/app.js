@@ -278,6 +278,13 @@ const App = {
         // formularios con borrador (contacto / actividad de agenda / zoom): tampoco re-renderizan, para no perder el foco
         const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.contactoNotaId) {
+        // nota editable en línea desde la tabla de la Lista de 250 (sin re-render, para no perder el foco)
+        const c = this.state.contactos.find((x) => x.id === el.dataset.contactoNotaId);
+        if (c) {
+          c.notaSeguimiento = el.value;
+          this.persist();
+        }
       } else if (el.id === "contacto-search") {
         // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
         const q = el.value.trim().toLowerCase();
@@ -323,6 +330,13 @@ const App = {
           if (!draft.proximoSeguimiento) draft.proximoSeguimiento = addDiasISO(hoyISO(), 3);
           this.render();
         }
+        return;
+      }
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.action) {
+        // <select> fuera de un borrador (p.ej. el Estado editable en línea en
+        // la tabla de la Lista de 250): dispara su acción igual que un clic.
+        const handler = Actions[el.dataset.action];
+        if (handler) handler(el.dataset.arg, el);
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target) {
@@ -682,6 +696,16 @@ const Actions = {
 
   "filter-contactos": function (arg) {
     App.ui.contactoFiltro = arg;
+    App.render();
+  },
+
+  // Cambia el Estado directamente desde el <select> de la tabla de la Lista
+  // de 250, sin pasar por el modal de edición.
+  "set-contacto-estado": function (arg, el) {
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c || c.estado === el.value) return;
+    c.estado = el.value;
+    App.persist(true);
     App.render();
   },
 
