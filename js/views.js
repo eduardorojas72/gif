@@ -402,8 +402,80 @@ function renderEscenarioVida(state, ui) {
     '<div class="muted small" style="margin-top:6px">' + completas + " de " + ESCENARIO_CATEGORIAS.length + " metas en el círculo perfecto</div>" +
     "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">¿Cómo se llena?</div>' + pasos + "</div>" +
+    '<button class="btn-secondary" data-action="goto" data-arg="mapaSuenos">' + Icon("camera", { size: 15 }) + " Generar mi Mapa de Sueños</button>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
     bucketListSectionHTML(state, ui)
+  );
+}
+
+/* ---------------- Mapa de Sueños ---------------- */
+
+function mapaFotoUploadHTML(id, label, current) {
+  const inputId = "mapa-foto-" + id;
+  return (
+    '<div class="card" style="padding:9px;text-align:center">' +
+    (current
+      ? '<img src="' + current + '" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block" alt="' + escapeHtml(label) + '"/>'
+      : '<div style="width:100%;aspect-ratio:1;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text-soft)">' + Icon("camera", { size: 20 }) + "</div>") +
+    '<div class="muted small" style="margin-top:6px">' + escapeHtml(label) + "</div>" +
+    '<button class="link-btn small" style="margin-top:1px" data-action="trigger-file" data-arg="' + inputId + '">' + (current ? "Cambiar" : "Subir foto") + "</button>" +
+    '<input id="' + inputId + '" type="file" accept="image/*" class="hidden" data-target="escenarioVida.' + id + '.imagen">' +
+    "</div>"
+  );
+}
+
+function renderMapaSuenos(state, ui) {
+  const tiles = ESCENARIO_CATEGORIAS.map(function (c) {
+    return mapaFotoUploadHTML(c.id, c.label, mapaCategoriaImagen(state, c.id));
+  }).join("");
+
+  const previewSvg = mapaSuenosSVGMarkup(state, "horizontal");
+
+  return (
+    '<button class="link-btn row gap-2" style="width:fit-content" data-action="goto" data-arg="escenario">' + Icon("chevron-left", { size: 16 }) + " Escenario de Vida</button>" +
+    sectionHeaderHTML("Mapa de Sueños", "Convierte tu Escenario de Vida en una imagen para compartir, con tus propias fotos — sin fotos generadas por IA.", "camera") +
+    '<div class="card">' +
+    '<div class="row gap-3" style="align-items:center">' +
+    (state.foto
+      ? '<img src="' + state.foto + '" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex-shrink:0"/>'
+      : '<div style="flex-shrink:0">' + Icon("user-badge", { size: 34, color: "var(--accent)" }) + "</div>") +
+    '<div style="flex:1;min-width:0">' +
+    '<div style="font-weight:700;font-size:14px">Tu foto</div>' +
+    '<div class="muted small">La misma de Mi Perfil — es la foto principal del mapa.</div>' +
+    "</div>" +
+    '<button class="btn-secondary" style="width:auto;flex-shrink:0" data-action="trigger-file" data-arg="mapa-foto-perfil">' + (state.foto ? "Cambiar" : "Subir") + "</button>" +
+    '<input id="mapa-foto-perfil" type="file" accept="image/*" class="hidden" data-target="foto">' +
+    "</div></div>" +
+    '<div class="card">' +
+    '<div class="row gap-3" style="align-items:center">' +
+    (state.fotoFamilia
+      ? '<img src="' + state.fotoFamilia + '" style="width:60px;height:60px;border-radius:12px;object-fit:cover;border:2px solid var(--gold);flex-shrink:0"/>'
+      : '<div style="flex-shrink:0">' + Icon("heart", { size: 34, color: "var(--accent)" }) + "</div>") +
+    '<div style="flex:1;min-width:0">' +
+    '<div style="font-weight:700;font-size:14px">Foto de tu familia</div>' +
+    '<div class="muted small">Se usa en la categoría “Familia” si no subes una foto específica para esa meta.</div>' +
+    "</div>" +
+    '<button class="btn-secondary" style="width:auto;flex-shrink:0" data-action="trigger-file" data-arg="mapa-foto-familia">' + (state.fotoFamilia ? "Cambiar" : "Subir") + "</button>" +
+    '<input id="mapa-foto-familia" type="file" accept="image/*" class="hidden" data-target="fotoFamilia">' +
+    "</div></div>" +
+    '<div class="card">' +
+    '<div style="font-weight:700;font-size:14px;margin-bottom:4px">Foto por cada meta (opcional)</div>' +
+    '<p class="muted small" style="margin-top:0;margin-bottom:10px;line-height:1.5">Si no subes una, se muestra el ícono de la categoría en su lugar.</p>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' + tiles + "</div>" +
+    "</div>" +
+    '<div class="card">' +
+    '<div class="field"><label>Monto del cheque (opcional)</label><input type="text" inputmode="numeric" placeholder="Ej. 3.000" value="' + escapeHtml(state.mapaSuenosMonto) + '" data-field="mapaSuenosMonto"></div>' +
+    '<div class="field" style="margin-top:10px"><label>Vigencia</label><input type="text" placeholder="Ej. 1 año" value="' + escapeHtml(state.mapaSuenosVigencia) + '" data-field="mapaSuenosVigencia"></div>' +
+    '<div class="field" style="margin-top:10px"><label>Frase de agradecimiento</label><textarea rows="2" placeholder="Gracias por permitirme alcanzar mis sueños y ayudar a más personas a lograrlo" data-field="mapaSuenosTitulo">' + escapeHtml(state.mapaSuenosTitulo) + "</textarea></div>" +
+    "</div>" +
+    '<div class="card" style="padding:10px">' +
+    '<div class="muted small" style="margin-bottom:8px">Vista previa</div>' +
+    '<div class="mapa-preview">' + previewSvg + "</div>" +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="horizontal">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar horizontal</button>" +
+    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="vertical">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar vertical</button>" +
+    "</div>"
   );
 }
 

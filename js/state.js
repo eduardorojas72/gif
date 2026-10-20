@@ -82,7 +82,7 @@ function getComprasQuincena(state, qn) {
 
 function emptyEscenarioVida() {
   return ESCENARIO_CATEGORIAS.reduce((acc, c) => {
-    acc[c.id] = { meta: "", avance: 0 };
+    acc[c.id] = { meta: "", avance: 0, imagen: null };
     return acc;
   }, {});
 }
@@ -109,6 +109,10 @@ function defaultState() {
     contactos: [],
     escenarioVida: emptyEscenarioVida(),
     escenarioCompletado: false,
+    fotoFamilia: null,
+    mapaSuenosTitulo: "",
+    mapaSuenosMonto: "",
+    mapaSuenosVigencia: "1 año",
     bucketList: emptyBucketList(),
     agenda: emptyAgenda(),
     lemaFoco: { pilar: null, racha: 0, ultimaFecha: null },
@@ -207,6 +211,7 @@ function hydrateState(parsed) {
     acc[c.id] = {
       meta: saved && typeof saved.meta === "string" ? saved.meta : "",
       avance: saved && typeof saved.avance === "number" ? Math.max(0, Math.min(4, saved.avance)) : 0,
+      imagen: saved && typeof saved.imagen === "string" ? saved.imagen : null,
     };
     return acc;
   }, {});

@@ -198,6 +198,7 @@ const App = {
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
       case "escenario": mainHtml = renderEscenarioVida(state, ui); break;
+      case "mapaSuenos": mainHtml = renderMapaSuenos(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "pasos": mainHtml = renderPasos(ui); break;
       case "lema": mainHtml = renderLema(state, ui); break;
@@ -495,6 +496,7 @@ const Actions = {
 
   "download-recog-card": function () { downloadRecogCard(App.state); },
   "download-cert": function () { downloadCertificado(App.state); },
+  "download-mapa-suenos": function (arg) { downloadMapaSuenos(App.state, arg); },
 
   "toggle-mentor": function () {
     App.state.mentorMode = !App.state.mentorMode;
