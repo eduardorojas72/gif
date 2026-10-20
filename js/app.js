@@ -353,6 +353,13 @@ const App = {
         const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.personaEnfoqueDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft || this.ui.socioDraft || this.ui.clienteDraft;
         const value = el.dataset.draftField === "pvp" ? (Number(el.value) || 0) : el.value;
         setPath(draft, el.dataset.draftField, value);
+      } else if (el.dataset && el.dataset.contactoNotaId) {
+        // nota editável em linha, direto da tabela da Lista de 250 (sem re-renderizar, para não perder o foco)
+        const c = this.state.contactos.find((x) => x.id === el.dataset.contactoNotaId);
+        if (c) {
+          c.notaSeguimiento = el.value;
+          this.persist();
+        }
       } else if (el.dataset && el.dataset.rosterField) {
         const lista = getListaEnfoque(this.state, el.dataset.qn);
         const arr = lista[el.dataset.linea] || [];
@@ -425,6 +432,13 @@ const App = {
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
         const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
+        return;
+      }
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.action) {
+        // <select> fora de um rascunho (ex.: o Estado editável em linha na
+        // tabela da Lista de 250): dispara sua ação igual a um clique.
+        const handler = Actions[el.dataset.action];
+        if (handler) handler(el.dataset.arg, el);
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target === "__importBackup") {
@@ -1270,6 +1284,17 @@ const Actions = {
 
   "filter-contactos": function (arg) {
     App.ui.contactoFiltro = arg;
+    App.render();
+  },
+
+  // Muda o Estado diretamente a partir do <select> da tabela da Lista
+  // de 250, sem precisar passar pelo modal de edição.
+  "set-contacto-estado": function (arg, el) {
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c || c.estado === el.value) return;
+    c.estado = el.value;
+    c.estadoFecha = hoyISO();
+    App.persist(true);
     App.render();
   },
 
