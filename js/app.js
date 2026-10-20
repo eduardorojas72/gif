@@ -296,6 +296,13 @@ const App = {
       } else if (el.dataset && el.dataset.draftField && (this.ui.personaDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft)) {
         const draft = this.ui.personaDraft || this.ui.actividadDraft || this.ui.zoomDraft || this.ui.ascendenteDraft || this.ui.sosDraft || this.ui.contactoEventoDraft || this.ui.patrocinadorFabDraft;
         setPath(draft, el.dataset.draftField, el.value);
+      } else if (el.dataset && el.dataset.contactoEventoNotaId) {
+        // Inline-editable note from the Contacts List table (no re-render, so the field keeps focus)
+        const c = this.state.contactosEventos.find((x) => x.id === el.dataset.contactoEventoNotaId);
+        if (c) {
+          c.notaSeguimiento = el.value;
+          this.persist();
+        }
       } else if (el.dataset && el.dataset.rosterField) {
         const q = getQuincena(this.state, el.dataset.qkey);
         const lista = q[el.dataset.linea] || [];
@@ -331,6 +338,13 @@ const App = {
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.actividadDraft || this.ui.zoomDraft)) {
         const draft = this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
+        return;
+      }
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.action) {
+        // <select> outside a draft (e.g. the inline-editable Status in the
+        // Contacts List table): fires its action just like a click would.
+        const handler = Actions[el.dataset.action];
+        if (handler) handler(el.dataset.arg, el);
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target === "__importBackup") {
@@ -760,6 +774,17 @@ const Actions = {
 
   "filter-contactos-evento": function (arg) {
     App.ui.contactoEventoFiltro = arg;
+    App.render();
+  },
+
+  // Changes the Status directly from the <select> in the Contacts List
+  // table, without going through the edit modal.
+  "set-contacto-evento-estado": function (arg, el) {
+    const c = App.state.contactosEventos.find((x) => x.id === arg);
+    if (!c || c.estado === el.value) return;
+    c.estado = el.value;
+    c.estadoFecha = hoyISO();
+    App.persist(true);
     App.render();
   },
 
