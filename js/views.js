@@ -284,6 +284,8 @@ function renderLogroModal(state, ui) {
       ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("user-badge", { size: 16, color: "#1B1338" }) + " Ver mi insignia</button>"
       : logro.tipo === "cumbre"
       ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("award", { size: 16, color: "#1B1338" }) + " Ver certificado</button>"
+      : logro.tipo === "escenario"
+      ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("camera", { size: 16, color: "#1B1338" }) + " Generar mi Mapa de Sueños</button>"
       : "";
   return (
     '<div class="modal-overlay">' +
@@ -406,6 +408,82 @@ function enlacesUtilesHomeCardHTML() {
   );
 }
 
+/* ---------------- Mapa de Sueños ---------------- */
+
+function mapaFotoUploadHTML(id, label, current) {
+  const inputId = "mapa-foto-" + id;
+  return (
+    '<div class="card" style="padding:9px;text-align:center">' +
+    (current
+      ? '<img src="' + current + '" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block" alt="' + escapeHtml(label) + '"/>'
+      : '<div style="width:100%;aspect-ratio:1;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text-soft)">' + Icon("camera", { size: 20 }) + "</div>") +
+    '<div class="muted small" style="margin-top:6px">' + escapeHtml(label) + "</div>" +
+    '<button class="link-btn small" style="margin-top:1px" data-action="trigger-file" data-arg="' + inputId + '">' + (current ? "Cambiar" : "Subir foto") + "</button>" +
+    '<input id="' + inputId + '" type="file" accept="image/*" class="hidden" data-target="escenarioVida.' + id + '.imagen">' +
+    "</div>"
+  );
+}
+
+function renderMapaSuenos(state, ui) {
+  const tiles = ESCENARIO_CATEGORIAS.map(function (c) {
+    return mapaFotoUploadHTML(c.id, c.label, mapaCategoriaImagen(state, c.id));
+  }).join("");
+
+  const previewSvg = mapaSuenosSVGMarkup(state, "horizontal");
+
+  return (
+    '<button class="link-btn row gap-2" style="width:fit-content" data-action="goto-escenario">' + Icon("chevron-left", { size: 16 }) + " Escenario de Vida</button>" +
+    sectionHeaderHTML("¡Tu Mapa de Sueños está listo!", "Con tus propias fotos — sin fotos generadas por IA. Personalízalo más abajo si quieres.", "camera") +
+    '<div class="card" style="padding:10px">' +
+    '<div class="mapa-preview">' + previewSvg + "</div>" +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="horizontal">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar horizontal</button>" +
+    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="vertical">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar vertical</button>" +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-secondary" style="flex:1" data-action="share-mapa-suenos" data-arg="horizontal">' + Icon("share2", { size: 16 }) + " Compartir horizontal</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="share-mapa-suenos" data-arg="vertical">' + Icon("share2", { size: 16 }) + " Compartir vertical</button>" +
+    "</div>" +
+    '<div class="muted small" style="margin-top:-4px">Envíalo a tu patrocinador por WhatsApp o publícalo en tus redes sociales.</div>' +
+    '<div style="font-weight:700;font-size:14px;margin-top:6px">Personaliza tu mapa</div>' +
+    '<div class="card">' +
+    '<div class="row gap-3" style="align-items:center">' +
+    (state.foto
+      ? '<img src="' + state.foto + '" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex-shrink:0"/>'
+      : '<div style="flex-shrink:0">' + Icon("user-badge", { size: 34, color: "var(--accent)" }) + "</div>") +
+    '<div style="flex:1;min-width:0">' +
+    '<div style="font-weight:700;font-size:14px">Tu foto</div>' +
+    '<div class="muted small">La misma de Mi Perfil — es la foto principal del mapa.</div>' +
+    "</div>" +
+    '<button class="btn-secondary" style="width:auto;flex-shrink:0" data-action="trigger-file" data-arg="mapa-foto-perfil">' + (state.foto ? "Cambiar" : "Subir") + "</button>" +
+    '<input id="mapa-foto-perfil" type="file" accept="image/*" class="hidden" data-target="foto">' +
+    "</div></div>" +
+    '<div class="card">' +
+    '<div class="row gap-3" style="align-items:center">' +
+    (state.fotoFamilia
+      ? '<img src="' + state.fotoFamilia + '" style="width:60px;height:60px;border-radius:12px;object-fit:cover;border:2px solid var(--gold);flex-shrink:0"/>'
+      : '<div style="flex-shrink:0">' + Icon("heart", { size: 34, color: "var(--accent)" }) + "</div>") +
+    '<div style="flex:1;min-width:0">' +
+    '<div style="font-weight:700;font-size:14px">Foto de tu familia</div>' +
+    '<div class="muted small">Se usa en la categoría “Familia” si no subes una foto específica para esa meta.</div>' +
+    "</div>" +
+    '<button class="btn-secondary" style="width:auto;flex-shrink:0" data-action="trigger-file" data-arg="mapa-foto-familia">' + (state.fotoFamilia ? "Cambiar" : "Subir") + "</button>" +
+    '<input id="mapa-foto-familia" type="file" accept="image/*" class="hidden" data-target="fotoFamilia">' +
+    "</div></div>" +
+    '<div class="card">' +
+    '<div style="font-weight:700;font-size:14px;margin-bottom:4px">Foto por cada meta (opcional)</div>' +
+    '<p class="muted small" style="margin-top:0;margin-bottom:10px;line-height:1.5">Si no subes una, se muestra el ícono de la categoría en su lugar.</p>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' + tiles + "</div>" +
+    "</div>" +
+    '<div class="card">' +
+    '<div class="field"><label>Monto del cheque (opcional)</label><input type="text" inputmode="numeric" placeholder="Ej. 3.000" value="' + escapeHtml(state.mapaSuenosMonto) + '" data-field="mapaSuenosMonto"></div>' +
+    '<div class="field" style="margin-top:10px"><label>Vigencia</label><input type="text" placeholder="Ej. 1 año" value="' + escapeHtml(state.mapaSuenosVigencia) + '" data-field="mapaSuenosVigencia"></div>' +
+    '<div class="field" style="margin-top:10px"><label>Frase de agradecimiento</label><textarea rows="2" placeholder="Gracias por permitirme alcanzar mis sueños y ayudar a más personas a lograrlo" data-field="mapaSuenosTitulo">' + escapeHtml(state.mapaSuenosTitulo) + "</textarea></div>" +
+    "</div>"
+  );
+}
+
 /* ---------------- Escenario de Vida ---------------- */
 
 function escenarioVidaHomeCardHTML(state) {
@@ -415,11 +493,14 @@ function escenarioVidaHomeCardHTML(state) {
 
   if (state.escenarioCompletado) {
     return (
-      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--gold);background:var(--accent-soft)" data-action="goto-escenario">' +
+      '<div class="card" style="text-align:left;border-color:var(--gold);background:var(--accent-soft)">' +
+      '<button style="text-align:left;width:100%" data-action="goto-escenario">' +
       '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Escenario de Vida</span></div>' +
       '<div style="font-size:14.5px;font-weight:700;margin-top:6px">🏆 ¡Círculo perfecto! Alcanzaste tus 8 metas.</div>' +
       '<div class="muted small" style="margin-top:2px">Toca para revisarlas o ponerte nuevas metas más grandes.</div>' +
-      "</button>"
+      "</button>" +
+      '<button class="btn-secondary" style="margin-top:10px" data-action="goto" data-arg="mapaSuenos">' + Icon("camera", { size: 15 }) + " Generar mi Mapa de Sueños</button>" +
+      "</div>"
     );
   }
   if (iniciadas === 0) {
@@ -643,6 +724,7 @@ function renderEscenarioVidaBody(state, ui) {
     '<div class="muted small" style="margin-top:6px">' + completas + " de " + ESCENARIO_CATEGORIAS.length + " metas en el círculo perfecto</div>" +
     "</div>" +
     '<div class="card"><div style="font-weight:700;font-size:14px;margin-bottom:4px">¿Cómo se llena?</div>' + pasos + "</div>" +
+    '<button class="btn-secondary" data-action="goto" data-arg="mapaSuenos">' + Icon("camera", { size: 15 }) + " Generar mi Mapa de Sueños</button>" +
     '<div class="card"><div class="row gap-2" style="color:var(--gold);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">' + Icon("video", { size: 13, color: "var(--gold)" }) + " Videos que te ayudan a construirlo</div>" + videoListCardHTML(ESCENARIO_VIDEOS) + "</div>" +
     '<div class="view-stack gap-sm">' + cards + "</div>" +
     granPlanSectionHTML(state, ui) +
@@ -2016,7 +2098,22 @@ function renderAjustes(state, ui) {
 
 function contactoNivelBadge(nivel) {
   const cls = nivel === "Caliente" ? "warn" : nivel === "Tibio" ? "gold" : "soft";
-  return '<span class="badge ' + cls + '">' + escapeHtml(nivel) + "</span>";
+  const prefijo = nivel === "Caliente" ? "🔥 " : "";
+  return '<span class="badge ' + cls + '" style="font-size:10.5px;padding:3px 7px">' + prefijo + escapeHtml(nivel) + "</span>";
+}
+
+// Colores de fondo/texto para el <select> de Estado, según la etapa —
+// así se ve como una píldora de color igual que el badge de nivel.
+function contactoEstadoColores(estado) {
+  const mapa = {
+    "Por contactar": { bg: "rgba(255,255,255,0.08)", fg: "var(--text-soft)" },
+    "Contactado": { bg: "var(--accent-soft)", fg: "var(--accent)" },
+    "Presentación": { bg: "rgba(232,185,78,0.18)", fg: "var(--gold-light)" },
+    "Socio": { bg: "var(--success-soft)", fg: "var(--success)" },
+    "Consumidor": { bg: "var(--success-soft)", fg: "var(--success)" },
+    "Descartado": { bg: "var(--warn-soft)", fg: "var(--warn)" },
+  };
+  return mapa[estado] || mapa["Por contactar"];
 }
 
 function renderContactos(state, ui) {
@@ -2025,15 +2122,25 @@ function renderContactos(state, ui) {
   const hoy = hoyISO();
 
   const counts = { Caliente: 0, Tibio: 0, "Frío": 0 };
-  contactos.forEach(function (c) { if (counts[c.nivel] != null) counts[c.nivel]++; });
+  const countsEstado = {};
+  CONTACTO_ESTADOS.forEach(function (e) { countsEstado[e] = 0; });
+  contactos.forEach(function (c) {
+    if (counts[c.nivel] != null) counts[c.nivel]++;
+    if (countsEstado[c.estado] != null) countsEstado[c.estado]++;
+  });
 
-  const filterBtns = ["todos"].concat(CONTACTO_NIVELES).map(function (f) {
-    const active = filtro === f;
-    const label = f === "todos" ? "Todos · " + contactos.length : f + " · " + counts[f];
-    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="filter-contactos" data-arg="' + f + '">' + label + "</button>";
+  // Pestañas de filtro: Todos, cada nivel y cada etapa del embudo.
+  const filterDefs = [{ id: "todos", label: "Todos", count: contactos.length }]
+    .concat(CONTACTO_NIVELES.map(function (n) { return { id: n, label: (n === "Caliente" ? "🔥 " : "") + n, count: counts[n] }; }))
+    .concat(CONTACTO_ESTADOS.map(function (e) { return { id: e, label: e, count: countsEstado[e] }; }));
+  const filterBtns = filterDefs.map(function (f) {
+    const active = filtro === f.id;
+    return '<button class="badge ' + (active ? "gold" : "dark") + '" style="cursor:pointer" data-action="filter-contactos" data-arg="' + escapeHtml(f.id) + '">' + escapeHtml(f.label) + " · " + f.count + "</button>";
   }).join(" ");
 
-  const filtered = filtro === "todos" ? contactos : contactos.filter(function (c) { return c.nivel === filtro; });
+  const filtered = filtro === "todos" ? contactos
+    : CONTACTO_NIVELES.indexOf(filtro) !== -1 ? contactos.filter(function (c) { return c.nivel === filtro; })
+    : contactos.filter(function (c) { return c.estado === filtro; });
   const sorted = filtered.slice().sort(function (a, b) {
     if (filtro === "todos") {
       const an = CONTACTO_NIVELES.indexOf(a.nivel), bn = CONTACTO_NIVELES.indexOf(b.nivel);
@@ -2045,65 +2152,86 @@ function renderContactos(state, ui) {
     return (a.nombre || "").localeCompare(b.nombre || "");
   });
 
+  const thStyle = "text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-soft);border-bottom:1px solid var(--border-soft);white-space:nowrap";
+  const tdStyle = "padding:10px;vertical-align:top;border-bottom:1px solid var(--border-soft)";
+  const pillSelectStyle = "border:none;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;outline:none;cursor:pointer";
+
   let lastNivel = null;
   const rows = sorted.length
     ? sorted.map(function (c) {
         let nivelHeader = "";
         if (filtro === "todos" && c.nivel !== lastNivel) {
           lastNivel = c.nivel;
-          nivelHeader = '<div class="row gap-2" style="margin-top:16px;margin-bottom:2px;color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(c.nivel) + " · " + (counts[c.nivel] || 0) + "</div>";
+          nivelHeader = '<tr><td colspan="6" style="padding:14px 10px 4px;color:var(--gold);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em">' + escapeHtml(c.nivel) + " · " + (counts[c.nivel] || 0) + "</td></tr>";
         }
         const vencido = c.proximoSeguimiento && c.proximoSeguimiento < hoy;
         const esHoy = c.proximoSeguimiento === hoy;
-        const fechaTxt = c.proximoSeguimiento ? (vencido ? "Vencido · " : esHoy ? "Hoy · " : "") + c.proximoSeguimiento : "Sin seguimiento";
-        const fechaColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
-        const waLink = c.telefono
-          ? '<a class="icon-btn" href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer">' + Icon("message-circle", { size: 15, color: "var(--success)" }) + "</a>"
-          : "";
+        const seguimientoTxt = c.proximoSeguimiento ? (vencido ? "Vencido · " : esHoy ? "Hoy · " : "Seguimiento ") + c.proximoSeguimiento : "";
+        const seguimientoColor = vencido ? "var(--warn)" : esHoy ? "var(--gold)" : "var(--text-soft)";
+        const waLinkTxt = c.telefono
+          ? '<a href="' + waHrefPersonal(c.telefono, c.nombre) + '" target="_blank" rel="noreferrer" style="color:var(--success);font-weight:600;font-size:12.5px;white-space:nowrap">' + escapeHtml(c.telefono) + "</a>"
+          : '<span class="muted small">Sin teléfono</span>';
+        const estadoColores = contactoEstadoColores(c.estado);
+        const estadoOpts = CONTACTO_ESTADOS.map(function (s) { return '<option value="' + s + '"' + (c.estado === s ? " selected" : "") + ">" + s + "</option>"; }).join("");
+        const posponerOpts = '<option value="">Posponer…</option><option value="3">+3 días</option><option value="7">+1 sem</option><option value="30">+1 mes</option><option value="60">+2 meses</option>';
         return nivelHeader + (
-          '<div class="card contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '" style="padding:13px">' +
-          '<div class="row between" style="align-items:flex-start">' +
-          '<div style="min-width:0"><div style="font-weight:700;font-size:14px">' + escapeHtml(c.nombre) + "</div>" +
-          '<div class="muted small" style="margin-top:2px">' + escapeHtml(c.telefono || "Sin teléfono") + (c.pais ? " · " + escapeHtml(c.pais) : "") + "</div></div>" +
-          contactoNivelBadge(c.nivel) +
-          "</div>" +
-          '<div class="row between" style="margin-top:10px;align-items:center">' +
-          '<span class="small" style="font-weight:600' + ((c.estado === "Socio" || c.estado === "Consumidor") ? ";color:var(--gold-light)" : "") + '">' + escapeHtml(c.estado) + "</span>" +
-          '<span class="small" style="font-weight:600;color:' + fechaColor + '">' + fechaTxt + "</span>" +
-          "</div>" +
-          (c.notaSeguimiento ? '<div class="muted small" style="margin-top:4px;font-style:italic">“' + escapeHtml(c.notaSeguimiento) + '”</div>' : "") +
-          (c.proximoSeguimiento
-            ? '<div class="row gap-2" style="margin-top:6px;align-items:center;cursor:pointer" data-action="marcar-seguimiento-hecho" data-arg="' + c.id + '">' +
-              Icon("check-circle", { size: 13, color: "var(--success)" }) +
-              '<span class="small" style="color:var(--success);font-weight:600">Marcar seguimiento hecho</span></div>'
+          '<tr class="contact-row" data-search="' + escapeHtml(((c.nombre || "") + " " + (c.telefono || "")).toLowerCase()) + '">' +
+          '<td style="' + tdStyle + '">' +
+          '<div style="font-weight:700;font-size:13.5px">' + escapeHtml(c.nombre) + "</div>" +
+          '<div style="margin-top:4px">' + contactoNivelBadge(c.nivel) + "</div>" +
+          (seguimientoTxt
+            ? '<div class="small" style="margin-top:4px;font-weight:600;color:' + seguimientoColor + '">' + seguimientoTxt + "</div>" +
+              '<button class="row gap-1 small" style="margin-top:3px;color:var(--success);font-weight:600" data-action="marcar-seguimiento-hecho" data-arg="' + c.id + '">' + Icon("check-circle", { size: 12, color: "var(--success)" }) + " Hecho</button>"
             : "") +
-          '<div class="row gap-2" style="margin-top:10px;flex-wrap:wrap">' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="3">+3 días</button>' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="7">+1 sem</button>' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="30">+1 mes</button>' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;min-width:70px" data-action="quick-seguimiento" data-arg="' + c.id + '" data-days="60">+2 meses</button>' +
-          waLink +
-          '<button class="icon-btn" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
+          "</td>" +
+          '<td style="' + tdStyle + '">' + waLinkTxt + "</td>" +
+          '<td style="' + tdStyle + '">' + (c.pais ? escapeHtml(c.pais) : '<span class="muted small">—</span>') + "</td>" +
+          '<td style="' + tdStyle + '">' +
+          '<select data-change-action="set-contacto-estado" data-arg="' + c.id + '" style="' + pillSelectStyle + ";background:" + estadoColores.bg + ";color:" + estadoColores.fg + '">' + estadoOpts + "</select>" +
+          "</td>" +
+          '<td style="' + tdStyle + ';min-width:170px">' +
+          '<input type="text" value="' + escapeHtml(c.notaSeguimiento || "") + '" data-contacto-nota-id="' + c.id + '" placeholder="Agregar nota..." style="width:100%;background:transparent;border:none;color:var(--text);font-size:12.5px;outline:none;padding:4px 0">' +
+          "</td>" +
+          '<td style="' + tdStyle + ';white-space:nowrap">' +
+          '<div class="row gap-1">' +
+          '<button class="icon-btn" title="Registrar llamada" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 15 }) + "</button>" +
+          '<button class="icon-btn" title="Registrar mensaje" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 15 }) + "</button>" +
+          '<button class="icon-btn" title="Editar" data-action="edit-contacto" data-arg="' + c.id + '">' + Icon("edit", { size: 15 }) + "</button>" +
           "</div>" +
-          '<div class="row gap-2" style="margin-top:6px">' +
-          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="llamada">' + Icon("phone-call", { size: 13 }) + " Llamada</button>" +
-          '<button class="btn-secondary" style="flex:1;padding:8px;font-size:12.5px" data-action="registrar-contacto" data-arg="' + c.id + '" data-tipo="mensaje">' + Icon("message-circle", { size: 13 }) + " Mensaje</button>" +
-          "</div>" +
-          "</div>"
+          '<select data-change-action="posponer-seguimiento" data-arg="' + c.id + '" style="' + pillSelectStyle + ';margin-top:6px;background:rgba(255,255,255,0.08);color:var(--text-soft);font-weight:600">' + posponerOpts + "</select>" +
+          "</td>" +
+          "</tr>"
         );
       }).join("")
-    : '<p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos registrados. Toca “+ Nuevo contacto” para empezar tu Lista de 250.</p>';
+    : '<tr><td colspan="6"><p class="muted small" style="text-align:center;padding:24px 0">Aún no tienes contactos registrados. Toca “+ Nuevo” para empezar tu Lista de 250.</p></td></tr>';
+
+  const table =
+    '<div class="card" style="padding:0">' +
+    '<div style="overflow-x:auto">' +
+    '<table style="border-collapse:collapse;width:100%;min-width:680px">' +
+    "<thead><tr>" +
+    '<th style="' + thStyle + '">Prospecto</th>' +
+    '<th style="' + thStyle + '">WhatsApp</th>' +
+    '<th style="' + thStyle + '">Lugar</th>' +
+    '<th style="' + thStyle + '">Estado</th>' +
+    '<th style="' + thStyle + '">Notas</th>' +
+    '<th style="' + thStyle + '">Acciones</th>' +
+    "</tr></thead>" +
+    "<tbody>" + rows + "</tbody>" +
+    "</table>" +
+    "</div>" +
+    "</div>";
 
   return (
     sectionHeaderHTML("Lista de 250 Contactos", contactos.length + " de 250 registrados", "users") +
-    '<p class="muted small" style="margin-top:-4px">Toca “Llamada” o “Mensaje” en cada contacto para que quede registrado en tu Informe Semanal.</p>' +
+    '<p class="muted small" style="margin-top:-4px">Edita el estado o la nota directamente en la tabla. Toca el teléfono o el globo de mensaje para que quede registrado en tu Informe Semanal.</p>' +
     '<input id="contacto-search" type="text" placeholder="Buscar por nombre o teléfono..." style="background:var(--card);border:1px solid var(--border-soft);color:var(--text);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;width:100%">' +
     '<div class="row gap-2" style="flex-wrap:wrap">' + filterBtns + "</div>" +
     '<div class="row gap-2">' +
     '<button class="btn-primary" style="flex:1" data-action="add-contacto">' + Icon("phone-call", { size: 16, color: "#fff" }) + " Nuevo</button>" +
     '<button class="btn-secondary" style="flex:1" data-action="importar-contactos">' + Icon("download", { size: 16 }) + " Importar contactos</button>" +
     "</div>" +
-    '<div class="view-stack gap-sm">' + rows + "</div>"
+    table
   );
 }
 

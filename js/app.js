@@ -250,6 +250,7 @@ const App = {
       case "welcome": mainHtml = renderWelcome(); break;
       case "onboarding": mainHtml = renderOnboarding(ui); break;
       case "home": mainHtml = renderHome(state); break;
+      case "mapaSuenos": mainHtml = renderMapaSuenos(state, ui); break;
       case "agenda": mainHtml = renderAgenda(state, ui); break;
       case "informe": mainHtml = renderInformeSemanal(state, ui); break;
       case "pasos": mainHtml = renderPasos(state, ui); break;
@@ -363,6 +364,13 @@ const App = {
           persona[el.dataset.rosterField] = isNumeric ? Number(el.value) || 0 : el.value;
           this.persist();
         }
+      } else if (el.dataset && el.dataset.contactoNotaId) {
+        // nota editable en línea desde la tabla de la Lista de 250 (sin re-render, para no perder el foco)
+        const c = this.state.contactos.find((x) => x.id === el.dataset.contactoNotaId);
+        if (c) {
+          c.notaSeguimiento = el.value;
+          this.persist();
+        }
       } else if (el.id === "contacto-search") {
         // filtro de búsqueda de contactos: se aplica directo al DOM, sin pasar por render()
         const q = el.value.trim().toLowerCase();
@@ -426,6 +434,13 @@ const App = {
       if (el.tagName === "SELECT" && el.dataset && el.dataset.draftField && (this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft)) {
         const draft = this.ui.contactoDraft || this.ui.actividadDraft || this.ui.zoomDraft;
         setPath(draft, el.dataset.draftField, el.value);
+        return;
+      }
+      if (el.tagName === "SELECT" && el.dataset && el.dataset.changeAction) {
+        // <select> fuera de un borrador (p.ej. Estado y Posponer en la tabla de
+        // la Lista de 250): su acción se dispara al cambiar el valor, no al clic.
+        const handler = Actions[el.dataset.changeAction];
+        if (handler) handler(el.dataset.arg, el);
         return;
       }
       if (el.type === "file" && el.dataset && el.dataset.target === "__importBackup") {
@@ -788,6 +803,8 @@ const Actions = {
   "download-recog-card": function () { downloadRecogCard(App.state); },
   "download-cert": function () { downloadCertificado(App.state); },
   "share-consumidor-vip": function () { downloadConsumidorVipCard(App.state); },
+  "download-mapa-suenos": function (arg) { downloadMapaSuenos(App.state, arg); },
+  "share-mapa-suenos": function (arg) { shareMapaSuenos(App.state, arg); },
 
   /* -------- Modal "Compartir" para tarjetas-imagen (WhatsApp/Instagram/TikTok/Facebook/LinkedIn/YouTube) -------- */
 
@@ -1091,6 +1108,7 @@ const Actions = {
     App.ui.logro = null;
     if (logro && logro.tipo === "rango") App.ui.view = "perfil";
     else if (logro && logro.tipo === "cumbre") App.ui.view = "cumbre";
+    else if (logro && logro.tipo === "escenario") App.ui.view = "mapaSuenos";
     App.render();
   },
 
@@ -1261,6 +1279,28 @@ const Actions = {
     App.render();
   },
 
+  // Cambia el Estado directamente desde el <select> de la tabla de la Lista
+  // de 250, sin pasar por el modal de edición.
+  "set-contacto-estado": function (arg, el) {
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c || c.estado === el.value) return;
+    c.estado = el.value;
+    c.estadoFecha = hoyISO();
+    App.persist(true);
+    App.render();
+  },
+
+  // Selector "Posponer" de la tabla: mismos plazos que los botones +3 días / +1 sem / +1 mes / +2 meses.
+  "posponer-seguimiento": function (arg, el) {
+    const dias = Number(el.value);
+    const c = App.state.contactos.find((x) => x.id === arg);
+    if (!c || !dias) return;
+    c.proximoSeguimiento = addDiasISO(hoyISO(), dias);
+    App.persist(true);
+    App.showToast("Seguimiento programado");
+    App.render();
+  },
+
   "marcar-seguimiento-hecho": function (arg) {
     const c = App.state.contactos.find((x) => x.id === arg);
     if (!c) return;
@@ -1400,7 +1440,7 @@ const Actions = {
     if (completo && !App.state.escenarioCompletado) {
       App.state.escenarioCompletado = true;
       App.celebrate();
-      App.ui.logro = { titulo: "Escenario de Vida", sub: "Uniste los 8 puntos en un círculo perfecto — ya tienes claro tu “por qué”.", tipo: "generic" };
+      App.ui.logro = { titulo: "Escenario de Vida", sub: "Uniste los 8 puntos en un círculo perfecto — ya tienes claro tu “por qué”.", tipo: "escenario" };
       App.addActividad("Completaste tu Escenario de Vida — ¡círculo perfecto!");
     } else if (!completo) {
       App.state.escenarioCompletado = false;

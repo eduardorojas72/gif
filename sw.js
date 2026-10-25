@@ -4,7 +4,7 @@
    cada despliegue nuevo se ve de inmediato sin dejar rastros de una versión
    vieja atascada en el caché del navegador. */
 
-const CACHE_NAME = "cumbre90-cache-v33";
+const CACHE_NAME = "cumbre90-cache-v34";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -16,6 +16,7 @@ const CORE_ASSETS = [
   "./js/state.js",
   "./js/mountain.js",
   "./js/share.js",
+  "./js/mapaSuenos.js",
   "./js/views.js",
   "./js/app.js",
   "./icons/icon.svg",
