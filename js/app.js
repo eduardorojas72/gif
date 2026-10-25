@@ -601,6 +601,7 @@ const Actions = {
     App.ui.logro = null;
     if (logro && logro.tipo === "rango") App.ui.view = "perfil";
     else if (logro && logro.tipo === "cumbre") App.ui.view = "cumbre";
+    else if (logro && logro.tipo === "escenario") App.ui.view = "mapaSuenos";
     App.render();
   },
 
@@ -730,7 +731,7 @@ const Actions = {
     if (completo && !App.state.escenarioCompletado) {
       App.state.escenarioCompletado = true;
       App.celebrate();
-      App.ui.logro = { titulo: "Escenario de Vida", sub: "Uniste los 8 puntos en un círculo perfecto — ya tienes claro tu “por qué”.", tipo: "generic" };
+      App.ui.logro = { titulo: "Escenario de Vida", sub: "Uniste los 8 puntos en un círculo perfecto — ya tienes claro tu “por qué”.", tipo: "escenario" };
       App.addActividad("Completaste tu Escenario de Vida — ¡círculo perfecto!");
     } else if (!completo) {
       App.state.escenarioCompletado = false;

@@ -192,6 +192,8 @@ function renderLogroModal(state, ui) {
       ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("user-badge", { size: 16, color: "#1B1338" }) + " Ver mi insignia</button>"
       : logro.tipo === "cumbre"
       ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("award", { size: 16, color: "#1B1338" }) + " Ver certificado</button>"
+      : logro.tipo === "escenario"
+      ? '<button class="btn-primary" style="margin-top:14px" data-action="close-logro-action">' + Icon("camera", { size: 16, color: "#1B1338" }) + " Generar mi Mapa de Sueños</button>"
       : "";
   return (
     '<div class="modal-overlay">' +
@@ -303,11 +305,14 @@ function escenarioVidaHomeCardHTML(state) {
 
   if (state.escenarioCompletado) {
     return (
-      '<button class="card card-hover" style="text-align:left;width:100%;border-color:var(--gold);background:var(--accent-soft)" data-action="goto" data-arg="escenario">' +
+      '<div class="card" style="text-align:left;border-color:var(--gold);background:var(--accent-soft)">' +
+      '<button style="text-align:left;width:100%" data-action="goto" data-arg="escenario">' +
       '<div class="row gap-2">' + Icon("compass", { size: 15, color: "var(--gold)" }) + '<span style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">Escenario de Vida</span></div>' +
       '<div style="font-size:14.5px;font-weight:700;margin-top:6px">🏆 ¡Círculo perfecto! Alcanzaste tus 8 metas.</div>' +
       '<div class="muted small" style="margin-top:2px">Toca para revisarlas o ponerte nuevas metas más grandes.</div>' +
-      "</button>"
+      "</button>" +
+      '<button class="btn-secondary" style="margin-top:10px" data-action="goto" data-arg="mapaSuenos">' + Icon("camera", { size: 15 }) + " Generar mi Mapa de Sueños</button>" +
+      "</div>"
     );
   }
   if (iniciadas === 0) {
@@ -433,7 +438,15 @@ function renderMapaSuenos(state, ui) {
 
   return (
     '<button class="link-btn row gap-2" style="width:fit-content" data-action="goto" data-arg="escenario">' + Icon("chevron-left", { size: 16 }) + " Escenario de Vida</button>" +
-    sectionHeaderHTML("Mapa de Sueños", "Convierte tu Escenario de Vida en una imagen para compartir, con tus propias fotos — sin fotos generadas por IA.", "camera") +
+    sectionHeaderHTML("¡Tu Mapa de Sueños está listo!", "Con tus propias fotos — sin fotos generadas por IA. Personalízalo más abajo si quieres.", "camera") +
+    '<div class="card" style="padding:10px">' +
+    '<div class="mapa-preview">' + previewSvg + "</div>" +
+    "</div>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="horizontal">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar horizontal</button>" +
+    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="vertical">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar vertical</button>" +
+    "</div>" +
+    '<div style="font-weight:700;font-size:14px;margin-top:6px">Personaliza tu mapa</div>' +
     '<div class="card">' +
     '<div class="row gap-3" style="align-items:center">' +
     (state.foto
@@ -467,14 +480,6 @@ function renderMapaSuenos(state, ui) {
     '<div class="field"><label>Monto del cheque (opcional)</label><input type="text" inputmode="numeric" placeholder="Ej. 3.000" value="' + escapeHtml(state.mapaSuenosMonto) + '" data-field="mapaSuenosMonto"></div>' +
     '<div class="field" style="margin-top:10px"><label>Vigencia</label><input type="text" placeholder="Ej. 1 año" value="' + escapeHtml(state.mapaSuenosVigencia) + '" data-field="mapaSuenosVigencia"></div>' +
     '<div class="field" style="margin-top:10px"><label>Frase de agradecimiento</label><textarea rows="2" placeholder="Gracias por permitirme alcanzar mis sueños y ayudar a más personas a lograrlo" data-field="mapaSuenosTitulo">' + escapeHtml(state.mapaSuenosTitulo) + "</textarea></div>" +
-    "</div>" +
-    '<div class="card" style="padding:10px">' +
-    '<div class="muted small" style="margin-bottom:8px">Vista previa</div>' +
-    '<div class="mapa-preview">' + previewSvg + "</div>" +
-    "</div>" +
-    '<div class="row gap-2">' +
-    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="horizontal">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar horizontal</button>" +
-    '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="vertical">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar vertical</button>" +
     "</div>"
   );
 }
