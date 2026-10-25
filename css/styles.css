@@ -699,6 +699,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   background-position: center;
   background-repeat: no-repeat;
 }
+.cover-screen.welcome-cover {
+  background-image: linear-gradient(180deg, rgba(25,10,30,0.35) 0%, rgba(25,10,30,0.55) 55%, rgba(25,10,30,0.92) 100%), url("../img/portada.webp");
+}
 .photo-picker {
   width: 96px; height: 96px; border-radius: 999px; border: 2px dashed var(--gold);
   background: rgba(255,255,255,0.03); color: var(--gold-light); display: flex; align-items: center; justify-content: center;
@@ -793,7 +796,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* foto de cabecera por etapa en el detalle de cada día (imágenes 9:16, recortadas a banda) */
 .dia-hero[data-dia="1"], .dia-hero[data-dia="2"], .dia-hero[data-dia="3"],
-.dia-hero[data-dia="4"], .dia-hero[data-dia="5"], .dia-hero[data-dia="6"],
+.dia-hero[data-dia="4"], .dia-hero[data-dia="5"], .dia-hero[data-dia="6"], .dia-hero[data-dia="7"],
 .dia-hero[data-dia="8"], .dia-hero[data-dia="9"] {
   --dia-foto: none;
   position: relative; border-radius: var(--radius-lg); border: 1px solid var(--border-soft); overflow: hidden;
@@ -805,5 +808,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .dia-hero[data-dia="1"], .dia-hero[data-dia="2"], .dia-hero[data-dia="3"] { --dia-foto: url("../img/etapa-contactos.webp"); }
 .dia-hero[data-dia="4"], .dia-hero[data-dia="5"] { --dia-foto: url("../img/etapa-invitaciones.webp"); }
 .dia-hero[data-dia="6"] { --dia-foto: url("../img/etapa-negocio.webp"); }
+.dia-hero[data-dia="7"] { --dia-foto: url("../img/etapa-seguimiento.webp"); background-position: center 58%; }
 .dia-hero[data-dia="8"] { --dia-foto: url("../img/etapa-duplicacion.webp"); }
 .dia-hero[data-dia="9"] { --dia-foto: url("../img/etapa-nuevo-socio.webp"); }
