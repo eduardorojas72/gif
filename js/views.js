@@ -1285,7 +1285,7 @@ function renderDiaDetalle(state, ui, diaId) {
     prevDayBtn +
     nextDayBtn +
     "</div>" +
-    '<div>' +
+    '<div class="dia-hero" data-dia="' + dia.id + '">' +
     '<div style="color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Etapa ' + dia.id + "</div>" +
     '<h2 style="font-size:18px;font-weight:700;margin-top:2px">' + escapeHtml(dia.etapa) + "</h2>" +
     '<p class="muted small" style="font-weight:600;margin-top:2px">' + escapeHtml(dia.titulo) + "</p>" +
