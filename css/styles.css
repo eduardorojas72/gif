@@ -694,13 +694,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   padding: 32px; text-align: center; min-height: 100vh; min-height: 100dvh;
 }
 .cover-screen {
-  background-image: linear-gradient(180deg, rgba(25,10,30,0.35) 0%, rgba(25,10,30,0.55) 55%, rgba(25,10,30,0.92) 100%), url("../img/cover-cumbre90.png");
+  background-image: linear-gradient(180deg, rgba(25,10,30,0.35) 0%, rgba(25,10,30,0.55) 55%, rgba(25,10,30,0.92) 100%), url("../img/portada.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-.cover-screen.welcome-cover {
-  background-image: linear-gradient(180deg, rgba(25,10,30,0.35) 0%, rgba(25,10,30,0.55) 55%, rgba(25,10,30,0.92) 100%), url("../img/portada.webp");
 }
 .photo-picker {
   width: 96px; height: 96px; border-radius: 999px; border: 2px dashed var(--gold);
