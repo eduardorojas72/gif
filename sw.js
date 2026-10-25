@@ -20,6 +20,7 @@ const CORE_ASSETS = [
   "./js/views.js",
   "./js/app.js",
   "./icons/icon.svg",
+  "./cuanto-cobrare/index.html",
   "./img/cover-cumbre90.png",
   "./img/hero-plan6dias.png",
   "./img/fondo-app.png",

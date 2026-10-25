@@ -21,6 +21,7 @@ const MENU_ITEMS = [
   { id: "eventos", label: "Lista de Contactos", icon: "users" },
   { id: "lema", label: "El Lema de Atomy", icon: "heart" },
   { id: "premios", label: "Premios", icon: "gift" },
+  { id: "cobrare", label: "¿Cuánto cobraré?", icon: "calculator", href: "cuanto-cobrare/index.html" },
   { id: "logros", label: "Logros", icon: "award" },
   { id: "ajustes", label: "Ajustes", icon: "settings" },
 ];
@@ -31,7 +32,7 @@ const MENU_ITEMS = [
 // MENU_ITEMS en su orden original, sin verse afectado por esto.
 const SIDEBAR_COLUMNAS = [
   ["home", "plan6", "pasos", "agenda", "informe", "enfoque", "lema", "plan90", "recursos", "premios"],
-  ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "ajustes"],
+  ["perfil", "contactos", "clientes", "arbol", "socios", "sos", "eventos", "logros", "cobrare", "ajustes"],
 ];
 
 const TOUR_PASOS = [

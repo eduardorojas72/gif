@@ -655,6 +655,13 @@ const Actions = {
   "close-menu": function () { App.ui.menuOpen = false; App.render(); },
 
   "goto": function (arg) {
+    // Las entradas con href son miniapps aparte (p. ej. la calculadora "¿Cuánto cobraré?")
+    const destino = MENU_ITEMS.find(function (m) { return m.id === arg; });
+    if (destino && destino.href) {
+      App.ui.menuOpen = false;
+      window.location.href = destino.href;
+      return;
+    }
     App.ui.activeDay = null;
     App.ui.view = arg;
     App.ui.menuOpen = false;
