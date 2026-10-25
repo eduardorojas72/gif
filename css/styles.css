@@ -6,15 +6,15 @@
    ========================================================================== */
 
 :root {
-  --bg: #0A1B33;
-  --bg-2: #0F2745;
-  --card: #123054;
+  --bg: #2A1030;
+  --bg-2: #3A1640;
+  --card: #3D1A42;
   --border: rgba(232, 185, 78, 0.22);
   --border-soft: rgba(255, 255, 255, 0.08);
   --text: #F5EFE1;
-  --text-soft: #8FB0CE;
-  --accent: #4FA3E3;
-  --accent-soft: rgba(79, 163, 227, 0.18);
+  --text-soft: #C9A8D2;
+  --accent: #D97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
   --success: #34D399;
   --success-soft: rgba(52, 211, 153, 0.14);
   --warn: #F0A65C;
@@ -33,14 +33,14 @@
 }
 
 [data-theme="dark"] {
-  --bg: #050D1A;
-  --bg-2: #0A1B33;
-  --card: #0A1B33;
+  --bg: #190A1E;
+  --bg-2: #2A1030;
+  --card: #2A1030;
   --border: rgba(232, 185, 78, 0.2);
   --text: #F5EFE1;
-  --text-soft: #7FA0C4;
-  --accent: #6BBBF2;
-  --accent-soft: rgba(107, 187, 242, 0.18);
+  --text-soft: #BB8FC4;
+  --accent: #E8926F;
+  --accent-soft: rgba(232, 146, 111, 0.18);
   --gold: #F0C468;
   --gold-light: #FAE6A8;
 }
