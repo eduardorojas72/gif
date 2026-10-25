@@ -13,33 +13,44 @@ function themeColors() {
   };
 }
 
+function svgToPngBlob(svgMarkup, width, height) {
+  return new Promise(function (resolve, reject) {
+    const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+    img.onload = function () {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(function (blob) {
+        if (blob) resolve(blob);
+        else reject(new Error("No se pudo generar la imagen."));
+      }, "image/png");
+    };
+    img.onerror = function () {
+      URL.revokeObjectURL(url);
+      reject(new Error("No se pudo generar la imagen."));
+    };
+    img.src = url;
+  });
+}
+
 function svgToPngDownload(svgMarkup, width, height, filename) {
-  const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(svgBlob);
-  const img = new Image();
-  img.onload = function () {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
-    canvas.toBlob(function (blob) {
-      const dlUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = dlUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(dlUrl);
-    }, "image/png");
-  };
-  img.onerror = function () {
-    URL.revokeObjectURL(url);
+  svgToPngBlob(svgMarkup, width, height).then(function (blob) {
+    const dlUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = dlUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(dlUrl);
+  }).catch(function () {
     App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
-  };
-  img.src = url;
+  });
 }
 
 function slugFile(str) {

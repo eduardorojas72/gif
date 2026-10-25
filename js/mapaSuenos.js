@@ -210,3 +210,48 @@ function downloadMapaSuenos(state, variant) {
   const svg = mapaSuenosSVGMarkup(state, variant);
   svgToPngDownload(svg, size.w, size.h, "Cumbre90-Mapa-de-Suenos-" + variant + "-" + slugFile(state.nombre || "socio") + ".png");
 }
+
+function mapaSuenosFileName(state, variant) {
+  return "Cumbre90-Mapa-de-Suenos-" + variant + "-" + slugFile(state.nombre || "socio") + ".png";
+}
+
+function shareMapaSuenos(state, variant) {
+  const size = MAPA_SUENOS_SIZES[variant] || MAPA_SUENOS_SIZES.horizontal;
+  const svg = mapaSuenosSVGMarkup(state, variant);
+  const titulo = "Mi Mapa de Sueños — Cumbre 90";
+  const texto = (state.nombre ? state.nombre + ": " : "") + "Así visualizo mis metas en mi recorrido con Atomy. 🏔️✨";
+
+  svgToPngBlob(svg, size.w, size.h).then(function (blob) {
+    const filename = mapaSuenosFileName(state, variant);
+    const file = new File([blob], filename, { type: "image/png" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: titulo, text: texto }).catch(function (err) {
+        if (err && err.name === "AbortError") return;
+        mapaSuenosShareFallback(state, blob, filename);
+      });
+    } else {
+      mapaSuenosShareFallback(state, blob, filename);
+    }
+  }).catch(function () {
+    App.showToast("No se pudo generar la imagen. Inténtalo de nuevo.");
+  });
+}
+
+function mapaSuenosShareFallback(state, blob, filename) {
+  const dlUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = dlUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(dlUrl);
+
+  if (state.whatsapp) {
+    App.showToast("Imagen descargada. Abriendo WhatsApp de tu patrocinador para que la adjuntes…");
+    window.open(waHref(state.whatsapp), "_blank", "noreferrer");
+  } else {
+    App.showToast("Imagen descargada. Adjúntala en WhatsApp o en tu red social favorita.");
+  }
+}

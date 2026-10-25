@@ -512,6 +512,8 @@ const Actions = {
   "download-cert": function () { downloadCertificado(App.state); },
   "download-mapa-suenos": function (arg) { downloadMapaSuenos(App.state, arg); },
 
+  "share-mapa-suenos": function (arg) { shareMapaSuenos(App.state, arg); },
+
   "toggle-mentor": function () {
     App.state.mentorMode = !App.state.mentorMode;
     App.persist();

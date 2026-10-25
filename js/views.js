@@ -446,6 +446,11 @@ function renderMapaSuenos(state, ui) {
     '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="horizontal">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar horizontal</button>" +
     '<button class="btn-primary" style="flex:1" data-action="download-mapa-suenos" data-arg="vertical">' + Icon("download", { size: 16, color: "#fff" }) + " Descargar vertical</button>" +
     "</div>" +
+    '<div class="row gap-2">' +
+    '<button class="btn-secondary" style="flex:1" data-action="share-mapa-suenos" data-arg="horizontal">' + Icon("share2", { size: 16 }) + " Compartir horizontal</button>" +
+    '<button class="btn-secondary" style="flex:1" data-action="share-mapa-suenos" data-arg="vertical">' + Icon("share2", { size: 16 }) + " Compartir vertical</button>" +
+    "</div>" +
+    '<div class="muted small" style="margin-top:-4px">Envíalo a tu patrocinador por WhatsApp o publícalo en tus redes sociales.</div>' +
     '<div style="font-weight:700;font-size:14px;margin-top:6px">Personaliza tu mapa</div>' +
     '<div class="card">' +
     '<div class="row gap-3" style="align-items:center">' +
