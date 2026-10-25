@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#17624B"/>
+      <stop offset="100%" stop-color="#0E3B2E"/>
+    </linearGradient>
+    <linearGradient id="goldBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE39A"/>
+      <stop offset="55%" stop-color="#F2C94C"/>
+      <stop offset="100%" stop-color="#C98B12"/>
+    </linearGradient>
+    <linearGradient id="goldCoin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF3CE"/>
+      <stop offset="100%" stop-color="#F2C94C"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <g transform="translate(8,17) scale(0.4667)">
+    <path d="M40 110c0-46 38-78 92-78s96 30 96 74c0 40-34 66-96 66S40 152 40 110Z" fill="url(#goldBody)" stroke="#8A5E0C" stroke-width="7"/>
+    <path d="M74 44c-6-16 6-28 22-24 10 3 14 14 10 24-8 6-24 6-32 0Z" fill="#F2C94C" stroke="#8A5E0C" stroke-width="7"/>
+    <rect x="118" y="28" width="48" height="14" rx="7" fill="#5C3D08"/>
+    <ellipse cx="142" cy="12" rx="18" ry="18" fill="url(#goldCoin)" stroke="#8A5E0C" stroke-width="5"/>
+    <ellipse cx="70" cy="118" rx="30" ry="24" fill="#F6D877" stroke="#8A5E0C" stroke-width="7"/>
+    <ellipse cx="60" cy="118" rx="5.5" ry="7.5" fill="#8A5E0C"/>
+    <ellipse cx="80" cy="118" rx="5.5" ry="7.5" fill="#8A5E0C"/>
+    <circle cx="96" cy="86" r="8" fill="#3A2A05"/>
+    <circle cx="99" cy="83" r="2.6" fill="#FFFBEA"/>
+  </g>
+</svg>
