@@ -114,7 +114,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   --star-positions:
     0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
     -1px -1px, -1px -1px;
-  --bg-overlay: linear-gradient(180deg, rgba(5,10,20,0.55), rgba(5,10,20,0.88));
+  --bg-overlay: linear-gradient(180deg, rgba(25,10,30,0.55), rgba(25,10,30,0.88));
 }
 
 #app-bg {
@@ -694,7 +694,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   padding: 32px; text-align: center; min-height: 100vh; min-height: 100dvh;
 }
 .cover-screen {
-  background-image: linear-gradient(180deg, rgba(5,10,20,0.35) 0%, rgba(5,10,20,0.55) 55%, rgba(5,10,20,0.92) 100%), url("../img/cover-cumbre90.png");
+  background-image: linear-gradient(180deg, rgba(25,10,30,0.35) 0%, rgba(25,10,30,0.55) 55%, rgba(25,10,30,0.92) 100%), url("../img/cover-cumbre90.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -716,7 +716,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .quincena-ascenso-wrap {
   position: relative; width: 100%; height: 150px; border-radius: var(--radius-lg);
   border: 1px solid var(--border-soft); overflow: hidden;
-  background-image: linear-gradient(180deg, rgba(4,8,16,0.1), rgba(4,8,16,0.55)), url("../img/montana-quincena.png");
+  background-image: linear-gradient(180deg, rgba(20,8,24,0.1), rgba(20,8,24,0.55)), url("../img/montana-quincena.png");
   background-size: cover; background-position: center;
 }
 .ascenso-marker {
@@ -726,7 +726,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .ascenso-caption {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 20px 14px 10px;
-  background: linear-gradient(0deg, rgba(4,8,16,0.85), transparent);
+  background: linear-gradient(0deg, rgba(20,8,24,0.85), transparent);
   color: #F5EFE1; font-size: 12.5px; font-weight: 600;
 }
 .mountain-caption { font-size: 12px; color: var(--text-soft); padding: 6px 4px 0; }
